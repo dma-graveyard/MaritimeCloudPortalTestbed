@@ -1,0 +1,40 @@
+<div>
+    <h1 class="jumbotron">Welcome to Maritime Cloud</h1>
+    <div >
+        <div> 
+            <p><strong>Session status:</strong> Id: {{$id}} <br>
+                Current User: {{currentUser}}<br>
+                Storage: {{$storage}} 
+            </p>
+            <p><a href="#/dashboard"> Dashboard </a></p>
+            <p><a href="#/join"> Sign up </a></p>
+        </div> 
+
+        <div x-ng-show="alertMessages" class="alert alert-danger">
+            <span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+        </div>
+        <div x-ng-show="message" class="alert alert-info">{{message}}</div>
+
+
+        <div ng-if="currentUser">Welcome, {{ currentUser.name}}
+            <div ng-switch on="currentUser.role">
+                <div ng-switch-when="ADMIN">You're admin.</div>
+                <div ng-switch-when="USER">You're admin.</div>
+                <div ng-switch-default>You're something else. {{ currentUser.role}}</div>
+            </div>        
+            <div ng-if="isAuthorized(userRoles.admin)">You're authorized as admin.</div>
+        </div>
+        <div ng-if="!currentUser">
+            Not logged in! <br/>
+            <div class="btn-group">
+                <button class="btn btn-large btn-primary" ng-click="openLoginDialog('sm')">Log In</button>
+                <a class="btn btn-large  btn-success btn-default" href="#/join" role="button">Sign up</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <p/>
+        Other links: <br>
+        <a href="http://localhost:8090/bootstrap-template/html/index.html" target="#" >Boostrap Template Demo</a>
+    </div>
+</div>

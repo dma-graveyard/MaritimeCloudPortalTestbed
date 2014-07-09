@@ -1,0 +1,38 @@
+<div class="">
+    <h1>Maritime Cloud Dashboard</h1>
+    <div >
+        <div> 
+            <p><strong>Session status:</strong> Id: {{$id}} <br>
+                Current User: {{currentUser}}<br>
+                Storage: {{$storage}} 
+            </p>
+            <p><a href="#/users"> List of Users</a></p>
+            <p><a href="#/users/{{currentUser.name}}"> Details </a></p>
+            <p><a href="#/join"> Register new User</a></p>
+        </div> 
+
+        <div x-ng-show="alertMessages" class="alert alert-danger">
+            <span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+        </div>
+        <div x-ng-show="message" class="alert alert-info">{{message}}</div>
+
+
+        <div ng-if="currentUser">Welcome, {{ currentUser.name}}</div>
+        <div ng-if="!currentUser">Not logged in!</div>
+
+        <div ng-if="isAuthorized(userRoles.admin)">
+            <p>You're authorized as admin.</p>
+            <p class="col-lg-4"> This grants you certain privileges:</p>
+            ... i just cant remember which!?! :oC
+        </div>
+        <div ng-switch on="currentUser.role">
+            <div ng-switch-when="ADMIN">You're admin.</div>
+            <div ng-switch-when="USER">You're admin.</div>
+            <div ng-switch-default>You're something else. {{ currentUser.role}}</div>
+        </div>        
+
+        <div class="btn-group">
+            <button class="btn btn-large btn-round btn-grey" ng-click="logout()">Log out</button>
+        </div>
+    </div>
+</div>

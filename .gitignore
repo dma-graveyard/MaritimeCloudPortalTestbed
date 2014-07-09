@@ -1,4 +1,9 @@
 target/
+src/main/java/net/maritimecloud/portal/model
+src/main/webapp/bootstrap-template
+kill
+nb-configuration.xml
+nbactions.xml
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.next

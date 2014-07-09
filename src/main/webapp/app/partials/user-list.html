@@ -1,0 +1,28 @@
+<div class="container-fluid">
+    <div class="jumbotron">
+        <h1>Users</h1>
+        <div >
+            <!--Sidebar content-->
+            Search user: <input ng-model="filter_query"> 
+            Sort by:     <select ng-model="orderProp">
+                <option value="username">Alphabetical</option>
+                <option value="emailAddress">Email</option>
+            </select>
+        </div>
+        <div>
+            <!--Body content-->
+            <table class="table-condensed">
+                <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Details</th>
+                </tr>
+                <tr ng-repeat="user in users| filter:filter_query | orderBy:orderProp" >
+                    <td>{{user.username}}</td>
+                    <td>{{user.emailAddress}}</td>
+                    <td><a class="btn btn-xs  btn-info" href="#/users/{{user.username}}/">details</a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

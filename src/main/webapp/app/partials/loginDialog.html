@@ -1,0 +1,82 @@
+<div class="modal-header">
+    <button type="button" class="close" x-ng-click="$dismiss('aborted')">x</button>
+    <h2>Log In</h2>
+</div>
+
+<div class="modal-body e-small-font">
+    <!--    
+        <div class="alert alert-warning" x-ng-show="ie78ver">
+            You are using Internet Explorer {{ie78ver}}. ArcticWeb has been tested and works with Internet Explorer
+            9. It is however recommended to use Internet Explorer 10 (or higher), Firefox (latest) and Safari (latest) as
+            this will decrease connection usage.
+        </div>
+        <div class="alert alert-warning" x-ng-show="ie9ver">
+            You are using Internet Explorer {{ie9ver}}. It is recommended to use Internet Explorer 10 (or
+            higher), Firefox (latest) and Safari (latest) as this will decrease connection usage.
+        </div>-->
+
+    <!--    <div id="cookiesUsage" x-ng-show="showCookies" class="alert alert-info">This site is using cookies for security,
+            remembering user settings and caching of static application data. By logging in you accept usage of cookies.</div>-->
+
+
+    <iframe src="../rest/authentication/sink.html" name="sink" style="display:none"></iframe>
+
+    <!--
+    <form name="loginForm"
+          action="sink.html" target="sink" method="post"
+          ng-submit="login(credentials)"
+          novalidate form-autofill-fix>
+        <label for="username">Username:</label>
+        <input type="text" id="username"
+               ng-model="credentials.username">
+        <label for="password">Password:</label>
+        <input type="password" id="password"
+               ng-model="credentials.password">
+        <button type="submit">Login</button>
+    </form>    -->
+
+
+    <!--<form class="form-signin" name="login_form" x-ng-disabled="ie78ver">-->
+    <!--<form ng-controller="LoginController" name="loginForm" ng-submit="login(credentials); ok()" novalidate-->
+    <form name="loginForm" ng-submit="$close(credentials)" novalidate
+          action="../rest/authentication/sink.html" target="sink" method="post">        
+        <div id="credentials" x-ng-hide="forgot" class="embryo-form-controls">
+            <div class="form-group">
+                <label for="usernamefield">User Name</label> 
+                <input class="form-control input-sm" type="text" placeholder="Enter your username here" focus="focusMe" 
+                       id="usernamefield" name="usernamefield" 
+                       x-ng-model="credentials.username" autocapitalize="off" autocorrect="off" autocomplete="off" required />
+            </div>
+            <div class="form-group">
+                <label for="passwordfield">Password</label> 
+                <input class="form-control input-sm" type="password"  placeholder="Password" 
+                       id="passwordfield" name="passwordfield" 
+                       x-ng-model="credentials.password" required />
+            </div>
+
+            <!--<label class="checkbox">  <input
+                type="checkbox" value="remember-me" /> Remember me 
+            </label>-->
+
+            <a class="text-primary" href="" x-ng-click="forgotPassword()">Forgot password?</a>
+            <div style="margin-top: 24px">
+                <button type="submit" class="btn btn-sm btn-primary" x-ng-disabled="!(loginForm.usernamefield.$valid && loginForm.passwordfield.$valid)">Log In</button>
+                <button class="btn btn-sm" x-ng-click="$dismiss('aborted')">Cancel</button>
+            </div>
+        </div>
+        <!--        <div id="forgotpass" x-ng-show="forgot">
+                    <label>E-mail address <input type="email" name="emailfield" class="input-block-level" x-ng-model="user.email" autocapitalize="off"
+                                                 autocorrect="off" autocomplete="off" required /></label>
+                    <a href="" x-ng-click="back()">Back</a>
+                    <div style="margin-top: 24px">
+                        <button type="submit" class="btn btn-primary" x-ng-disabled="!login_form.emailfield.$valid" x-ng-click="sendPassword()">Send password</button>
+                        <button class="btn" x-ng-click="$dismiss('aborted')">Cancel</button>
+                    </div>
+                </div>-->
+    </form>
+</div>
+<div class="modal-footer">
+    <div class="pull-right" >
+        First time users can <a href="#/join">Sign up</a> here to get username and password. 
+    </div>
+</div>
