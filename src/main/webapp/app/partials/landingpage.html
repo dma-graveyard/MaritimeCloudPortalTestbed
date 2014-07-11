@@ -1,40 +1,94 @@
 <div>
-    <h1 class="jumbotron">Welcome to Maritime Cloud</h1>
-    <div >
-        <div> 
-            <p><strong>Session status:</strong> Id: {{$id}} <br>
-                Current User: {{currentUser}}<br>
-                Storage: {{$storage}} 
-            </p>
-            <p><a href="#/dashboard"> Dashboard </a></p>
-            <p><a href="#/join"> Sign up </a></p>
-        </div> 
 
-        <div x-ng-show="alertMessages" class="alert alert-danger">
-            <span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
-        </div>
-        <div x-ng-show="message" class="alert alert-info">{{message}}</div>
+    <carousel id="myCarousel" interval="8000"> 
+        <slide> 
+            <!-- SOURCE: http://www.rgbstock.com/photo/mHRgAs0/cloud+formations -->
+            <img x-ng-src="img/landingpage/clouds.jpg" alt="Clouds formations">
+            <div class="carousel-caption">
+                <h2>Tailored Weather Forecasts</h2>
+                <p>Tailored weather forecasts from Danish Meteorological Institute for uploaded sailing routes.</p>
+            </div>
+        </slide> 
+        <slide> 
+            <img x-ng-src="img/landingpage/Konsol-h350.jpg" alt="Vessel bridge">
+            <div class="carousel-caption">
+                <h2>Coordinated Voyage</h2>
+                <p>Share routes and schedules with other ships and Ground Command.</p>
+            </div>
+        </slide> 
+        <slide> 
+            <img x-ng-src="img/landingpage/map.jpg" alt="Antique world map">
+            <div class="carousel-caption">
+                <h2>Live AIS-data and Streamlined Reporting</h2>
+                <p>AIS-data from satellite and base stations. </p>
+            </div>
+        </slide> 
+    </carousel>
 
+    <hr class="soften">
 
-        <div ng-if="currentUser">Welcome, {{ currentUser.name}}
-            <div ng-switch on="currentUser.role">
-                <div ng-switch-when="ADMIN">You're admin.</div>
-                <div ng-switch-when="USER">You're admin.</div>
-                <div ng-switch-default>You're something else. {{ currentUser.role}}</div>
-            </div>        
-            <div ng-if="isAuthorized(userRoles.admin)">You're authorized as admin.</div>
+    <!--<h1 class="center">Welcome to Maritime Cloud</h1>-->
+
+    <!-- Main hero unit for a primary marketing message or call to action -->
+    <div class="hero-content center" >
+        <h1 style="margin-top: 30px; margin-bottom: 20px;">Welcome to Maritime Cloud Portal</h1>
+        <p> Maritime Cloud Portal offers Identity & Access Management of the Maritime Cloud Services </p>
+        <p> Maritime Cloud is an joint effort from multiple Maritime Authorities to improve maritime safety on a global scale.
+            Maritime Cloud serves as a single point of access to safety related information, provides streamlined reporting and allows
+            for voluntary coordinated voyage through sharing of positions and planned routes. Ships in the area and their
+            organizations may login or request access to Maritime Cloud via the buttons below.</p>
+        <br/>
+        <div ng-if="currentUser">
+            <h3>Go to <a href="#/dashboard"> Dashboard </a> </h3>
         </div>
         <div ng-if="!currentUser">
-            Not logged in! <br/>
             <div class="btn-group">
                 <button class="btn btn-large btn-primary" ng-click="openLoginDialog('sm')">Log In</button>
                 <a class="btn btn-large  btn-success btn-default" href="#/join" role="button">Sign up</a>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <p/>
-        Other links: <br>
-        <a href="http://localhost:8090/bootstrap-template/html/index.html" target="#" >Boostrap Template Demo</a>
+    <hr class="soften" />
+    
+    <!--Temporar debug info etc...-->
+    <br/>
+    <br/>
+    <br/>
+    <div class="container" style="color: grey;">
+        <div class="row">
+            <div class="col-md-6 " >
+                <div x-ng-show="alertMessages" class="alert alert-danger">
+                    <span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+                </div>
+                <div x-ng-show="message" class="alert alert-info">{{message}}</div>
+                <div ng-if="currentUser">Welcome, {{ currentUser.name}}
+                    <div ng-switch on="currentUser.role">
+                        <div ng-switch-when="ADMIN">You're admin.</div>
+                        <div ng-switch-when="USER">You're admin.</div>
+                        <div ng-switch-default>You're something else. {{ currentUser.role}}</div>
+                    </div>        
+                    <div ng-if="isAuthorized(userRoles.admin)">You're authorized as admin.</div>
+                </div>
+                <div ng-if="!currentUser">
+                    Not logged in! <br/>
+                </div>
+                <p>
+                    <br/>
+                    <br/>
+                    Other links: <br>
+                    <a href="http://localhost:8090/bootstrap-template/html/index.html" target="#" >Boostrap Template Demo</a>
+                </p>
+            </div>
+            <div class="col-md-4">
+                <div> 
+                    <p>
+                        Current User: {{currentUser}}<br>
+                        Storage: {{$storage}} 
+                    </p>
+                    <br/>
+                </div> 
+            </div>
+        </div>
     </div>
+
 </div>
