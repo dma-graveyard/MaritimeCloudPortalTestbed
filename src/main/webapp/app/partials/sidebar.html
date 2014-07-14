@@ -51,12 +51,11 @@
             <b class="arrow"></b>
         </li>
 
-        <!--  navigation bar left (admin) --> 
-        <!--<div></div>-->
+        <!-- ADMINISTRATION --> 
         <li ng-if="isAuthorized(userRoles.user)" class="hover" >
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-desktop"></i>
-                <span class="menu-text"> Adminstrator </span>
+                <span class="menu-text"> Administration </span>
                 <b class="arrow fa fa-angle-down"></b>
             </a>
             <b class="arrow"></b>
@@ -65,34 +64,21 @@
                 <li class="hover"><a href="#/log"> <i class="menu-icon fa fa-fire" style=""></i> Log </a></li>
             </ul>
         </li>
-
-
+        
+        <!-- ORGANIZATIONS -->
         <li class="hover">
-            <a href="#" class="dropdown-toggle">
+            <a href="#/orgs" class="dropdown-toggle">
                 <i class="menu-icon fa fa-desktop"></i>
-                <span class="menu-text"> Organisations </span>
+                <span class="menu-text"> Organizations </span>
 
                 <b class="arrow fa fa-angle-down"></b>
             </a>
-
             <b class="arrow"></b>
-
-            <ul class="submenu">
-                <li class="hover">
-                    <a href="#/organisations/mda">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Danish Maritime Authority
+            <ul class="submenu" ng-controller="OrganizationListController">
+                <li ng-repeat="organization in organizations" class="hover">
+                    <a href="#/orgs/{{organization.name}}">
+                        <i class="menu-icon fa fa-caret-right"></i> {{organization.title}}
                     </a>
-
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="hover">
-                    <a href="#/organisations/dmi">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Danish Meteorological Institute
-                    </a>
-
                     <b class="arrow"></b>
                 </li>
             </ul>

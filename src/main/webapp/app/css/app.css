@@ -1,25 +1,144 @@
 /* app css stylesheet */
 
 .navbar {
-	min-height: 40px;
+    min-height: 40px;
     margin-bottom: 0px;
 }
 
 
 .max-content {
-  margin-left: 43px;
+    margin-left: 43px;
 }
 
 
 #myCarousel img {
-	min-width: 100%;
-	height: 320px;
+    min-width: 100%;
+    height: 320px;
 }
 
 .carousel-caption {
-	background-color: rgba(255, 255, 255, 0.6);
-	padding: 16px;
-	margin: 20px;
-	text-shadow: none;
-	color: black;
+    background-color: rgba(255, 255, 255, 0.6);
+    padding: 16px;
+    margin: 20px;
+    text-shadow: none;
+    color: black;
 }
+
+
+.simple-box { 
+    padding:15px;
+    margin-bottom:20px;
+    border:1px solid #ddd;
+    background-color:#fff;
+    border-radius:8px
+}
+
+
+.team { 
+    margin-top: 1em;
+}
+
+.team-metainfo { 
+    margin-left: 1em;
+    color:dimgray;
+}
+
+.org-header {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    //background-color: #F5F5F5;
+}
+
+.org-description {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 16px;
+    color: #666;
+    line-height: 1.25;
+}
+
+.edit-org {
+    position: relative;
+    top: -3px;
+    display: inline-block;
+    padding-left: 3px;
+    color: #ccc;
+    font-size: 18px;
+}
+
+.org-header-meta {
+    font-size: 12px;
+    list-style: none;
+    color: #ccc;
+
+}
+
+/* Organization List */
+.boxed-group {
+    position: relative;
+    border-radius: 3px;
+    margin: 15px 0 15px;
+}
+.boxed-group .boxed-group-action {
+    float: right;
+    margin: 12px 10px 0 0;
+    position: relative;
+    z-index: 2;
+}
+.boxed-group .boxed-group-action input {
+    border-radius: 8px;
+    border-style: ridge; 
+}
+.boxed-group .boxed-group-action a {
+    margin-left: 12px;
+    margin-bottom: 2px;
+}
+.boxed-group>h3, .boxed-group .heading {
+    background-color: #f5f5f5;
+    margin: 0;
+    border-radius: 3px 3px 0 0;
+    border: 1px solid #d8d8d8;
+    border-bottom: 0;
+    padding: 10px 10px 11px;
+    //font-size: 14px;
+    font-weight: bolder;
+    text-shadow: 0 1px 0 #fff;
+}
+.boxed-group .boxed-group-inner {
+    padding: 1px 10px;
+    background: #fff;
+    border: 1px solid #d8d8d8;
+    border-bottom-left-radius: 1px;
+    border-bottom-right-radius: 1px;
+    color: #666;
+    font-size: 13px;
+}
+.boxed-group-list {
+    list-style: none;
+    margin: 0;
+}
+.boxed-group-list>li {
+    display: block;
+    margin-left: -10px;
+    margin-right: -10px;
+    padding: 5px 10px;
+    line-height: 23px;
+    border-bottom: 1px solid #e5e5e5;
+    color: black;
+    font-weight: bold;
+}
+.boxed-group-list>li:hover {
+    background-color: #d8d8d8;
+}
+.boxed-group-list>li .minibutton {
+    float: right;
+    margin: 0px 0 0 10px;
+}
+.boxed-group>li .minibutton {
+    float: right;
+    margin: 0px 0 0 10px;
+}
+.boxed-group-list>li:last-of-type {
+    border-bottom: 0;
+}
+

@@ -1,0 +1,24 @@
+<div class="simple-box">
+    <div class="container-fluid">
+        <div class="">
+            <h3>Teams</h3>
+        </div>
+        <div >
+            Search team: <input ng-model="filter_query"> 
+        </div>
+        <div class="team" ng-repeat="team in organization.teams| filter:filter_query">
+            <!--Team name-->
+            <h5><a>{{team.name}}</a></h5>
+            <!--Members and access level-->
+            <div class="team-metainfo">
+                {{team.members.length}} {{team.members.length===1?'member' : 'members'}} · 
+                <div class="inline" ng-switch on="team.accessLevel">
+                    <div ng-switch-when="admin">Admins  <i class="fa fa-gears"></i> </div>
+                    <div ng-switch-when="write">Writers <i class="fa fa-edit"></i></div>
+                    <div ng-switch-when="read" >Readers <i class="fa fa-book"></i></div>
+                    <div ng-switch-default>Something else? {{team.accessLevel}}</div>
+                </div>        
+            </div>
+        </div>
+    </div>
+</div>

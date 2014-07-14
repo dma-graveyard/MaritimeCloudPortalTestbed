@@ -6,7 +6,7 @@ var iamControllers = angular.module('iamControllers', ['ui.bootstrap']);
 
 iamControllers.controller('UserListController', ['$scope', 'UserService',
   function($scope, UserService) {
-    // (User is a 'service' defined in services.js)
+    // (UserService is defined in services.js)
     $scope.users = UserService.query();
     $scope.orderProp = 'age';
   }]);
@@ -23,7 +23,6 @@ iamControllers.controller('UserDetailController', ['$scope', '$routeParams', 'Us
     //      $scope.mainImageUrl = imageUrl;
     //    };
   }]);
-
 
 iamControllers.controller('UserSignupController', ['$scope', 'UserService',
   function($scope, UserService) {
@@ -68,63 +67,17 @@ iamControllers.controller('UserSignupController', ['$scope', 'UserService',
   }]);
 
 
+iamControllers.controller('OrganizationListController', ['$scope', 'OrganizationService',
+  function($scope, OrganizationService) {
+    $scope.organizations = OrganizationService.query();
+    $scope.orderProp = 'age';
+  }]);
 
-//iamControllers.controller('LoginDialogController', ['$rootScope', '$scope', '$modal', '$log',
-//  function($rootScope, $scope, $modal, $log) {
-//
-//    $scope.user = {name: 'user', pw: 'password'};
-//
-//    $scope.openLoginDialog = function(size) {
-//
-//      var modalInstance = $modal.open({
-//        templateUrl: 'partials/loginDialog.html',
-//        controller: ModalInstanceController,
-//        size: size,
-//        backdrop: 'static',
-//        resolve: {
-//          user: function() {
-//            return $scope.user;
-//          }
-//        }
-//      });
-//
-//      modalInstance.result.then(function(subject) {
-//        // do something with the authenticated user information
-//        // ...
-//        // $scope.authenticatedSubject = subject;
-//        $log.info('Login succeeded: ' + subject + new Date());
-//        $rootScope.authenticate = subject;
-//        
-//      }, function() {
-//        $log.info('Login cancelled at: ' + new Date());
-//      });
-//    };
-//  }]);
-//
-//
-///**
-// * @param {type} $scope
-// * @param {type} $modalInstance Please note that $modalInstance represents a modal window (instance) dependency. It is not the same as the $modal service used above.
-// * @param {type} items
-// * @returns {undefined}
-// */
-//var ModalInstanceController = function($scope, $modalInstance, user) {
-//
-//  $scope.user = user;
-////  $scope.selected = {
-////    item: $scope.items[0]
-////  };
-//
-//  $scope.ok = function() {
-//    console.log("Pressed OK");
-//    $modalInstance.close($scope.user);
-//  };
-//
-//  $scope.cancel = function() {
-//    console.log("Pressed Cancel or Escape?");
-//    $modalInstance.dismiss('cancel');
-//  };
-//};
+iamControllers.controller('OrganizationDetailsController', ['$scope', '$routeParams', 'OrganizationService',
+  function($scope, $routeParams, OrganizationService) {
+    $scope.organization = OrganizationService.get({organizationname: $routeParams.organizationname}, function(organization) {
+    });
+  }]);
 
 
 

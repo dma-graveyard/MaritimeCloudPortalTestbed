@@ -31,12 +31,16 @@ iamApp.config(['$routeProvider', 'USER_ROLES',
         when('/profile', {
           templateUrl: 'partials/user-detail.html',
           controller: 'UserDetailController',
-          data: {}
+          data: {
+            authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
+          }
         }).
         when('/users/:username', {
           templateUrl: 'partials/user-detail.html',
           controller: 'UserDetailController',
-          data: {}
+          data: {
+            authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
+          }
         }).
         when('/join', {
           templateUrl: 'partials/user-signup.html',
@@ -47,6 +51,20 @@ iamApp.config(['$routeProvider', 'USER_ROLES',
           templateUrl: 'partials/landingpage.html',
 //          controller: 'LoginDialogController',
           data: {}
+        }).
+        when('/orgs', {
+          templateUrl: 'partials/organization-list.html',
+          controller: 'OrganizationListController',
+          data: {
+            authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
+          }
+        }).
+        when('/orgs/:organizationname', {
+          templateUrl: 'partials/organization-detail.html',
+          controller: 'OrganizationDetailsController',
+          data: {
+            authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
+          }
         }).
         otherwise({
           redirectTo: '/landingpage'
