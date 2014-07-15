@@ -7,9 +7,7 @@ import net.maritimecloud.portal.application.IdentityApplicationService;
 import net.maritimecloud.portal.domain.infrastructure.shiro.ShiroAuthenticationUtil;
 import net.maritimecloud.portal.domain.model.identity.UserRepository;
 import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
-import net.maritimecloud.portal.infrastructure.UserFactory;
 import net.maritimecloud.portal.infrastructure.persistence.JpaUserRepository;
-import net.maritimecloud.portal.model.user.User;
 import net.maritimecloud.portal.resource.LogService;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.servlet.ShiroFilter;
@@ -19,15 +17,13 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.embedded.ServletListenerRegistrationBean;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
-import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan(basePackageClasses = {/* rest */ /* domain */ UserFactory.class, /* persistence */ User.class}) //todo: replace with marker interfaces
+//@ComponentScan(basePackageClasses = {/* rest */ /* domain */ /* persistence */ User.class}) //todo: replace with marker interfaces
 @EnableAutoConfiguration
-@EntityScan(basePackageClasses = {User.class}) //todo: replace with marker interfaces
+//@EntityScan(basePackageClasses = {User.class}) //todo: replace with marker interfaces
 public class ApplicationConfig {
 
     @Bean
