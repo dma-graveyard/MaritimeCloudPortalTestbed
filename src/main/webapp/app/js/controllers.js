@@ -79,8 +79,8 @@ iamControllers.controller('OrganizationDetailsController', ['$scope', '$routePar
     });
   }]);
 
-iamControllers.controller('OrganizationCreateController', ['$scope', 'OrganizationService',
-  function($scope, OrganizationService) {
+iamControllers.controller('OrganizationCreateController', ['$scope', '$location', 'OrganizationService',
+  function($scope, $location, OrganizationService) {
     $scope.organization = {name: null, title: null};
     $scope.message = null;
     $scope.alertMessages = null;
@@ -110,13 +110,16 @@ iamControllers.controller('OrganizationCreateController', ['$scope', 'Organizati
       }
 
       // Send request
-      $scope.message = "Sending request for access.";
+      $scope.message = "Sending request to create organization...";
 
-      OrganizationService.signUp($scope.organization, function(data) {
-        $scope.message = ["Request SUCCESS :) " + data];
+      OrganizationService.create($scope.organization, function(data) {
+        $location.path('/orgs/'+data.name).replace();
+        $scope.message = ["Organization created: " + data];
+        
       }, function(error) {
         // Error handler code
-        $scope.alertMessages = ["Error on the serverside :( "];
+        $scope.message = null;
+        $scope.alertMessages = ["Error on the serverside :( ", error];
       });
     };
   }]);
