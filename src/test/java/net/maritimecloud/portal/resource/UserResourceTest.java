@@ -12,14 +12,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.portal.rest;
+package net.maritimecloud.portal.resource;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import net.maritimecloud.portal.JerseyConfig;
 import net.maritimecloud.portal.config.TestConfig;
-import net.maritimecloud.portal.model.user.User;
+import net.maritimecloud.portal.domain.model.identity.User;
+//import net.maritimecloud.portal.model.user.User;
 import org.glassfish.jersey.test.JerseyTest;
 import org.json.JSONException;
 import org.junit.Ignore;
@@ -41,34 +42,38 @@ public class UserResourceTest extends JerseyTest {
     }
 
     @Test
-    @Ignore
-    public void createUser() throws JSONException {
-        User aNewUser = new User();
-        aNewUser.setUserName("a fine new user");
+   public void createUser() throws JSONException {
+        UserResource.UserDTO aNewUser = new UserResource.UserDTO("a fine new user", "password", "mail@adress.com");
         Entity aNewUserEntity = Entity.entity(aNewUser, MediaType.APPLICATION_JSON);
         final String actual = target("users").request().post(aNewUserEntity, String.class);
         System.out.println("actual: "+actual);
         String expected = "{"
-                + "'userName': 'a fine new user'"
+                + "'emailAddress': 'mail@adress.com',"
+                + "'username':'a fine new user'"
                 + "}";
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.LENIENT);
     }
 
     @Test
-    @Ignore
     public void listOfUsers() throws JSONException {
-        final String actual = target("users").request().get(String.class);
+        final String actual = target("users").queryParam("usernamePattern", "Tintin").request().get(String.class);
         String expected = "["
-                + "{'userName': 'test'}"
+                + "  {"
+                + "    'emailAddress': 'tintin@dma.org', "
+                + "    'username':'Tintin'"
+                + "  }"
                 + "]";
+        System.out.println("actual: "+actual);
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.LENIENT);
     }
 
     @Test
-    @Ignore
     public void singleUser() throws JSONException {
-        final String actual = target("users").path("1").request().get(String.class);
-        String expected = "{'userName': 'test1'}";
+        final String actual = target("users").path("Tintin").request().get(String.class);
+        String expected = "{"
+                + "'emailAddress': 'tintin@dma.org', "
+                + "'username':'Tintin'"
+                + "}";
         System.out.println("Actual: " + actual);
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.LENIENT);
     }

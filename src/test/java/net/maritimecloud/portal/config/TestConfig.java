@@ -14,6 +14,9 @@
  */
 package net.maritimecloud.portal.config;
 
+import net.maritimecloud.portal.domain.model.identity.UserRepository;
+import net.maritimecloud.portal.infrastructure.persistence.InMemoryUserRepository;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -23,4 +26,10 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import(value = {ApplicationConfig.class})
 public class TestConfig {
+    
+        @Bean
+    public UserRepository userRepository() {
+        return new InMemoryUserRepository();
+    }
+
 }

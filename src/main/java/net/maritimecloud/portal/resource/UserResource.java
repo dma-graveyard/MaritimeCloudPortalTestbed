@@ -58,7 +58,7 @@ public class UserResource {
     }
 
     private Response createResponseWithNewUserAndUri(UriInfo uriInfo, User user) throws UriBuilderException, IllegalArgumentException {
-        return Response.created(uriOf(uriInfo, user)).entity(user).build();
+        return Response.created(uriOf(uriInfo, user)).entity(toDto(user)).build();
     }
 
     private URI uriOf(UriInfo uriInfo, User user) throws UriBuilderException, IllegalArgumentException {
@@ -86,15 +86,11 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<UserDTO> getUsers(@QueryParam("usernamePattern") @DefaultValue("") String usernamePattern) {
         try {
-            LOG.warn("TODO: Returning hardcoded list of users for test purposes only! " + usernamePattern);
             List<UserDTO> users = new ArrayList<>();
-            List<User> usersRename = identityApplicationService().usersWithUsernameMatching(usernamePattern);
-            for (User user : usersRename) {
+            List<User> matchingUsers = identityApplicationService().usersWithUsernameMatching(usernamePattern);
+            for (User user : matchingUsers) {
                 users.add(toDto(user));
             }
-            
-            users.add(getUser("Tintin"));
-            users.add(toDto(identityApplicationService().user("Haddock")));
             return users;
         } catch (Throwable e) {
             System.out.println("e:" + e.getMessage());
