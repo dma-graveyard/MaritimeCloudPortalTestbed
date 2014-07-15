@@ -107,7 +107,12 @@ iamServices.factory('OrganizationService', ['$resource',
               {name: "dp", title: "DanPilot"}
             ]
             );
+      },
+      //create: {method: 'POST', params: {}, isArray: false}
+      create: function(newOrganizationRequest) {
+        return newOrganizationRequest;
       }
+      
     };
   }]);
 

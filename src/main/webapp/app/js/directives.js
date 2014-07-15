@@ -2,6 +2,53 @@
 
 /* Directives */
 
+angular.module('iamDirectives', []).directive('mcpFocusMe', function($timeout, $parse) {
+  // see http://stackoverflow.com/questions/14833326/how-to-set-focus-in-angularjs
+  return {
+    //scope: true,   // optionally create a child scope
+    link: function(scope, element, attrs) {
+      var model = $parse(attrs.mcpFocusMe);
+      scope.$watch(model, function(value) {
+        if (value === true) {
+          $timeout(function() {
+            element[0].focus();
+          });
+        }
+      });
+      // to address @blesh's comment, set attribute value to 'false'
+      // on blur event:
+      element.bind('blur', function() {
+        scope.$apply(model.assign(scope, false));
+      });
+    }
+  };
+});
+
+//.directive('mcp-focus', function($timeout, $rootScope) {
+//  return {
+//    restrict: 'A',
+//    scope: {
+//      focusValue: "=syncFocusWith"
+//    },
+//    link: function($scope, $element, attrs) {
+//      $scope.$watch("focusValue", function(currentValue, previousValue) {
+//        if (currentValue === true && !previousValue) {
+//          $element[0].focus();
+//        } else if (currentValue === false && previousValue) {
+//          $element[0].blur();
+//        }
+//      })
+//    }
+//  }
+//});
+//    .directive('mcp-focus', function() {
+//        console.log("XXXXXXXXXXXXXXXXXXXX test", element)
+//      return function(scope, element, attrs) {
+//        console.log("XXXXXXXXXXXXXXXXXXXX test", element)
+//        element[0].focus();
+//      };
+//    });
+
 angular.module('iamDirectives.ui.bootstrap', ['ui.bootstrap.transition'])
 
     .directive('minify', ['$transition', function($transition) {
@@ -73,7 +120,7 @@ angular.module('iamDirectives.ui.bootstrap', ['ui.bootstrap.transition'])
 
             //var model = $parse(attrs.minify);
             scope.$watch(attrs.minify, function(shouldCollapse) {
-              console.log('shouldCollapse '+shouldCollapse, shouldCollapse)
+              console.log('shouldCollapse ' + shouldCollapse, shouldCollapse)
               scope.$broadcast('MINIFYEVENT-' + attrs.minify, shouldCollapse);
 //          if (shouldCollapse) {
 //          } else {
@@ -104,7 +151,7 @@ angular.module('iamDirectives.ui.bootstrap', ['ui.bootstrap.transition'])
 
             //var model = $parse(attrs.minify);
             scope.$watch(attrs.minify, function(shouldCollapse) {
-              console.log('shouldMaxify XXX '+shouldCollapse, shouldCollapse)
+              console.log('shouldMaxify XXX ' + shouldCollapse, shouldCollapse)
               scope.$broadcast('MINIFYEVENT-' + attrs.minify, shouldCollapse);
 //          if (shouldCollapse) {
 //          } else {
@@ -113,12 +160,12 @@ angular.module('iamDirectives.ui.bootstrap', ['ui.bootstrap.transition'])
             });
 
             scope.$on('MINIFYEVENT-' + attrs.minify, function(event, shouldCollapse) {
-              console.log('shouldMaxify '+shouldCollapse, shouldCollapse)
+              console.log('shouldMaxify ' + shouldCollapse, shouldCollapse)
               console.log('Max: MINIFYEVENT-' + attrs.minify, shouldCollapse);
-                scope[attrs.minify] = shouldCollapse;
+              scope[attrs.minify] = shouldCollapse;
             });
           }
         };
       }])
-    
-;
+
+    ;

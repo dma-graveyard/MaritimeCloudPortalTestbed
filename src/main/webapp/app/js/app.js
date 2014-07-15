@@ -8,6 +8,7 @@ var iamApp = angular.module('iamApp', [
   'iamServices',
   'iamFilters',
   'iamAuthModule',
+  'iamDirectives',
   'iamDirectives.ui.bootstrap'
 ]);
 
@@ -55,6 +56,13 @@ iamApp.config(['$routeProvider', 'USER_ROLES',
         when('/orgs', {
           templateUrl: 'partials/organization-list.html',
           controller: 'OrganizationListController',
+          data: {
+            authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
+          }
+        }).
+        when('/orgs/new', {
+          templateUrl: 'partials/organization-create.html',
+          controller: 'OrganizationCreateController',
           data: {
             authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
           }
