@@ -8,11 +8,9 @@ import net.maritimecloud.portal.domain.infrastructure.shiro.ShiroAuthenticationU
 import net.maritimecloud.portal.domain.model.identity.UserRepository;
 import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
 import net.maritimecloud.portal.infrastructure.UserFactory;
-import net.maritimecloud.portal.infrastructure.UserServiceImpl;
 import net.maritimecloud.portal.infrastructure.persistence.JpaUserRepository;
 import net.maritimecloud.portal.model.user.User;
 import net.maritimecloud.portal.resource.LogService;
-import net.maritimecloud.portal.rest.UserResource;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.glassfish.jersey.servlet.ServletContainer;
