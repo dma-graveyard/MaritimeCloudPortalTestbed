@@ -38,6 +38,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author Christoffer Børrild
+ * @deprecated
  */
 @Path("/old/users")
 @Component

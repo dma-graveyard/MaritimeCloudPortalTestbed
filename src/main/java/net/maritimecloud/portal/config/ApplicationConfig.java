@@ -7,6 +7,7 @@ import net.maritimecloud.portal.application.IdentityApplicationService;
 import net.maritimecloud.portal.domain.infrastructure.shiro.ShiroAuthenticationUtil;
 import net.maritimecloud.portal.domain.model.identity.UserRepository;
 import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
+import net.maritimecloud.portal.infrastructure.UserFactory;
 import net.maritimecloud.portal.infrastructure.UserServiceImpl;
 import net.maritimecloud.portal.infrastructure.persistence.JpaUserRepository;
 import net.maritimecloud.portal.model.user.User;
@@ -26,7 +27,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan(basePackageClasses = {/* rest */UserResource.class, /* domain */ UserServiceImpl.class, /* persistence */ User.class}) //todo: replace with marker interfaces
+@ComponentScan(basePackageClasses = {/* rest */ /* domain */ UserFactory.class, /* persistence */ User.class}) //todo: replace with marker interfaces
 @EnableAutoConfiguration
 @EntityScan(basePackageClasses = {User.class}) //todo: replace with marker interfaces
 public class ApplicationConfig {
