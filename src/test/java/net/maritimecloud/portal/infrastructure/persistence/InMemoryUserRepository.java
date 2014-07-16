@@ -14,7 +14,6 @@
  */
 package net.maritimecloud.portal.infrastructure.persistence;
 
-import net.maritimecloud.portal.domain.model.identity.UserRoles;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +28,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Christoffer Børrild
  */
-public class InMemoryUserRepository implements UserRepository {
+public class InMemoryUserRepository implements UserRepository, CleanableStore {
 
     private final Map<String, User> repository;
 
@@ -93,10 +92,10 @@ public class InMemoryUserRepository implements UserRepository {
 //        }
 //        return null;
 //    }
-//    
-//    @Override
+    
+    @Override
     public void clean() {
-        this.repository().clear();
+        repository().clear();
     }
 
     private String keyOf(User aUser) {

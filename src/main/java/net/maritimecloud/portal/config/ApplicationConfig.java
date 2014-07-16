@@ -27,8 +27,9 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationConfig {
 
     @Bean
-    public ApplicationServiceRegistry applicationServiceRegistry() {
-        return new ApplicationServiceRegistry();
+    public ApplicationContextSetup applicationContextSetup() {
+        // this will trigger that the application context is propagated all to registries
+        return new ApplicationContextSetup();
     }
 
     @Bean

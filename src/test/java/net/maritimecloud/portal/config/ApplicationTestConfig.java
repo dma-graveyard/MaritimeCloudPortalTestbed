@@ -25,9 +25,9 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @Import(value = {ApplicationConfig.class})
-public class TestConfig {
-    
-        @Bean
+public class ApplicationTestConfig {
+
+    @Bean
     public UserRepository userRepository() {
         return new InMemoryUserRepository();
     }

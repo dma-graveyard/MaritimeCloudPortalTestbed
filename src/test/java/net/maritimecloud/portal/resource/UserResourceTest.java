@@ -14,67 +14,58 @@
  */
 package net.maritimecloud.portal.resource;
 
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import net.maritimecloud.portal.JerseyConfig;
-import net.maritimecloud.portal.config.TestConfig;
-import net.maritimecloud.portal.domain.model.identity.User;
-//import net.maritimecloud.portal.model.user.User;
-import org.glassfish.jersey.test.JerseyTest;
 import org.json.JSONException;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import static javax.ws.rs.client.Entity.json;
+import net.maritimecloud.portal.domain.model.DomainRegistry;
+import net.maritimecloud.portal.domain.model.identity.User;
+import static net.maritimecloud.portal.resource.UserResource.UserDTO;
 
 /**
  * @author Christoffer Børrild
  */
-public class UserResourceTest extends JerseyTest {
+public class UserResourceTest extends ResourceTest {
 
-    @Override
-    protected Application configure() {
-        ApplicationContext context = new AnnotationConfigApplicationContext(TestConfig.class);
-        return new JerseyConfig().property("contextConfig", context);
-    }
+    /**
+     * user resource path
+     */
+    private static final String USERS = "users";
 
     @Test
-   public void createUser() throws JSONException {
-        UserResource.UserDTO aNewUser = new UserResource.UserDTO("a fine new user", "password", "mail@adress.com");
-        Entity aNewUserEntity = Entity.entity(aNewUser, MediaType.APPLICATION_JSON);
-        final String actual = target("users").request().post(aNewUserEntity, String.class);
-        System.out.println("actual: "+actual);
-        String expected = "{"
-                + "'emailAddress': 'mail@adress.com',"
-                + "'username':'a fine new user'"
-                + "}";
+    public void createUser() throws JSONException {
+        UserDTO aNewUser = new UserDTO("Luke", "aPassword", "luke@skywalker.com");
+        final String actual = target(USERS).request().post(json(aNewUser), String.class);
+        System.out.println("actual: " + actual);
+        String expected = asJson(
+                "username", aNewUser.getUsername(),
+                "emailAddress", aNewUser.getEmailAddress()
+        );
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.LENIENT);
     }
 
     @Test
     public void listOfUsers() throws JSONException {
-        final String actual = target("users").queryParam("usernamePattern", "Tintin").request().get(String.class);
-        String expected = "["
-                + "  {"
-                + "    'emailAddress': 'tintin@dma.org', "
-                + "    'username':'Tintin'"
-                + "  }"
-                + "]";
-        System.out.println("actual: "+actual);
+        // Given an existing user
+        User aUser = this.aUser();
+        DomainRegistry.userRepository().add(aUser);
+        // When I query for a list of users matching the existing username
+        final String actual = target(USERS).queryParam("usernamePattern", aUser.username()).request().get(String.class);
+        // I should get a list with one member matching the existing user
+        String expected = array(asJson("emailAddress", aUser.emailAddress(), "username", aUser.username()));
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.LENIENT);
     }
 
     @Test
     public void singleUser() throws JSONException {
-        final String actual = target("users").path("Tintin").request().get(String.class);
-        String expected = "{"
-                + "'emailAddress': 'tintin@dma.org', "
-                + "'username':'Tintin'"
-                + "}";
-        System.out.println("Actual: " + actual);
+        // Given an existing user
+        User aUser = this.aUser();
+        DomainRegistry.userRepository().add(aUser);
+        // When I navigate to the users subpath 
+        final String actual = target(USERS).path(aUser.username()).request().get(String.class);
+        // then I should get the user information
+        String expected = asJson("emailAddress", aUser.emailAddress(), "username", aUser.username());
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.LENIENT);
     }
 }

@@ -16,45 +16,35 @@ package net.maritimecloud.portal.application;
 
 import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
 import net.maritimecloud.portal.resource.LogService;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 /**
  * @author Christoffer Børrild
  */
-public class ApplicationServiceRegistry implements ApplicationContextAware {
+public class ApplicationServiceRegistry extends SpringContextBasedRegistry {
 
-    private static ApplicationContext applicationContext;
 
     public static IdentityApplicationService identityApplicationService() {
-        return (IdentityApplicationService) getResource("identityApplicationService");
+        return (IdentityApplicationService) get("identityApplicationService");
     }
 
     public static AuthenticationUtil authenticationUtil() {
-        return (AuthenticationUtil) getResource("authenticationUtil");
+        return (AuthenticationUtil) get("authenticationUtil");
     }
 
     public static LogService logService() {
-        return (LogService) getResource("logService");
+        return (LogService) get("logService");
     }
 
-    private static Object getResource(String resourceName) throws BeansException {
-        return getApplicationContext().getBean(resourceName);
-    }
+//    private static ApplicationContext applicationContext;
+//    protected static Object get(String resourceName) throws BeansException {
+//        return getApplicationContext().getBean(resourceName);
+//    }
+//    private static ApplicationContext getApplicationContext() {
+//        if (ApplicationServiceRegistry.applicationContext == null) {
+//            throw new IllegalStateException("No applicationContext has been injected!?!");
+//        }
+//        return applicationContext;
+//    }
 
-    private static ApplicationContext getApplicationContext() {
-        if (ApplicationServiceRegistry.applicationContext == null) {
-            throw new IllegalStateException("No applicationContext has been injected!?!");
-        }
-        return applicationContext;
-    }
-
-    @Override
-    public synchronized void setApplicationContext(ApplicationContext anApplicationContext) throws BeansException {
-        if (ApplicationServiceRegistry.applicationContext == null) {
-            ApplicationServiceRegistry.applicationContext = anApplicationContext;
-        }
-    }
 
 }
