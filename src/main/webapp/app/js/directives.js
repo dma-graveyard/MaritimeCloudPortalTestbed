@@ -142,30 +142,30 @@ angular.module('iamDirectives.ui.bootstrap', ['ui.bootstrap.transition'])
       }])
 
 
-    .directive('maxify', ['$transition', function($transition) {
-
-        return {
-          link: function(scope, element, attrs) {
-
-            var initialAnimSkip = true;
-
-            //var model = $parse(attrs.minify);
-            scope.$watch(attrs.minify, function(shouldCollapse) {
-              console.log('shouldMaxify XXX ' + shouldCollapse, shouldCollapse)
-              scope.$broadcast('MINIFYEVENT-' + attrs.minify, shouldCollapse);
-//          if (shouldCollapse) {
-//          } else {
-//            expand();
+//    .directive('maxify', ['$transition', function($transition) {
+//
+//        return {
+//          link: function(scope, element, attrs) {
+//
+//            var initialAnimSkip = true;
+//
+//            //var model = $parse(attrs.minify);
+//            scope.$watch(attrs.minify, function(shouldCollapse) {
+//              console.log('shouldMaxify XXX ' + shouldCollapse, shouldCollapse)
+//              scope.$broadcast('MINIFYEVENT-' + attrs.minify, shouldCollapse);
+////          if (shouldCollapse) {
+////          } else {
+////            expand();
+////          }
+//            });
+//
+//            scope.$on('MINIFYEVENT-' + attrs.minify, function(event, shouldCollapse) {
+//              console.log('shouldMaxify ' + shouldCollapse, shouldCollapse)
+//              console.log('Max: MINIFYEVENT-' + attrs.minify, shouldCollapse);
+//              scope[attrs.minify] = shouldCollapse;
+//            });
 //          }
-            });
-
-            scope.$on('MINIFYEVENT-' + attrs.minify, function(event, shouldCollapse) {
-              console.log('shouldMaxify ' + shouldCollapse, shouldCollapse)
-              console.log('Max: MINIFYEVENT-' + attrs.minify, shouldCollapse);
-              scope[attrs.minify] = shouldCollapse;
-            });
-          }
-        };
-      }])
-
-    ;
+//        };
+//      }])
+//
+//    ;

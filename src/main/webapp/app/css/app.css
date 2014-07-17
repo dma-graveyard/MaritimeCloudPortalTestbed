@@ -147,3 +147,8 @@
     border-bottom: 0;
 }
 
+.menu-item-lead {
+    color: #666;    
+    background-color: rgb(223, 223, 223);
+    padding: 8px;
+}

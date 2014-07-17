@@ -26,7 +26,7 @@ var iamAuthModule = angular.module('iamAuthModule', ['ui.bootstrap', 'http-auth-
 
 // A container for global application logic
 iamAuthModule.controller('ApplicationController', function($rootScope, $scope, $modal, $location, $localStorage, USER_ROLES, AUTH_EVENTS, AuthService, authService2, Session) {
-  $rootScope.isMinified = false;
+  $scope.sidebar = { isMinified: false };
   $scope.userRoles = USER_ROLES;
   $scope.isAuthorized = AuthService.isAuthorized;
   $scope.navigationTarget = null;
@@ -43,9 +43,9 @@ iamAuthModule.controller('ApplicationController', function($rootScope, $scope, $
   Session.importFrom($scope.$storage.userSession);
   $scope.currentUser = Session.user;
 
-  $scope.$watch('isMinified', function() {
-    console.log("isMinified changed! ", $rootScope.isMinified);
-  }, true);
+//  $scope.$watch('sidebar.isMinified', function() {
+//    console.log("isMinified changed! ", $scope.sidebar.isMinified);
+//  }, true);
 
 
   $scope.$watch('$storage.userSession.userId', function() {

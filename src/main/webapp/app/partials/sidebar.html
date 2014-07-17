@@ -1,5 +1,5 @@
 <!-- #section:basics/sidebar -->
-<div id="sidebar" class="sidebar Xsidebar-expand responsive " data-minify="isMinified" ng-controller="SidebarController" >
+<div id="sidebar" class="sidebar Xsidebar-expand responsive " data-minify="sidebar.isMinified" ng-controller="SidebarController" >
 <!--    <script type="text/javascript">
         try {
             ace.settings.check('sidebar', 'fixed')
@@ -65,31 +65,13 @@
             </ul>
         </li>
         
-        <!-- ORGANIZATIONS -->
-        <li class="hover">
-            <a href="#/orgs" class="dropdown-toggle">
-                <i class="menu-icon fa fa-desktop"></i>
-                <span class="menu-text"> Organizations </span>
-
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu" ng-controller="OrganizationListController">
-                <li ng-repeat="organization in organizations" class="hover">
-                    <a href="#/orgs/{{organization.name}}">
-                        <i class="menu-icon fa fa-caret-right"></i> {{organization.title}}
-                    </a>
-                    <b class="arrow"></b>
-                </li>
-            </ul>
-        </li>
     </ul><!-- /.nav-list -->
     
     
 
     <!-- #section:basics/sidebar.layout.minimize -->
-    <div class="sidebar-toggle" id="sidebar-collapse" ng-click="isMinified = !isMinified">
-        <i ng-class="isMinified ? 'ace-icon fa fa-angle-double-right' : 'ace-icon fa fa-angle-double-left'" ></i>
+    <div class="sidebar-toggle" id="sidebar-collapse" ng-click="sidebar.isMinified = !sidebar.isMinified">
+        <i ng-class="sidebar.isMinified ? 'ace-icon fa fa-angle-double-right' : 'ace-icon fa fa-angle-double-left'" ></i>
     </div>
 
     <!-- /section:basics/sidebar.layout.minimize -->

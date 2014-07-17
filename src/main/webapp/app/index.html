@@ -52,20 +52,18 @@
         <link rel="stylesheet" href="css/app.css">
     </head>
     <body class="skin-1" ng-controller="ApplicationController">
-
         <div x-ng-include="'partials/menu.html'"></div>
         <div class="main-container container" id="main-container">
             <!-- /section:basics/sidebar -->
             <div x-ng-include="'partials/sidebar.html'" ></div>
-            <div ng-class="isMinified ? 'main-content max-content' : 'main-content'" data-maxify="isMinified" >
+            <div ng-class="sidebar.isMinified ? 'main-content max-content' : 'main-content'">
                 <div class="page-content">
                     <div class="row">
+                        <!-- PAGE CONTENT BEGINS -->
                         <div class="mcp-content" x-ng-view>
-                            <!-- PAGE CONTENT BEGINS -->
-                            <!-- PAGE CONTENT ENDS -->
                         </div><!-- /.col -->
+                        <!-- PAGE CONTENT ENDS -->
                     </div><!-- /.row -->
-                    <!--<input type="checkbox" ng-model="isMinified"/> isMinified  <br>-->
                 </div><!-- /.page-content -->
             </div><!-- /.main-content -->
             <div x-ng-include="'partials/footer.html'"></div>

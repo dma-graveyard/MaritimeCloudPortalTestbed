@@ -25,13 +25,37 @@
             <!--  navigation bar right --> 
             <ul class="nav navbar-nav navbar-right">
 
+                <!-- ORGANIZATIONS -->
+                <li class="dropdown" ng-controller="OrganizationListController">
+                    <a class="dropdown-toggle" href="#/orgs">
+                        <i class="menu-icon fa fa-users"></i>
+                        <span class="menu-text"> Organizations </span>
+                        <i class="ace-icon fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu" >
+                        <li class="menu-item-lead">Change dashboard context: </li>
+                        <li ng-repeat="organization in organizations">
+                            <a href="#/orgs/{{organization.name}}">
+                                <i class="menu-icon fa fa-users"></i> {{organization.title}}
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#/orgs">
+                                <i class="menu-icon fa fa-gears"></i> Manage organizations
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    </ul>
+                </li>
+
                 <!-- About -->
                 <li class="dropdown">
                     <a class="dropdown-toggle" href="#">About
                         <i class="ace-icon fa fa-caret-down"></i>
                     </a>
-                    <ul style="width: 70px;" class="dropdown-menu" role="menu"
-                        aria-labelledby="dropdownMenu">
+                    <ul style="width: 70px;" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
                         <li><a tabindex="-1" href="content.html#cookies">Cookies</a></li>
                         <li><a tabindex="-1" href="content.html#disclaimer">Disclaimer</a></li>
                     </ul>
