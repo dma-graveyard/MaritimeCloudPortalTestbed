@@ -111,14 +111,15 @@ iamAuthModule.controller('ApplicationController', function($rootScope, $scope, $
     console.log("event:auth-loginRequired!");
     $scope.openLoginDialog();
   });
+  
   $scope.$on(AUTH_EVENTS.notAuthenticated, function(event, targetRoute) {
-    console.log("AUTH_EVENTS.notAuthenticated --- targetRoute", event, targetRoute);
+    console.log("AUTH_EVENTS.notAuthenticated targetRoute: ", targetRoute," event:", event);
     $scope.navigationTarget = targetRoute;
-    $scope.openLoginDialog();
-    console.log("$scope.navigationTarget: ", $scope.navigationTarget);
+    $scope.openLoginDialog('sm');
   });
 
   $scope.openLoginDialog = function(size) {
+    console.log("$scope.openLoginDialog CALLED XXXXXXXXXXX ", size);
 
     var modalInstance = $modal.open({
       templateUrl: 'partials/loginDialog.html',

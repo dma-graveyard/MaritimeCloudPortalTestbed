@@ -80,7 +80,7 @@ iamApp.config(['$routeProvider', 'USER_ROLES',
   }])
 
     // PAGE TRANSITION: 
-    // Register an "Restricting Route Access" listener
+    // Register a "Restricting Route Access" listener
     .run(function($rootScope, $location, AUTH_EVENTS, AuthService, $route) {
       $rootScope.$on('$locationChangeStart', function(event, next, current) {
 

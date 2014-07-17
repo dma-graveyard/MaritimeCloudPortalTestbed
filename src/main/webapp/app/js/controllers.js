@@ -4,6 +4,12 @@
 
 var iamControllers = angular.module('iamControllers', ['ui.bootstrap']);
 
+iamControllers.controller('SidebarController', ['$scope',
+  function($scope) {
+    $scope.isMinified = false;
+    // TODO: not really using this controller just yet. 
+  }]);
+
 iamControllers.controller('UserListController', ['$scope', 'UserService',
   function($scope, UserService) {
     // (UserService is defined in services.js)
