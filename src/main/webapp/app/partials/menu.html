@@ -17,17 +17,17 @@
         <div class="collapse navbar-collapse" data-collapse="isCollapsed">
 
             <!--  navigation bar left (admin) --> 
-            <ul ng-if="isAuthorized(userRoles.user)" class="nav navbar-nav navbar-left" >
+            <!--ul ng-if="isAuthorized(userRoles.user)" class="nav navbar-nav navbar-left" >
                 <li><a href="#/users"> <i class="fa fa-user" style="vertical-align: middle; margin-bottom: 4px"></i> Users </a></li>
                 <li><a href="#/log"> <i class="fa fa-fire" style="vertical-align: middle; margin-bottom: 4px"></i> Log </a></li>
-            </ul>
+            </ul-->
 
             <!--  navigation bar right --> 
             <ul class="nav navbar-nav navbar-right">
 
                 <!-- About -->
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">About
+                    <a class="dropdown-toggle" href="#">About
                         <i class="ace-icon fa fa-caret-down"></i>
                     </a>
                     <ul style="width: 70px;" class="dropdown-menu" role="menu"
@@ -39,7 +39,7 @@
 
                 <!-- User -->
                 <li ng-if="currentUser" class="dropdown open">
-                    <a class='dropdown-toggle' data-toggle='dropdown' href='#'>
+                    <a class='dropdown-toggle' href='#'>
                         <i class='fa fa-user' style='vertical-align: middle; margin-bottom: 4px'></i> {{currentUser.name}} 
                         <i class="ace-icon fa fa-caret-down"></i>
                     </a>

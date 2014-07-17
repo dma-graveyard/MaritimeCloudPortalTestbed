@@ -84,12 +84,12 @@ iamApp.config(['$routeProvider', 'USER_ROLES',
     .run(function($rootScope, $location, AUTH_EVENTS, AuthService, $route) {
       $rootScope.$on('$locationChangeStart', function(event, next, current) {
 
-        // Get the 'next' route object in order to find its authorized roles
+        // Get the 'next' route object (in order to find its authorized roles)
         var nextPath = $location.path(),
             nextRoute = $route.routes[nextPath],
             authorizedRoles = null;
 
-        //  Get the authorized roles if nany
+        //  Get the authorized roles if any
         // ( AuthorizedRoles holds the roles that the user 
         //   must have in order to access the targeted page )
         if (nextRoute && nextRoute.data) {
