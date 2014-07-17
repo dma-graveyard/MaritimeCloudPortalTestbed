@@ -119,8 +119,6 @@ iamAuthModule.controller('ApplicationController', function($rootScope, $scope, $
   });
 
   $scope.openLoginDialog = function(size) {
-    console.log("$scope.openLoginDialog CALLED XXXXXXXXXXX ", size);
-
     var modalInstance = $modal.open({
       templateUrl: 'partials/loginDialog.html',
       //controller: ModalInstanceController,

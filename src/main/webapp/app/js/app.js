@@ -29,7 +29,7 @@ iamApp.config(['$routeProvider', 'USER_ROLES',
             authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
           }
         }).
-        when('/profile', {
+        when('/profile/:username', {
           templateUrl: 'partials/user-detail.html',
           controller: 'UserDetailController',
           data: {
@@ -50,7 +50,7 @@ iamApp.config(['$routeProvider', 'USER_ROLES',
         }).
         when('/landingpage', {
           templateUrl: 'partials/landingpage.html',
-//          controller: 'LoginDialogController',
+          // controller: 'LoginDialogController',
           data: {}
         }).
         when('/orgs', {
@@ -90,12 +90,12 @@ iamApp.config(['$routeProvider', 'USER_ROLES',
             authorizedRoles = null;
 
         //  Get the authorized roles if any
-        // ( AuthorizedRoles holds the roles that the user 
-        //   must have in order to access the targeted page )
         if (nextRoute && nextRoute.data) {
+          // ( AuthorizedRoles holds the roles that the user 
+          //   must have in order to access the targeted page )
           authorizedRoles = nextRoute.data.authorizedRoles || null;
         }
-        console.log("Restricting Route Access...", event, "next:", next, "current:", current, "$route", $route, "nextRoute", nextRoute);
+
         // check if user is authenticated and is (in a) authorized (role)
         if (authorizedRoles && !AuthService.isAuthorized(authorizedRoles)) {
           event.preventDefault();
