@@ -38,19 +38,16 @@
 
     <!--<form class="form-signin" name="login_form" x-ng-disabled="ie78ver">-->
     <!--<form ng-controller="LoginController" name="loginForm" ng-submit="login(credentials); ok()" novalidate-->
-    <form name="loginForm" ng-submit="$close(credentials)" novalidate
-          action="../rest/authentication/sink.html" target="sink" method="post">        
-        <div id="credentials" x-ng-hide="forgot" class="embryo-form-controls">
+    <form name="loginForm" ng-submit="$close(credentials)" novalidate action="../rest/authentication/sink.html" target="sink" method="post">        
+        <div id="credentials">
             <div class="form-group">
                 <label for="usernamefield">User Name</label> 
-                <input class="form-control input-sm" type="text" placeholder="Enter your username here" mcp-focus-me="true"
-                       id="usernamefield" name="usernamefield" 
+                <input class="form-control input-sm" type="text" placeholder="Enter your username here" mcp-focus-me id="usernamefield" name="usernamefield" 
                        x-ng-model="credentials.username" autocapitalize="off" autocorrect="off" autocomplete="off" required />
             </div>
             <div class="form-group">
                 <label for="passwordfield">Password</label> 
-                <input class="form-control input-sm" type="password"  placeholder="Password" 
-                       id="passwordfield" name="passwordfield" 
+                <input class="form-control input-sm" type="password" placeholder="Password" id="passwordfield" name="passwordfield" 
                        x-ng-model="credentials.password" required />
             </div>
 

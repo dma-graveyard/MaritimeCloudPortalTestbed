@@ -2,52 +2,19 @@
 
 /* Directives */
 
-angular.module('iamDirectives', []).directive('mcpFocusMe', function($timeout, $parse) {
+/**
+ * mcp-focus-me: Simpleminded directive that transfer focus to the selected element after 100 ms.
+ */
+angular.module('iamDirectives', []).directive('mcpFocusMe', function($timeout) {
   // see http://stackoverflow.com/questions/14833326/how-to-set-focus-in-angularjs
   return {
-    //scope: true,   // optionally create a child scope
-    link: function(scope, element, attrs) {
-      var model = $parse(attrs.mcpFocusMe);
-      scope.$watch(model, function(value) {
-        if (value === true) {
+    link: function(scope, element) {
           $timeout(function() {
             element[0].focus();
-          });
-        }
-      });
-      // to address @blesh's comment, set attribute value to 'false'
-      // on blur event:
-      element.bind('blur', function() {
-        scope.$apply(model.assign(scope, false));
-      });
+          }, 100);
     }
   };
 });
-
-//.directive('mcp-focus', function($timeout, $rootScope) {
-//  return {
-//    restrict: 'A',
-//    scope: {
-//      focusValue: "=syncFocusWith"
-//    },
-//    link: function($scope, $element, attrs) {
-//      $scope.$watch("focusValue", function(currentValue, previousValue) {
-//        if (currentValue === true && !previousValue) {
-//          $element[0].focus();
-//        } else if (currentValue === false && previousValue) {
-//          $element[0].blur();
-//        }
-//      })
-//    }
-//  }
-//});
-//    .directive('mcp-focus', function() {
-//        console.log("XXXXXXXXXXXXXXXXXXXX test", element)
-//      return function(scope, element, attrs) {
-//        console.log("XXXXXXXXXXXXXXXXXXXX test", element)
-//        element[0].focus();
-//      };
-//    });
 
 angular.module('iamDirectives.ui.bootstrap', ['ui.bootstrap.transition'])
 
