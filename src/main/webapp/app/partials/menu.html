@@ -21,19 +21,18 @@
                 <li><a href="#/users"> <i class="fa fa-user" style="vertical-align: middle; margin-bottom: 4px"></i> Users </a></li>
                 <li><a href="#/log"> <i class="fa fa-fire" style="vertical-align: middle; margin-bottom: 4px"></i> Log </a></li>
             </ul-->
-
-            <!--  navigation bar right --> 
-            <ul class="nav navbar-nav navbar-right">
-
+            
+            <ul class="nav navbar-nav navbar-left" ng-if="isAuthorized(userRoles.user)" >
+                
                 <!-- ORGANIZATIONS -->
                 <li class="dropdown" ng-controller="OrganizationListController">
                     <a class="dropdown-toggle" href="#/orgs">
                         <i class="menu-icon fa fa-users"></i>
-                        <span class="menu-text"> Organizations </span>
+                        <span class="menu-text"> Organizations {{context.currentOrganization.title}}</span>
                         <i class="ace-icon fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu" >
-                        <li class="menu-item-lead">Change dashboard context: </li>
+                        <li class="menu-item-lead"> Switch dashboard context: </li>
                         <li ng-repeat="organization in organizations">
                             <a href="#/orgs/{{organization.name}}">
                                 <i class="menu-icon fa fa-users"></i> {{organization.title}}
@@ -49,6 +48,11 @@
                         </li>
                     </ul>
                 </li>
+
+            </ul>
+
+            <!--  navigation bar right --> 
+            <ul class="nav navbar-nav navbar-right">
 
                 <!-- About -->
                 <li class="dropdown">
