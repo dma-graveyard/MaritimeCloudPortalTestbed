@@ -8,8 +8,8 @@ var iamApp = angular.module('iamApp', [
   'iamServices',
   'iamFilters',
   'iamAuthModule',
-  'iamDirectives',
-  'iamDirectives.ui.bootstrap'
+  'mcpDirectives',
+  'mcpDirectives.ui.bootstrap'
 ]);
 
 iamApp.config(['$routeProvider', 'USER_ROLES',

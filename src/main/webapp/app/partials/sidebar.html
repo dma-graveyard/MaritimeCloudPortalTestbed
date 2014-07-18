@@ -1,11 +1,4 @@
-<!-- #section:basics/sidebar -->
-<div id="sidebar" class="sidebar Xsidebar-expand responsive " data-minify="sidebar.isMinified" ng-controller="SidebarController" >
-<!--    <script type="text/javascript">
-        try {
-            ace.settings.check('sidebar', 'fixed')
-        } catch (e) {
-        }
-    </script>-->
+<div id="sidebar" ng-class="sidebar.isMinified ? 'sidebar responsive menu-min' : 'sidebar responsive'" ng-controller="SidebarController" >
 
     <div class="sidebar-shortcuts" id="sidebar-shortcuts">
         <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">

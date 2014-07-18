@@ -6,7 +6,6 @@ var iamControllers = angular.module('iamControllers', ['ui.bootstrap']);
 
 iamControllers.controller('SidebarController', ['$scope',
   function($scope) {
-    $scope.isMinified = false;
     // TODO: not really using this controller just yet. 
   }]);
 
