@@ -2,26 +2,26 @@
 
 /* Services */
 
-var mcpServices = angular.module('mcpServices', ['ngResource']);
+var mcpServices = angular.module('mcpServices', ['ngResource'])
 
-mcpServices.constant("servicePort", /*"8080"*/ null);
-mcpServices.factory('serviceBaseUrl', ['$location', 'servicePort',
+.constant("servicePort", /*"8080"*/ null)
+.factory('serviceBaseUrl', ['$location', 'servicePort',
   function($location, servicePort) {
     var protocol = $location.protocol();
     var host = $location.host();
     var port = servicePort ? servicePort : $location.port();
     return protocol + "://" + host + ":" + port;
-  }]);
+  }])
 
-mcpServices.factory('UserService', ['$resource', 'serviceBaseUrl',
+.factory('UserService', ['$resource', 'serviceBaseUrl',
   function($resource, serviceBaseUrl) {
     return $resource(serviceBaseUrl + '/rest/users/:username', {}, {
       query: {method: 'GET', params: {username: ''}, isArray: true},
       signUp: {method: 'POST', params: {}, isArray: false}
     });
-  }]);
+  }])
 
-mcpServices.factory('OrganizationService', ['$resource',
+.factory('OrganizationService', ['$resource',
   function($resource) {
 //    return $resource('/rest/organizations/:organizationname', {}, {
 //      query: {method: 'GET', params: {organizationname: ''}, isArray: true},
