@@ -58,7 +58,7 @@
             <a class="text-primary" href="" x-ng-click="forgotPassword()">Forgot password?</a>
             <div style="margin-top: 24px">
                 <button type="submit" class="btn btn-sm btn-primary" x-ng-disabled="!(loginForm.usernamefield.$valid && loginForm.passwordfield.$valid)">Log In</button>
-                <button class="btn btn-sm" x-ng-click="$dismiss('aborted')">Cancel</button>
+                <button type="button" class="btn btn-sm" x-ng-click="$dismiss('aborted')">Cancel</button>
             </div>
         </div>
         <!--        <div id="forgotpass" x-ng-show="forgot">
