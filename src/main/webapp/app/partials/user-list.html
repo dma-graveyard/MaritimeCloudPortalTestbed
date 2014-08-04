@@ -1,28 +1,18 @@
-<div class="container-fluid">
-    <div class="jumbotron">
-        <h1>Users</h1>
+<div class="boxed-group">
+    <div class="boxed-group-action" > 
+        Search: <input ng-model="filter_query"> <!--Sort by: <select ng-model="orderProp">
+            <option value="username">Alphabetical</option>
+            <option value="emailAddress">Email</option>
+        </select> -->
     </div>
-        <div >
-            <!--Sidebar content-->
-            Search user: <input ng-model="filter_query"> 
-            Sort by:     <select ng-model="orderProp">
-                <option value="username">Alphabetical</option>
-                <option value="emailAddress">Email</option>
-            </select>
-        </div>
-        <div>
-            <!--Body content-->
-            <table class="table-condensed">
-                <tr>
-                    <th>User</th>
-                    <th>Email</th>
-                    <th>Details</th>
-                </tr>
-                <tr ng-repeat="user in users| filter:filter_query | orderBy:orderProp" >
-                    <td>{{user.username}}</td>
-                    <td>{{user.emailAddress}}</td>
-                    <td><a class="btn btn-xs  btn-info" href="#/users/{{user.username}}/">details</a></td>
-                </tr>
-            </table>
-        </div>
+    <h3>Users</h3>
+    <div class="boxed-group-inner">
+        <ul class="boxed-group-list standalone">
+            <li ng-repeat="user in users| filter:filter_query | orderBy:orderProp">
+                <img alt="{{user.username}}" class=" js-avatar" data-user="2655913" height="20" src="https://avatars3.githubusercontent.com/u/2655913?s=140" width="20">
+                <a href="#/users/{{user.username}}">{{user.username}}  <!--({{user.emailAddress}}) --></a>
+                <a href="#/users/{{user.username}}/" class="minibutton btn btn-xs btn-info btn-round"><i class="ace-icon fa fa-user"></i> details </a>
+            </li>
+        </ul>
+    </div>
 </div>
