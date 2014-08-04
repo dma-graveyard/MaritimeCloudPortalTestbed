@@ -2,16 +2,16 @@
 
 /* App Module */
 
-var iamApp = angular.module('iamApp', [
+var mcpApp = angular.module('mcpApp', [
   'ngRoute',
-  'iamControllers',
-  'iamServices',
-  'iamFilters',
-  'iamAuthModule',
+  'mcpControllers',
+  'mcpServices',
+  'mcpFilters',
+  'mcpAuthModule',
   'mcpDirectives'
 ]);
 
-iamApp.config(['$routeProvider', 'USER_ROLES',
+mcpApp.config(['$routeProvider', 'USER_ROLES',
   function($routeProvider, USER_ROLES) {
     $routeProvider.
         when('/dashboard', {

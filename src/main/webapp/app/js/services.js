@@ -2,9 +2,9 @@
 
 /* Services */
 
-var iamServices = angular.module('iamServices', ['ngResource']);
+var mcpServices = angular.module('mcpServices', ['ngResource']);
 
-iamServices.factory('UserService', ['$resource',
+mcpServices.factory('UserService', ['$resource',
   function($resource) {
     return $resource('/rest/users/:username', {}, {
       query: {method: 'GET', params: {username: ''}, isArray: true},
@@ -12,7 +12,7 @@ iamServices.factory('UserService', ['$resource',
     });
   }]);
 
-iamServices.factory('OrganizationService', ['$resource',
+mcpServices.factory('OrganizationService', ['$resource',
   function($resource) {
 //    return $resource('/rest/organizations/:organizationname', {}, {
 //      query: {method: 'GET', params: {organizationname: ''}, isArray: true},

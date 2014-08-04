@@ -19,13 +19,13 @@
 //  
 //  (https://medium.com/opinionated-angularjs/techniques-for-authentication-in-angularjs-applications-7bbf0346acec)
 
-var iamAuthModule = angular.module('iamAuthModule', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage']);
+var mcpAuthModule = angular.module('mcpAuthModule', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage']);
 
 
 /* Controllers */
 
 // A container for global application logic
-iamAuthModule.controller('ApplicationController', function($rootScope, $scope, $modal, $location, $localStorage, USER_ROLES, AUTH_EVENTS, AuthService, authService2, Session) {
+mcpAuthModule.controller('ApplicationController', function($rootScope, $scope, $modal, $location, $localStorage, USER_ROLES, AUTH_EVENTS, AuthService, authService2, Session) {
   $scope.sidebar = { isMinified: false };
   $scope.userRoles = USER_ROLES;
   $scope.isAuthorized = AuthService.isAuthorized;
@@ -156,7 +156,7 @@ iamAuthModule.controller('ApplicationController', function($rootScope, $scope, $
 
 });
 
-//iamAuthModule.controller('LoginController', function($scope, $rootScope, AUTH_EVENTS, AuthService) {
+//mcpAuthModule.controller('LoginController', function($scope, $rootScope, AUTH_EVENTS, AuthService) {
 //  $scope.credentials = {
 //    username: '',
 //    password: ''
@@ -174,7 +174,7 @@ iamAuthModule.controller('ApplicationController', function($rootScope, $scope, $
 /* Constants */
 
 // Authentication events broadcasted on rootScope
-iamAuthModule.constant('AUTH_EVENTS', {
+mcpAuthModule.constant('AUTH_EVENTS', {
   loginSuccess: 'auth-login-success',
   loginFailed: 'auth-login-failed',
   logoutSuccess: 'auth-logout-success',
@@ -183,7 +183,7 @@ iamAuthModule.constant('AUTH_EVENTS', {
   notAuthorized: 'auth-not-authorized'
 });
 
-iamAuthModule.constant('USER_ROLES', {
+mcpAuthModule.constant('USER_ROLES', {
   all: '*',
   admin: 'ADMIN',
   user: 'USER',
@@ -195,7 +195,7 @@ iamAuthModule.constant('USER_ROLES', {
 /* Services */
 
 // Service logic related to the remote authentication and authorization (access control)
-iamAuthModule.service('AuthService', function($http, Session) {
+mcpAuthModule.service('AuthService', function($http, Session) {
   self = this;
   this.login = function(credentials) {
     console.log("Logging in with " + credentials.username);
@@ -231,7 +231,7 @@ iamAuthModule.service('AuthService', function($http, Session) {
 });
 
 // the user’s session information
-iamAuthModule.service('Session', function() {
+mcpAuthModule.service('Session', function() {
   this.create = function(sessionId, userId, userRole) {
     this.id = sessionId;
     this.userId = userId;

@@ -2,21 +2,21 @@
 
 /* Controllers */
 
-var iamControllers = angular.module('iamControllers', ['ui.bootstrap']);
+var mcpControllers = angular.module('mcpControllers', ['ui.bootstrap']);
 
-iamControllers.controller('SidebarController', ['$scope',
+mcpControllers.controller('SidebarController', ['$scope',
   function($scope) {
     // TODO: not really using this controller just yet. 
   }]);
 
-iamControllers.controller('UserListController', ['$scope', 'UserService',
+mcpControllers.controller('UserListController', ['$scope', 'UserService',
   function($scope, UserService) {
     // (UserService is defined in services.js)
     $scope.users = UserService.query();
     $scope.orderProp = 'age';
   }]);
 
-iamControllers.controller('UserDetailController', ['$scope', '$routeParams', 'UserService',
+mcpControllers.controller('UserDetailController', ['$scope', '$routeParams', 'UserService',
   function($scope, $routeParams, UserService) {
     $scope.user = UserService.get({username: $routeParams.username}, function(user) {
       // $scope.mainImageUrl = user.images[0];
@@ -29,7 +29,7 @@ iamControllers.controller('UserDetailController', ['$scope', '$routeParams', 'Us
     //    };
   }]);
 
-iamControllers.controller('UserSignupController', ['$scope', 'UserService',
+mcpControllers.controller('UserSignupController', ['$scope', 'UserService',
   function($scope, UserService) {
     $scope.user = {};
     $scope.message = null;
@@ -72,19 +72,19 @@ iamControllers.controller('UserSignupController', ['$scope', 'UserService',
   }]);
 
 
-iamControllers.controller('OrganizationListController', ['$scope', 'OrganizationService',
+mcpControllers.controller('OrganizationListController', ['$scope', 'OrganizationService',
   function($scope, OrganizationService) {
     $scope.organizations = OrganizationService.query();
     $scope.orderProp = 'age';
   }]);
 
-iamControllers.controller('OrganizationDetailsController', ['$scope', '$routeParams', 'OrganizationService',
+mcpControllers.controller('OrganizationDetailsController', ['$scope', '$routeParams', 'OrganizationService',
   function($scope, $routeParams, OrganizationService) {
     $scope.organization = OrganizationService.get({organizationname: $routeParams.organizationname}, function(organization) {
     });
   }]);
 
-iamControllers.controller('OrganizationCreateController', ['$scope', '$location', 'OrganizationService',
+mcpControllers.controller('OrganizationCreateController', ['$scope', '$location', 'OrganizationService',
   function($scope, $location, OrganizationService) {
     $scope.organization = {name: null, title: null};
     $scope.message = null;
