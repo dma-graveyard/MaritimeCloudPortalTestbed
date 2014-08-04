@@ -75,7 +75,8 @@ angular.module('mcpAuthModule', ['ui.bootstrap', 'http-auth-interceptor', 'ngSto
     console.log("EVENT: User logged in! ", Session.user, "Session: ", Session);
     $scope.currentUser = Session.user;
     Session.exportTo($scope.$storage.userSession);
-    //authService2.loginConfirmed();
+    // Process pending requests
+    httpAuthInterceptorService.loginConfirmed();
     // Navigate to defered page
     if ($scope.navigationTarget) {
       console.log("forwarding to defered path: ", $scope.navigationTarget);
@@ -180,20 +181,6 @@ angular.module('mcpAuthModule', ['ui.bootstrap', 'http-auth-interceptor', 'ngSto
 
 })
 
-//mcpAuthModule.controller('LoginController', function($scope, $rootScope, AUTH_EVENTS, AuthService) {
-//  $scope.credentials = {
-//    username: '',
-//    password: ''
-//  };
-//  $scope.login = function(credentials) {
-//    AuthService.login(credentials).then(function() {
-//      $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
-//    }, function() {
-//      $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
-//    });
-//  };
-//});
-
 
 /* Services */
 
@@ -261,7 +248,3 @@ angular.module('mcpAuthModule', ['ui.bootstrap', 'http-auth-interceptor', 'ngSto
   };
   return this;
 });
-
-
-
-
