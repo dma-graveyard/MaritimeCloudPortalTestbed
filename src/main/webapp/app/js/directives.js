@@ -2,11 +2,11 @@
 
 /* Directives */
 
-var mcpDirectives = angular.module('mcpDirectives', []);
+angular.module('mcpDirectives', [])
 /**
  * mcp-focus-me: Simpleminded directive that transfer focus to the selected element after 100 ms.
  */
-mcpDirectives.directive('mcpFocusMe', function($timeout) {
+.directive('mcpFocusMe', function($timeout) {
   // see http://stackoverflow.com/questions/14833326/how-to-set-focus-in-angularjs
   return {
     link: function(scope, element) {
@@ -16,9 +16,6 @@ mcpDirectives.directive('mcpFocusMe', function($timeout) {
     }
   };
 });
-
-var mcpDirectivesUiBootstrap = angular.module('mcpDirectives.ui.bootstrap', ['ui.bootstrap.transition']);
-
 
 //angular.module('mcpDirectives.ui.bootstrap', ['ui.bootstrap.transition'])
 //

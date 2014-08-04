@@ -19,13 +19,35 @@
 //  
 //  (https://medium.com/opinionated-angularjs/techniques-for-authentication-in-angularjs-applications-7bbf0346acec)
 
-var mcpAuthModule = angular.module('mcpAuthModule', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage']);
+angular.module('mcpAuthModule', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'])
+
+
+/* Constants */
+
+// Authentication events broadcasted on rootScope
+.constant('AUTH_EVENTS', {
+  loginSuccess: 'auth-login-success',
+  loginFailed: 'auth-login-failed',
+  loginCancelled: 'auth-login-cancelled',
+  logoutSuccess: 'auth-logout-success',
+  sessionTimeout: 'auth-session-timeout',
+  notAuthenticated: 'auth-not-authenticated',
+  notAuthorized: 'auth-not-authorized'
+})
+
+.constant('USER_ROLES', {
+  all: '*',
+  admin: 'ADMIN',
+  user: 'USER',
+  editor: 'editor',
+  guest: 'guest'
+})
 
 
 /* Controllers */
 
 // A container for global application logic
-mcpAuthModule.controller('ApplicationController', function($rootScope, $scope, $modal, $location, $localStorage, USER_ROLES, AUTH_EVENTS, AuthService, authService2, Session) {
+.controller('ApplicationController', function($rootScope, $scope, $modal, $location, $localStorage, USER_ROLES, AUTH_EVENTS, AuthService, httpAuthInterceptorService, Session) {
   $scope.sidebar = { isMinified: false };
   $scope.userRoles = USER_ROLES;
   $scope.isAuthorized = AuthService.isAuthorized;
@@ -42,11 +64,6 @@ mcpAuthModule.controller('ApplicationController', function($rootScope, $scope, $
   });
   Session.importFrom($scope.$storage.userSession);
   $scope.currentUser = Session.user;
-
-//  $scope.$watch('sidebar.isMinified', function() {
-//    console.log("isMinified changed! ", $scope.sidebar.isMinified);
-//  }, true);
-
 
   $scope.$watch('$storage.userSession.userId', function() {
     console.log("User session changed! ", $scope.$storage.userSession.userId);
@@ -99,6 +116,12 @@ mcpAuthModule.controller('ApplicationController', function($rootScope, $scope, $
     $scope.openLoginDialog();
   });
 
+  // Login listener that resets any pending requests if user cancels login
+  $scope.$on(AUTH_EVENTS.loginCancelled, function() {
+    console.log("User login cancelled!");
+    httpAuthInterceptorService.loginCancelled();
+  });
+
   // Login listener that warns that user is not authorized for the action
   $scope.$on(AUTH_EVENTS.notAuthorized, function() {
     console.log("User not authorized!");
@@ -142,6 +165,7 @@ mcpAuthModule.controller('ApplicationController', function($rootScope, $scope, $
     }, function() {
       // User pressed CANCEL
       console.log('Login cancelled at: ' + new Date());
+      $rootScope.$broadcast(AUTH_EVENTS.loginCancelled);
     });
   };
 
@@ -154,7 +178,7 @@ mcpAuthModule.controller('ApplicationController', function($rootScope, $scope, $
     });
   };
 
-});
+})
 
 //mcpAuthModule.controller('LoginController', function($scope, $rootScope, AUTH_EVENTS, AuthService) {
 //  $scope.credentials = {
@@ -171,31 +195,10 @@ mcpAuthModule.controller('ApplicationController', function($rootScope, $scope, $
 //});
 
 
-/* Constants */
-
-// Authentication events broadcasted on rootScope
-mcpAuthModule.constant('AUTH_EVENTS', {
-  loginSuccess: 'auth-login-success',
-  loginFailed: 'auth-login-failed',
-  logoutSuccess: 'auth-logout-success',
-  sessionTimeout: 'auth-session-timeout',
-  notAuthenticated: 'auth-not-authenticated',
-  notAuthorized: 'auth-not-authorized'
-});
-
-mcpAuthModule.constant('USER_ROLES', {
-  all: '*',
-  admin: 'ADMIN',
-  user: 'USER',
-  editor: 'editor',
-  guest: 'guest'
-});
-
-
 /* Services */
 
 // Service logic related to the remote authentication and authorization (access control)
-mcpAuthModule.service('AuthService', function($http, Session) {
+.service('AuthService', function($http, Session) {
   self = this;
   this.login = function(credentials) {
     console.log("Logging in with " + credentials.username);
@@ -228,10 +231,10 @@ mcpAuthModule.service('AuthService', function($http, Session) {
         });
   };
 
-});
+})
 
 // the user’s session information
-mcpAuthModule.service('Session', function() {
+.service('Session', function() {
   this.create = function(sessionId, userId, userRole) {
     this.id = sessionId;
     this.userId = userId;
