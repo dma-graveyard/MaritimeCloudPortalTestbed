@@ -4,9 +4,18 @@
 
 var mcpServices = angular.module('mcpServices', ['ngResource']);
 
-mcpServices.factory('UserService', ['$resource',
-  function($resource) {
-    return $resource('/rest/users/:username', {}, {
+mcpServices.constant("servicePort", /*"8080"*/ null);
+mcpServices.factory('serviceBaseUrl', ['$location', 'servicePort',
+  function($location, servicePort) {
+    var protocol = $location.protocol();
+    var host = $location.host();
+    var port = servicePort ? servicePort : $location.port();
+    return protocol + "://" + host + ":" + port;
+  }]);
+
+mcpServices.factory('UserService', ['$resource', 'serviceBaseUrl',
+  function($resource, serviceBaseUrl) {
+    return $resource(serviceBaseUrl + '/rest/users/:username', {}, {
       query: {method: 'GET', params: {username: ''}, isArray: true},
       signUp: {method: 'POST', params: {}, isArray: false}
     });

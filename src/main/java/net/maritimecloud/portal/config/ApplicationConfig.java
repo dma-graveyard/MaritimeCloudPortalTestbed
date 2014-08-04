@@ -2,13 +2,13 @@ package net.maritimecloud.portal.config;
 
 import javax.servlet.DispatcherType;
 import net.maritimecloud.portal.*;
-import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import net.maritimecloud.portal.application.IdentityApplicationService;
 import net.maritimecloud.portal.domain.infrastructure.shiro.ShiroAuthenticationUtil;
 import net.maritimecloud.portal.domain.model.identity.UserRepository;
 import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
 import net.maritimecloud.portal.infrastructure.persistence.JpaUserRepository;
 import net.maritimecloud.portal.resource.LogService;
+import net.maritimecloud.portal.resource.SimpleCORSFilter;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -48,7 +48,7 @@ public class ApplicationConfig {
         registration.addInitParameter(ServletProperties.JAXRS_APPLICATION_CLASS, JerseyConfig.class.getName());
         return registration;
     }
-    
+
     @Bean
     public FilterRegistrationBean shiroFilterRegistrationBean() {
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();
@@ -67,13 +67,13 @@ public class ApplicationConfig {
         registrationBean.setOrder(0);
         return registrationBean;
     }
-    
+
     @Bean
-    public LogService logService(){
+    public LogService logService() {
         // TODO: introduce interface and implementations
         return new LogService();
     }
-    
+
     /**
      * @return AuthenticationUtil that bridges the current request to a user in Shiro
      */
@@ -81,4 +81,17 @@ public class ApplicationConfig {
     public AuthenticationUtil authenticationUtil() {
         return new ShiroAuthenticationUtil();
     }
+
+    /**
+     * Make RESTful web service include CORS access control headers in its responses.
+     * <p>
+     * This will allow our client to be hosted elsewhere, e.g. from another port.
+     * <p>
+     * (See http://spring.io/guides/gs/rest-service-cors/)
+     */
+    @Bean
+    public SimpleCORSFilter simpleCORSFilter() {
+        return new SimpleCORSFilter();
+    }
+
 }
