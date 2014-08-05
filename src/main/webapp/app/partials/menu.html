@@ -22,7 +22,7 @@
                 <li><a href="#/log"> <i class="fa fa-fire" style="vertical-align: middle; margin-bottom: 4px"></i> Log </a></li>
             </ul-->
             
-            <ul class="nav navbar-nav navbar-left" ng-if="isAuthorized(userRoles.user)" >
+            <ul class="nav navbar-nav navbar-left" ng-if="isAuthorized([userRoles.user, userRoles.admin])" >
                 
                 <!-- ORGANIZATIONS -->
                 <li class="dropdown" ng-controller="OrganizationListController">
