@@ -51,6 +51,7 @@ angular.module('mcpAuthModule', ['ui.bootstrap', 'http-auth-interceptor', 'ngSto
   $scope.sidebar = { isMinified: false };
   $scope.userRoles = USER_ROLES;
   $scope.isAuthorized = AuthService.isAuthorized;
+  $scope.isLoggedIn = AuthService.isAuthenticated;
   $scope.navigationTarget = null;
   $scope.message = null;
   $scope.alertMessages = [];

@@ -53,15 +53,18 @@
     </head>
     <body class="skin-1" ng-controller="ApplicationController">
         <div x-ng-include="'partials/menu.html'"></div>
-        <div class="main-container container" id="main-container">
+        <div ng-if="!isLoggedIn()" class="main-container container" id="main-container">
+            <div x-ng-include="'partials/landingpage.html'"></div>
+        </div>
+        <div ng-if="isLoggedIn()" class="main-container container" id="main-container">
             <!-- /section:basics/sidebar -->
-            <div x-ng-include="'partials/sidebar.html'" ></div>
+            
+            <div x-ng-include="'partials/sidebar.html'"></div>
             <div ng-class="sidebar.isMinified ? 'main-content max-content' : 'main-content'">
                 <div class="page-content">
                     <div class="row">
                         <!-- PAGE CONTENT BEGINS -->
-                        <div class="mcp-content" x-ng-view>
-                        </div><!-- /.col -->
+                        <div class="mcp-content" x-ng-view></div><!-- /.col -->
                         <!-- PAGE CONTENT ENDS -->
                     </div><!-- /.row -->
                 </div><!-- /.page-content -->
