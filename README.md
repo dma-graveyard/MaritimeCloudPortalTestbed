@@ -65,6 +65,8 @@ A local deployment will setup MaritimeCloudPortalTestbed at the following URL:
 
     http://localhost:8080/app/index.html
 
+### Login
+
 Currently only a limited set of test users exists. To gain admin rights log in with admin/test. To see an ordinary user log in with 
 Tintin/test.
 
