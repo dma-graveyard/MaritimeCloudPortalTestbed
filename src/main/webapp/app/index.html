@@ -11,9 +11,11 @@
 
         <!-- Angular scripts -->
         <script src="js/ext/cdn.googleapis/angularjs/1.2.14/angular.js"></script>
-        <script src="js/ext/cdn.googleapis/angularjs/1.2.14/angular-route.js"></script>
+        <!--<script src="js/ext/cdn.googleapis/angularjs/1.2.14/angular-route.js"></script>-->
         <script src="js/ext/cdn.googleapis/angularjs/1.2.14/angular-resource.js"></script>
         <script src="js/ext/angular-ui.github.io/bootstrap/0.11.0/ui-bootstrap-tpls.js"></script>
+        <script src="js/ext/angular-ui.github.io/ui-router/0.2.10.0/angular-ui-router.min.js"></script>        
+        <script src="js/ext/angular-ui.github.io/ui-router/stateHelper/1.1.0/statehelper.min.js"></script>        
         <script src="js/ext/rawgithub.com/gsklee/ngStorage/master/ngStorage.js"></script><!--Session Storage: http://ngmodules.org/modules/ngStorage-->
 
         <!-- Maritime Cloud Scripts -->
@@ -25,6 +27,7 @@
         <script src="js/auth.js"></script>
         <script src="lib/http-auth-interceptor.js"></script>
 
+        <!-- ACE stuff -->
         <link rel="stylesheet" href="./assets/css/font-awesome.min.css" />
         <!-- page specific plugin styles -->
         <!-- text fonts -->
@@ -38,10 +41,9 @@
         <!--[if lte IE 9]>
           <link rel="stylesheet" href="./assets/css/ace-ie.min.css" />
         <![endif]-->
-        
         <!-- inline styles related to this page -->
         <!-- ace settings handler -->
-        <script src="./assets/js/ace-extra.min.js"></script>
+        <!--<script src="./assets/js/ace-extra.min.js"></script>-->
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lte IE 8]>
         <script src="./assets/js/html5shiv.js"></script>
@@ -53,57 +55,7 @@
     </head>
     <body class="skin-1" ng-controller="ApplicationController">
         <div x-ng-include="'partials/menu.html'"></div>
-        <div ng-if="!isLoggedIn()" class="main-container container" id="main-container">
-            <div x-ng-include="'partials/landingpage.html'"></div>
-        </div>
-        <div ng-if="isLoggedIn()" class="main-container container" id="main-container">
-            <!-- /section:basics/sidebar -->
-            
-            <div x-ng-include="'partials/sidebar.html'"></div>
-            <div ng-class="sidebar.isMinified ? 'main-content max-content' : 'main-content'">
-                <div class="page-content">
-                    <div class="row">
-                        <!-- PAGE CONTENT BEGINS -->
-                        <div class="mcp-content" x-ng-view></div><!-- /.col -->
-                        <!-- PAGE CONTENT ENDS -->
-                    </div><!-- /.row -->
-                </div><!-- /.page-content -->
-            </div><!-- /.main-content -->
-            <div x-ng-include="'partials/footer.html'"></div>
+        <div ui-view>
         </div><!-- /.main-container -->
     </body>
-
-    <!-- basic scripts -->
-
-    <!--[if !IE]> -->
-    <script type="text/javascript">
-        window.jQuery || document.write("<script src='./assets/js/jquery.min.js'>" + "<" + "/script>");
-    </script>
-    <!-- <![endif]-->
-
-    <!--[if IE]>
-<script type="text/javascript">
-window.jQuery || document.write("<script src='./assets/js/jquery1x.min.js'>"+"<"+"/script>");
-</script>
-<![endif]-->
-    <script type="text/javascript">
-        if ('ontouchstart' in document.documentElement)
-            document.write("<script src='./assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
-    </script>
-    <script src="./assets/js/bootstrap.min.js"></script>
-
-    <!-- page specific plugin scripts -->
-
-    <!-- ace scripts -->
-<!--Disabled all ace scripts ... not sure we need them!?!-->
-<!--<script src="./assets/js/ace-elements.min.js"></script>-->
-<!--<script src="./assets/js/ace.min.js"></script>-->
-
-    <!-- inline scripts related to this page -->
-<!--<link rel="stylesheet" href="./assets/css/ace.onpage-help.css" />-->
-    <!--<link rel="stylesheet" href="../bootstrap-template/docs/assets/js/themes/sunburst.css" />-->
-
-<!--<script type="text/javascript"> ace.vars['base'] = 'assets/..';</script>-->
-<!--<script src="./assets/js/ace/ace.onpage-help.js"></script>-->
-
 </html>

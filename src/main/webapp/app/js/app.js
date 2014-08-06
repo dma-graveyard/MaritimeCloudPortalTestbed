@@ -4,6 +4,7 @@
 
 var mcpApp = angular.module('mcpApp', [
   'ui.router',
+  'ui.router.stateHelper',
   'mcpControllers',
   'mcpServices',
   'mcpFilters',
@@ -11,82 +12,82 @@ var mcpApp = angular.module('mcpApp', [
   'mcpDirectives'
 ]);
 
-mcpApp.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES',
-  function($stateProvider, $urlRouterProvider, USER_ROLES) {
+mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'USER_ROLES',
+  function($stateProvider, stateHelperProvider, $urlRouterProvider, USER_ROLES) {
     //$urlRouterProvider.when("", "/landingpage");
     //$urlRouterProvider.when("/", "/landingpage");
-
-    $stateProvider.
-        state('landingpage', {
+    
+    var publicArea = {
+      name: 'public',
+      templateUrl: 'partials/public.html',
+      children: [
+        {
+          name: 'landingpage',
           url: "/",
           templateUrl: 'partials/landingpage.html',
-          data: {
-            //authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
-          }
-        }).
-        state('dashboard', {
-          url: "/dashboard",
-          templateUrl: 'partials/dashboard.html',
-          //controller: 'UserListController',
-          data: {
-            authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
-          }
-        }).
-        state('users', {
-          url: "/users",
-          templateUrl: 'partials/user-list.html',
-          controller: 'UserListController',
-          data: {
-            authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
-          }
-        }).
-        state('userDetails', {
-          url: "/users/{username}",
-          templateUrl: 'partials/user-detail.html',
-          controller: 'UserDetailController',
-          data: {
-            authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
-          }
-        }).
-        state('userProfile', {
-          url: "/users/{username}",
-          templateUrl: 'partials/user-detail.html',
-          controller: 'UserDetailController',
-          data: {
-            authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
-          }
-        }).
-        state('join', {
+        },
+        {
+          name: 'join',
           url: "/join",
           templateUrl: 'partials/user-signup.html',
           controller: 'UserSignupController',
-            authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
-          //data: {}
-        }).
-        state('organizations', {
+        }
+      ]
+    };
+
+    var restrictedArea = {
+      name: 'restricted',
+      templateUrl: 'partials/restricted.html',
+      data: {
+        authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
+      },
+      children: [
+        {
+          name: 'dashboard',
+          url: "/dashboard",
+          templateUrl: 'partials/dashboard.html',
+        },
+        {
+          name: 'users',
+          url: "/users",
+          templateUrl: 'partials/user-list.html',
+          controller: 'UserListController',
+        },
+        {
+          name: 'userDetails',
+          url: "/users/{username}",
+          templateUrl: 'partials/user-detail.html',
+          controller: 'UserDetailController',
+        },
+        {
+          name: 'userProfile',
+          url: "/users/{username}",
+          templateUrl: 'partials/user-detail.html',
+          controller: 'UserDetailController',
+        }, 
+        {
+          name: 'organizations',
           url: "/orgs",
           templateUrl: 'partials/organization-list.html',
           controller: 'OrganizationListController',
-          data: {
-            authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
-          }
-        }).
-        state('organizationCreate', {
+        },
+        {
+          name: 'organizationCreate',
           url: "/orgs/new",
           templateUrl: 'partials/organization-create.html',
           controller: 'OrganizationCreateController',
-          data: {
-            authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
-          }
-        }).
-        state('organizationDetails', {
+        },
+        {
+          name: 'organizationDetails',
           url: "/orgs/{organizationname}",
           templateUrl: 'partials/organization-detail.html',
           controller: 'OrganizationDetailsController',
-          data: {
-            authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
-          }
-        });
+        }
+      ]
+    };
+
+    stateHelperProvider.setNestedState(publicArea);
+    stateHelperProvider.setNestedState(restrictedArea);
   }])
 
     // PAGE TRANSITION: 
