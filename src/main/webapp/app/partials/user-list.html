@@ -11,7 +11,7 @@
             <li ng-repeat="user in users| filter:filter_query | orderBy:orderProp">
                 <img alt="{{user.username}}" class=" js-avatar" data-user="2655913" height="20" src="https://avatars3.githubusercontent.com/u/2655913?s=140" width="20">
                 <a href="#/users/{{user.username}}">{{user.username}}  <!--({{user.emailAddress}}) --></a>
-                <a href="#/users/{{user.username}}/" class="minibutton btn btn-xs btn-info btn-round"><i class="ace-icon fa fa-user"></i> details </a>
+                <a href="#/users/{{user.username}}" class="minibutton btn btn-xs btn-info btn-round"><i class="ace-icon fa fa-user"></i> details </a>
             </li>
         </ul>
     </div>

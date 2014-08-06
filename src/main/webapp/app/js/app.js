@@ -3,7 +3,7 @@
 /* App Module */
 
 var mcpApp = angular.module('mcpApp', [
-  'ngRoute',
+  'ui.router',
   'mcpControllers',
   'mcpServices',
   'mcpFilters',
@@ -11,99 +11,101 @@ var mcpApp = angular.module('mcpApp', [
   'mcpDirectives'
 ]);
 
-mcpApp.config(['$routeProvider', 'USER_ROLES',
-  function($routeProvider, USER_ROLES) {
-    $routeProvider.
-        when('/dashboard', {
+mcpApp.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES',
+  function($stateProvider, $urlRouterProvider, USER_ROLES) {
+    //$urlRouterProvider.when("", "/landingpage");
+    //$urlRouterProvider.when("/", "/landingpage");
+
+    $stateProvider.
+        state('landingpage', {
+          url: "/",
+          templateUrl: 'partials/landingpage.html',
+          data: {
+            //authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
+          }
+        }).
+        state('dashboard', {
+          url: "/dashboard",
           templateUrl: 'partials/dashboard.html',
           //controller: 'UserListController',
           data: {
             authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
           }
         }).
-        when('/users', {
+        state('users', {
+          url: "/users",
           templateUrl: 'partials/user-list.html',
           controller: 'UserListController',
           data: {
             authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
           }
         }).
-        when('/profile/:username', {
+        state('userDetails', {
+          url: "/users/{username}",
           templateUrl: 'partials/user-detail.html',
           controller: 'UserDetailController',
           data: {
             authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
           }
         }).
-        when('/users/:username', {
+        state('userProfile', {
+          url: "/users/{username}",
           templateUrl: 'partials/user-detail.html',
           controller: 'UserDetailController',
           data: {
             authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
           }
         }).
-        when('/join', {
+        state('join', {
+          url: "/join",
           templateUrl: 'partials/user-signup.html',
           controller: 'UserSignupController',
-          data: {}
+            authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
+          //data: {}
         }).
-        when('/landingpage', {
-          templateUrl: 'partials/landingpage.html',
-          // controller: 'LoginDialogController',
-          data: {}
-        }).
-        when('/orgs', {
+        state('organizations', {
+          url: "/orgs",
           templateUrl: 'partials/organization-list.html',
           controller: 'OrganizationListController',
           data: {
             authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
           }
         }).
-        when('/orgs/new', {
+        state('organizationCreate', {
+          url: "/orgs/new",
           templateUrl: 'partials/organization-create.html',
           controller: 'OrganizationCreateController',
           data: {
             authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
           }
         }).
-        when('/orgs/:organizationname', {
+        state('organizationDetails', {
+          url: "/orgs/{organizationname}",
           templateUrl: 'partials/organization-detail.html',
           controller: 'OrganizationDetailsController',
           data: {
             authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
           }
-        }).
-        otherwise({
-          redirectTo: '/landingpage'
         });
   }])
 
     // PAGE TRANSITION: 
     // Register a "Restricting Route Access" listener
-    .run(function($rootScope, $location, AUTH_EVENTS, AuthService, $route) {
-      $rootScope.$on('$locationChangeStart', function(event, next, current) {
+    .run(function($rootScope, AUTH_EVENTS, AuthService) {
+      $rootScope.$on('$stateChangeStart', function(event, next) {
 
-        // Get the 'next' route object (in order to find its authorized roles)
-        var nextPath = $location.path(),
-            nextRoute = $route.routes[nextPath],
-            authorizedRoles = null;
-
-        //  Get the authorized roles if any
-        if (nextRoute && nextRoute.data) {
-          // ( AuthorizedRoles holds the roles that the user 
-          //   must have in order to access the targeted page )
-          authorizedRoles = nextRoute.data.authorizedRoles || null;
-        }
+        var isRestrictedRoute = next.data && next.data.authorizedRoles;
 
         // check if user is authenticated and is (in a) authorized (role)
-        if (authorizedRoles && !AuthService.isAuthorized(authorizedRoles)) {
+        if (isRestrictedRoute && !AuthService.isAuthorized(next.data.authorizedRoles)) {
           event.preventDefault();
           if (AuthService.isAuthenticated()) { // user is not allowed
-            console.log("Restricting Route Access: user is not allowed");
+            console.log("Restricted Route Access: user is not allowed");
             $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
           } else {                            // user is not logged in
-            console.log("Restricting Route Access: user is not logged in");
-            $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, nextRoute.originalPath);
+            console.log("Restriced Route Access: user is not logged in", next);
+            //CB todo: nextRoute must be defined again after transition to ui-route
+            $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, next.url);
           }
         }
       });

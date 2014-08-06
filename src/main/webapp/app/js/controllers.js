@@ -16,9 +16,9 @@ angular.module('mcpControllers', ['ui.bootstrap'])
         $scope.orderProp = 'age';
       }])
 
-    .controller('UserDetailController', ['$scope', '$routeParams', 'UserService',
-      function($scope, $routeParams, UserService) {
-        $scope.user = UserService.get({username: $routeParams.username}, function(user) {
+    .controller('UserDetailController', ['$scope', '$stateParams', 'UserService',
+      function($scope, $stateParams, UserService) {
+        $scope.user = UserService.get({username: $stateParams.username}, function(user) {
           // $scope.mainImageUrl = user.images[0];
         });
 
@@ -77,9 +77,9 @@ angular.module('mcpControllers', ['ui.bootstrap'])
         $scope.orderProp = 'age';
       }])
 
-    .controller('OrganizationDetailsController', ['$scope', '$routeParams', 'OrganizationService',
-      function($scope, $routeParams, OrganizationService) {
-        $scope.organization = OrganizationService.get({organizationname: $routeParams.organizationname}, function(organization) {
+    .controller('OrganizationDetailsController', ['$scope', '$stateParams', 'OrganizationService',
+      function($scope, $stateParams, OrganizationService) {
+        $scope.organization = OrganizationService.get({organizationname: $stateParams.organizationname}, function(organization) {
         });
       }])
 
