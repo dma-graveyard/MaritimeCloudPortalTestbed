@@ -1,42 +1,84 @@
-<div class="jumbotron">
-    <h1>Register</h1>
+<div class="col-lg-4"></div>
 
-	<form id="accessForm" name="accessForm" class="form-signin">
-		<div x-ng-show="alertMessages" class="alert alert-danger">
-			<span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
-		</div>
-		<div x-ng-show="message" class="alert alert-info">{{message}}</div>
-
-		<p>Please fill out the form below to get access to Maritime Cloud.</p>
-
-		<div class="embryo-form-controls">
-			<div class="form-group">
-				<label for="rPreferredLogin">Preferred Username:</label> <input
-					type="text" class="form-control" placeholder="Preferred Login"
-                    id="rPreferredLogin" x-ng-model="user.username">
-                <footer class="text-muted">The username must be unique. That is, you cannot choose a username if it that has 
-                    already been used by another user or organization.</footer>
-			</div>
-<!--			<div class="form-group">
-				<label for="rContactPerson">Contact Person:</label> <input
-					type="text" class="form-control" placeholder="Contact Person"
-					id="rContactPerson" x-ng-model="request.contactPerson">
-			</div>-->
-			<div class="form-group">
-				<label for="rEmailAddress">Primary Email Address:</label> <input type="text"
-					class="form-control" placeholder="Email Address" id="rEmailAddress"
-					x-ng-model="user.emailAddress">
-                <footer class="text-muted">We promise not to send you spam mails ...except when aunt Lizzie is selling some of her worn out furnitures.</footer>
-			</div>
-<!--			<div class="form-group">
-				<label for="rMmsiNumber">MMSI-number:</label> <input type="text"
-					class="form-control" placeholder="MMSI-number" id="rMmsiNumber"
-					x-ng-model="request.mmsiNumber">
-			</div>-->
-			<div id="accessFormBtns">
-				<button class="btn btn-primary pull-right"
-					x-ng-click="sendRequest()">Register account</button>
-			</div>
-		</div>
-	</form>
+<div class="col-lg-5 widget-container-col widget-box">
+    <div class="widget-main">
+        <!--TITLE-->
+        <h4 class="header green lighter bigger-200"><i class="ace-icon fa fa-user blue"></i>
+            New User Registration
+        </h4>
+        <!--INSTRUCTIONS-->
+        <p>Please fill out the form below to get access to Maritime Cloud.</p>
+        <!--FEEDBACK-MESSAGES--> <!-- TODO: introduce a directive for alerts -->
+        <div x-ng-show="alertMessages" class="alert alert-danger">
+            <span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+        </div>
+        <div x-ng-show="message" class="alert alert-info">{{message}}</div>
+        <!--FORM-->
+        <form role="form" name="joinForm" novalidate>
+            <!--USERNAME-->
+            <div class="form-group">
+                <label for="preferredLogin">Preferred Username:</label> 
+                <span class="block input-icon input-icon-right">
+                    <input type="text" class="form-control" id="preferredLogin" name="userName" placeholder="Username" 
+                           ng-model="user.username" required ng-minlength="2" ng-maxlength="20" ng-pattern="/^[a-zA-Z]+[a-zA-Z0-9_]*$/" mcp-focus-me>
+                    <i class="ace-icon fa fa-user"></i>
+                </span>
+                <div class="text-danger" ng-show="joinForm.userName.$error && joinForm.userName.$dirty">
+                    {{getError(joinForm.userName.$error, 2, 20, "No weird characters. Letters and numbers only. Must start with a letter.")}}
+                </div>
+                <p class="help-block">The username must be unique. That is, you cannot choose a username that has already been used by another user or organization.</p>
+            </div>
+            <!--EMAIL-->
+            <div class="form-group">
+                <label for="email">Primary Email Address:</label> 
+                <span class="block input-icon input-icon-right">
+                    <input type="email" class="form-control" placeholder="Email Address" id="email" name="email" x-ng-model="user.emailAddress">
+                    <i class="ace-icon fa fa-envelope"></i>
+                </span>
+                <div class="text-danger" ng-show="joinForm.email.$error && joinForm.email.$dirty">
+                    {{getError(joinForm.email.$error, 2, 20, "No weird characters. Letters and numbers only. Must start with a letter.")}}
+                </div>
+                <p class="help-block">The address where the registration key should be sent to. We promise not to send you any spam mails</p>
+                <!--div x-ng-show="user.emailAddress">
+                    <span class="block input-icon input-icon-right" >
+                        <input type="email" class="form-control" placeholder="Retype your Email (optional)" id="repeatedEmail" x-ng-model="repeatedEmailAddress">
+                        <i class="ace-icon fa fa-retweet"></i>
+                    </span>
+                </div--> 
+            </div>
+            <!--PASSWORD-->
+            <div class="form-group">
+                <label for="newPassword">Password:</label> 
+                <span class="block input-icon input-icon-right">
+                    <input type="password" class="form-control" placeholder="Enter your desired password" id="newPassword" name="password"
+                           x-ng-model="user.password" required ng-minlength="4">
+                    <i class="ace-icon fa fa-lock"></i>
+                </span>
+                <div class="text-danger" ng-show="joinForm.password.$error && joinForm.password.$dirty">
+                    {{getError(joinForm.password.$error, 4)}}
+                </div>
+                <p class="help-block">At least 4 characters</p>
+            </div>
+            <!--CONFIRM-PASSWORD-->
+            <div class="form-group" ng-show="user.password">
+                <label for="repeatedPassword">Confirm Password:</label> 
+                <span class="block input-icon input-icon-right">
+                    <input type="password" class="form-control" placeholder="Repeat password" id="repeatedPassword" x-ng-model="repeatedPassword" ng-minlength="4">
+                    <i class="ace-icon fa fa-retweet"></i>
+                </span>
+                <div class="text-danger" ng-show="repeatedPassword && !passwordsMatch()">
+                    Not matching!
+                </div>
+                <div class="text-success" ng-show="passwordsMatch()">
+                    Success!
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="widget-toolbox padding-8 clearfix">
+        <button class="btn btn-primary pull-right" x-ng-click="sendRequest()" x-ng-disabled="!isValid(joinForm.$valid)">
+            <span class="bigger-110">Register account</span>
+            <i class="ace-icon fa fa-arrow-right icon-on-right"></i>
+        </button>
+    </div>
 </div>

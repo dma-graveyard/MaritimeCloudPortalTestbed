@@ -14,7 +14,7 @@ var mcpApp = angular.module('mcpApp', [
 
 mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'USER_ROLES',
   function($stateProvider, stateHelperProvider, $urlRouterProvider, USER_ROLES) {
-    //$urlRouterProvider.when("", "/landingpage");
+    $urlRouterProvider.when("", "/");
     //$urlRouterProvider.when("/", "/landingpage");
     
     var publicArea = {
