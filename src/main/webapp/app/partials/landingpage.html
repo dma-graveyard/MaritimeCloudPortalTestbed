@@ -1,5 +1,4 @@
 <div>
-
     <carousel id="myCarousel" interval="8000"> 
         <slide> 
             <!-- SOURCE: http://www.rgbstock.com/photo/mHRgAs0/cloud+formations -->
@@ -24,12 +23,8 @@
             </div>
         </slide> 
     </carousel>
-
     <hr class="soften">
-
-    <!--<h1 class="center">Welcome to Maritime Cloud</h1>-->
-
-    <!-- Main hero unit for a primary marketing message or call to action -->
+    <!-- Primary marketing message -->
     <div class="hero-content center" >
         <h1 style="margin-top: 30px; margin-bottom: 20px;">Welcome to Maritime Cloud Portal</h1>
         <p> Maritime Cloud Portal offers Identity & Access Management of the Maritime Cloud Services </p>
@@ -49,44 +44,11 @@
         </div>
     </div>
     <hr class="soften" />
-    
     <!--Temporar debug info etc...-->
-    <br/>
-    <br/>
-    <br/>
     <div class="container" style="color: grey;">
         <div class="row">
             <div class="col-md-6 " >
-                <div x-ng-show="alertMessages" class="alert alert-danger">
-                    <span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
-                </div>
-                <div x-ng-show="message" class="alert alert-info">{{message}}</div>
-                <div ng-if="currentUser">Welcome, {{ currentUser.name}}
-                    <div ng-switch on="currentUser.role">
-                        <div ng-switch-when="ADMIN">You're admin.</div>
-                        <div ng-switch-when="USER">You're admin.</div>
-                        <div ng-switch-default>You're something else. {{ currentUser.role}}</div>
-                    </div>        
-                    <div ng-if="isAuthorized(userRoles.admin)">You're authorized as admin.</div>
-                </div>
-                <div ng-if="!currentUser">
-                    Not logged in! <br/>
-                </div>
-                <p>
-                    <br/>
-                    <br/>
-                    Other links: <br>
-                    <a href="http://localhost:8090/bootstrap-template/html/index.html" target="#" >Bootstrap Template Demo</a>
-                </p>
-            </div>
-            <div class="col-md-4">
-                <div> 
-                    <p>
-                        Current User: {{currentUser}}<br>
-                        Storage: {{$storage}} 
-                    </p>
-                    <br/>
-                </div> 
+                <a href="http://localhost:8090/bootstrap-template/html/index.html" target="#" >Bootstrap Template Demo</a>
             </div>
         </div>
     </div>
