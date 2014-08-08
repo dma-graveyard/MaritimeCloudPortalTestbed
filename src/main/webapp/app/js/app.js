@@ -19,7 +19,7 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
     
     var publicArea = {
       name: 'public',
-      templateUrl: 'partials/public.html',
+      templateUrl: 'layout/public.html',
       children: [
         {
           name: 'landingpage',
@@ -29,7 +29,7 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
         {
           name: 'join',
           url: "/join",
-          templateUrl: 'partials/user-signup.html',
+          templateUrl: 'users/join-form.html',
           controller: 'UserSignupController',
         }
       ]
@@ -37,7 +37,7 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
 
     var restrictedArea = {
       name: 'restricted',
-      templateUrl: 'partials/restricted.html',
+      templateUrl: 'layout/restricted.html',
       data: {
         authorizedRoles: [USER_ROLES.admin, USER_ROLES.user]
       },
@@ -50,13 +50,13 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
         {
           name: 'users',
           url: "/users",
-          templateUrl: 'partials/user-list.html',
+          templateUrl: 'users/users.html',
           controller: 'UserListController',
         },
         {
           name: 'userDetails',
           url: "/users/{username}",
-          templateUrl: 'partials/user-detail.html',
+          templateUrl: 'users/user-detail.html',
           controller: 'UserDetailController',
         },
         {
@@ -68,19 +68,19 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
         {
           name: 'organizations',
           url: "/orgs",
-          templateUrl: 'partials/organization-list.html',
+          templateUrl: 'organizations/organizations.html',
           controller: 'OrganizationListController',
         },
         {
           name: 'organizationCreate',
           url: "/orgs/new",
-          templateUrl: 'partials/organization-create.html',
+          templateUrl: 'organizations/organization-create.html',
           controller: 'OrganizationCreateController',
         },
         {
           name: 'organizationDetails',
           url: "/orgs/{organizationname}",
-          templateUrl: 'partials/organization-detail.html',
+          templateUrl: 'organizations/organization-detail.html',
           controller: 'OrganizationDetailsController',
         }
       ]
