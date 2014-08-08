@@ -3,14 +3,15 @@ MaritimeCloudPortalTestbed
 
 (Temporar repository until portal code is ready to go public)
 
-A tool that offers Identity & Access Management of the Maritime Cloud Services as well as management of services published in Maritime Cloud.
+A tool that offers Identity & Access Management of the Maritime Cloud Services as 
+well as management of services published in Maritime Cloud.
 
 The live system can be found here: TBD
 
 ## Software Architecture
 
-The MaritimeCloudPortalTestbed client is a rich client HTML/JS-application with a server side JSON webservice API. The server is currently a
-Spring Boot wrapped standalone Jetty server application.
+The MaritimeCloudPortalTestbed client is a rich client HTML/JS-application with a server side JSON 
+webservice API. The server is currently a Spring Boot wrapped standalone Jetty server application.
 
 On the client side we use:
 
@@ -33,6 +34,31 @@ On the server side we use:
 * JUnit (for unit-test)
 * Mockito (for mocking)
 
+
+## Client Architecture Structure
+
+The client application structure tend to organize resources based on features rather than their types in line 
+with the Google recommendations for Angular Applications (as outlined in: 
+https://docs.google.com/document/d/1XXMvReO8-Awi1EZXAXS4PzDzdNvV6pGcuaF4Q9821Es/pub). 
+In addition, it leans more towards the DRY'er guidelines by John Papa, as outlined 
+in "http://www.johnpapa.net/angular-app-structuring-guidelines/". Particularly we try to limit redundant 
+use of "-controller" in JS-filenames when it is obvious that this is the only kind of JS content in a folder. 
+
+Also, we use users.html instead of user-list.html.
+
+Example:
+
+app/
+  users/
+    user-details.html
+    user-details.js
+    user-details_test.js
+    users
+    users.html
+    users.js
+    users_test.js
+  organizations/
+    ...  
 
 ## Prerequisites ##
 
