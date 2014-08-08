@@ -38,13 +38,21 @@ On the server side we use:
 
 * Java JDK 1.8
 * Maven 3.x
+* Node.js (Follow the installation instructions at http://nodejs.org)
+* Bower (Follow the installation instructions at http://bower.io)
+
+    npm install -g bower
+
 * ( Not in use just yet: )
-** Node.js (Follow the installation instructions at http://nodejs.org)
 ** Grunt.js (Follow the installation instructions at http://gruntjs.com)
 
 ## Initial setup
 
-There is currently no need of initial setup.
+In order to download front-end dependencies you need to run
+
+    bower install
+
+This will download external dependencies to the folder "src/main/webapp/app/bower"
 
 ## Building ##
 
@@ -107,5 +115,11 @@ Choose to suppress warnings from the menu by choosing the folder level that enca
 ### Ways to avoid annoying JavaScript Validation Errors in Eclipse:
 
 http://stackoverflow.com/questions/7102299/eclipse-javascript-validation-disabled-but-still-generating-errors
+
+## Testing ##
+
+The frontend uses karma for unit-testing. To launch karma during development, simply run
+
+    karma karma.conf.js
 
 

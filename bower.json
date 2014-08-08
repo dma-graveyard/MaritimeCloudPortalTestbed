@@ -1,8 +1,20 @@
 {
-    "name": "MaritimeCloudPortal",
-    "version": "0.0.1",
-    "dependencies": {
-        "angularjs": "latest",
-        "angular-bootstrap": "latest"
-    }
+  "name": "MaritimeCloudPortal",
+  "version": "0.0.1",
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt",
+    "**/intro.js"
+  ],
+  "dependencies": {
+    "bootstrap": "latest",
+    "angular": "latest",
+    "angular-resource": "latest",
+    "angular-bootstrap": "latest",
+    "angular-ui-router": "latest"
+  },
+  "homepage": "https://github.com/dma-dk/MaritimeCloudPortalTestbed",
+  "authors": [
+    "Christoffer Børrild <christoffer@boerrild.dk>"
+  ]
 }
