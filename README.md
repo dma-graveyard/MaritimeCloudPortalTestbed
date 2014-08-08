@@ -48,6 +48,7 @@ Also, we use users.html instead of user-list.html.
 
 Example:
 
+...
 app/
   users/
     user-details.html
@@ -59,6 +60,7 @@ app/
     users_test.js
   organizations/
     ...  
+...
 
 ## Prerequisites ##
 
