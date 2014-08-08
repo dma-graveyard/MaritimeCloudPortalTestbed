@@ -58,6 +58,11 @@ This will download external dependencies to the folder "src/main/webapp/app/bowe
 
     mvn clean install
 
+## Testing ##
+
+The frontend uses karma for unit-testing. To launch karma during development, simply run
+
+    karma karma.conf.js
 
 ## Launch
 
@@ -115,11 +120,5 @@ Choose to suppress warnings from the menu by choosing the folder level that enca
 ### Ways to avoid annoying JavaScript Validation Errors in Eclipse:
 
 http://stackoverflow.com/questions/7102299/eclipse-javascript-validation-disabled-but-still-generating-errors
-
-## Testing ##
-
-The frontend uses karma for unit-testing. To launch karma during development, simply run
-
-    karma karma.conf.js
 
 
