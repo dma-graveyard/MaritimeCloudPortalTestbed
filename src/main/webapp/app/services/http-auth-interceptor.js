@@ -4,6 +4,9 @@
  * @license HTTP Auth Interceptor Module for AngularJS
  * (c) 2012 Witold Szczerba
  * License: MIT
+ * 
+ * Source: https://github.com/witoldsz/angular-http-auth
+ * MCP Note: Refactored factory service from 'authService' to 'httpAuthInterceptorService'
  */
 (function () {
   'use strict';
@@ -40,7 +43,7 @@
   /**
    * $http interceptor.
    * On 401 response (without 'ignoreAuthModule' option) stores the request
-   * and broadcasts 'event:angular-auth-loginRequired'.
+   * and broadcasts 'event:auth-loginRequired'.
    */
   .config(['$httpProvider', function($httpProvider) {
     $httpProvider.interceptors.push(['$rootScope', '$q', 'httpBuffer', function($rootScope, $q, httpBuffer) {

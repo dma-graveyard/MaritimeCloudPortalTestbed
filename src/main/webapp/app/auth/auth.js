@@ -19,7 +19,7 @@
 //  
 //  (https://medium.com/opinionated-angularjs/techniques-for-authentication-in-angularjs-applications-7bbf0346acec)
 
-angular.module('mcpAuthModule', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'])
+angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'])
 
 
 /* Constants */
@@ -145,7 +145,7 @@ angular.module('mcpAuthModule', ['ui.bootstrap', 'http-auth-interceptor', 'ngSto
 
   $scope.openLoginDialog = function(size) {
     var modalInstance = $modal.open({
-      templateUrl: 'partials/loginDialog.html',
+      templateUrl: 'auth/loginDialog.html',
       //controller: ModalInstanceController,
       size: size,
       backdrop: 'static',

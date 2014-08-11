@@ -2,7 +2,7 @@
 
 /* Services */
 
-var mcpServices = angular.module('mcpServices', ['ngResource'])
+var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 
 .constant("servicePort", /*"8080"*/ null)
 .factory('serviceBaseUrl', ['$location', 'servicePort',

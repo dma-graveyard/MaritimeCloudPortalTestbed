@@ -43,6 +43,14 @@ https://docs.google.com/document/d/1XXMvReO8-Awi1EZXAXS4PzDzdNvV6pGcuaF4Q9821Es/
 In addition, it leans more towards the DRY'er guidelines by John Papa, as outlined 
 in "http://www.johnpapa.net/angular-app-structuring-guidelines/". Particularly we try to limit redundant 
 use of "-controller" in JS-filenames when it is obvious that this is the only kind of JS content in a folder. 
+Actually, we take the LIFT guidelines a bit further. Instead of introducing a js-file for each controller in 
+a module, we gather them in a single js-file. It also may contain filters and very specialized directives.
+The reasoning is that we want to limit the maintenance of dependencies in the index.html file as well 
+as the shared dependencies on module names that will be scattered across many a controller- or filter file.   
+The rule of thumb, so far, is to have a single js-file in each component named after that component have it and 
+define a corresponding angular module like this "mcp.<component name>". If the file gets to big then fall back 
+to the more rigid one-file-per-controller rule but share the module name. (All this may of course change again 
+in the future.) 
 
 Also, we use users.html instead of user-list.html.
 
@@ -52,9 +60,6 @@ Example:
 app/
   users/
     user-details.html
-    user-details.js
-    user-details_test.js
-    users
     users.html
     users.js
     users_test.js

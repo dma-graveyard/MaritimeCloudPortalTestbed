@@ -5,11 +5,13 @@
 var mcpApp = angular.module('mcpApp', [
   'ui.router',
   'ui.router.stateHelper',
-  'mcpControllers',
-  'mcpServices',
-  'mcpFilters',
-  'mcpAuthModule',
-  'mcpDirectives'
+  'mcp.dataservices',
+  'mcp.filters',
+  'mcp.directives',
+  'mcp.auth',
+  'mcp.layout',
+  'mcp.organizations',
+  'mcp.users'
 ]);
 
 mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'USER_ROLES',

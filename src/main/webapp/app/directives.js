@@ -2,7 +2,7 @@
 
 /* Directives */
 
-angular.module('mcpDirectives', [])
+angular.module('mcp.directives', [])
 /**
  * mcp-focus-me: Simpleminded directive that transfer focus to the selected element after 100 ms.
  */
