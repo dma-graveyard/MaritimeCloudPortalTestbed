@@ -13,19 +13,20 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'src/main/webapp/app/bower/angular/angular.js',
-      'src/main/webapp/app/bower/angular-resource/angular-resource.js',
-      'src/main/webapp/app/bower/angular-bootstrap/ui-bootstrap-tpls.js',
-      'src/main/webapp/app/bower/angular-ui-router/release/angular-ui-router.js',
-      'src/main/webapp/app/js/ext/angular-ui.github.io/ui-router/stateHelper/1.1.0/statehelper.min.js',
-      'src/main/webapp/app/js/ext/rawgithub.com/gsklee/ngStorage/master/ngStorage.js',
-      'src/main/webapp/app/js/*.js',
-      'src/main/webapp/app/lib/*.js',
+      'src/main/webapp/ext/bower/angular/angular.js',
+      'src/main/webapp/ext/bower/angular-resource/angular-resource.js',
+      'src/main/webapp/ext/bower/angular-mocks/angular-mocks.js',
+      'src/main/webapp/ext/bower/angular-bootstrap/ui-bootstrap-tpls.js',
+      'src/main/webapp/ext/bower/angular-ui-router/release/angular-ui-router.js',
+      'src/main/webapp/ext/js/angular-ui.github.io/ui-router/stateHelper/1.1.0/statehelper.min.js',
+      'src/main/webapp/ext/js/rawgithub.com/gsklee/ngStorage/master/ngStorage.js',
+      'src/main/webapp/app/**/*.js',
       'src/test/js/*.js'
     ],
 
     // list of files to exclude
     exclude: [
+      'src/main/webapp/app/assets/**/*.js',
     ],
 
     // preprocess matching files before serving them to the browser

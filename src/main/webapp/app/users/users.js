@@ -4,7 +4,6 @@ angular.module('mcp.users', ['ui.bootstrap'])
 
     .controller('UserListController', ['$scope', 'UserService',
       function($scope, UserService) {
-        // (UserService is defined in services.js)
         $scope.users = UserService.query();
         $scope.orderProp = 'age';
       }])
