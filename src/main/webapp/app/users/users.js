@@ -26,35 +26,59 @@ angular.module('mcp.users', ['ui.bootstrap'])
         $scope.user = {};
         $scope.message = null;
         $scope.alertMessages = null;
+        $scope.usernameAlreadyExist = true;
 
         $scope.isValid = function(isFormValid) {
-          return isFormValid && $scope.passwordsMatch();
-        }
-        
+          return isFormValid
+              && $scope.passwordsMatch()
+              && !$scope.usernameAlreadyExist;
+        };
+
         $scope.passwordsMatch = function() {
           return $scope.user.password === $scope.repeatedPassword;
-        }
-        
+        };
+
         $scope.getError = function(error, minLength, maxLength, patternMsg) {
           if (angular.isDefined(error)) {
             if (error.required) {
               return "Please enter a value";
             } else if (error.minlength) {
-              return "Please enter at least "+minLength+" characters";
+              return "Please enter at least " + minLength + " characters";
             } else if (error.maxlength) {
-              return "No more than "+maxLength+" characters";
+              return "No more than " + maxLength + " characters";
             } else if (error.email) {
               return "Please enter a valid email address";
             } else if (error.pattern) {
               return patternMsg;
             }
           }
-        }
+
+        };
+
+        $scope.resolveUniqueUsername = function() {
+          if (!angular.isDefined($scope.user.username)) {
+            $scope.usernameAlreadyExist = true;
+            return;
+          }
+          return UserService.isUnique({usernameExist: $scope.user.username}, function(data) {
+            console.log(data, $scope.usernameAlreadyExist);
+            $scope.usernameAlreadyExist = data.usernameExist;
+          });
+        };
+
+        $scope.$watch("user.username",
+            function(newValue, oldValue, scope) {
+              if (newValue !== oldValue) {
+                console.log(newValue, oldValue);
+                scope.resolveUniqueUsername();
+              }
+            }
+        );
 
         $scope.sendRequest = function() {
           $scope.message = null;
           $scope.alertMessages = null;
-          
+
           if (!$scope.user.emailAddress) {
             $scope.alertMessages = ["A proper email address is required."];
           } else {
@@ -75,6 +99,6 @@ angular.module('mcp.users', ['ui.bootstrap'])
 //            $scope.alertMessages.push("Request for access has failed. Please try again.");
 //          });
           }
-        }
-        ;
-      }])
+        };
+
+      }]);

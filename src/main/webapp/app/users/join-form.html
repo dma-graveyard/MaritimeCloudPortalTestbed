@@ -20,11 +20,15 @@
                 <label for="preferredLogin">Preferred Username:</label> 
                 <span class="block input-icon input-icon-right">
                     <input type="text" class="form-control" id="preferredLogin" name="userName" placeholder="Username" 
-                           ng-model="user.username" required ng-minlength="2" ng-maxlength="20" ng-pattern="/^[a-zA-Z]+[a-zA-Z0-9_]*$/" mcp-focus-me>
+                           ng-model="user.username" required ng-minlength="2" ng-maxlength="20" ng-pattern="/^[a-zA-Z]+[a-zA-Z0-9_]*$/" 
+                           ng-class="joinForm.userName.$valid && joinForm.userName.$dirty && usernameAlreadyExist ? 'mcp-invalid-input' : '' " mcp-focus-me>
                     <i class="ace-icon fa fa-user"></i>
                 </span>
                 <div class="text-danger" ng-show="joinForm.userName.$error && joinForm.userName.$dirty">
                     {{getError(joinForm.userName.$error, 2, 20, "No weird characters. Letters and numbers only. Must start with a letter.")}}
+                </div>
+                <div class="text-danger" ng-show="joinForm.userName.$valid && joinForm.userName.$dirty && usernameAlreadyExist">
+                    Sorry, but this username is already taken : (
                 </div>
                 <p class="help-block">The username must be unique. That is, you cannot choose a username that has already been used by another user or organization.</p>
             </div>
@@ -64,7 +68,7 @@
                 <label for="repeatedPassword">Confirm Password:</label> 
                 <span class="block input-icon input-icon-right">
                     <input type="password" class="form-control" placeholder="Repeat password" name="rpw" id="repeatedPassword" 
-                           ng-model="repeatedPassword" ng-minlength="4" ng-class="joinForm.rpw.$dirty && !passwordsMatch() ? 'mcp-password-not-matching' : '' ">
+                           ng-model="repeatedPassword" ng-minlength="4" ng-class="joinForm.rpw.$dirty && !passwordsMatch() ? 'mcp-invalid-input' : '' ">
                     <i class="ace-icon fa fa-retweet"></i>
                 </span>
                 <div class="text-danger" ng-show="repeatedPassword && !passwordsMatch()">

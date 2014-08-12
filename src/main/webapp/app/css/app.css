@@ -154,7 +154,7 @@
     padding: 8px;
 }
 
-form .ng-invalid.ng-dirty, .mcp-password-not-matching { 
+form .ng-invalid.ng-dirty, .mcp-invalid-input { 
     background-color: #ffeaea !important; 
 }
 form .ng-valid.ng-dirty { 
