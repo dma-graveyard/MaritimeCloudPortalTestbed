@@ -18,7 +18,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
     return $resource(serviceBaseUrl + '/rest/users/:username', {}, {
       query: {method: 'GET', params: {username: ''}, isArray: true},
       signUp: {method: 'POST', params: {}, isArray: false},
-      isUnique: {method: 'GET', isArray: false}
+      isUnique: {method: 'GET', url: '/rest/users/:username/exist', isArray: false}
     });
   }])
 

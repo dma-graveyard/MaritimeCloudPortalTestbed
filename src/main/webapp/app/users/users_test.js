@@ -93,7 +93,7 @@ describe('UserSignupController', function() {
   it('should flag new username as not already existing', function() {
     
     // GIVEN a userlist not containing a user with the username 'A'
-    httpBackend.expectGET(/rest\/users\?usernameExist=A/).respond({usernameExist: false});
+    httpBackend.expectGET(/rest\/users\/A\/exist/).respond({usernameExist: false});
     // WHEN username is set to 'A':
     scope.user.username = 'A';
     // (and the listener will call resolveUniqueUsername)
@@ -108,7 +108,7 @@ describe('UserSignupController', function() {
   it('should flag known username as already existing', function() {
 
     // GIVEN a userlist containing a user with the username 'Ann'
-    httpBackend.expectGET(/rest\/users\?usernameExist=Ann/).respond({usernameExist: true});
+    httpBackend.expectGET(/rest\/users\/Ann\/exist/).respond({usernameExist: true});
     // WHEN username is set to 'Ann'
     scope.user.username = 'Ann';
     scope.$digest();

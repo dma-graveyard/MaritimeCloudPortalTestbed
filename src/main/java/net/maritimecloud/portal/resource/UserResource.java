@@ -83,8 +83,21 @@ public class UserResource {
     }
 
     @GET
+    @Path("{username}/exist")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<UserDTO> getUsers(@QueryParam("usernamePattern") @DefaultValue("") String usernamePattern) {
+    public UserDTO getUsernameExist(@PathParam("username") String username) {
+        return usernameExist(username) ? UserDTO.USERNAME_EXIST : UserDTO.USERNAME_IS_UNKNOWN;
+    }
+
+    private boolean usernameExist(String username) {
+        return identityApplicationService().user(username) != null;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<UserDTO> getUsers(
+            @QueryParam("usernamePattern") @DefaultValue("") String usernamePattern
+    ) {
         try {
             List<UserDTO> users = new ArrayList<>();
             List<User> matchingUsers = identityApplicationService().usersWithUsernameMatching(usernamePattern);
@@ -115,8 +128,16 @@ public class UserResource {
         private String username;
         private String password;
         private String emailAddress;
+        private Boolean usernameExist;
+
+        public static final UserDTO USERNAME_EXIST = new UserDTO(true);
+        public static final UserDTO USERNAME_IS_UNKNOWN = new UserDTO(false);
 
         public UserDTO() {
+        }
+
+        public UserDTO(boolean usernameExist) {
+            this.usernameExist = usernameExist;
         }
 
         public UserDTO(String username, String password, String emailAddress) {
@@ -149,11 +170,18 @@ public class UserResource {
             this.emailAddress = emailAddress;
         }
 
+        public Boolean getUsernameExist() {
+            return usernameExist;
+        }
+
+        public void setUsernameExist(Boolean usernameExist) {
+            this.usernameExist = usernameExist;
+        }
+
         @Override
         public String toString() {
             return "UserDTO{" + "username=" + username + ", password=" + password + ", emailAddress=" + emailAddress + '}';
         }
-               
-        
+
     }
 }

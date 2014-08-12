@@ -60,7 +60,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
             $scope.usernameAlreadyExist = true;
             return;
           }
-          return UserService.isUnique({usernameExist: $scope.user.username}, function(data) {
+          return UserService.isUnique({username: $scope.user.username}, function(data) {
             console.log(data, $scope.usernameAlreadyExist);
             $scope.usernameAlreadyExist = data.usernameExist;
           });
