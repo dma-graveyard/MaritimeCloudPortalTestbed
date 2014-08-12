@@ -60,17 +60,15 @@
                 <p class="help-block">At least 4 characters</p>
             </div>
             <!--CONFIRM-PASSWORD-->
-            <div class="form-group" ng-show="user.password">
+            <div class="form-group" ng-show="joinForm.password.$valid">
                 <label for="repeatedPassword">Confirm Password:</label> 
                 <span class="block input-icon input-icon-right">
-                    <input type="password" class="form-control" placeholder="Repeat password" id="repeatedPassword" x-ng-model="repeatedPassword" ng-minlength="4">
+                    <input type="password" class="form-control" placeholder="Repeat password" name="rpw" id="repeatedPassword" 
+                           ng-model="repeatedPassword" ng-minlength="4" ng-class="joinForm.rpw.$dirty && !passwordsMatch() ? 'mcp-password-not-matching' : '' ">
                     <i class="ace-icon fa fa-retweet"></i>
                 </span>
                 <div class="text-danger" ng-show="repeatedPassword && !passwordsMatch()">
                     Not matching!
-                </div>
-                <div class="text-success" ng-show="passwordsMatch()">
-                    Success!
                 </div>
             </div>
         </form>

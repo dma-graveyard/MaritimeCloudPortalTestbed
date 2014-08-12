@@ -153,3 +153,16 @@
     background-color: rgb(223, 223, 223);
     padding: 8px;
 }
+
+form .ng-invalid.ng-dirty, .mcp-password-not-matching { 
+    background-color: #ffeaea !important; 
+}
+form .ng-valid.ng-dirty { 
+    background-color: #eaffeb; 
+}
+span.summary.ng-invalid { 
+    color: red; font-weight: bold; 
+}
+span.summary.ng-valid { 
+    color: green; 
+}
