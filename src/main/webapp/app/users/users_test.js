@@ -57,6 +57,7 @@ describe('UserSignupController', function() {
   // Arrange
   var scope, userSignupController, httpBackend;
 
+  beforeEach(angular.mock.module('ui.router'));  
   beforeEach(angular.mock.module("mcp.users"));
   beforeEach(angular.mock.module("mcp.dataservices"));
 
@@ -68,8 +69,8 @@ describe('UserSignupController', function() {
     httpBackend = $httpBackend;
   }));
 
-  beforeEach(angular.mock.inject(function($controller, UserService) {
-    userSignupController = $controller("UserSignupController", {$scope: scope, UserService: UserService});
+  beforeEach(angular.mock.inject(function($controller, UserService, $state) {
+    userSignupController = $controller("UserSignupController", {$scope: scope, UserService: UserService, $state: $state});
     // listeners are always called during the first $digest 
     // loop after they was registered. We want the listener 
     // for 'user.username' to hav been initially called 
