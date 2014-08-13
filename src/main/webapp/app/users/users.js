@@ -21,8 +21,8 @@ angular.module('mcp.users', ['ui.bootstrap'])
         //    };
       }])
 
-    .controller('UserSignupController', ['$scope', 'UserService',
-      function($scope, UserService) {
+    .controller('UserSignupController', ['$scope', 'UserService', '$state', 
+      function($scope, UserService, $state) {
         $scope.user = {};
         $scope.message = null;
         $scope.alertMessages = null;
@@ -86,6 +86,8 @@ angular.module('mcp.users', ['ui.bootstrap'])
 
             UserService.signUp($scope.user, function(data) {
               $scope.message = ["Request SUCCESS :) " + data];
+              $state.transitionTo("public.joinConfirmation");
+              
             }, function(error) {
               // Error handler code
               $scope.alertMessages = ["Error on the serverside :( ", error];

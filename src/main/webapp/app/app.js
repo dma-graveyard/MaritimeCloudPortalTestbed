@@ -18,7 +18,7 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
   function($stateProvider, stateHelperProvider, $urlRouterProvider, USER_ROLES) {
     $urlRouterProvider.when("", "/");
     //$urlRouterProvider.when("/", "/landingpage");
-    
+
     var publicArea = {
       name: 'public',
       templateUrl: 'layout/public.html',
@@ -26,13 +26,18 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
         {
           name: 'landingpage',
           url: "/",
-          templateUrl: 'partials/landingpage.html',
+          templateUrl: 'partials/landingpage.html'
         },
         {
           name: 'join',
           url: "/join",
           templateUrl: 'users/join-form.html',
-          controller: 'UserSignupController',
+          controller: 'UserSignupController'
+        },
+        {
+          name: 'joinConfirmation',
+          url: "/join-confirm",
+          templateUrl: 'users/join-confirm.html'
         }
       ]
     };
@@ -66,7 +71,7 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
           url: "/users/{username}",
           templateUrl: 'partials/user-detail.html',
           controller: 'UserDetailController',
-        }, 
+        },
         {
           name: 'organizations',
           url: "/orgs",
