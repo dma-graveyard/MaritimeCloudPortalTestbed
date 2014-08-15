@@ -15,6 +15,7 @@
 package net.maritimecloud.portal.application;
 
 import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
+import net.maritimecloud.portal.infrastructure.mail.MailService;
 import net.maritimecloud.portal.resource.LogService;
 
 /**
@@ -34,17 +35,9 @@ public class ApplicationServiceRegistry extends SpringContextBasedRegistry {
     public static LogService logService() {
         return (LogService) get("logService");
     }
-
-//    private static ApplicationContext applicationContext;
-//    protected static Object get(String resourceName) throws BeansException {
-//        return getApplicationContext().getBean(resourceName);
-//    }
-//    private static ApplicationContext getApplicationContext() {
-//        if (ApplicationServiceRegistry.applicationContext == null) {
-//            throw new IllegalStateException("No applicationContext has been injected!?!");
-//        }
-//        return applicationContext;
-//    }
-
+    
+    public static MailService mailService() {
+        return (MailService) get("mailService");
+    }
 
 }

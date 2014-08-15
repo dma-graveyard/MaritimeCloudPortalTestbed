@@ -20,6 +20,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 import net.maritimecloud.portal.domain.model.identity.User;
 import net.maritimecloud.portal.domain.model.identity.UserRepository;
+import net.maritimecloud.portal.infrastructure.mail.MailService;
 
 /**
  * @author Christoffer Børrild
@@ -29,12 +30,18 @@ public class IdentityApplicationService {
     private UserRepository userRepository() {
         return DomainRegistry.userRepository();
     }
+    
+    private MailService mailService() {
+        return ApplicationServiceRegistry.mailService();
+    }
 
     @Transactional
     public User registerUser(String username, String password, String emailAddress) {
         // TODO HACK: Using hardcoded password
-        User newUser = new User(username, "password", emailAddress);
+        User newUser = new User(username, password, emailAddress);
+        newUser.generateActivationId();
         userRepository().add(newUser);
+        mailService().sendSignUpActivationMessage(newUser);
         return newUser;
     }
 
