@@ -5,6 +5,7 @@
 var mcpApp = angular.module('mcpApp', [
   'ui.router',
   'ui.router.stateHelper',
+  'cgBusy',
   'mcp.dataservices',
   'mcp.filters',
   'mcp.directives',
@@ -13,6 +14,16 @@ var mcpApp = angular.module('mcpApp', [
   'mcp.organizations',
   'mcp.users'
 ]);
+
+// Setup angular busy indicator
+// (https://github.com/cgross/angular-busy)
+mcpApp.value('cgBusyDefaults',{
+    //message:'Loading Stuff',
+    //backdrop: true,
+    templateUrl: 'layout/angular-busy.html',
+    delay: 0,
+    minDuration: 0
+});
 
 mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'USER_ROLES',
   function($stateProvider, stateHelperProvider, $urlRouterProvider, USER_ROLES) {

@@ -27,6 +27,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
         $scope.message = null;
         $scope.alertMessages = null;
         $scope.usernameAlreadyExist = true;
+        $scope.signUpPromise = null;
 
         $scope.isValid = function(isFormValid) {
           return isFormValid
@@ -89,7 +90,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
           } else {
             $scope.message = "Sending request for access.";
 
-            UserService.signUp($scope.user, function(data) {
+            $scope.signUpPromise = UserService.signUp($scope.user, function(data) {
               $scope.message = ["Request SUCCESS :) " + data];
               $state.transitionTo("public.joinConfirmation");
               
