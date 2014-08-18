@@ -31,11 +31,16 @@ angular.module('mcp.users', ['ui.bootstrap'])
         $scope.isValid = function(isFormValid) {
           return isFormValid
               && $scope.passwordsMatch()
+              && !$scope.passwordEqualsUsername()
               && !$scope.usernameAlreadyExist;
         };
 
         $scope.passwordsMatch = function() {
           return $scope.user.password === $scope.repeatedPassword;
+        };
+        
+        $scope.passwordEqualsUsername = function() {
+          return $scope.user.password === $scope.user.username;
         };
 
         $scope.getError = function(error, minLength, maxLength, patternMsg) {

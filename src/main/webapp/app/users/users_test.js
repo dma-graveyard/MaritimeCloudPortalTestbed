@@ -122,8 +122,32 @@ describe('UserSignupController', function() {
   it('should flag form as invalid when username already exist', function() {
 
     expect(scope.isValid(true)).to.be.false;
+    //scope.user.username = 'Ann';
+    scope.user.password = 'secret';
+    scope.repeatedPassword = 'secret';
     scope.usernameAlreadyExist = false;
     expect(scope.isValid(true)).to.be.true;
+    
+  });
+  it('should flag form as invalid when password equals username', function() {
+
+    // GIVEN a userlist containing a user with the username 'Ann'
+    httpBackend.expectGET(/rest\/users\/Ann\/exist/).respond({usernameExist: false});
+    // WHEN username is Ann and password is something else
+    expect(scope.isValid(true)).to.be.false;
+    scope.user.username = 'Ann';
+    scope.$digest();
+    httpBackend.flush();
+    scope.user.password = 'secret';
+    scope.repeatedPassword = 'secret';
+    scope.usernameAlreadyExist = false;
+    // THEN all is good
+    expect(scope.isValid(true)).to.be.true;
+    // WHEN password is changed to be the same as the username
+    scope.user.password = 'Ann';
+    scope.repeatedPassword = 'Ann';
+    // THEN form is invalid
+    expect(scope.isValid(true)).to.be.false;
     
   });
 });

@@ -55,11 +55,15 @@
                 <label for="newPassword">Password:</label> 
                 <span class="block input-icon input-icon-right">
                     <input type="password" class="form-control" placeholder="Enter your desired password" id="newPassword" name="password"
-                           x-ng-model="user.password" required ng-minlength="4">
+                           ng-class="joinForm.password.$dirty && passwordEqualsUsername() ? 'mcp-invalid-input' : '' "
+                           ng-model="user.password" required ng-minlength="4">
                     <i class="ace-icon fa fa-lock"></i>
                 </span>
                 <div class="text-danger" ng-show="joinForm.password.$error && joinForm.password.$dirty">
                     {{getError(joinForm.password.$error, 4)}}
+                </div>
+                <div class="text-danger" ng-show="joinForm.password.$dirty && passwordEqualsUsername()">
+                    The username and password must not be the same
                 </div>
                 <p class="help-block">At least 4 characters</p>
             </div>
