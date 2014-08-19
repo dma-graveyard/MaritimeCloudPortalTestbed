@@ -12,7 +12,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package net.maritimecloud.portal.resource;
 
 import net.maritimecloud.portal.domain.model.identity.User;
@@ -20,15 +19,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *  Application specific logging Service for reporting significant application events to a general logging mechanism. 
- *  
+ * Application specific logging Service for reporting significant application events to a general logging mechanism.
+ * <p>
  * @author Christoffer Børrild
  */
 public class LogService {
 
     private static final Logger LOG = LoggerFactory.getLogger(LogService.class);
-    
-    
+
     void reportUserLoggedIn(User user) {
         LOG.info("User {} logged in", user.username());
     }
@@ -44,5 +42,17 @@ public class LogService {
     void reportUserLoggingOut() {
         LOG.info("User logged out");
     }
-    
+
+    public void activateAccountFailedUserNotFound(String aUsername) {
+        LOG.info("User account activation failed. Unknown user: {}", aUsername);
+    }
+
+    public void activateAccountFailed(String aUsername, String triedActivationId, String usersActivationId) {
+        LOG.info("User account activation failed. User was {}: \nusers activationId {} \ntried activationId {} ", aUsername, usersActivationId, triedActivationId);
+    }
+
+    public void activateAccountSucceded(String aUsername) {
+        LOG.info("User account activated for user {}", aUsername);
+    }
+
 }

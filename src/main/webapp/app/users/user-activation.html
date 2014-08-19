@@ -1,0 +1,72 @@
+<div ng-controller="UserActivationController">
+
+    <div class="col-lg-4"></div>
+
+    <div ng-show="accountActivated===true" class="col-lg-5 widget-container-col widget-box" cg-busy="activateAccountPromise">
+        <div class="widget-main">
+            <h4 class="header green lighter bigger-200"><i class="ace-icon fa fa-user blue"></i>
+                Account activated
+            </h4>
+            <p>
+                Your account has been activated.<br>
+                <br>
+                Press the button below to go navigate to the login page.
+                <br>
+            </p>
+            <div class="widget-toolbox padding-8 clearfix">
+                <a class="btn btn-success pull-right" ui-sref="restricted.dashboard" >
+                    <span class="bigger-110">Log in</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div ng-show="accountActivated===false" class="col-lg-5 widget-container-col widget-box" cg-busy="activateAccountPromise">
+        <div class="widget-main">
+            <h4 class="header yellow darker bigger-200 bg-danger"><i class="ace-icon fa fa-user blue"></i>
+                Unable to activate the account!
+            </h4>
+            <p class="bg-danger">
+                Oh snap! It seems like we have a disagreement here. <br>
+                <br>
+                Apparently we cannot find the combination of your username and the activation ID in our registry.<br>
+                <br>
+                Check to see if you got the entire activation URL right and try again.<br>
+            </p>
+            <div class="widget-toolbox padding-8 clearfix">
+                <a class="btn btn-success pull-right" ui-sref="public.landingpage" >
+                    <span class="bigger-110">Close</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div ng-show="accountActivated==='error'" class="col-lg-5 widget-container-col widget-box" cg-busy="activateAccountPromise">
+        <div class="widget-main">
+            <h4 class="header red lighter bigger-200"><i class="ace-icon fa fa-user blue"></i>
+                An error occurred during activation
+            </h4>
+            <p class="bg-danger">
+                Hmm... something went wrong on the server :-(
+                <br>
+                <br>
+                Wait for a while and then try again.
+            </p>
+            <div class="widget-toolbox padding-8 clearfix">
+                <a class="btn btn-success pull-right" ui-sref="public.landingpage" >
+                    <span class="bigger-110">Close</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--<div class="panel panel-default">
+    <div class="panel-heading">
+        <h1 class="panel-title">{{user.username}}</h1>
+    </div>
+    <table class="table-condensed">
+        <tr> <th class="text-right">Username : </th> <td>{{user.username}} </td> </tr>
+        <tr> <th class="text-right">Email Address : </th> <td>{{user.emailAddress}}</td>  </tr>
+        <tr> <th class="text-right">Has email Address : </th> <td>{{user.emailAddress | checkmark}}</td>  </tr>
+    </table>
+</div>-->
+

@@ -77,6 +77,9 @@ public class AuthenticationResource {
             try {
                 long userId = authenticationUtil().login(credentials.username, credentials.password);
                 User user = identityApplicationService().user(userId);
+                if (!user.isActive()) {
+                    throw new UserNotAuthenticated();
+                }
                 reportUserLoggedIn(user);
                 return currentSubject();
             } catch (AuthenticationException | UnknownUserException e) {

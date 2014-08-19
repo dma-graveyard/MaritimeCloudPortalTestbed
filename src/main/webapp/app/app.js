@@ -49,7 +49,13 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
           name: 'joinConfirmation',
           url: "/join-confirm",
           templateUrl: 'users/join-confirm.html'
-        }
+        },
+        {
+          name: 'userActivation',
+          url: "/users/{username}/activate/{activationId}",
+          templateUrl: 'users/user-activation.html',
+          controller: 'UserActivationController',
+        }        
       ]
     };
 

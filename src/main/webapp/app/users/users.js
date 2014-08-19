@@ -21,7 +21,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
         //    };
       }])
 
-    .controller('UserSignupController', ['$scope', 'UserService', '$state', 
+    .controller('UserSignupController', ['$scope', 'UserService', '$state',
       function($scope, UserService, $state) {
         $scope.user = {};
         $scope.message = null;
@@ -39,7 +39,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
         $scope.passwordsMatch = function() {
           return $scope.user.password === $scope.repeatedPassword;
         };
-        
+
         $scope.passwordEqualsUsername = function() {
           return $scope.user.password === $scope.user.username;
         };
@@ -93,7 +93,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
             $scope.signUpPromise = UserService.signUp($scope.user, function(data) {
               $scope.message = ["Request SUCCESS :) " + data];
               $state.transitionTo("public.joinConfirmation");
-              
+
             }, function(error) {
               // Error handler code
               $scope.alertMessages = ["Error on the serverside :( ", error];
@@ -109,4 +109,26 @@ angular.module('mcp.users', ['ui.bootstrap'])
           }
         };
 
-      }]);
+      }])
+
+    .controller('UserActivationController', ['$scope', '$stateParams', 'UserService',
+      function($scope, $stateParams, UserService) {
+        console.log("Activate " + $stateParams.username);
+        $scope.activateAccountPromise = null;
+        $scope.accountActivated = null;
+              
+        $scope.activateAccountPromise = UserService.activateAccount({
+          username: $stateParams.username,
+          activationId: $stateParams.activationId
+        }, {/*an empty data payload*/}, 
+        function(data) {
+          $scope.accountActivated = data.accountActivated;
+        },
+        function(error) {
+          console.log(error);
+          $scope.accountActivated = 'error';
+        });
+
+      }
+    ])
+    ;

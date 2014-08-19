@@ -65,6 +65,16 @@ public class UserResource {
         return uriInfo.getAbsolutePathBuilder().path(user.username()).build();
     }
 
+    @POST
+    @Path("{username}/activate/{activationId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public UserAccountActivatedDTO activateAccount(@PathParam("username") String aUsername, @PathParam("activationId") String activationId, @Context UriInfo uriInfo) {
+        LOG.warn("Called activate account with user " + aUsername + " " + activationId + " " + uriInfo);
+
+        boolean activated = identityApplicationService().activate(aUsername, activationId);
+        return new UserAccountActivatedDTO(activated);
+    }
+
     @GET
     @Path("{username}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -120,7 +130,7 @@ public class UserResource {
     }
 
     private UserDTO toDto(User user) {
-        return new UserDTO(user.username(), null, user.emailAddress());
+        return new UserDTO(user.username(), null, user.emailAddress(), user.isActive());
     }
 
     public static class UserDTO {
@@ -129,6 +139,7 @@ public class UserResource {
         private String password;
         private String emailAddress;
         private Boolean usernameExist;
+        private boolean active;
 
         public static final UserDTO USERNAME_EXIST = new UserDTO(true);
         public static final UserDTO USERNAME_IS_UNKNOWN = new UserDTO(false);
@@ -140,10 +151,11 @@ public class UserResource {
             this.usernameExist = usernameExist;
         }
 
-        public UserDTO(String username, String password, String emailAddress) {
+        public UserDTO(String username, String password, String emailAddress, boolean isActive) {
             this.username = username;
             this.password = password;
             this.emailAddress = emailAddress;
+            this.active = isActive;
         }
 
         public String getUsername() {
@@ -178,10 +190,38 @@ public class UserResource {
             this.usernameExist = usernameExist;
         }
 
-        @Override
-        public String toString() {
-            return "UserDTO{" + "username=" + username + ", password=" + password + ", emailAddress=" + emailAddress + '}';
+        public void setActive(boolean isActive) {
+            this.active = isActive;
         }
 
+        public boolean isActive() {
+            return active;
+        }
+
+        @Override
+        public String toString() {
+            return "UserDTO{" + "username=" + username + ", password=" + password + ", emailAddress=" + emailAddress + ", usernameExist=" + usernameExist + ", active=" + active + '}';
+        }
+
+    }
+
+    public static class UserAccountActivatedDTO {
+
+        private boolean accountActivated;
+
+        public UserAccountActivatedDTO() {
+        }
+
+        public UserAccountActivatedDTO(boolean accountActivated) {
+            this.accountActivated = accountActivated;
+        }
+
+        public void setAccountActivated(boolean accountActivated) {
+            this.accountActivated = accountActivated;
+        }
+
+        public boolean getAccountActivated() {
+            return accountActivated;
+        }
     }
 }

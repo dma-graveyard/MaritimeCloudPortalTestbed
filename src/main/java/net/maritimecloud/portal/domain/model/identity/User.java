@@ -14,7 +14,6 @@
  */
 package net.maritimecloud.portal.domain.model.identity;
 
-import java.util.Arrays;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import net.maritimecloud.portal.domain.model.ConcurrencySafeEntity;
@@ -32,11 +31,12 @@ public class User extends ConcurrencySafeEntity {
 //    private Person person;
     private String emailAddress;
     private String activationId;
-    
+
     private static long idSequence = 1;
     // overrides IndentifiedDomainObject id
     private long id;
     private UserRoles userRoles;
+    private boolean active;
 
     /**
      * @return the application specific unique id of the user
@@ -245,13 +245,25 @@ public class User extends ConcurrencySafeEntity {
     }
 
     public String activationId() {
-       return activationId;
+        return activationId;
     }
 
     public void generateActivationId() {
         activationId = UUID.randomUUID().toString();
     }
-    
-    
-    
+
+    public void activate(String anActivationId) {
+        if (activationId() != null && activationId().equals(anActivationId)) {
+            activate();
+        }
+    }
+
+    private void activate() {
+        active = true;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
 }

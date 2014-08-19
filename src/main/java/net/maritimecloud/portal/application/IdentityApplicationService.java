@@ -21,6 +21,7 @@ import javax.transaction.Transactional;
 import net.maritimecloud.portal.domain.model.identity.User;
 import net.maritimecloud.portal.domain.model.identity.UserRepository;
 import net.maritimecloud.portal.infrastructure.mail.MailService;
+import net.maritimecloud.portal.resource.LogService;
 
 /**
  * @author Christoffer Børrild
@@ -30,9 +31,13 @@ public class IdentityApplicationService {
     private UserRepository userRepository() {
         return DomainRegistry.userRepository();
     }
-    
+
     private MailService mailService() {
         return ApplicationServiceRegistry.mailService();
+    }
+
+    protected LogService logService() {
+        return ApplicationServiceRegistry.logService();
     }
 
     @Transactional
@@ -56,6 +61,22 @@ public class IdentityApplicationService {
 
     public User user(long userId) throws UnknownUserException {
         return userRepository().get(userId);
+    }
+
+    public boolean activate(String aUsername, String activationId) {
+        User aUser = user(aUsername);
+        if (aUser == null) {
+            logService().activateAccountFailedUserNotFound(aUsername);
+            return false;
+        }
+        aUser.activate(activationId);
+       
+        if (!aUser.isActive()) {
+            logService().activateAccountFailed(aUsername, activationId, aUser.activationId());
+        }
+        
+        logService().activateAccountSucceded(aUsername);
+        return aUser.isActive();
     }
 
 }

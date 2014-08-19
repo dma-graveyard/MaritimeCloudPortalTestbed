@@ -73,7 +73,7 @@ describe('UserSignupController', function() {
     userSignupController = $controller("UserSignupController", {$scope: scope, UserService: UserService, $state: $state});
     // listeners are always called during the first $digest 
     // loop after they was registered. We want the listener 
-    // for 'user.username' to hav been initially called 
+    // for 'user.username' to have been initially called 
     // before we start the test
     scope.$digest();
   }));
@@ -149,5 +149,74 @@ describe('UserSignupController', function() {
     // THEN form is invalid
     expect(scope.isValid(true)).to.be.false;
     
+  });
+});
+
+
+
+// UserActivationController
+
+describe('UserActivationController', function() {
+
+  // Arrange
+  var scope, controller, httpBackend, userService;
+
+  beforeEach(angular.mock.module('ui.router'));  
+  beforeEach(angular.mock.module("mcp.users"));
+  beforeEach(angular.mock.module("mcp.dataservices"));
+
+  beforeEach(angular.mock.inject(function($rootScope, $httpBackend, $controller, UserService) {
+    scope = $rootScope.$new();
+    httpBackend = $httpBackend;
+    controller = $controller;
+    userService = UserService;
+  }));
+
+  afterEach(function() {
+    httpBackend.verifyNoOutstandingExpectation();
+    httpBackend.verifyNoOutstandingRequest();
+  });
+
+  it('should activate account when username and activationId is valid', function() {
+    
+    // GIVEN a user with a valid activation id  
+    var $stateParams = {username: 'aUser', activationId: 'VALID-ID-123-xyz'};
+    httpBackend.whenPOST(/rest\/users\/aUser\/activate\/VALID-ID-123-xyz/).respond({accountActivated: true});
+    // WHEN controller is created
+    userActivationController = controller("UserActivationController", {$scope: scope, UserService: userService, $stateParams: $stateParams});
+    // THEN initially 'accountActivated' is null 
+    expect(scope.accountActivated).to.be.null;
+    // WHEN remote request is reolved 
+    httpBackend.flush();
+    // THEN the account is activated 
+    expect(scope.accountActivated).to.be.true;
+  });
+  it('should fail when username and activationId is invalid', function() {
+    
+    // GIVEN a user with an invalid activation id  
+    var $stateParams = {username: 'aUser', activationId: 'INVALID-123-xyz'};
+    httpBackend.whenPOST(/rest\/users\/aUser\/activate\/INVALID-123-xyz/).respond({accountActivated: false});
+    // WHEN controller is created
+    userActivationController = controller("UserActivationController", {$scope: scope, UserService: userService, $stateParams: $stateParams});
+    // THEN initially 'accountActivated' is null 
+    expect(scope.accountActivated).to.be.null;
+    // WHEN remote request is reolved 
+    httpBackend.flush();
+    // THEN the account is still not activated 
+    expect(scope.accountActivated).to.be.false;
+  });
+  it('should fail when username and activationId is unknown', function() {
+    
+    // GIVEN a user with an invalid activation id  
+    var $stateParams = {username: 'anotherUser', activationId: 'FAKE-123-xyz'};
+    httpBackend.whenPOST(/rest\/users/).respond(500);
+    // WHEN controller is created
+    userActivationController = controller("UserActivationController", {$scope: scope, UserService: userService, $stateParams: $stateParams});
+    // THEN initially 'accountActivated' is null 
+    expect(scope.accountActivated).to.be.null;
+    // WHEN remote request is reolved 
+    httpBackend.flush();
+    // THEN the account is still not activated 
+    expect(scope.accountActivated).to.equal('error');
   });
 });

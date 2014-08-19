@@ -35,7 +35,7 @@ public class UserResourceTest extends ResourceTest {
 
     @Test
     public void createUser() throws JSONException {
-        UserDTO aNewUser = new UserDTO("Luke", "aPassword", "luke@skywalker.com");
+        UserDTO aNewUser = new UserDTO("Luke", "aPassword", "luke@skywalker.com", true);
         final String actual = target(USERS).request().post(json(aNewUser), String.class);
         System.out.println("actual: " + actual);
         String expected = asJson(

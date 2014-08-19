@@ -41,9 +41,9 @@ public class InMemoryUserRepository implements UserRepository, CleanableStore {
     }
 
     private void initWithDummyUsers() {
-        add(new User("admin", "test", "admin@dma.dk", Role.ADMIN, Role.USER));
-        add(new User("Tintin", "test", "tintin@dma.org"));
-        add(new User("Haddock", "test", "hadock@dma.org"));
+        add(activate(new User("admin", "test", "admin@dma.dk", Role.ADMIN, Role.USER)));
+        add(activate(new User("Tintin", "test", "tintin@dma.org")));
+        add(activate(new User("Haddock", "test", "hadock@dma.org")));
     }
 
     @Override
@@ -114,6 +114,12 @@ public class InMemoryUserRepository implements UserRepository, CleanableStore {
                 return user;
         }
         throw new UnknownUserException(userId);
+    }
+
+    private User activate(User u) {
+        u.generateActivationId();
+        u.activate(u.activationId());
+        return u;
     }
 
 }
