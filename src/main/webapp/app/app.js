@@ -85,9 +85,9 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
         },
         {
           name: 'userProfile',
-          url: "/users/{username}",
-          templateUrl: 'partials/user-detail.html',
-          controller: 'UserDetailController',
+          url: "/users/{username}/profile",
+          templateUrl: 'users/user-profile.html',
+          controller: 'UserProfileController',
         },
         {
           name: 'organizations',

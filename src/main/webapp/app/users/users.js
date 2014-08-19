@@ -21,6 +21,13 @@ angular.module('mcp.users', ['ui.bootstrap'])
         //    };
       }])
 
+    .controller('UserProfileController', ['$scope', 'UserService', 'Session',
+      function($scope, UserService, Session) {
+        $scope.user = UserService.get({username: Session.userId}, function(user) {
+        });
+        console.log($scope.currentUser);
+      }])
+
     .controller('UserSignupController', ['$scope', 'UserService', '$state',
       function($scope, UserService, $state) {
         $scope.user = {};
@@ -92,20 +99,14 @@ angular.module('mcp.users', ['ui.bootstrap'])
 
             $scope.signUpPromise = UserService.signUp($scope.user, function(data) {
               $scope.message = ["Request SUCCESS :) " + data];
+              $scope.message = null;
               $state.transitionTo("public.joinConfirmation");
-
             }, function(error) {
               // Error handler code
-              $scope.alertMessages = ["Error on the serverside :( ", error];
-              $scope.alertMessages.push("Request for access has failed. Please try again.");
+              $scope.message = null;
+              $scope.alertMessages = ["An error occured on the serverside :( "];
+              $scope.alertMessages.push("Please try again.");
             });
-
-//          $http.post(embryo.baseUrl + "rest/request-access/save", $scope.request).success(function() {
-//            $scope.message = "Request for access has been sent. We will get back to you via email.";
-//          }).error(function(data, status) {
-//            $scope.alertMessages = embryo.ErrorService.extractError(data, status);
-//            $scope.alertMessages.push("Request for access has failed. Please try again.");
-//          });
           }
         };
 
