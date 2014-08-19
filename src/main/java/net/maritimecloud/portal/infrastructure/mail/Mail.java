@@ -41,5 +41,11 @@ public class Mail {
     public String getSubject() {
         return subject;
     }
+
+    @Override
+    public String toString() {
+        return "Mail{" + "\nrecipients=" + recipients + ", \nsubject=" + subject + ", \nmessage=" + message + '}';
+    }
+    
     
 }

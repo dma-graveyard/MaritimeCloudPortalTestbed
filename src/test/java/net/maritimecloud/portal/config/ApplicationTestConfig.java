@@ -14,11 +14,18 @@
  */
 package net.maritimecloud.portal.config;
 
+import java.io.IOException;
+import javax.annotation.Resource;
 import net.maritimecloud.portal.domain.model.identity.UserRepository;
+import net.maritimecloud.portal.infrastructure.mail.Mail;
+import net.maritimecloud.portal.infrastructure.mail.MailAdapter;
+import net.maritimecloud.portal.infrastructure.mail.SmtpMailAdapter;
 import net.maritimecloud.portal.infrastructure.persistence.InMemoryUserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSender;
 
 /**
  * @author Christoffer Børrild
@@ -26,10 +33,26 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import(value = {ApplicationConfig.class})
 public class ApplicationTestConfig {
+    
+    @Resource
+    MailSender mailSender;
 
     @Bean
     public UserRepository userRepository() {
         return new InMemoryUserRepository();
+    }
+
+    @Bean
+    public MailAdapter mailAdapter() throws IOException {
+        
+        if (System.getenv("mail.smtp.password") != null) {
+            return new SmtpMailAdapter((JavaMailSender) mailSender);
+        } else {
+            // Fallback when no smtp password has been supplied
+            return (Mail mail) -> {
+                System.out.println("Send (dummy mail adapter): " + mail);
+            };
+        }
     }
 
 }
