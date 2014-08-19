@@ -147,7 +147,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
     var modalInstance = $modal.open({
       templateUrl: 'auth/loginDialog.html',
       //controller: ModalInstanceController,
-      size: size,
+      size: 'sm',
       backdrop: 'static',
       resolve: {
 //        user: function() {
