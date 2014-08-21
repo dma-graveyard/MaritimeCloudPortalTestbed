@@ -80,6 +80,16 @@ public class InMemoryUserRepository implements UserRepository, CleanableStore {
         return users;
     }
 
+    @Override
+    public User userWithEmail(String emailAddress) {
+        for (User user : repository().values()) {
+            if (user.emailAddress().equalsIgnoreCase(emailAddress)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
 //    @Override
 //    public User userFromAuthenticCredentials(String aUsername, String anEncryptedPassword) {
 //

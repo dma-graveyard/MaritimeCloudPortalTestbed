@@ -55,4 +55,8 @@ public class LogService {
         LOG.info("User account activated for user {}", aUsername);
     }
 
+    public void sendResetPasswordMessageFailedUserOfEmailNotFound(String emailAddress) {
+        LOG.info("Reset password mail was requested, but found no user with email {}", emailAddress);
+    }
+
 }

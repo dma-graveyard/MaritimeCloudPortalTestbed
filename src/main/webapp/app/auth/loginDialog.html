@@ -1,49 +1,89 @@
 <div class="modal-header">
-    <button type="button" class="close" x-ng-click="$dismiss('aborted')">x</button>
-    <h2>Log In</h2>
+    <button type="button" class="close" ng-click="$dismiss('aborted')">x</button>
+    <div ng-switch="scene">
+        <div ng-switch-default>
+            <h2>Log In</h2>
+        </div>
+        <div ng-switch-when="forgotPassword">
+            <h2>Forgot password</h2>
+        </div>
+    </div>
 </div>
 
-<div class="modal-body e-small-font" cg-busy="loginPromise">
+<div class="modal-body e-small-font" cg-busy="busyPromise">
 
     <!-- Hack to trigger browsers "remember credentials" functionality -->
     <iframe src="../rest/authentication/sink.html" name="sink" style="display:none"></iframe>
     <!-- ALERT --> 
-    <alert x-ng-show="alert" type="danger">{{alert}}</alert>
-    <!--FORM-->
-    <form name="loginForm" ng-submit="login(credentials)" action="../rest/authentication/sink.html" target="sink" method="post" novalidate>
-        <div id="credentials">
-            <!--USERNAME-->
-            <div class="form-group">
-                <label for="usernamefield">User Name</label> 
-                <input class="form-control input-sm" type="text" placeholder="Enter your username here" mcp-focus-me id="usernamefield" name="usernamefield" 
-                       x-ng-model="credentials.username" autocapitalize="off" autocorrect="off" autocomplete="off" required />
-            </div>
-            <!--PASSWORD-->
-            <div class="form-group">
-                <label for="passwordfield">Password</label> 
-                <input class="form-control input-sm" type="password" placeholder="Password" id="passwordfield" name="passwordfield" 
-                       x-ng-model="credentials.password" required />
-            </div>
-            <!--SUBMIT or CANCEL-->
-            <a class="text-primary" href="" x-ng-click="forgotPassword()">Forgot password?</a>
-            <div style="margin-top: 24px">
-                <button type="submit" class="btn btn-sm btn-primary" x-ng-disabled="!(loginForm.usernamefield.$valid && loginForm.passwordfield.$valid)">Log In</button>
-                <button type="button" class="btn btn-sm" x-ng-click="$dismiss('aborted')">Cancel</button>
-            </div>
+    <alert ng-show="alert" type="danger">{{alert}}</alert>
+    <alert ng-show="message" type="info">{{message}}</alert>
+
+    <div ng-switch="scene">
+        <div ng-switch-default>
+
+            <!--LOGIN FORM-->
+            <form name="loginForm" ng-submit="login(credentials)" action="../rest/authentication/sink.html" target="sink" method="post" novalidate>
+                <!--USERNAME-->
+                <div class="form-group">
+                    <label for="usernamefield">User Name</label> 
+                    <span class="block input-icon input-icon-right">
+                        <input class="form-control input-sm" type="text" placeholder="Enter your username here" mcp-focus-me id="usernamefield" name="usernamefield" 
+                               ng-model="credentials.username" autocapitalize="off" autocorrect="off" autocomplete="off" required />
+                        <i class="ace-icon fa fa-user"></i>
+                    </span>
+                </div>
+                <!--PASSWORD-->
+                <div class="form-group">
+                    <label for="passwordfield">Password</label> 
+                    <span class="block input-icon input-icon-right">
+                        <input class="form-control input-sm" type="password" placeholder="Password" id="passwordfield" name="passwordfield" 
+                               ng-model="credentials.password" required />
+                        <i class="ace-icon fa fa-lock"></i>
+                    </span>
+                </div>
+                <!--FORGOT PASSWORD LINK-->
+                <a class="text-primary" href="" ng-click="show('forgotPassword')">Forgot password?</a>
+                <!--SUBMIT or CANCEL-->
+                <div style="margin-top: 24px">
+                    <button type="submit" class="btn btn-sm btn-primary" ng-disabled="!(loginForm.usernamefield.$valid && loginForm.passwordfield.$valid)">Log In</button>
+                    <button type="button" class="btn btn-sm" ng-click="$dismiss('aborted')">Cancel</button>
+                </div>
+            </form>
+
         </div>
-        <!--        <div id="forgotpass" x-ng-show="forgot">
-                    <label>E-mail address <input type="email" name="emailfield" class="input-block-level" x-ng-model="user.email" autocapitalize="off"
-                                                 autocorrect="off" autocomplete="off" required /></label>
-                    <a href="" x-ng-click="back()">Back</a>
-                    <div style="margin-top: 24px">
-                        <button type="submit" class="btn btn-primary" x-ng-disabled="!login_form.emailfield.$valid" x-ng-click="sendPassword()">Send password</button>
-                        <button class="btn" x-ng-click="$dismiss('aborted')">Cancel</button>
+        <div ng-switch-when="forgotPassword">
+
+            <!--FORGOT PASSWORD FORM-->
+            <form name="passwordForm" ng-submit="sendInstructions(emailAddress)" action="../rest/authentication/sink.html" target="sink" method="post" novalidate>
+                <!--EMAIL-->
+                <div class="form-group">
+                    <label for="email">E-mail Address</label> 
+                    <span class="block input-icon input-icon-right">
+                        <input type="email" class="form-control input-sm" placeholder="Email Address" id="email" name="email" 
+                               autocorrect="off" autocapitalize="off" spellcheck="false" required mcp-focus-me ng-model="emailAddress">
+                        <i class="ace-icon fa fa-envelope"></i>
+                    </span>
+                    <div class="text-danger" ng-show="passwordForm.email.$error.email && passwordForm.email.$dirty">
+                        Please enter a valid email address
                     </div>
-                </div>-->
-    </form>
+                     <p class="help-block">Enter your email to receive instructions.</p>
+                    <br>
+                    <br>
+                </div>
+                <!--BACK LINK-->
+                <a href="" ng-click="show('default')">Back to login</a>
+                <!--SEND or CANCEL-->
+                <div style="margin-top: 24px">
+                    <button type="submit" class="btn btn-sm btn-primary" ng-disabled="!(passwordForm.email.$valid && passwordForm.email.$dirty)">Send</button>
+                    <button type="button" class="btn btn-sm" ng-click="$dismiss('aborted')">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>    
 </div>
 <div class="modal-footer">
     <div class="pull-right" >
-        First time users can <a href="#/join" x-ng-click="$dismiss('aborted')">Sign up</a> here to get username and password. 
+        First time users can <a href="#/join" ng-click="$dismiss('aborted')">Sign up</a> here to get username and password. 
     </div>
 </div>

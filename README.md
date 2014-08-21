@@ -82,11 +82,28 @@ app/
 
 ## Initial setup
 
+### Bower
+
 In order to download front-end dependencies you need to run
 
     bower install
 
 This will download external dependencies to the folder "src/main/webapp/app/bower"
+
+### Mail SMTP
+
+Currently the solution uses a preconfigured GMAIL account as SMTP-server when 
+sending out notifications. In order to use this account you must supply the 
+password in the system variable called:
+
+    mail.smtp.password=<my_secret>
+
+When running in context of the test configuration () and this variable is unset 
+the system will fallback to echoing the mail messages to the console, which may 
+come in handy on buildservers and when testing locally
+
+To change the configuration to another mail account please refer to the settings 
+file "src/main/resources/application.properties".
 
 ## Building ##
 

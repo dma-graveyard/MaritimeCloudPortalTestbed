@@ -28,6 +28,7 @@ public class VelocityMessageComposer implements MessageComposer {
 
     private static final String BASE_URL = "http://localhost:8080/app/index.html";
     private static final String TEMPLATE_SIGN_UP_ACTIVATION_MESSAGE = "templates/signUpActivationMessage.vm.html";
+    private static final String TEMPLATE_RESET_PASSWORD_MESSAGE = "templates/resetPasswordMessage.vm.html";
     private final VelocityEngine velocityEngine;
 
     public VelocityMessageComposer(VelocityEngine velocityEngine) {
@@ -38,13 +39,7 @@ public class VelocityMessageComposer implements MessageComposer {
     @Override
     public String composeSignUpActivationMessage(User user) {
         assertThatUserHasAnActivationId(user);
-        
-        Map model = new HashMap();
-        model.put("username", user.username());
-        model.put("baseUrl", BASE_URL);
-        model.put("activationid", user.activationId());
-        
-        return compose(model, TEMPLATE_SIGN_UP_ACTIVATION_MESSAGE);
+        return compose(createModel(user), TEMPLATE_SIGN_UP_ACTIVATION_MESSAGE);
     }
 
     private void assertThatUserHasAnActivationId(User user) throws IllegalStateException {
@@ -54,6 +49,19 @@ public class VelocityMessageComposer implements MessageComposer {
 
     private String compose(Map model, String templateFilename) {
         return VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, templateFilename, "UTF-8", model);
+    }
+
+    @Override
+    public String composeResetPasswordMessage(User user) {
+        return compose(createModel(user), TEMPLATE_RESET_PASSWORD_MESSAGE);
+    }
+
+    private Map createModel(User user) {
+        Map model = new HashMap();
+        model.put("username", user.username());
+        model.put("baseUrl", BASE_URL);
+        model.put("activationid", user.activationId());
+        return model;
     }
 
 }

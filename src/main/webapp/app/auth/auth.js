@@ -169,13 +169,36 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
     .controller('LoginController', ['$scope', '$rootScope', 'AuthService', 'AUTH_EVENTS',
       function($scope, $rootScope, AuthService, AUTH_EVENTS) {
 
+        $scope.scene = "login";
+
+        resetMessages = function() {
+          $scope.message = null;
+          $scope.alert = null;
+        };
+
+        $scope.show = function(sceneTarget) {
+          $scope.scene = sceneTarget;
+        };
+
         $scope.login = function(credentials) {
+          resetMessages();
           $scope.loginPromise = AuthService.login(credentials).then(function() {
             $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
             $scope.$close();
           }, function() {
             $scope.alert = "Incorrect username or password";
             $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+          });
+        };
+
+        $scope.sendInstructions = function(email) {
+          resetMessages();
+          $scope.busyPromise = AuthService.sendForgotPassword(email).then(function() {
+            $scope.message = "A mail has been sent to " + email;
+            $scope.scene = "login";
+          }, function(error) {
+            console.log("Error during send of password instructions: ", error);
+            $scope.alert = "Whoops! Something went wrong: (" + error.status + ") " + error.statusText;
           });
         };
 
@@ -188,6 +211,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
     // Service logic related to the remote authentication and authorization 
     .service('AuthService', function($http, Session) {
       self = this;
+
       this.login = function(credentials) {
         console.log("Logging in with " + credentials.username);
         return $http
@@ -198,6 +222,17 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
               Session.create(data.id, data.username, data.role);
             });
       };
+
+      this.sendForgotPassword = function(email) {
+        console.log("Sending password instructions to  " + email);
+        return $http
+            .post('/rest/authentication/sendforgot', {emailAddress: email}, {ignoreAuthModule: true})
+            .then(function(respone) {
+              var data = respone.data;
+              console.log("Login response data: ", data);
+            });
+      };
+
       this.isAuthenticated = function() {
         return !!Session.userId;
       };

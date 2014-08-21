@@ -24,5 +24,7 @@ import net.maritimecloud.portal.domain.model.identity.User;
 public interface MessageComposer {
 
     String composeSignUpActivationMessage(User user);
+
+    String composeResetPasswordMessage(User user);
     
 }

@@ -79,4 +79,21 @@ public class IdentityApplicationService {
         return aUser.isActive();
     }
 
+    public void sendResetPasswordMessage(String emailAddress) {
+        
+        // Find user
+        User aUser = userRepository().userWithEmail(emailAddress);
+        
+        // Report missing user
+        if (aUser == null) {
+            logService().sendResetPasswordMessageFailedUserOfEmailNotFound(emailAddress);
+            return;
+        }
+        
+        // Generate a new confirmation id to be used for reset password
+        aUser.generateActivationId();
+        
+        mailService().sendResetPasswordMessage(aUser);
+    }
+
 }

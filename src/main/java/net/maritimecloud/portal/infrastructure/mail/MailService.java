@@ -38,4 +38,10 @@ public class MailService {
         mailAdapter.send(mail);
     }
 
+    public void sendResetPasswordMessage(User user) {
+        String message = messageComposer.composeResetPasswordMessage(user);
+        Mail mail = new Mail(user.emailAddress(), "Password reset for Account at Maritime Cloud Portal", message);
+        mailAdapter.send(mail);
+    }
+
 }

@@ -90,16 +90,22 @@ public class AuthenticationResource {
             LOG.error("Error", t);
             throw new UserNotAuthenticated();
         }
-        // TODO HACK: temporary hack to store a user 
-//        SessionHelper.setSubject(new SubjectDTO(credentials.getUsername(), credentials.getUsername()));
     }
 
     @POST
     @Path("/logout")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void logout(CredentialsDTO credentials) {
+    public void logout() {
         logService().reportUserLoggingOut();
         authenticationUtil().logout();
+    }
+
+    @POST
+    @Path("/sendforgot")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void sendForgotPasswordInstructions(CredentialsDTO credentials) {
+        assert credentials.emailAddress != null;
+        System.out.println("Send email to " + credentials.getEmailAddress());
+        identityApplicationService().sendResetPasswordMessage(credentials.emailAddress);
     }
 
     private void reportWrongUsernamePassword(CredentialsDTO credentials) {
@@ -133,7 +139,6 @@ public class AuthenticationResource {
         return "";
     }
 
-//    SessionHelper sessionHelper = new SessionHelper();
     @GET
     @Path("/currentsubject")
     @Produces(MediaType.APPLICATION_JSON)
@@ -147,8 +152,6 @@ public class AuthenticationResource {
             reportCurrentSubjectNotAuthenticated(e);
             throw new UserNotAuthenticated();
         }
-
-//        SubjectDTO subject = SessionHelper.getSubject();//new SubjectDTO("User1", "admin");
     }
 
     private SubjectDTO createSubject(User user) {
@@ -202,13 +205,13 @@ public class AuthenticationResource {
         public void setRole(String role) {
             this.role = role;
         }
-
     }
 
     public static class CredentialsDTO {
 
         String username;
         String password;
+        String emailAddress;
 
         public CredentialsDTO() {
         }
@@ -234,6 +237,14 @@ public class AuthenticationResource {
             this.password = password;
         }
 
+        public String getEmailAddress() {
+            return emailAddress;
+        }
+
+        public void setEmailAddress(String emailAddress) {
+            this.emailAddress = emailAddress;
+        }
+
         @Override
         public String toString() {
             return "CredentialsDTO{" + "username=" + username + ", password=" + password + '}';
@@ -248,16 +259,4 @@ public class AuthenticationResource {
         }
     }
 
-//    private static class SessionHelper {
-//
-//        private static SubjectDTO subject;
-//
-//        public static SubjectDTO getSubject() {
-//            return subject;
-//        }
-//
-//        public static void setSubject(SubjectDTO subject) {
-//            SessionHelper.subject = subject;
-//        }
-//    }
 }
