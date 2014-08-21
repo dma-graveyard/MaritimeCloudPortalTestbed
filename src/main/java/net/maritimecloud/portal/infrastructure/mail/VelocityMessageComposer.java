@@ -53,6 +53,8 @@ public class VelocityMessageComposer implements MessageComposer {
 
     @Override
     public String composeResetPasswordMessage(User user) {
+        // TODO: consider to rename activationId to confirmationId or verificationId
+        assertThatUserHasAnActivationId(user);
         return compose(createModel(user), TEMPLATE_RESET_PASSWORD_MESSAGE);
     }
 

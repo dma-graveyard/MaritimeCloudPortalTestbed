@@ -29,32 +29,36 @@ public class UserBuilder {
         return new UserBuilder();
     }
 
-    UserBuilder with() {
+    public UserBuilder with() {
+        return this;
+    }
+    
+    public UserBuilder and() {
         return this;
     }
 
-    UserBuilder name(String name) {
+    public UserBuilder name(String name) {
         this.name = name;
         return this;
     }
 
-    UserBuilder password(String password) {
+    public UserBuilder password(String password) {
         this.password = password;
         return this;
     }
 
-    UserBuilder email(String email) {
+    public UserBuilder email(String email) {
         this.email = email;
         return this;
     }
 
-    UserBuilder whoIsActivated() {
+    public UserBuilder whoIsActivated() {
         isActivated = true;
         return this;
     }
 
-    User build() {
-        User u = new User("John", "pw", "a@b.c");
+    public User build() {
+        User u = new User("anakin", "aDarkSecret", "anakin@skywalker.ds");
         if (name != null) {
             u.setUsername(name);
         }

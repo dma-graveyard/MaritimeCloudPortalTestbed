@@ -19,6 +19,7 @@ import java.io.IOException;
 import net.maritimecloud.portal.config.ApplicationConfig;
 import net.maritimecloud.portal.domain.model.identity.Role;
 import net.maritimecloud.portal.domain.model.identity.User;
+import static net.maritimecloud.portal.domain.model.identity.UserBuilder.aUser;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.*;
@@ -27,8 +28,9 @@ import org.junit.Test;
 
 public class VelocityMessageComposerTest {
     
-    private static final User USER_LUKE   = new User("luke", "aSecret", "luke@skywalker.com", Role.USER);
-    private static final User USER_ANAKIN = new User("anakin", "aDarkSecret", "anakin@skywalker.com", Role.USER);
+    private static final User USER_LUKE   = aUser().whoIsActivated().with().name("luke").and().email("luke@skywalker.com").build();
+    private static final User USER_ANAKIN = aUser().whoIsActivated().build();
+    private static final User AN_INACTIVE_USER = aUser().build();
     
     private VelocityMessageComposer messageComposer;
     
@@ -39,7 +41,6 @@ public class VelocityMessageComposerTest {
     
     @Test
     public void signUpActivationMessageShouldBePatchedWithUserInfo() {
-        USER_LUKE.generateActivationId();
         String message = messageComposer.composeSignUpActivationMessage(USER_LUKE);
         assertThat(message, containsString("Dear LUKE"));
         assertThat(message, containsString("activate your account"));
@@ -49,14 +50,34 @@ public class VelocityMessageComposerTest {
     
     @Test
     public void signUpActivationMessageShouldMentionUserAnakin() {
-        USER_ANAKIN.generateActivationId();
         String message = messageComposer.composeSignUpActivationMessage(USER_ANAKIN);
         assertThat(message, containsString("Dear ANAKIN"));
     }
     
     @Test(expected = IllegalStateException.class)
     public void signUpActivationMessageShouldFailIfUserIsMissingActivationId() {
-        messageComposer.composeSignUpActivationMessage(USER_ANAKIN);
+        messageComposer.composeSignUpActivationMessage(AN_INACTIVE_USER);
+    }
+
+    @Test
+    public void resetPasswordMessageShouldBePatchedWithUserInfo() {
+        String message = messageComposer.composeResetPasswordMessage(USER_LUKE);
+        assertThat(message, containsString("Dear LUKE"));
+        assertThat(message, containsString("reset"));
+        assertThat(message, containsString("password"));
+        assertThat(message, containsString("#/users/luke/reset/"+USER_LUKE.activationId()));
+        assertThatAllPlaceholsersHasBeenPatched(message);
+    }
+    
+    @Test
+    public void resetPasswordMessageShouldMentionUserAnakin() {
+        String message = messageComposer.composeResetPasswordMessage(USER_ANAKIN);
+        assertThat(message, containsString("Dear ANAKIN"));
+    }
+    
+    @Test(expected = IllegalStateException.class)
+    public void resetPasswordMessageShouldFailIfUserIsMissingActivationId() {
+        messageComposer.composeResetPasswordMessage(AN_INACTIVE_USER);
     }
 
     private void assertThatAllPlaceholsersHasBeenPatched(String message) {
