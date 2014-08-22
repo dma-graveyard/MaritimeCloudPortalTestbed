@@ -30,7 +30,8 @@ public class SHA512EncryptionServiceTest {
         SHA512EncryptionService service = new SHA512EncryptionService();
         String encryptedValue = service.encryptedValue("secret");
         assertThat(encryptedValue, containsString("SHA-512"));
-        assertThat(encryptedValue, containsString("500000"));
+        // TODO: increase back to 500.000 iterations when out of development phase
+        assertThat(encryptedValue, containsString("1000"));
     }
 
     @Test

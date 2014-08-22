@@ -29,6 +29,8 @@ public class SHA512EncryptionService implements EncryptionService {
     public SHA512EncryptionService() {
         passwordService = new DefaultPasswordService();
         ((DefaultHashService) passwordService.getHashService()).setHashAlgorithmName("SHA-512");
+        // TODO: increase back to 500.000 iterations when out of development phase
+        ((DefaultHashService) passwordService.getHashService()).setHashIterations(1000);
     }
 
     @Override
