@@ -90,5 +90,23 @@ public class IdentityApplicationServiceTest {
         verify(mailService, never()).sendResetPasswordMessage(aUser);
 
     }
+
+    @Test
+    public void resetPasswordShouldUpdateUserPassword() {
+
+        // Given a username, a veirificationcode and a new password
+        String aUsername = "aUser";
+        String aVerificationCode = "aCode";
+        String aNewPassword = "aNewPassword";
+
+        when(userRepository.userWithUsername(aUsername)).thenReturn(aUser);
+        
+        // When I call the method
+        identityApplicationService.resetPassword(aUsername, aVerificationCode, aNewPassword);
+        
+        // Then an error message is logged
+        verify(aUser).changePassword(aVerificationCode, aNewPassword);
+
+    }
     
 }

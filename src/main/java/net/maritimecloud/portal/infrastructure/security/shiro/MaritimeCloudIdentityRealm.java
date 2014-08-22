@@ -14,10 +14,8 @@
  */
 package net.maritimecloud.portal.infrastructure.security.shiro;
 
-import java.util.NoSuchElementException;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import net.maritimecloud.portal.application.IdentityApplicationService;
-import net.maritimecloud.portal.domain.model.identity.Role;
 import net.maritimecloud.portal.domain.model.identity.UnknownUserException;
 import net.maritimecloud.portal.domain.model.identity.User;
 import org.apache.shiro.authc.AccountException;
@@ -33,10 +31,13 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 
 /**
- * Implementation of the Shiro Realm integrating into the MaritimeCloud identity repository. The realm uses password encryption. Shiro
- * configuration must match the encryption scheme.
+ * Implementation of the Shiro Realm integrating into the MaritimeCloud identity repository.
+ * <p>
+ * The users in this realm uses password encryption. Shiro configuration must match this encryption algorithm.
  * <p>
  * @author Christoffer Børrild
+ * @see EncryptionService
+ * @see SHA512EncryptionService
  */
 public class MaritimeCloudIdentityRealm extends AuthorizingRealm {
 
@@ -93,15 +94,15 @@ public class MaritimeCloudIdentityRealm extends AuthorizingRealm {
 
             // Lookup user
             User user = identityApplicationService().user(userId);
-            
+
             // Create AuthorizationInfo
             SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-            
+
             // Add all roles
             user.userRoles().all().stream().forEach((role) -> {
                 info.addRole(role.name());
             });
-            
+
             return info;
         } catch (UnknownUserException ex) {
             throw new UnknownAccountException("No user found in application registry");

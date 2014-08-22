@@ -35,9 +35,9 @@ public class InMemoryUserRepository implements UserRepository, CleanableStore {
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryUserRepository.class);
 
     public InMemoryUserRepository() {
-        LOG.warn("\n\n Using InMemoryUserRepository !!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n");
         repository = new HashMap<>();
         initWithDummyUsers();
+        LOG.warn("\n\n Using InMemoryUserRepository !!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n"+repository);
     }
 
     private void initWithDummyUsers() {

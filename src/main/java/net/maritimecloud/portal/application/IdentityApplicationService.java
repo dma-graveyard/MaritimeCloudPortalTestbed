@@ -18,6 +18,7 @@ import net.maritimecloud.portal.domain.model.DomainRegistry;
 import net.maritimecloud.portal.domain.model.identity.UnknownUserException;
 import java.util.List;
 import javax.transaction.Transactional;
+import net.maritimecloud.portal.domain.model.AssertionConcern;
 import net.maritimecloud.portal.domain.model.identity.User;
 import net.maritimecloud.portal.domain.model.identity.UserRepository;
 import net.maritimecloud.portal.infrastructure.mail.MailService;
@@ -26,7 +27,7 @@ import net.maritimecloud.portal.resource.LogService;
 /**
  * @author Christoffer Børrild
  */
-public class IdentityApplicationService {
+public class IdentityApplicationService extends AssertionConcern {
 
     private UserRepository userRepository() {
         return DomainRegistry.userRepository();
@@ -70,30 +71,41 @@ public class IdentityApplicationService {
             return false;
         }
         aUser.activate(activationId);
-       
+
         if (!aUser.isActive()) {
             logService().activateAccountFailed(aUsername, activationId, aUser.activationId());
         }
-        
+
         logService().activateAccountSucceded(aUsername);
         return aUser.isActive();
     }
 
     public void sendResetPasswordMessage(String emailAddress) {
-        
+    
+        assertArgumentNotEmpty(emailAddress, "A valid email address must be provided");
+    
         // Find user
         User aUser = userRepository().userWithEmail(emailAddress);
-        
+
         // Report missing user
         if (aUser == null) {
             logService().sendResetPasswordMessageFailedUserOfEmailNotFound(emailAddress);
             return;
         }
-        
+
         // Generate a new confirmation id to be used for reset password
         aUser.generateActivationId();
-        
+
         mailService().sendResetPasswordMessage(aUser);
+    }
+
+    public void resetPassword(String aUsername, String aVerificationCode, String aNewPassword) {
+
+        assertArgumentNotEmpty(aUsername, "A username must be provided");
+        assertArgumentNotEmpty(aVerificationCode, "A verificationcode must be provided");
+        assertArgumentNotEmpty(aNewPassword, "A new password must be provided");
+
+        user(aUsername).changePassword(aVerificationCode, aNewPassword);
     }
 
 }

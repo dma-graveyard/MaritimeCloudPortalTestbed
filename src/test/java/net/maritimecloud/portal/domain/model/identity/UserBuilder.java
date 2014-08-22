@@ -32,7 +32,7 @@ public class UserBuilder {
     public UserBuilder with() {
         return this;
     }
-    
+
     public UserBuilder and() {
         return this;
     }
@@ -58,16 +58,11 @@ public class UserBuilder {
     }
 
     public User build() {
-        User u = new User("anakin", "aDarkSecret", "anakin@skywalker.ds");
-        if (name != null) {
-            u.setUsername(name);
-        }
-        if (password != null) {
-            u.setPassword(password);
-        }
-        if (email != null) {
-            u.setEmailAddress(email);
-        }
+        User u = new User(
+                name != null ? name : "anakin",
+                password != null ? password : "aDarkSecret",
+                email != null ? email : "anakin@skywalker.ds"
+        );
         if (isActivated) {
             u.generateActivationId();
             u.activate(u.activationId());

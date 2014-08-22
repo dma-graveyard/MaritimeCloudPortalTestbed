@@ -102,10 +102,16 @@ public class AuthenticationResource {
     @POST
     @Path("/sendforgot")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void sendForgotPasswordInstructions(CredentialsDTO credentials) {
-        assert credentials.emailAddress != null;
-        System.out.println("Send email to " + credentials.getEmailAddress());
-        identityApplicationService().sendResetPasswordMessage(credentials.emailAddress);
+    public void sendResetPasswordInstructions(CredentialsDTO credentials) {
+        LOG.debug("Send reset password instructions email to " + credentials.getEmailAddress());
+        identityApplicationService().sendResetPasswordMessage(credentials.getEmailAddress());
+    }
+
+    @POST
+    @Path("/reset")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void resetPassword(CredentialsDTO credentials) {
+        identityApplicationService().resetPassword(credentials.getUsername(), credentials.getVerificationId(), credentials.getPassword());
     }
 
     private void reportWrongUsernamePassword(CredentialsDTO credentials) {
@@ -212,6 +218,7 @@ public class AuthenticationResource {
         String username;
         String password;
         String emailAddress;
+        String verificationId;
 
         public CredentialsDTO() {
         }
@@ -245,6 +252,14 @@ public class AuthenticationResource {
             this.emailAddress = emailAddress;
         }
 
+        public String getVerificationId() {
+            return verificationId;
+        }
+
+        public void setVerificationId(String verificationId) {
+            this.verificationId = verificationId;
+        }
+        
         @Override
         public String toString() {
             return "CredentialsDTO{" + "username=" + username + ", password=" + password + '}';

@@ -16,12 +16,17 @@ package net.maritimecloud.portal.resource;
 
 import javax.ws.rs.core.Application;
 import net.maritimecloud.portal.JerseyConfig;
+import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import net.maritimecloud.portal.config.ApplicationTestConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import net.maritimecloud.portal.application.ApplicationServiceTest;
+import net.maritimecloud.portal.application.IdentityApplicationService;
+import net.maritimecloud.portal.domain.model.DomainRegistry;
 import net.maritimecloud.portal.domain.model.identity.User;
+import net.maritimecloud.portal.domain.model.identity.UserRepository;
+import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
 import org.junit.After;
 import org.junit.Before;
 
@@ -57,42 +62,41 @@ public abstract class ResourceTest extends JerseyTest {
         super.tearDown();
         applicationServiceTest.tearDown();
     }
-    
-    
+
     /**
-     * Sugar syntax helper method to create a json array. 
+     * Sugar syntax helper method to create a json array.
+     * <p>
      * @param jsonObjects json formatted objects
      * @return a json formatted array of the supplied json objects
      */
-    protected String array(String... jsonObjects){
+    protected String array(String... jsonObjects) {
         String jsons = "[\n  ";
         for (String json : jsonObjects) {
             jsons += json + ",\n  ";
         }
-        return jsons.substring(0, jsons.length()-4) + "\n]";
+        return jsons.substring(0, jsons.length() - 4) + "\n]";
     }
-    
+
     /**
-     * Sugar syntax helper method to create a json object given a list of name and value pairs. 
-     * 
+     * Sugar syntax helper method to create a json object given a list of name and value pairs.
+     * <p>
      * @param namesAndValues pairs of names and values
      * @return a json formatted object of the supplied names and values
      */
-    protected String asJson(String... namesAndValues){
+    protected String asJson(String... namesAndValues) {
         String body = "{\n  ";
-        for (int i = 0; i < namesAndValues.length; i+=2) {
+        for (int i = 0; i < namesAndValues.length; i += 2) {
             String name = namesAndValues[i];
-            String value = namesAndValues[i+1];
-            body += "    '"+name+"':'"+value+"',\n";            
+            String value = namesAndValues[i + 1];
+            body += "    '" + name + "':'" + value + "',\n";
         }
-        return body.substring(0, body.length()-2) + "\n}";
-    }            
-    
-    
+        return body.substring(0, body.length() - 2) + "\n}";
+    }
 
     /**
      * Exposed ApplicationServiceTest method
      * <p>
+     * @return an ApplicationContext
      * @see ApplicationServiceTest#createApplicationContext()
      */
     protected ApplicationContext createApplicationContext() {
@@ -102,6 +106,7 @@ public abstract class ResourceTest extends JerseyTest {
     /**
      * Exposed ApplicationServiceTest method
      * <p>
+     * @return a user
      * @see ApplicationServiceTest#aUser()
      */
     protected User aUser() {
@@ -122,6 +127,22 @@ public abstract class ResourceTest extends JerseyTest {
         public User aUser() {
             return super.aUser();
         }
+    }
+
+    protected AuthenticationUtil authenticationUtil() {
+        return ApplicationServiceRegistry.authenticationUtil();
+    }
+
+    protected IdentityApplicationService identityApplicationService() {
+        return ApplicationServiceRegistry.identityApplicationService();
+    }
+
+    protected UserRepository userRepository() {
+        return DomainRegistry.userRepository();
+    }
+
+    protected LogService logService() {
+        return ApplicationServiceRegistry.logService();
     }
 
 }

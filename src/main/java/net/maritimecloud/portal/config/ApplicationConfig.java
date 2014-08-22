@@ -6,6 +6,7 @@ import javax.servlet.DispatcherType;
 import net.maritimecloud.portal.*;
 import net.maritimecloud.portal.application.IdentityApplicationService;
 import net.maritimecloud.portal.domain.infrastructure.shiro.ShiroAuthenticationUtil;
+import net.maritimecloud.portal.domain.model.identity.EncryptionService;
 import net.maritimecloud.portal.domain.model.identity.UserRepository;
 import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
 import net.maritimecloud.portal.infrastructure.mail.MailAdapter;
@@ -13,6 +14,7 @@ import net.maritimecloud.portal.infrastructure.mail.MailService;
 import net.maritimecloud.portal.infrastructure.mail.SmtpMailAdapter;
 import net.maritimecloud.portal.infrastructure.mail.VelocityMessageComposer;
 import net.maritimecloud.portal.infrastructure.persistence.JpaUserRepository;
+import net.maritimecloud.portal.infrastructure.service.SHA512EncryptionService;
 import net.maritimecloud.portal.resource.LogService;
 import net.maritimecloud.portal.resource.SimpleCORSFilter;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
@@ -44,6 +46,9 @@ public class ApplicationConfig {
 
     @Autowired
     Environment env;
+    
+    @Autowired
+    ApplicationContextSetup applicationContextSetup;
 
     @Bean
     public ApplicationContextSetup applicationContextSetup() {
@@ -66,6 +71,11 @@ public class ApplicationConfig {
         ServletRegistrationBean registration = new ServletRegistrationBean(new ServletContainer(), "/rest/*");
         registration.addInitParameter(ServletProperties.JAXRS_APPLICATION_CLASS, JerseyConfig.class.getName());
         return registration;
+    }
+    
+    @Bean
+    public EncryptionService encryptionService() {
+        return new SHA512EncryptionService();
     }
 
     @Bean

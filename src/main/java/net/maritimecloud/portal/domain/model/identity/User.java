@@ -17,6 +17,7 @@ package net.maritimecloud.portal.domain.model.identity;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import net.maritimecloud.portal.domain.model.ConcurrencySafeEntity;
+import net.maritimecloud.portal.domain.model.DomainRegistry;
 
 /**
  * @author Christoffer Børrild
@@ -25,10 +26,12 @@ public class User extends ConcurrencySafeEntity {
 
     private static final long serialVersionUID = 1L;
 
+    private final EncryptionService encryptionService;
+
     private String username;
     private String password;
     private String passwordEncryptionSalt;
-//    private Person person;
+    //private Person person;
     private String emailAddress;
     private String activationId;
 
@@ -38,51 +41,54 @@ public class User extends ConcurrencySafeEntity {
     private UserRoles userRoles;
     private boolean active;
 
+    protected User() {
+        super();
+        encryptionService = DomainRegistry.encryptionService();
+    }
+
+    public User(String aUsername, String aPassword /*,Person aPerson*/, String emailAddress, Role... roles) {
+
+        this();
+
+        // TODO: hack? generate id using a UserIdService or something...
+        id = idSequence++;
+
+        if (roles.length == 0) {
+            userRoles = new UserRoles(Role.USER);
+        } else {
+            userRoles = new UserRoles(roles);
+        }
+
+        // setPerson(aPerson);
+        setUsername(aUsername);
+        protectPassword(aPassword);
+        // aPerson.internalOnlySetUser(this);
+        setEmailAddress(emailAddress);
+        passwordEncryptionSalt = "salt";
+
+        //DomainEventPublisher.instance().publish(new UserRegistered(aUsername, aPerson.name(), aPerson.contactInformation().emailAddress()));
+    }
+
     /**
      * @return the application specific unique id of the user
      */
     @Override
     public long id() {
-//        return super.id();
+        //return super.id();
         return id;
     }
 
-    public void changePassword(String aCurrentPassword, String aChangedPassword) {
-        this.assertArgumentNotEmpty(
-                aCurrentPassword,
-                "Current and new password must be provided.");
-
-        this.assertArgumentEquals(
-                this.password(),
-                this.asEncryptedValue(aCurrentPassword),
-                "Current password not confirmed.");
-
-        this.protectPassword(aCurrentPassword, aChangedPassword);
-
-//        DomainEventPublisher
-//            .instance()
-//            .publish(new UserPasswordChanged(
-//                    this.tenantId(),
-//                    this.username()));
-    }
-
-//    public void changePersonalContactInformation(ContactInformation aContactInformation) {
-//        this.person().changeContactInformation(aContactInformation);
-//    }
-//
-//    public void changePersonalName(FullName aPersonalName) {
-//        this.person().changeName(aPersonalName);
-//    }
-//    public Person person() {
-//        return this.person;
-//    }
-//    public UserDescriptor userDescriptor() {
-//        return new UserDescriptor(
-//                this.username(),
-//                this.person().emailAddress().address());
-//    }
+    //public Person person() {
+    //    return person;
+    //}
+    //public UserDescriptor userDescriptor() {
+    //    return new UserDescriptor(
+    //            username(),
+    //            person().emailAddress().address());
+    //}
+    //
     public String username() {
-        return this.username;
+        return username;
     }
 
     public String emailAddress() {
@@ -90,24 +96,8 @@ public class User extends ConcurrencySafeEntity {
     }
 
     @Override
-    public boolean equals(Object anObject) {
-        boolean equalObjects = false;
-
-        if (anObject != null && this.getClass() == anObject.getClass()) {
-            User typedObject = (User) anObject;
-            equalObjects
-                    = this.username().equals(typedObject.username());
-        }
-
-        return equalObjects;
-    }
-
-    @Override
     public int hashCode() {
-        int hashCodeValue
-                = +(45217 * 269)
-                + this.username().hashCode();
-
+        int hashCodeValue = +(45217 * 269) + this.username().hashCode();
         return hashCodeValue;
     }
 
@@ -119,117 +109,117 @@ public class User extends ConcurrencySafeEntity {
                 + "]";
     }
 
-    public User(String aUsername, String aPassword /*,Person aPerson*/, String emailAddress, Role... roles) {
+    public void changePassword(String aCurrentPassword, String aChangedPassword) {
 
-        this();
+        assertArgumentNotEmpty(aCurrentPassword, "Current and new password must be provided.");
+        assertCurrentPasswordConfirmedOrIsConfirmationId(aCurrentPassword, "Current password not confirmed.");
 
-        // TODO: hack? generate id using a UserIdService or something...
-        this.id = idSequence++;
+        protectPassword(aChangedPassword);
 
-        if (roles.length == 0) {
-            this.userRoles = new UserRoles(Role.USER);
-        } else {
-            this.userRoles = new UserRoles(roles);
+        //DomainEventPublisher.instance().publish(new UserPasswordChanged(userId(), username()));
+    }
+
+//    public void changePersonalContactInformation(ContactInformation aContactInformation) {
+//        person().changeContactInformation(aContactInformation);
+//    }
+//
+//    public void changePersonalName(FullName aPersonalName) {
+//        person().changeName(aPersonalName);
+//    }
+    private void assertCurrentPasswordConfirmedOrIsConfirmationId(String aCurrentPassword, String message) {
+        if (isNotResetPasswordConfirmationId(aCurrentPassword)) {
+            assertCurrentPasswordConfirmed(aCurrentPassword, message);
+        }
+    }
+
+    private boolean isNotResetPasswordConfirmationId(String aCurrentPassword) {
+        return !aCurrentPassword.equals(activationId());
+    }
+
+    private void assertCurrentPasswordConfirmed(String aCurrentPassword, String message) {
+        boolean valuesMatch = encryptionService.valuesMatch(aCurrentPassword, internalAccessOnlyEncryptedPassword());
+        assertArgumentTrue(valuesMatch, message);
+    }
+
+    @Override
+    public boolean equals(Object anObject) {
+        boolean equalObjects = false;
+
+        if (anObject != null && this.getClass() == anObject.getClass()) {
+            User typedObject = (User) anObject;
+            equalObjects = this.username().equals(typedObject.username());
         }
 
-//        this.setPerson(aPerson);
-        this.setUsername(aUsername);
-
-        this.protectPassword("", aPassword);
-
-//        aPerson.internalOnlySetUser(this);
-        this.setEmailAddress(emailAddress);
-
-        this.passwordEncryptionSalt = "salt";
-//        DomainEventPublisher
-//            .instance()
-//            .publish(new UserRegistered(
-//                    aUsername,
-//                    aPerson.name(),
-//                    aPerson.contactInformation().emailAddress()));
-    }
-
-    protected User() {
-        super();
-    }
-
-    protected String asEncryptedValue(String aPlainTextPassword) {
-        System.out.println("WARNING: Using unencrypted passwords!!! TODO - fix this !!!");
-        String encryptedValue = aPlainTextPassword;
-//        String encryptedValue =
-//            DomainRegistry
-//                .encryptionService()
-//                .encryptedValue(aPlainTextPassword);
-//
-        return encryptedValue;
+        return equalObjects;
     }
 
     protected void assertPasswordsNotSame(String aCurrentPassword, String aChangedPassword) {
-        this.assertArgumentNotEquals(
-                aCurrentPassword,
-                aChangedPassword,
-                "The password is unchanged.");
+        if (aCurrentPassword == null) {
+            return;
+        }
+        boolean valuesMatch = encryptionService.valuesMatch(aChangedPassword, aCurrentPassword);
+        assertArgumentFalse(valuesMatch, "The password is unchanged.");
     }
 
     protected void assertPasswordNotWeak(String aPlainTextPassword) {
-//        this.assertArgumentFalse(
-//                DomainRegistry.passwordService().isWeak(aPlainTextPassword),
-//                "The password must be stronger.");
+        assertArgumentFalse(DomainRegistry.passwordService().isWeak(aPlainTextPassword), "The password must be stronger.");
     }
 
     protected void assertUsernamePasswordNotSame(String aPlainTextPassword) {
-        this.assertArgumentNotEquals(
-                this.username(),
-                aPlainTextPassword,
-                "The username and password must not be the same.");
+        assertArgumentNotEquals(username(), aPlainTextPassword, "The username and password must not be the same.");
     }
 
     public String internalAccessOnlyEncryptedPassword() {
-        return this.password();
+        return password();
     }
 
     protected String password() {
-        return this.password;
+        return password;
     }
 
     protected void setPassword(String aPassword) {
         this.password = aPassword;
     }
 
-//    protected void setPerson(Person aPerson) {
-//        this.assertArgumentNotNull(aPerson, "The person is required.");
-//
-//        this.person = aPerson;
-//    }
-    protected void protectPassword(String aCurrentPassword, String aChangedPassword) {
-        this.assertPasswordsNotSame(aCurrentPassword, aChangedPassword);
+    //protected void setPerson(Person aPerson) {
+    //    assertArgumentNotNull(aPerson, "The person is required.");
+    //
+    //    this.person = aPerson;
+    //}
+    //
+    protected void protectPassword(String aChangedPassword) {
 
-        this.assertPasswordNotWeak(aChangedPassword);
+        assertPasswordsNotSame(password(), aChangedPassword);
+        assertPasswordNotWeak(aChangedPassword);
+        assertUsernamePasswordNotSame(aChangedPassword);
 
-        this.assertUsernamePasswordNotSame(aChangedPassword);
+        setPassword(asEncryptedValue(aChangedPassword));
+    }
 
-        this.setPassword(this.asEncryptedValue(aChangedPassword));
+    private String asEncryptedValue(String aPlainTextPassword) {
+        String encryptedValue = encryptionService.encryptedValue(aPlainTextPassword);
+        return encryptedValue;
     }
 
 //    protected GroupMember toGroupMember() {
 //        GroupMember groupMember =
 //            new GroupMember(
-//                    this.username(),
+//                    username(),
 //                    GroupMemberType.User);
 //
 //        return groupMember;
 //    }
     protected void setUsername(String aUsername) {
-        this.assertArgumentNotEmpty(aUsername, "The username is required.");
-        this.assertArgumentLength(aUsername, 3, 250, "The username must be 3 to 250 characters.");
+        assertArgumentNotEmpty(aUsername, "The username is required.");
+        assertArgumentLength(aUsername, 3, 250, "The username must be 3 to 250 characters.");
 
         this.username = aUsername;
     }
 
     public void setEmailAddress(String anEmailAddress) {
-        this.assertArgumentNotEmpty(anEmailAddress, "The email address is required.");
-        this.assertArgumentLength(anEmailAddress, 1, 100, "Email address must be 100 characters or less.");
-        this.assertArgumentTrue(
+        assertArgumentNotEmpty(anEmailAddress, "The email address is required.");
+        assertArgumentLength(anEmailAddress, 1, 100, "Email address must be 100 characters or less.");
+        assertArgumentTrue(
                 Pattern.matches("\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*", anEmailAddress),
                 "Email address format is invalid.");
 
@@ -248,10 +238,18 @@ public class User extends ConcurrencySafeEntity {
         return activationId;
     }
 
+    /**
+     * Generates a random activationId. The id must be used in order to activate the user account 
+     * but may also be used for other purposes, like reset password confirmation (TODO: change that!)
+     */
     public void generateActivationId() {
         activationId = UUID.randomUUID().toString();
     }
 
+    /**
+     * Method that will mark the User (Account) as active if the supplied id match the stored activationId
+     * @param anActivationId 
+     */
     public void activate(String anActivationId) {
         if (activationId() != null && activationId().equals(anActivationId)) {
             activate();

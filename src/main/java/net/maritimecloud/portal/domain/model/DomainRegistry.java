@@ -14,8 +14,11 @@
  */
 package net.maritimecloud.portal.domain.model;
 
+import net.maritimecloud.portal.domain.model.identity.PasswordService;
 import net.maritimecloud.portal.application.SpringContextBasedRegistry;
+import net.maritimecloud.portal.domain.model.identity.EncryptionService;
 import net.maritimecloud.portal.domain.model.identity.UserRepository;
+import net.maritimecloud.portal.infrastructure.service.SHA512EncryptionService;
 
 /**
  *
@@ -25,6 +28,14 @@ public class DomainRegistry extends SpringContextBasedRegistry {
 
     public static UserRepository userRepository() {
         return (UserRepository) get("userRepository");
+    }
+
+    public static EncryptionService encryptionService() {
+        return new SHA512EncryptionService();
+    }
+
+    public static PasswordService passwordService() {
+        return new PasswordService();
     }
 
 }

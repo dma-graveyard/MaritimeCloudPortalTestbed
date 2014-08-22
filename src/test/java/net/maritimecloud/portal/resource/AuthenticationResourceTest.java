@@ -15,6 +15,11 @@
 
 package net.maritimecloud.portal.resource;
 
+import net.maritimecloud.portal.domain.model.identity.User;
+import net.maritimecloud.portal.domain.model.identity.UserBuilder;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -22,12 +27,49 @@ import org.junit.Test;
  */
 public class AuthenticationResourceTest extends ResourceTest {
     
+        AuthenticationResource authenticationResource;
+    
+    @Before
+    public void setup(){
+         authenticationResource = new AuthenticationResource();
+    }
+    
     @Test
-    public void testSendForgotPasswordInstructions() {
+    public void testSendResetPasswordInstructions() {
+        
+        // Given a known user
+        final User aUser = UserBuilder.aUser().build();
+        userRepository().add(aUser);
+        
+        // When user requests to get reset password instrcutions sent 
         AuthenticationResource.CredentialsDTO credentials = new AuthenticationResource.CredentialsDTO();
-        credentials.setEmailAddress("a@b.c");
-        AuthenticationResource instance = new AuthenticationResource();
-        instance.sendForgotPasswordInstructions(credentials);
+        credentials.setEmailAddress(aUser.emailAddress());
+        authenticationResource.sendResetPasswordInstructions(credentials);
+        
+        // Then an email is sent 
+        // (but we do not know how to test that from here)
+        
+    }
+    
+    @Test
+    public void testResetPassword() {
+        
+        // Given a known user
+        final User aUser = UserBuilder.aUser().with().password("aSecret").whoIsActivated().build();
+        userRepository().add(aUser);
+        String originalEncryptedPassword = aUser.internalAccessOnlyEncryptedPassword();
+        
+        // When user requests to reset password
+        AuthenticationResource.CredentialsDTO credentials = new AuthenticationResource.CredentialsDTO();
+        credentials.setUsername(aUser.username());
+        credentials.setVerificationId(aUser.activationId());
+        credentials.setPassword("aNewSecret");
+        
+        authenticationResource.resetPassword(credentials);
+        
+        // Then password has changed
+        assertThat(aUser.internalAccessOnlyEncryptedPassword(), not(equals(originalEncryptedPassword)));
+        
     }
 
     
