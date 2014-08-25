@@ -68,8 +68,8 @@ public class MaritimeCloudIdentityRealm extends AuthorizingRealm {
 
             // Lookup user
             User user = identityApplicationService().user(username);
-
-            if (user == null) {
+            
+            if (user == null || !user.isActive()) {
                 throw new UnknownAccountException("Could not authenticate with given credentials");
             }
 

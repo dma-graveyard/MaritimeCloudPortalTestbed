@@ -189,7 +189,8 @@ public class User extends ConcurrencySafeEntity {
     //
     protected void protectPassword(String aChangedPassword) {
 
-        assertPasswordsNotSame(password(), aChangedPassword);
+        // TODO: add this extra validation if you do not feel it's a bit to harsh:
+        // assertPasswordsNotSame(password(), aChangedPassword);
         assertPasswordNotWeak(aChangedPassword);
         assertUsernamePasswordNotSame(aChangedPassword);
 

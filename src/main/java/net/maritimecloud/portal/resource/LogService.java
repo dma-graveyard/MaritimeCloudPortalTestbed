@@ -14,7 +14,6 @@
  */
 package net.maritimecloud.portal.resource;
 
-import net.maritimecloud.portal.domain.model.identity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +26,8 @@ public class LogService {
 
     private static final Logger LOG = LoggerFactory.getLogger(LogService.class);
 
-    void reportUserLoggedIn(User user) {
-        LOG.info("User {} logged in", user.username());
+    void reportUserLoggedIn(String aUsername) {
+        LOG.info("User {} logged in", aUsername);
     }
 
     void reportWrongUsernamePassword(String username) {

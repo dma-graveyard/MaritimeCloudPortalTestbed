@@ -60,35 +60,38 @@ public class AuthenticationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public SubjectDTO login(CredentialsDTO credentials) {
 
-        if (credentials == null) {
-            throw new UserNotAuthenticated();
-        }
-
-        if (credentials.getUsername() == null) {
-            throw new UserNotAuthenticated();
-        }
+        assertCredentialsNotNull(credentials);
 
         // TODO HACK: temporary hack to test error 
         if (credentials.getUsername().equalsIgnoreCase("error")) {
             throw new UserNotAuthenticated();
         }
 
+        return tryLogin(credentials);
+    }
+
+    private SubjectDTO tryLogin(CredentialsDTO credentials) throws UserNotAuthenticated {
         try {
-            try {
-                long userId = authenticationUtil().login(credentials.username, credentials.password);
-                User user = identityApplicationService().user(userId);
-                if (!user.isActive()) {
-                    throw new UserNotAuthenticated();
-                }
-                reportUserLoggedIn(user);
-                return currentSubject();
-            } catch (AuthenticationException | UnknownUserException e) {
-                reportWrongUsernamePassword(credentials);
-                throw new UserNotAuthenticated();
-            }
-        } catch (Throwable t) {
-            LOG.error("Error", t);
+            return doLogin(credentials);
+        } catch (AuthenticationException e) {
+            reportWrongUsernamePassword(credentials);
             throw new UserNotAuthenticated();
+        }
+    }
+
+    private SubjectDTO doLogin(CredentialsDTO credentials) throws AuthenticationException {
+        authenticationUtil().login(credentials.username, credentials.password);
+        reportUserLoggedIn(credentials.username);
+        return currentSubject();
+    }
+
+    private void assertCredentialsNotNull(CredentialsDTO credentials) throws IllegalArgumentException {
+        if (credentials == null) {
+            throw new IllegalArgumentException();
+        }
+        
+        if (credentials.getUsername() == null) {
+            throw new IllegalArgumentException();
         }
     }
 
@@ -119,9 +122,9 @@ public class AuthenticationResource {
         logService().reportWrongUsernamePassword(credentials.username);
     }
 
-    private void reportUserLoggedIn(User user) {
-        LOG.debug("User {} logged in", user.username());
-        logService().reportUserLoggedIn(user);
+    private void reportUserLoggedIn(String username) {
+        LOG.debug("User {} logged in", username);
+        logService().reportUserLoggedIn(username);
     }
 
     private void reportCurrentSubjectNotAuthenticated(java.lang.Exception e) {
@@ -259,7 +262,7 @@ public class AuthenticationResource {
         public void setVerificationId(String verificationId) {
             this.verificationId = verificationId;
         }
-        
+
         @Override
         public String toString() {
             return "CredentialsDTO{" + "username=" + username + ", password=" + password + '}';
