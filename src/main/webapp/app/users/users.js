@@ -37,6 +37,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
         $scope.signUpPromise = null;
 
         $scope.isValid = function(isFormValid) {
+          console.log(isFormValid, $scope.passwordsMatch(), !$scope.passwordEqualsUsername(), !$scope.usernameAlreadyExist);
           return isFormValid
               && $scope.passwordsMatch()
               && !$scope.passwordEqualsUsername()
@@ -44,7 +45,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
         };
 
         $scope.passwordsMatch = function() {
-          return $scope.user.password === $scope.repeatedPassword;
+          return $scope.user.password === $scope.user.repeatedPassword;
         };
 
         $scope.passwordEqualsUsername = function() {
@@ -112,23 +113,61 @@ angular.module('mcp.users', ['ui.bootstrap'])
 
       }])
 
+    .controller('UserResetPasswordController', ['$scope', '$stateParams', 'AuthService', '$controller',
+      function($scope, $stateParams, AuthService, $controller) {
+
+        // Inherit password field behavior from similar controller
+        $controller('UserSignupController', {$scope: $scope}); //This works
+        // Override as we do not require a unique username
+        $scope.resolveUniqueUsername = function() {
+          return true;
+        };
+        $scope.isValid = function(isFormValid) {
+          console.log(isFormValid, $scope.passwordsMatch(), !$scope.passwordEqualsUsername());
+          return isFormValid
+              && $scope.passwordsMatch()
+              && !$scope.passwordEqualsUsername();
+        };
+
+        $scope.busyPromise = null;
+        $scope.viewState = 'supplyPassword';
+        $scope.user.username = $stateParams.username;
+
+        $scope.changePassword = function(newPassword) {
+          $scope.busyPromise = AuthService.resetPassword(
+              $stateParams.username,
+              $stateParams.activationId,
+              newPassword).then(
+              function() {
+                $scope.viewState = "success";
+              },
+              function(error) {
+                // Error handler code
+                console.log("Error during reset of password: ", error);
+                $scope.alert = "Whoops! Something went wrong: (" + error.status + ") " + error.statusText;
+                $scope.viewState = "expired";
+              });
+        };
+      }
+    ])
+
     .controller('UserActivationController', ['$scope', '$stateParams', 'UserService',
       function($scope, $stateParams, UserService) {
         console.log("Activate " + $stateParams.username);
         $scope.activateAccountPromise = null;
         $scope.accountActivated = null;
-              
+
         $scope.activateAccountPromise = UserService.activateAccount({
           username: $stateParams.username,
           activationId: $stateParams.activationId
-        }, {/*an empty data payload*/}, 
-        function(data) {
-          $scope.accountActivated = data.accountActivated;
-        },
-        function(error) {
-          console.log(error);
-          $scope.accountActivated = 'error';
-        });
+        }, {/*an empty data payload*/},
+            function(data) {
+              $scope.accountActivated = data.accountActivated;
+            },
+            function(error) {
+              console.log(error);
+              $scope.accountActivated = 'error';
+            });
 
       }
     ])

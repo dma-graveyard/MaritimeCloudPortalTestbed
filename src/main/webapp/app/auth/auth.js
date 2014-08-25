@@ -229,7 +229,15 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
             .post('/rest/authentication/sendforgot', {emailAddress: email}, {ignoreAuthModule: true})
             .then(function(respone) {
               var data = respone.data;
-              console.log("Login response data: ", data);
+            });
+      };
+
+      this.resetPassword = function(username, verificationId, newPassword) {
+        console.log("Sending change password request", username, verificationId);
+        return $http
+            .post('/rest/authentication/reset', {username: username, verificationId: verificationId, password: newPassword}, {ignoreAuthModule: true})
+            .then(function(respone) {
+              var data = respone.data;
             });
       };
 

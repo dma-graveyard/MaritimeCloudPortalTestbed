@@ -1,6 +1,6 @@
-<div class="col-lg-4"></div>
+<div class="col-sm-3"></div>
 
-<div class="col-lg-5 widget-container-col widget-box" cg-busy="signUpPromise">
+<div class="col-sm-6 widget-container-col widget-box" cg-busy="signUpPromise">
     <div class="widget-main">
         <!--TITLE-->
         <h4 class="header green lighter bigger-200"><i class="ace-icon fa fa-user blue"></i>
@@ -13,21 +13,26 @@
             <span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
         </div>
         <div x-ng-show="message" class="alert alert-info">{{message}}</div>
+OMSKRIV!!!
+        <!-- ALERT --> 
+            <alert ng-show="alert" type="danger">{{alert}}</alert>
+            <alert ng-show="message" type="info">{{message}}</alert>
+        
         <!--FORM-->
-        <form role="form" name="joinForm" novalidate>
+        <form role="form" name="form" novalidate>
             <!--USERNAME-->
             <div class="form-group">
                 <label for="preferredLogin">Preferred Username:</label> 
                 <span class="block input-icon input-icon-right">
-                    <input type="text" class="form-control" id="preferredLogin" name="userName" placeholder="Username" 
+                    <input type="text" class="form-control input-sm" id="preferredLogin" name="userName" placeholder="Username" 
                            ng-model="user.username" required ng-minlength="2" ng-maxlength="20" ng-pattern="/^[a-zA-Z]+[a-zA-Z0-9_]*$/" 
-                           ng-class="joinForm.userName.$valid && joinForm.userName.$dirty && usernameAlreadyExist ? 'mcp-invalid-input' : '' " mcp-focus-me>
+                           ng-class="form.userName.$valid && form.userName.$dirty && usernameAlreadyExist ? 'mcp-invalid-input' : '' " mcp-focus-me>
                     <i class="ace-icon fa fa-user"></i>
                 </span>
-                <div class="text-danger" ng-show="joinForm.userName.$error && joinForm.userName.$dirty">
-                    {{getError(joinForm.userName.$error, 2, 20, "No weird characters. Letters and numbers only. Must start with a letter.")}}
+                <div class="text-danger" ng-show="form.userName.$error && form.userName.$dirty">
+                    {{getError(form.userName.$error, 2, 20, "No weird characters. Letters and numbers only. Must start with a letter.")}}
                 </div>
-                <div class="text-danger" ng-show="joinForm.userName.$valid && joinForm.userName.$dirty && usernameAlreadyExist">
+                <div class="text-danger" ng-show="form.userName.$valid && form.userName.$dirty && usernameAlreadyExist">
                     Sorry, but this username is already taken : (
                 </div>
                 <p class="help-block">The username must be unique. That is, you cannot choose a username that has already been used by another user or organization.</p>
@@ -36,11 +41,12 @@
             <div class="form-group">
                 <label for="email">Primary Email Address:</label> 
                 <span class="block input-icon input-icon-right">
-                    <input type="email" class="form-control" placeholder="Email Address" id="email" name="email" x-ng-model="user.emailAddress">
+                    <input type="email" class="form-control input-sm" placeholder="Email Address" id="email" name="email" 
+                           autocorrect="off" autocapitalize="off" spellcheck="false" x-ng-model="user.emailAddress">
                     <i class="ace-icon fa fa-envelope"></i>
                 </span>
-                <div class="text-danger" ng-show="joinForm.email.$error && joinForm.email.$dirty">
-                    {{getError(joinForm.email.$error, 2, 20, "No weird characters. Letters and numbers only. Must start with a letter.")}}
+                <div class="text-danger" ng-show="form.email.$error && form.email.$dirty">
+                    {{getError(form.email.$error, 2, 20, "No weird characters. Letters and numbers only. Must start with a letter.")}}
                 </div>
                 <p class="help-block">The address where the registration key should be sent to. We promise not to send you any spam mails</p>
                 <!--div x-ng-show="user.emailAddress">
@@ -51,39 +57,12 @@
                 </div--> 
             </div>
             <!--PASSWORD-->
-            <div class="form-group">
-                <label for="newPassword">Password:</label> 
-                <span class="block input-icon input-icon-right">
-                    <input type="password" class="form-control" placeholder="Enter your desired password" id="newPassword" name="password"
-                           ng-class="joinForm.password.$dirty && passwordEqualsUsername() ? 'mcp-invalid-input' : '' "
-                           ng-model="user.password" required ng-minlength="4">
-                    <i class="ace-icon fa fa-lock"></i>
-                </span>
-                <div class="text-danger" ng-show="joinForm.password.$error && joinForm.password.$dirty">
-                    {{getError(joinForm.password.$error, 4)}}
-                </div>
-                <div class="text-danger" ng-show="joinForm.password.$dirty && passwordEqualsUsername()">
-                    The username and password must not be the same
-                </div>
-                <p class="help-block">At least 4 characters</p>
-            </div>
-            <!--CONFIRM-PASSWORD-->
-            <div class="form-group" ng-show="joinForm.password.$valid">
-                <label for="repeatedPassword">Confirm Password:</label> 
-                <span class="block input-icon input-icon-right">
-                    <input type="password" class="form-control" placeholder="Repeat password" name="rpw" id="repeatedPassword" 
-                           ng-model="repeatedPassword" ng-minlength="4" ng-class="joinForm.rpw.$dirty && !passwordsMatch() ? 'mcp-invalid-input' : '' ">
-                    <i class="ace-icon fa fa-retweet"></i>
-                </span>
-                <div class="text-danger" ng-show="repeatedPassword && !passwordsMatch()">
-                    Not matching!
-                </div>
-            </div>
+            <div ng-include="'users/supply-password.html'"></div>
         </form>
     </div>
     <!--SUBMIT-->
     <div class="widget-toolbox padding-8 clearfix">
-        <button class="btn btn-primary pull-right" x-ng-click="sendRequest()" x-ng-disabled="!isValid(joinForm.$valid)">
+        <button class="btn btn-primary pull-right" x-ng-click="sendRequest()" x-ng-disabled="!isValid(form.$valid)">
             <span class="bigger-110">Register account</span>
             <i class="ace-icon fa fa-arrow-right icon-on-right"></i>
         </button>

@@ -1,8 +1,8 @@
 <div ng-controller="UserActivationController">
 
-    <div class="col-lg-4"></div>
+    <div class="col-sm-3"></div>
 
-    <div ng-show="accountActivated===true" class="col-lg-5 widget-container-col widget-box" cg-busy="activateAccountPromise">
+    <div ng-show="accountActivated===true" class="col-sm-6 widget-container-col widget-box" cg-busy="activateAccountPromise">
         <div class="widget-main">
             <h4 class="header green lighter bigger-200"><i class="ace-icon fa fa-user blue"></i>
                 Account activated
@@ -20,7 +20,7 @@
             </div>
         </div>
     </div>
-    <div ng-show="accountActivated===false" class="col-lg-5 widget-container-col widget-box" cg-busy="activateAccountPromise">
+    <div ng-show="accountActivated===false" class="col-sm-6 widget-container-col widget-box" cg-busy="activateAccountPromise">
         <div class="widget-main">
             <h4 class="header yellow darker bigger-200 bg-danger"><i class="ace-icon fa fa-user blue"></i>
                 Unable to activate the account!
@@ -39,7 +39,7 @@
             </div>
         </div>
     </div>
-    <div ng-show="accountActivated==='error'" class="col-lg-5 widget-container-col widget-box" cg-busy="activateAccountPromise">
+    <div ng-show="accountActivated==='error'" class="col-sm-6 widget-container-col widget-box" cg-busy="activateAccountPromise">
         <div class="widget-main">
             <h4 class="header red lighter bigger-200"><i class="ace-icon fa fa-user blue"></i>
                 An error occurred during activation
@@ -59,14 +59,3 @@
     </div>
 
 </div>
-<!--<div class="panel panel-default">
-    <div class="panel-heading">
-        <h1 class="panel-title">{{user.username}}</h1>
-    </div>
-    <table class="table-condensed">
-        <tr> <th class="text-right">Username : </th> <td>{{user.username}} </td> </tr>
-        <tr> <th class="text-right">Email Address : </th> <td>{{user.emailAddress}}</td>  </tr>
-        <tr> <th class="text-right">Has email Address : </th> <td>{{user.emailAddress | checkmark}}</td>  </tr>
-    </table>
-</div>-->
-
