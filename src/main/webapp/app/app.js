@@ -61,6 +61,11 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
           url: "/users/{username}/reset/{activationId}",
           templateUrl: 'users/user-reset-password.html',
           controller: 'UserResetPasswordController',
+        },
+        {
+          name: 'styleguide',
+          url: "/styleguide",
+          templateUrl: 'layout/styleguide.html',
         }        
       ]
     };
