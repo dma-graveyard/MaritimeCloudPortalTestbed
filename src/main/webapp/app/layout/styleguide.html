@@ -17,57 +17,92 @@
         <div class="col-sm-1">column 1</div>
         <div class="col-sm-1">column 2</div>
     </div>
+    <div class="row" >
+
+        <div class="col-sm-offset-1 col-sm-6">
+            <br>
+            Input bound to model='test':<br>
+            <input ng-model="test"  type='text'> TEST = {{test}}
+            <br>
+        </div>
+    </div>
 
     <div class="row" >
 
-        <div class="col-sm-1">col 1</div>
+        <div class="col-sm-1"></div>
 
         <panel title="Default Panel">
             This is a default panel<br>
             <br>
             It uses the following default values:
             <ul>
-                <li>panel-class: "col-sm-6"</li>
-                <li>panel-icon:  "fa-info blue"</li>
+                <li>col: "6" (adds the class "col-sm-6")</li>
+                <li>icon:  "info" (blue)</li>
             </ul>
-            <buttons>
-                <btn ui-sref="restricted.dashboard">Close</btn>
-            </buttons>
+            <br>
+            Try and type: (Input bound to model='test'):<br>
+            <input ng-model="test"  type='text'>
+            <br>
+            
+            This is the body part with resolved stuff like {{currentUser.name + ' ' + test}} as you may type in the field above.
+
+            <btn ui-sref="restricted.dashboard">Close</btn>
         </panel>
 
         <div class="col-sm-1"></div>
 
-        <panel panel-class="col-sm-3" title="Customized Panel" panel-icon="fa-user red">
+        <panel panel-class="col-sm-3" title="Customized Panel" icon="user" col="3">
             This is a customized panel<br>
             <br>
             It <b>overrides</b> the following values:
             <ul>
-                <li>panel-class: "col-sm-3"</li>
-                <li>panel-icon:  "fa-user red"</li>
+                <li>col: "3"</li>
+                <li>icon:  "user"</li>
             </ul>
-            <buttons>
-                <btn ng-click="alert('test');">Close</btn>
-            </buttons>
+            <btn ng-click="alert('test');">Close</btn>
         </panel>
     </div>
 
     <div class="row" >
 
-        <div class="col-sm-3">col 3</div>
+        <div class="col-sm-1"></div>
 
-        <panel title="Another Default Panel">
-            This is a default panel but with customized buttons<br>
+        <panel title="Another Panel" icon="none">
+            This is another panel but without a title icon and with customized buttons<br>
             <br>
-            It uses the following default values:
+            It <b>overrides</b> the following values:
             <ul>
-                <li>panel-class: "col-sm-6"</li>
-                <li>panel-icon:  "fa-info blue"</li>
+                <li>icon:  "none"</li>
             </ul>
-            <buttons>
-                <btn class="btn-danger" onclick="alert('Now you are alerted!');" >Alert</btn>
-                <btn ui-sref="restricted.dashboard" >Go to dashboard</btn>
-            </buttons>
+            The buttons use the following values:
+            <ul>
+                <li>btn-type: "danger"</li>
+                <li>btn-type: "info"</li>
+            </ul>
+            Notice that the buttons appear in the inverse sequence than defined, that is they build up from right to left.
+            <btn btn-type="danger" onclick="alert('Now you are alerted!');" >Alert</btn>
+            <btn btn-type="info" ui-sref="restricted.dashboard" >Go to dashboard</btn>
         </panel>
+
+        <div class="col-sm-1"></div>
+
+        <panel class="col-sm-3" title="Customized Panel" icon-class="fa-user red">
+            This is a customized panel<br>
+            <br>
+            It <b>overrides</b> the following values:
+            <ul>
+                <li>
+                    class: "col-sm-3" <br>
+                    (this overrides the default)
+                </li>
+                <li>
+                    icon-class:  "fa-user red"<br>
+                    (when "icon-class" is defined it overrides any values of "icon")
+                </li>
+            </ul>
+            <btn ng-click="alert('test');">Close</btn>
+        </panel>
+
     </div>
 
     <hr>

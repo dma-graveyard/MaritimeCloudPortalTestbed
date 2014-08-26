@@ -17,19 +17,45 @@ angular.module('mcp.directives', [])
       };
     })
 
-    .directive("panel", function() {
+    .directive('panel', function() {
+      // as inspired by http://stackoverflow.com/questions/22584357/angularjs-is-there-a-difference-between-transclude-local-in-directive-controll?rq=1
       return {
-        link: function(scope, element, attrs) {
-          scope.panelSubject = attrs["title"];
-          scope.panelClass = attrs["panelClass"] ? attrs["panelClass"] : "col-sm-6";
-          scope.panelIcon = attrs["panelIcon"] ? attrs["panelIcon"] : "fa-info blue";
-        },
-        restrict: "E",
+        restrict: 'E',
+        transclude: true,
+        replace: true,
         scope: true,
         templateUrl: "layout/panel.html",
-        transclude: true
+        link: function(scope, element, attrs, controller, transclude) {
+          scope.panelSubject = attrs["title"];
+          scope.panelClass = attrs["col"] === "none" ? "" : "col-sm-" + (attrs["col"] ? attrs["col"] : "6");
+          scope.panelIcon = attrs["icon"] === "none" ? "" : "blue fa-" + (attrs["icon"] ? attrs["icon"] : "info");
+          scope.panelIconClass = attrs["iconClass"] ? attrs["iconClass"] : scope.panelIcon;
+          
+          transclude(scope, function(clone, scope) {
+            
+            // Find the transclude targets (body and buttons nodes) in the template
+            var body = element[0].querySelector('.mcp-panel-body');
+            var buttons = element[0].querySelector('.widget-toolbox');
+            
+            // Iterate the children of the source element
+            Array.prototype.forEach.call(clone, function(node) {
+              
+              // If it is a A-element 
+              // (hint: 'btn'-elements are converted to 'A' by its own directive in advance)
+              if (node.tagName === 'A') {
+                // then move it to the buttons section
+                buttons.appendChild(node);
+                return;
+              }
+              // the remainder goes into the body section
+              body.appendChild(node);
+
+            });
+          });
+        }
       };
     })
+
     .directive("buttons", function() {
       return {
         link: function(scope, element, attrs) {
@@ -44,8 +70,8 @@ angular.module('mcp.directives', [])
     .directive("btn", function() {
       return {
         link: function(scope, element, attrs) {
-          scope.panelButtonSrf = attrs["mcp"];
-          console.log(scope.panelButtonSrf);
+          scope.btnType = attrs["btnType"];
+          scope.btnClass = attrs["btnClass"] ? attrs["btnClass"] : "btn-" + (scope.btnType ? scope.btnType : "success");
         },
         restrict: "E",
         replace: true,
