@@ -2,7 +2,7 @@
 
     <div class="col-sm-3"></div>
 
-    <div ng-show="accountActivated===true" class="col-sm-6 widget-container-col widget-box" cg-busy="activateAccountPromise">
+    <div ng-show="accountActivated === true" class="col-sm-6 widget-container-col widget-box" cg-busy="busyPromise">
         <div class="widget-main">
             <h4 class="header green lighter bigger-200"><i class="ace-icon fa fa-user blue"></i>
                 Account activated
@@ -20,7 +20,7 @@
             </div>
         </div>
     </div>
-    <div ng-show="accountActivated===false" class="col-sm-6 widget-container-col widget-box" cg-busy="activateAccountPromise">
+    <div ng-show="accountActivated === false" class="col-sm-6 widget-container-col widget-box" cg-busy="busyPromise">
         <div class="widget-main">
             <h4 class="header yellow darker bigger-200 bg-danger"><i class="ace-icon fa fa-user blue"></i>
                 Unable to activate the account!
@@ -39,7 +39,7 @@
             </div>
         </div>
     </div>
-    <div ng-show="accountActivated==='error'" class="col-sm-6 widget-container-col widget-box" cg-busy="activateAccountPromise">
+    <div ng-show="accountActivated === 'error'" class="col-sm-6 widget-container-col widget-box" cg-busy="busyPromise">
         <div class="widget-main">
             <h4 class="header red lighter bigger-200"><i class="ace-icon fa fa-user blue"></i>
                 An error occurred during activation
