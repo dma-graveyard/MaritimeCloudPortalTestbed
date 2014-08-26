@@ -3,19 +3,59 @@
 /* Directives */
 
 angular.module('mcp.directives', [])
-/**
- * mcp-focus-me: Simpleminded directive that transfer focus to the selected element after 100 ms.
- */
-.directive('mcpFocusMe', function($timeout) {
-  // see http://stackoverflow.com/questions/14833326/how-to-set-focus-in-angularjs
-  return {
-    link: function(scope, element) {
-      $timeout(function() {
-        element[0].focus();
-      }, 100);
-    }
-  };
-});
+    /**
+     * mcp-focus-me: Simpleminded directive that transfer focus to the selected element after 100 ms.
+     */
+    .directive('mcpFocusMe', function($timeout) {
+      // see http://stackoverflow.com/questions/14833326/how-to-set-focus-in-angularjs
+      return {
+        link: function(scope, element) {
+          $timeout(function() {
+            element[0].focus();
+          }, 100);
+        }
+      };
+    })
+
+    .directive("panel", function() {
+      return {
+        link: function(scope, element, attrs) {
+          scope.panelSubject = attrs["title"];
+          scope.panelClass = attrs["panelClass"] ? attrs["panelClass"] : "col-sm-6";
+          scope.panelIcon = attrs["panelIcon"] ? attrs["panelIcon"] : "fa-info blue";
+        },
+        restrict: "E",
+        scope: true,
+        templateUrl: "layout/panel.html",
+        transclude: true
+      };
+    })
+    .directive("buttons", function() {
+      return {
+        link: function(scope, element, attrs) {
+          scope.panelSubject = attrs["title"];
+        },
+        restrict: "E",
+        scope: true,
+        templateUrl: "layout/panel-buttons.html",
+        transclude: true
+      };
+    })
+    .directive("btn", function() {
+      return {
+        link: function(scope, element, attrs) {
+          scope.panelButtonSrf = attrs["mcp"];
+          console.log(scope.panelButtonSrf);
+        },
+        restrict: "E",
+        replace: true,
+        scope: true,
+        templateUrl: "layout/panel-button.html",
+        transclude: true
+      };
+    })
+    ;
+
 
 //angular.module('mcpDirectives.ui.bootstrap', ['ui.bootstrap.transition'])
 //
