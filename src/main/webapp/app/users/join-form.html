@@ -8,16 +8,9 @@
         </h4>
         <!--INSTRUCTIONS-->
         <p>Please fill out the form below to get access to Maritime Cloud.</p>
-        <!--FEEDBACK-MESSAGES--> <!-- TODO: introduce a directive for alerts -->
-        <div x-ng-show="alertMessages" class="alert alert-danger">
-            <span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
-        </div>
-        <div x-ng-show="message" class="alert alert-info">{{message}}</div>
-OMSKRIV!!!
-        <!-- ALERT --> 
-            <alert ng-show="alert" type="danger">{{alert}}</alert>
-            <alert ng-show="message" type="info">{{message}}</alert>
-        
+        <!-- FEEDBACK --> 
+        <alert ng-show="alert" type="danger">{{alert}}</alert>
+        <alert ng-show="message" type="info">{{message}}</alert>
         <!--FORM-->
         <form role="form" name="form" novalidate>
             <!--USERNAME-->

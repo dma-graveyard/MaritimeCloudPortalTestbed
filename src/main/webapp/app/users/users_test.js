@@ -85,7 +85,7 @@ describe('UserSignupController', function() {
 
     expect(scope.user).to.be.empty;
     expect(scope.message).to.be.null;
-    expect(scope.alertMessages).to.be.null;
+    expect(scope.alert).to.be.null;
     expect(scope.usernameAlreadyExist).to.be.true;
 
   });

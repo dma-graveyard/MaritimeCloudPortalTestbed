@@ -32,7 +32,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
       function($scope, UserService, $state) {
         $scope.user = {};
         $scope.message = null;
-        $scope.alertMessages = null;
+        $scope.alert = null;
         $scope.usernameAlreadyExist = true;
         $scope.signUpPromise = null;
 
@@ -90,25 +90,15 @@ angular.module('mcp.users', ['ui.bootstrap'])
         );
 
         $scope.sendRequest = function() {
-          $scope.message = null;
-          $scope.alertMessages = null;
-
-          if (!$scope.user.emailAddress) {
-            $scope.alertMessages = ["A proper email address is required."];
-          } else {
-            $scope.message = "Sending request for access.";
-
-            $scope.signUpPromise = UserService.signUp($scope.user, function(data) {
-              $scope.message = ["Request SUCCESS :) " + data];
-              $scope.message = null;
-              $state.transitionTo("public.joinConfirmation");
-            }, function(error) {
-              // Error handler code
-              $scope.message = null;
-              $scope.alertMessages = ["An error occured on the serverside :( "];
-              $scope.alertMessages.push("Please try again.");
-            });
-          }
+          $scope.alert = null;
+          $scope.message = "Sending request for access.";
+          $scope.signUpPromise = UserService.signUp($scope.user, function(data) {
+            $scope.message = null;
+            $state.transitionTo("public.joinConfirmation");
+          }, function(error) {
+            $scope.message = null;
+            $scope.alert = "Argh! An error occured on the server :(";
+          });
         };
 
       }])
