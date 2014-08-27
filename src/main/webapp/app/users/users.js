@@ -156,17 +156,18 @@ angular.module('mcp.users', ['ui.bootstrap'])
         console.log("Activate " + $stateParams.username);
         $scope.busyPromise = null;
         $scope.accountActivated = null;
+        $scope.viewState = 'loading';
 
         $scope.busyPromise = UserService.activateAccount({
           username: $stateParams.username,
           activationId: $stateParams.activationId
         }, {/*an empty data payload*/},
             function(data) {
-              $scope.accountActivated = data.accountActivated;
+              $scope.viewState = data.accountActivated ? 'accountActivated' : 'accountNotActivated';
             },
             function(error) {
               console.log(error);
-              $scope.accountActivated = 'error';
+              $scope.viewState = 'error';
             });
 
       }

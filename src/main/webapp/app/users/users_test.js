@@ -179,12 +179,12 @@ describe('UserActivationController', function() {
     httpBackend.whenPOST(/rest\/users\/aUser\/activate\/VALID-ID-123-xyz/).respond({accountActivated: true});
     // WHEN controller is created
     userActivationController = controller("UserActivationController", {$scope: scope, UserService: userService, $stateParams: $stateParams});
-    // THEN initially 'accountActivated' is null 
-    expect(scope.accountActivated).to.be.null;
+    // THEN initially the viewState is laoding
+    expect(scope.viewState).to.equal('loading');
     // WHEN remote request is reolved 
     httpBackend.flush();
     // THEN the account is activated 
-    expect(scope.accountActivated).to.be.true;
+    expect(scope.viewState).to.equal('accountActivated');
   });
   it('should fail when username and activationId is invalid', function() {
 
@@ -193,12 +193,10 @@ describe('UserActivationController', function() {
     httpBackend.whenPOST(/rest\/users\/aUser\/activate\/INVALID-123-xyz/).respond({accountActivated: false});
     // WHEN controller is created
     userActivationController = controller("UserActivationController", {$scope: scope, UserService: userService, $stateParams: $stateParams});
-    // THEN initially 'accountActivated' is null 
-    expect(scope.accountActivated).to.be.null;
-    // WHEN remote request is reolved 
+    // AND remote request is reolved 
     httpBackend.flush();
     // THEN the account is still not activated 
-    expect(scope.accountActivated).to.be.false;
+    expect(scope.viewState).to.equal('accountNotActivated');
   });
   it('should fail when username and activationId is unknown', function() {
 
@@ -207,12 +205,10 @@ describe('UserActivationController', function() {
     httpBackend.whenPOST(/rest\/users/).respond(500);
     // WHEN controller is created
     userActivationController = controller("UserActivationController", {$scope: scope, UserService: userService, $stateParams: $stateParams});
-    // THEN initially 'accountActivated' is null 
-    expect(scope.accountActivated).to.be.null;
-    // WHEN remote request is reolved 
+    // AND remote request is reolved 
     httpBackend.flush();
-    // THEN the account is still not activated 
-    expect(scope.accountActivated).to.equal('error');
+    // THEN an error is indicated
+    expect(scope.viewState).to.equal('error');
   });
 });
 

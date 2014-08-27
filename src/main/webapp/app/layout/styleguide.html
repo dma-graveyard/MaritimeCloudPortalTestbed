@@ -1,7 +1,20 @@
 <div class="">
     <h1>Style Guide</h1>
-    <hr>
 
+    <hr>
+    <h1>Headings</h1>
+    <div class="row">
+        <div class="col-sm-offset-1 col-sm-10">
+            <h1>h1. Maritime Cloud Portal heading</h1>
+            <h2>h2. Maritime Cloud Portal heading</h2>
+            <h3>h3. Maritime Cloud Portal heading</h3>
+            <h4>h4. Maritime Cloud Portal heading</h4>
+            <h5>h5. Maritime Cloud Portal heading</h5>
+            <h6>h6. Maritime Cloud Portal heading</h6>    
+        </div>
+    </div>
+
+    <hr>
     <h2>Panels</h2>
     <div class="row" >
         <div class="col-sm-1">column 1</div>
@@ -17,8 +30,8 @@
         <div class="col-sm-1">column 1</div>
         <div class="col-sm-1">column 2</div>
     </div>
+    
     <div class="row" >
-
         <div class="col-sm-offset-1 col-sm-6">
             <br>
             Input bound to model='test':<br>
@@ -28,9 +41,8 @@
     </div>
 
     <div class="row" >
-
         <div class="col-sm-1"></div>
-
+        
         <panel title="Default Panel">
             This is a default panel<br>
             <br>
@@ -43,10 +55,8 @@
             Try and type: (Input bound to model='test'):<br>
             <input ng-model="test"  type='text'>
             <br>
-            
             This is the body part with resolved stuff like {{currentUser.name + ' ' + test}} as you may type in the field above.
-
-            <btn ui-sref="restricted.dashboard">Close</btn>
+            <panel-button ui-sref="restricted.dashboard">Close</panel-button>
         </panel>
 
         <div class="col-sm-1"></div>
@@ -59,7 +69,7 @@
                 <li>col: "3"</li>
                 <li>icon:  "user"</li>
             </ul>
-            <btn ng-click="alert('test');">Close</btn>
+            <panel-button ng-click="alert('test');">Close</panel-button>
         </panel>
     </div>
 
@@ -74,19 +84,19 @@
             <ul>
                 <li>icon:  "none"</li>
             </ul>
-            The buttons use the following values:
+            The panel-buttons has the following values:
             <ul>
                 <li>btn-type: "danger"</li>
-                <li>btn-type: "info"</li>
+                <li>btn-type: "success"</li>
             </ul>
             Notice that the buttons appear in the inverse sequence than defined, that is they build up from right to left.
-            <btn btn-type="danger" onclick="alert('Now you are alerted!');" >Alert</btn>
-            <btn btn-type="info" ui-sref="restricted.dashboard" >Go to dashboard</btn>
+            <panel-button btn-type="danger" onclick="alert('Now you are alerted!');" >Alert</panel-button>
+            <panel-button btn-type="success" ui-sref="restricted.dashboard" >Go to dashboard</panel-button>
         </panel>
 
         <div class="col-sm-1"></div>
 
-        <panel class="col-sm-3" title="Customized Panel" icon-class="fa-user red">
+        <panel class="col-sm-3" title="Customized Panel" title-color="red" icon-class="fa-warning red">
             This is a customized panel<br>
             <br>
             It <b>overrides</b> the following values:
@@ -96,16 +106,20 @@
                     (this overrides the default)
                 </li>
                 <li>
-                    icon-class:  "fa-user red"<br>
+                    title-color: "red" 
+                </li>
+                <li>
+                    icon-class: "fa-warning red"
                     (when "icon-class" is defined it overrides any values of "icon")
                 </li>
             </ul>
-            <btn ng-click="alert('test');">Close</btn>
+            The panel-buttons has the following values:
+            <ul>
+                <li>btn-type: "danger"</li>
+            </ul>
+            <panel-button btn-type="danger" ng-click="alert('test');">Close</panel-button>
         </panel>
-
+        
     </div>
-
     <hr>
-
-
 </div>

@@ -1,18 +1,8 @@
 <div class="col-sm-3"></div>
-
-<div class="col-sm-6 widget-container-col widget-box">
-    <div class="widget-main">
-        <h4 class="header green lighter bigger-200"><i class="ace-icon fa fa-user blue"></i>
-            New User Registration
-        </h4>
-        <p>
-            An email has been sent to your primary email address. Open it and 
-            follow the instructions to complete the registration process.
-        </p>
-        <div class="widget-toolbox padding-8 clearfix">
-            <a class="btn btn-success pull-right" ui-sref="public.landingpage" >
-                <span class="bigger-110">Close</span>
-            </a>
-        </div>
-    </div>
-</div>
+<panel icon="user" title="New User Registration">
+    <p>
+        An email has been sent to your primary email address. Open it and 
+        follow the instructions to complete the registration process.
+    </p>
+    <panel-button btn-type="info" ui-sref="public.landingpage">Close</panel-button>
+</panel>

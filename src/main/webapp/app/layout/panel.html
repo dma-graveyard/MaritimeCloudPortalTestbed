@@ -1,6 +1,6 @@
 <div class="widget-container-col widget-box {{panelClass}}" cg-busy="busyPromise">
     <div class="widget-main">
-        <h4 class="header green lighter bigger-200"><i class="ace-icon fa {{panelIconClass}}"></i>
+        <h4 class="header lighter bigger-200 {{panelSubjectClass}}" ng-class="{'green lighter' : !panelSubjectClass}"><i class="ace-icon fa {{panelIconClass}}"></i>
             {{panelSubject}}
         </h4>
         <div class="mcp-panel-body"></div> 

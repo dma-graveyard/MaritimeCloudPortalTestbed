@@ -27,21 +27,23 @@ angular.module('mcp.directives', [])
         templateUrl: "layout/panel.html",
         link: function(scope, element, attrs, controller, transclude) {
           scope.panelSubject = attrs["title"];
+          scope.panelSubjectClass = attrs["titleColor"];
           scope.panelClass = attrs["col"] === "none" ? "" : "col-sm-" + (attrs["col"] ? attrs["col"] : "6");
           scope.panelIcon = attrs["icon"] === "none" ? "" : "blue fa-" + (attrs["icon"] ? attrs["icon"] : "info");
           scope.panelIconClass = attrs["iconClass"] ? attrs["iconClass"] : scope.panelIcon;
-          
+
           transclude(scope, function(clone, scope) {
-            
+
             // Find the transclude targets (body and buttons nodes) in the template
             var body = element[0].querySelector('.mcp-panel-body');
             var buttons = element[0].querySelector('.widget-toolbox');
-            
+
             // Iterate the children of the source element
             Array.prototype.forEach.call(clone, function(node) {
-              
+
               // If it is a A-element 
               // (hint: 'btn'-elements are converted to 'A' by its own directive in advance)
+              console.log(node.tagName);
               if (node.tagName === 'A') {
                 // then move it to the buttons section
                 buttons.appendChild(node);
@@ -67,11 +69,11 @@ angular.module('mcp.directives', [])
         transclude: true
       };
     })
-    .directive("btn", function() {
+    .directive("panelButton", function() {
       return {
         link: function(scope, element, attrs) {
           scope.btnType = attrs["btnType"];
-          scope.btnClass = attrs["btnClass"] ? attrs["btnClass"] : "btn-" + (scope.btnType ? scope.btnType : "success");
+          scope.btnClass = attrs["btnClass"] ? attrs["btnClass"] : "btn-" + (scope.btnType ? scope.btnType : "info");
         },
         restrict: "E",
         replace: true,
