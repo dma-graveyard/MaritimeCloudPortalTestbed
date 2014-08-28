@@ -13,6 +13,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'src/test/js/chai-helpers.js',
       'src/main/webapp/ext/bower/angular/angular.js',
       'src/main/webapp/ext/bower/angular-resource/angular-resource.js',
       'src/main/webapp/ext/bower/angular-mocks/angular-mocks.js',
@@ -21,7 +22,9 @@ module.exports = function(config) {
       'src/main/webapp/ext/js/angular-ui.github.io/ui-router/stateHelper/1.1.0/statehelper.min.js',
       'src/main/webapp/ext/js/rawgithub.com/gsklee/ngStorage/master/ngStorage.js',
       'src/main/webapp/app/**/*.js',
-      'src/test/js/*.js'
+      'src/test/js/*.js',
+      // templates to be compiled by karma 
+      'src/main/webapp/app/**/*.html'
     ],
 
     // list of files to exclude
@@ -32,8 +35,32 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      '**/*.html': ['ng-html2js']
     },
 
+    ngHtml2JsPreprocessor: {
+      
+      // Note to SAFARI users:
+      // If you change settings in this section you may need to clear 
+      // the cache of you safari browser in order to make the changes 
+      // kick in!
+      
+      // strip this from the file path
+      stripPrefix: 'src/main/webapp/app/',
+      // prepend this to the
+      //prependPrefix: '',
+
+      //// or define a custom transform function
+      //cacheIdFromPath: function(filepath) {
+      //  console.log("FILEPATH "+filepath);
+      //  return filepath;
+      //},
+
+      //// setting this option will create only a single module that contains templates
+      //// from all the files, so you can load them all with module('foo')
+      //moduleName: 'foo'
+    },  
+      
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
@@ -54,8 +81,9 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
+    //browsers: ['Chrome'],
     browsers: ['Chrome', 'Safari', 'Firefox'],
-//    browsers: ['Safari'],
+    //browsers: ['Safari'],
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits

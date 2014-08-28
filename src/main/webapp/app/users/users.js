@@ -37,7 +37,6 @@ angular.module('mcp.users', ['ui.bootstrap'])
         $scope.signUpPromise = null;
 
         $scope.isValid = function(isFormValid) {
-          console.log(isFormValid, $scope.passwordsMatch(), !$scope.passwordEqualsUsername(), !$scope.usernameAlreadyExist);
           return isFormValid
               && $scope.passwordsMatch()
               && !$scope.passwordEqualsUsername()
@@ -75,7 +74,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
             return;
           }
           return UserService.isUnique({username: $scope.user.username}, function(data) {
-            console.log(data, $scope.usernameAlreadyExist);
+            //console.log(data, $scope.usernameAlreadyExist);
             $scope.usernameAlreadyExist = data.usernameExist;
           });
         };
@@ -83,7 +82,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
         $scope.$watch("user.username",
             function(newValue, oldValue, scope) {
               if (newValue !== oldValue) {
-                console.log(newValue, oldValue);
+                //console.log(newValue, oldValue);
                 scope.resolveUniqueUsername();
               }
             }
@@ -113,7 +112,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
           return true;
         };
         $scope.isValid = function(isFormValid) {
-          console.log(isFormValid, $scope.passwordsMatch(), !$scope.passwordEqualsUsername());
+          //console.log(isFormValid, $scope.passwordsMatch(), !$scope.passwordEqualsUsername());
           return isFormValid
               && $scope.passwordsMatch()
               && !$scope.passwordEqualsUsername();
@@ -133,7 +132,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
               },
               function(error) {
                 // Error handler code
-                console.log("Error during reset of password: ", error);
+                //console.log("Error during reset of password: ", error);
                 $scope.alert = "Whoops! Something went wrong: (" + error.status + ") " + error.statusText;
                 $scope.viewState = "expired";
               });
@@ -143,7 +142,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
 
     .controller('UserActivationController', ['$scope', '$stateParams', 'UserService',
       function($scope, $stateParams, UserService) {
-        console.log("Activate " + $stateParams.username);
+        //console.log("Activate " + $stateParams.username);
         $scope.busyPromise = null;
         $scope.accountActivated = null;
         $scope.viewState = 'loading';
@@ -156,7 +155,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
               $scope.viewState = data.accountActivated ? 'accountActivated' : 'accountNotActivated';
             },
             function(error) {
-              console.log(error);
+              //console.log(error);
               $scope.viewState = 'error';
             });
 

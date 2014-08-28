@@ -197,7 +197,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
             $scope.message = "A mail has been sent to " + email;
             $scope.scene = "login";
           }, function(error) {
-            console.log("Error during send of password instructions: ", error);
+            //console.log("Error during send of password instructions: ", error);
             $scope.alert = "Whoops! Something went wrong: (" + error.status + ") " + error.statusText;
           });
         };
@@ -224,7 +224,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       };
 
       this.sendForgotPassword = function(email) {
-        console.log("Sending password instructions to  " + email);
+        //console.log("Sending password instructions to  " + email);
         return $http
             .post('/rest/authentication/sendforgot', {emailAddress: email}, {ignoreAuthModule: true})
             .then(function(respone) {
@@ -233,7 +233,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       };
 
       this.resetPassword = function(username, verificationId, newPassword) {
-        console.log("Sending change password request", username, verificationId);
+        //console.log("Sending change password request", username, verificationId);
         return $http
             .post('/rest/authentication/reset', {username: username, verificationId: verificationId, password: newPassword}, {ignoreAuthModule: true})
             .then(function(respone) {

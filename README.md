@@ -1,7 +1,7 @@
 MaritimeCloudPortalTestbed
 ==========================
 
-(Temporar repository until portal code is ready to go public)
+(Temporal repository until portal code is ready to go public)
 
 A tool that offers Identity & Access Management of the Maritime Cloud Services as 
 well as management of services published in Maritime Cloud.
@@ -16,12 +16,12 @@ webservice API. The server is currently a Spring Boot wrapped standalone Jetty s
 On the client side we use:
 
 * JavaScript/HTML
-* Grunt (for building)
-* Twitter Bootstrap (for basic layout)
 * AngularJS (for forms and calling webservices)
-* JQuery (for some DOM-manipulation)
+* Twitter Bootstrap (for basic layout)
+* Grunt (for building)
+* JQuery (limited use for some DOM-manipulation)
 * HTML5 Application Cache
-* Karma (for unit testing)
+* Karma with Mocha and Chai (for unit testing)
 
 On the server side we use:
 
@@ -77,10 +77,22 @@ app/
 
     npm install -g bower
 
+* Karma (Follow the installation instructions at https://www.npmjs.org/package/karma)
+
+    npm install karma
+
 * ( Not in use just yet: )
 ** Grunt.js (Follow the installation instructions at http://gruntjs.com)
 
 ## Initial setup
+
+### Install Node js modules (e.g. Karma and friends)
+
+In order to download front-end devDependencies (for test) you need to run
+
+    npm install
+
+This will download external dependencies defined in 'packages.json' to the folder "src/main/webapp/app/node_modules".
 
 ### Bower
 
@@ -113,7 +125,7 @@ file "src/main/resources/application.properties".
 
 The frontend uses karma for unit-testing. To launch karma during development, simply run
 
-    karma karma.conf.js
+    karma start
 
 ## Launch
 

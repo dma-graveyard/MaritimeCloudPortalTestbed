@@ -42,8 +42,8 @@ angular.module('mcp.directives', [])
             Array.prototype.forEach.call(clone, function(node) {
 
               // If it is a A-element 
-              // (hint: 'btn'-elements are converted to 'A' by its own directive in advance)
-              console.log(node.tagName);
+              // (hint: 'btn'-elements are converted to 'A'-elements by its own directive in advance)
+              //console.log(node.tagName);
               if (node.tagName === 'A') {
                 // then move it to the buttons section
                 buttons.appendChild(node);
