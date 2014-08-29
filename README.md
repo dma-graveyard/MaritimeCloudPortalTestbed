@@ -148,9 +148,9 @@ Protractor is used for "end-to-end" test of the client. To run the protractor te
 
 1. Start the selenium server
 
-    webdriver-manager start
+      webdriver-manager start
 
-Use CTRL-C to stop it again when you'redone with testing. 
+  Use CTRL-C to stop it again when you'redone with testing. 
 
 2. Run the jasmine based tests
 
