@@ -146,13 +146,13 @@ Karma is used for unit-testing of the client. To launch karma during development
 
 Protractor is used for "end-to-end" test of the client. To run the protractor tests two steps must be completed:
 
-1. Start the selenium server
+Start the selenium server
 
-      webdriver-manager start
+    webdriver-manager start
 
-  Use CTRL-C to stop it again when you'redone with testing. 
+Use CTRL-C to stop it again when you'redone with testing. 
 
-2. Run the jasmine based tests
+Run the jasmine based tests
 
     ./node_modules/.bin/protractor
 
