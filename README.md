@@ -22,6 +22,7 @@ On the client side we use:
 * JQuery (limited use for some DOM-manipulation)
 * HTML5 Application Cache
 * Karma with Mocha and Chai (for unit testing)
+* Protractor (for end2end testing)
 
 On the server side we use:
 
@@ -94,6 +95,18 @@ In order to download front-end devDependencies (for test) you need to run
 
 This will download external dependencies defined in 'packages.json' to the folder "src/main/webapp/app/node_modules".
 
+### Install Selenium webdriver (for protractor to use)
+
+The webdriver-manager is a helper tool to easily get an instance of a Selenium Server running. Use it to download the necessary binaries with:
+
+    webdriver-manager update
+
+To start the selenium server instance use:
+
+    webdriver-manager start
+
+See https://github.com/angular/protractor/blob/master/docs/tutorial.md for more on protractor and webdriver
+
 ### Bower
 
 In order to download front-end dependencies you need to run
@@ -123,9 +136,31 @@ file "src/main/resources/application.properties".
 
 ## Testing ##
 
-The frontend uses karma for unit-testing. To launch karma during development, simply run
+### Unit tests
+
+Karma is used for unit-testing of the client. To launch karma during development, simply run
 
     karma start
+
+### End2End test
+
+Protractor is used for "end-to-end" test of the client. To run the protractor tests two steps must be completed:
+
+1. Start the selenium server
+
+    webdriver-manager start
+
+Use CTRL-C to stop it again when you'redone with testing. 
+
+2. Run the jasmine based tests
+
+    ./node_modules/.bin/protractor
+
+This will use the default protractor configuration 'protractor.conf.js'
+
+To run the cucumber scripts use instead:
+
+    ./node_modules/.bin/protractor ./src/test/specs/cucumber.conf.js
 
 ## Launch
 

@@ -10,7 +10,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#/"><font color="#eee">MaritimeCloud</font><font color="#aaa" size="3">Portal</font></a>
+            <a class="navbar-brand" href="#/" id="brand"><font color="#eee">MaritimeCloud</font><font color="#aaa" size="3">Portal</font></a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -84,11 +84,11 @@
                     <a class="btn-success" href="#/join">Join</a>
                 </li>
                 <li ng-if="!currentUser">
-                    <a class="btn-primary" href="#/dashboard">Log In</a>
+                    <a class="btn-primary" href="#/dashboard" id="navbarLogin">Log In</a>
                 </li>
                 <!-- Logout -->
                 <li ng-if="currentUser">
-                    <a class="btn-grey" href="" ng-click="logout()">Log out</a>
+                    <a class="btn-grey" href="" ng-click="logout()" id="logout">Log out</a>
                 </li>
             </ul>
         </div>

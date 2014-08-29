@@ -55,15 +55,9 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       $scope.navigationTarget = null;
       $scope.message = null;
       $scope.alertMessages = [];
-      $scope.$storage = $localStorage.$default({
-        userSession: {
-          id: null,
-          userId: null,
-          userRole: null,
-          user: {name: null, role: null}
-        }
-      });
-      Session.importFrom($scope.$storage.userSession);
+      $scope.$storage = $localStorage.$default({userSession: null});
+      if ($scope.$storage.userSession)
+        Session.importFrom($scope.$storage.userSession);
       $scope.currentUser = Session.user;
 
       $scope.$watch('$storage.userSession.userId', function() {
