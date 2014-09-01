@@ -81,14 +81,14 @@
 
                 <!-- Login & Join -->
                 <li ng-if="!currentUser">
-                    <a class="btn-success" href="#/join">Join</a>
+                    <a class="btn-success" href="#/join" id="menuJoin">Join</a>
                 </li>
                 <li ng-if="!currentUser">
-                    <a class="btn-primary" href="#/dashboard" id="navbarLogin">Log In</a>
+                    <a class="btn-primary" href="#/dashboard" id="menuLogin">Log In</a>
                 </li>
                 <!-- Logout -->
                 <li ng-if="currentUser">
-                    <a class="btn-grey" href="" ng-click="logout()" id="logout">Log out</a>
+                    <a class="btn-grey" href="" ng-click="logout()" id="menuLogout">Log out</a>
                 </li>
             </ul>
         </div>

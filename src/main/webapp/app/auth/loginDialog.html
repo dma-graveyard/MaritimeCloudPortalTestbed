@@ -1,4 +1,4 @@
-<div class="modal-header">
+<div class="modal-header" id="loginDialog">
     <button type="button" class="close" ng-click="$dismiss('aborted')">x</button>
     <div ng-switch="scene">
         <div ng-switch-default>
@@ -9,7 +9,6 @@
         </div>
     </div>
 </div>
-
 <div class="modal-body e-small-font" cg-busy="busyPromise">
 
     <!-- Hack to trigger browsers "remember credentials" functionality -->
@@ -42,7 +41,7 @@
                     </span>
                 </div>
                 <!--FORGOT PASSWORD LINK-->
-                <a class="text-primary" href="" ng-click="show('forgotPassword')">Forgot password?</a>
+                <a class="text-primary" href="" id="forgotPasswordLink" ng-click="show('forgotPassword')" >Forgot password?</a>
                 <!--SUBMIT or CANCEL-->
                 <div style="margin-top: 24px">
                     <button type="submit" class="btn btn-sm btn-primary" ng-disabled="!(loginForm.usernamefield.$valid && loginForm.passwordfield.$valid)">Log In</button>
@@ -71,7 +70,7 @@
                     <br>
                 </div>
                 <!--BACK LINK-->
-                <a href="" ng-click="show('default')">Back to login</a>
+                <a href="" id="backToLoginLink" ng-click="show('default')">Back to login</a>
                 <!--SEND or CANCEL-->
                 <div style="margin-top: 24px">
                     <button type="submit" class="btn btn-sm btn-primary" ng-disabled="!(passwordForm.email.$valid && passwordForm.email.$dirty)">Send</button>
@@ -84,6 +83,6 @@
 </div>
 <div class="modal-footer">
     <div class="pull-right" >
-        First time users can <a href="#/join" ng-click="$dismiss('aborted')">Sign up</a> here to get username and password. 
+        First time users can <a href="#/join" id="signUpLink" ng-click="$dismiss('aborted')">Sign up</a> here to get username and password. 
     </div>
 </div>
