@@ -4,7 +4,7 @@
 // HELPERS 
 // ----------------------------------------------------------------------------
 
-var expectIsEnabled = function(element){
+var expectIsEnabled = function(element) {
   return expect(element.getWebElement().isEnabled());
 };
 
@@ -45,7 +45,17 @@ var LoginDialogPage = function() {
   this.close = element(by.buttonText('x'));
   this.cancel = element(by.buttonText('Cancel'));
   this.signUpLink = element(by.id('signUpLink'));
-  
+  this.typeEscape = function() {
+    var e = this.close;
+    e.sendKeys(protractor.Key.ESCAPE);
+    // broken in safari (escape does not work!?) ...use close button instead 
+    browser.getCapabilities().then(function(data) {
+      if (data.caps_.browserName === 'safari') {
+        e.click();
+      }
+    });
+  };
+
   // Init page
   var navbar = new Menu();
   navbar.loginItem.click();
@@ -56,15 +66,19 @@ var LoginDialogForgotPasswordPage = function() {
   this.forgotPasswordLink = element(by.id('forgotPasswordLink'));
 
   this.email = element(by.id('email'));
-  this.typeEmail = function(keys) {return this.email.sendKeys(keys);};
+  this.typeEmail = function(keys) {
+    return this.email.sendKeys(keys);
+  };
   this.backToLoginLink = element(by.id('backToLoginLink'));
   this.send = element(by.buttonText('Send'));
   this.cancel = element(by.buttonText('Cancel'));
-  
+
   // Init page
   var loginDialogPage = new LoginDialogPage();
   loginDialogPage.forgotPasswordLink.click();
-  
+  browser.waitForAngular();
+
+
   this.dialog = loginDialogPage.loginDialog;
 };
 
@@ -81,13 +95,22 @@ describe('menu bar', function() {
     menu = new Menu();
   });
 
+  it('should logout before testing', function() {
+    menu.logoutItem.isPresent().then(function(present) {
+      if (present) {
+        console.log("Logging out to be in a clean state");
+        menu.logoutItem.click();
+      }
+    });
+  });
+
   it('should have a brand, a join and a login', function() {
     expect(menu.brand.isPresent()).toBe(true);
     expect(menu.joinItem.isPresent()).toBe(true);
     expect(menu.loginItem.isPresent()).toBe(true);
     expect(menu.logoutItem.isPresent()).toBe(false);
   });
-  
+
 });
 
 describe('maritime cloud portal landingpage', function() {
@@ -103,7 +126,7 @@ describe('maritime cloud portal landingpage', function() {
     expect(page.joinButton.isPresent()).toBe(true);
     expect(page.loginButton.isPresent()).toBe(true);
   });
-  
+
 });
 
 describe('login dialog', function() {
@@ -149,7 +172,8 @@ describe('login dialog', function() {
 
   it('should close dialog on escape', function() {
     expect(page.loginDialog.isPresent()).toBe(true);
-    page.loginDialog.sendKeys(protractor.Key.ESCAPE);
+    page.typeEscape();
+    //page.loginDialog.sendKeys(protractor.Key.ESCAPE);
     expect(page.loginDialog.isPresent()).toBe(false);
   });
 
@@ -158,7 +182,7 @@ describe('login dialog', function() {
     page.signUpLink.click();
     expect(browser.getLocationAbsUrl()).toMatch("/join");
   });
-  
+
 });
 
 describe('login dialog forgot password', function() {
