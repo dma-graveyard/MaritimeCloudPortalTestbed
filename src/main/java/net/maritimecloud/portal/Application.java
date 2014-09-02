@@ -1,6 +1,7 @@
 package net.maritimecloud.portal;
 
-import net.maritimecloud.portal.config.ApplicationConfig;
+//import net.maritimecloud.portal.config.ApplicationConfig;
+import net.maritimecloud.portal.config.ApplicationInMemoryDemoConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +10,8 @@ import org.springframework.context.annotation.Import;
 @Configuration
 //@ComponentScan(basePackageClasses = {UserResource.class})
 @EnableAutoConfiguration
-@Import(value =  ApplicationConfig.class)
+//@Import(value =  ApplicationConfig.class)
+@Import(value = ApplicationInMemoryDemoConfig.class)
 public class Application /*extends SpringBootServletInitializer*/ {
 
     public static void main(String[] args) {
@@ -22,10 +24,8 @@ public class Application /*extends SpringBootServletInitializer*/ {
 //        registration.addInitParameter(ServletProperties.JAXRS_APPLICATION_CLASS, JerseyConfig.class.getName());
 //        return registration;
 //    }    
-    
 //    @Override
 //    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 //        return application.sources(Application.class);
 //    }
-
 }

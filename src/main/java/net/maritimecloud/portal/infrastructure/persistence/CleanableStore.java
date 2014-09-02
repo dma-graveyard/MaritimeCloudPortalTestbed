@@ -15,6 +15,7 @@
 package net.maritimecloud.portal.infrastructure.persistence;
 
 /**
+ * TODO: move back into test sources once a durable persistence mechanism has been introduced
  * Helper interface that allows us to clean up a repository before each test.
  * (As inspired by Vaughn Vernons DDD project)
  * @author Christoffer Børrild

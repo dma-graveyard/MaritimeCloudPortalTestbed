@@ -26,6 +26,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * TODO: move back into test sources once a durable persistence mechanism has been introduced
+ * 
+ * In Memory implementation of the UserRepository for test purposes and as demo 
+ * until a durable persistence mechanism is introduced.
+ * 
  * @author Christoffer Børrild
  */
 public class InMemoryUserRepository implements UserRepository, CleanableStore {
