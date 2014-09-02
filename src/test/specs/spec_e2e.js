@@ -1,11 +1,41 @@
 'use strict';
 
+// Inspired by:
+//   https://github.com/angular/protractor/issues/156
+//   http://www.thoughtworks.com/insights/blog/using-page-objects-overcome-protractors-shortcomings
+
 // ----------------------------------------------------------------------------
 // HELPERS 
 // ----------------------------------------------------------------------------
 
 var expectIsEnabled = function(element) {
-  return expect(element.getWebElement().isEnabled());
+  return expect(element.isEnabled());
+};
+
+var isDisabled = function(element) {
+  // HACK: apparently protractor (or selenium?) cannot read the correct 
+  // isEnabled-state of some elements, instead it always resolves to true?!!  
+  // (It might be due to the transcluded nature of these elements, like buttons 
+  // in panels-directive!?!)
+  // Explicitly look for the "disabled"-attribute:
+  return element.getAttribute('disabled').then(function(result) {
+    return result === 'true';
+  });
+};
+
+var echo = function(element) {
+  element.getOuterHtml().then(function(data) {
+    console.log(data);
+    console.log("Data: " + data);
+  });
+  element.isEnabled().then(function(data) {
+    console.log(data);
+    console.log("Data: " + data);
+  });
+  element.getAttribute('disabled').then(function(data) {
+    console.log(data);
+    console.log("Data: " + data);
+  });
 };
 
 // ----------------------------------------------------------------------------
@@ -13,29 +43,23 @@ var expectIsEnabled = function(element) {
 // ----------------------------------------------------------------------------
 
 var Menu = function() {
+  browser.get('app/index.html#/');
   this.brand = element(by.id('brand'));
   this.joinItem = element(by.id('menuLogin'));
   this.loginItem = element(by.id('menuLogin'));
   this.logoutItem = element(by.id('menuLogout'));
-//  this.login = element(by.id('navbarLogin'));
-  // Init page
-  browser.get('app/index.html#/');
 };
 
 var LandingPage = function() {
+  browser.get('app/index.html#/');
   this.loginButton = element(by.id('login'));
   this.joinButton = element(by.id('join'));
-  // Init page
-  browser.get('app/index.html#/');
-};
-
-var JoinFormPage = function() {
-  this.preferredLogin = element(by.model('user.username'));
-  // Init page
-  browser.get('app/index.html#/join');
 };
 
 var LoginDialogPage = function() {
+  // Init page
+  var navbar = new Menu();
+  navbar.loginItem.click();
 
   this.loginDialog = element(by.id('loginDialog'));
   this.usernamefield = element(by.id('usernamefield'));
@@ -55,16 +79,16 @@ var LoginDialogPage = function() {
       }
     });
   };
-
-  // Init page
-  var navbar = new Menu();
-  navbar.loginItem.click();
 };
 
 var LoginDialogForgotPasswordPage = function() {
+  // Init page
+  var loginDialogPage = new LoginDialogPage();
+  loginDialogPage.forgotPasswordLink.click();
+  browser.waitForAngular();
 
+  this.dialog = loginDialogPage.loginDialog;
   this.forgotPasswordLink = element(by.id('forgotPasswordLink'));
-
   this.email = element(by.id('email'));
   this.typeEmail = function(keys) {
     return this.email.sendKeys(keys);
@@ -72,14 +96,56 @@ var LoginDialogForgotPasswordPage = function() {
   this.backToLoginLink = element(by.id('backToLoginLink'));
   this.send = element(by.buttonText('Send'));
   this.cancel = element(by.buttonText('Cancel'));
+};
 
-  // Init page
-  var loginDialogPage = new LoginDialogPage();
-  loginDialogPage.forgotPasswordLink.click();
-  browser.waitForAngular();
+var SupplyPasswordSnippet = function() {
+  this.newPassword = element(by.id('newPassword'));
+  this.repeatedPassword = element(by.id('repeatedPassword'));
+  this.typePassword = function(keys) {
+    return this.newPassword.sendKeys(keys);
+  };
+  this.retypePassword = function(keys) {
+    return this.repeatedPassword.sendKeys(keys);
+  };
+};
 
+var JoinFormPage = function() {
+  browser.get('app/index.html#/join');
+  this.preferredLogin = element(by.id('preferredLogin'));
+  this.isValidLogin = function(keys) {
+    return this.preferredLogin.getAttribute('mcp-invalid-input');
+  };
+  this.typePreferredLogin = function(keys) {
+    return this.preferredLogin.sendKeys(keys);
+  };
+  this.email = element(by.id('email'));
+  this.typeEmail = function(keys) {
+    return this.email.sendKeys(keys);
+  };
+  // import password snippet
+  var supplyPasswordSnippet = new SupplyPasswordSnippet();
+  this.newPassword = supplyPasswordSnippet.newPassword;
+  this.repeatedPassword = supplyPasswordSnippet.repeatedPassword;
+  this.typePassword = supplyPasswordSnippet.typePassword;
+  this.retypePassword = supplyPasswordSnippet.retypePassword;
+  this.submitButton = element(by.id('submitButton'));
+};
 
-  this.dialog = loginDialogPage.loginDialog;
+var JoinConfirmPage = function() {
+  browser.get('app/index.html#/join-confirm');
+};
+
+var ResetPasswordPage = function() {
+  browser.get('app/index.html#/users/admin/reset/some-unique-verification-code-XYZ-123');
+  // import password snippet
+  var supplyPasswordSnippet = new SupplyPasswordSnippet();
+  this.newPassword = supplyPasswordSnippet.newPassword;
+  this.repeatedPassword = supplyPasswordSnippet.repeatedPassword;
+  this.typePassword = supplyPasswordSnippet.typePassword;
+  this.retypePassword = supplyPasswordSnippet.retypePassword;
+  this.changePasswordButton = element(by.id('changePasswordButton'));
+  this.loginButton = element(by.id('loginButton'));
+  this.closeButton = element(by.id('closeButton'));
 };
 
 // ----------------------------------------------------------------------------
@@ -214,3 +280,92 @@ describe('login dialog forgot password', function() {
 
 });
 
+describe('reset password page', function() {
+
+  var page;
+
+  beforeEach(function() {
+    page = new ResetPasswordPage();
+  });
+
+  it('should require at least 4 character password', function() {
+    expect(page.repeatedPassword.isDisplayed()).toBe(false);
+    page.typePassword('abc');
+    expect(page.repeatedPassword.isDisplayed()).toBe(false);
+  });
+
+  it('should require password different from username', function() {
+    // HACK: apparently protractor (or selenium?) cannot read the correct 
+    // isEnabled-state of this element, instead it always resolves to true?!!  
+    // (It might be due to the transcluded nature of the button!?!)
+    // Explicitly look for the "disabled"-attribute:
+    expect(isDisabled(page.changePasswordButton)).toBe(true);
+    page.typePassword('admin');
+    page.retypePassword('admin');
+    expect(isDisabled(page.changePasswordButton)).toBe(true);
+  });
+
+  it('should verify password', function() {
+    expect(page.newPassword.isDisplayed()).toBe(true);
+    expect(page.repeatedPassword.isDisplayed()).toBe(false);
+    expect(isDisabled(page.changePasswordButton)).toBe(true);
+    page.typePassword('secret');
+    expect(page.repeatedPassword.isDisplayed()).toBe(true);
+    page.retypePassword('secret');
+    expect(isDisabled(page.changePasswordButton)).toBe(false);
+  });
+
+  it('should deny change of password with expired reset-id', function() {
+    expect(page.closeButton.isDisplayed()).toBe(false);
+    page.typePassword('secret');
+    page.retypePassword('secret');
+    page.changePasswordButton.click();
+    expect(page.closeButton.isDisplayed()).toBe(true);
+  });
+
+});
+
+describe('join form', function() {
+
+  var page;
+
+  beforeEach(function() {
+    page = new JoinFormPage();
+  });
+
+  it('should sign up', function() {
+    page.typePreferredLogin('JohnDoe4');
+    page.typeEmail('john_doe@email.com');
+    page.typePassword('secret');
+    page.retypePassword('secret');
+    // TODO: add httpCallback mock to intercept registration
+    // in order to prevent duplicate username errors when testing 
+    // with multiple browsers
+    //page.submitButton.click();
+    //expect(browser.getLocationAbsUrl()).toMatch("/join-confirm");
+  });
+
+  it('should require unique username', function() {
+    page.typePreferredLogin('admin');
+    expect(page.isValidLogin()).toBe(false);
+    page.typePreferredLogin('somethingElse');
+    expect(page.isValidLogin()).toBe(true);
+  });
+
+});
+
+/*
+ describe('activate account', function() {
+ 
+ var page;
+ 
+ beforeEach(function() {
+ page = new JoinConfirmPage();
+ });
+ 
+ it('should show account activated', function() {
+ // not sure we can do this at the moment
+ });
+ 
+ });
+ */
