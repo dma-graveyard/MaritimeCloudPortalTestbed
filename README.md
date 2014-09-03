@@ -166,11 +166,11 @@ To run the cucumber scripts use instead:
 
 The build produces a launchable .war-file in the /target folder. The application can be launched with:
 
-    MaritimeCloudPortalTestbed> java -jar target/service-0.0.1-SNAPSHOT.war
+    java -jar target/service-0.0.1-SNAPSHOT.war
 
 or by using maven:
 
-    MaritimeCloudPortalTestbed> mvn spring-boot:run
+    mvn spring-boot:run
 
 A local deployment will setup MaritimeCloudPortalTestbed at the following URL:
 
@@ -210,12 +210,14 @@ Simply open the project as an existing maven-based project. Thats it - no mumboj
 
 ## JavaScript Validation Errors in Netbeans & Eclipse
 
-### Ways to avoid annoying JavaScript Validation Errors in Netbeans:
+### Ways to avoid annoying JavaScript Validation Errors:
+
+#### in Netbeans:
 
 Navigate to one of the offending scripts and open it. Go to one of the offending lines and click the light-bulb in left margin. 
 Choose to suppress warnings from the menu by choosing the folder level that encapsulates the offending scripts.
 
-### Ways to avoid annoying JavaScript Validation Errors in Eclipse:
+#### in Eclipse:
 
 http://stackoverflow.com/questions/7102299/eclipse-javascript-validation-disabled-but-still-generating-errors
 
