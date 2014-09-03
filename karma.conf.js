@@ -13,7 +13,6 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'src/test/js/chai-helpers.js',
       'src/main/webapp/ext/bower/angular/angular.js',
       'src/main/webapp/ext/bower/angular-resource/angular-resource.js',
       'src/main/webapp/ext/bower/angular-mocks/angular-mocks.js',
@@ -61,10 +60,24 @@ module.exports = function(config) {
       //moduleName: 'foo'
     },  
       
+    //plugins : [
+    //        'karma-chai',
+    //        'karma-chrome-launcher',
+    //        'karma-firefox-launcher',
+    //        'karma-junit-reporter',
+    //        'karma-mocha',
+    //        'karma-ng-html2js-preprocessor'
+    //        ],
+
+    junitReporter : {
+      outputFile: 'target/karma-reports/unit.xml',
+      suite: 'unit'
+    },
+      
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['progress', 'junit'],
 
     // web server port
     port: 9876,
