@@ -46,7 +46,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
 
     /* Controllers */
 
-// A container for global application logic
+    // A container for global application logic
     .controller('ApplicationController', function($rootScope, $scope, $modal, $location, $localStorage, USER_ROLES, AUTH_EVENTS, AuthService, httpAuthInterceptorService, Session) {
       $scope.sidebar = {isMinified: false};
       $scope.userRoles = USER_ROLES;
@@ -58,16 +58,16 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
 
       // Import user session from local storage (...if any)
       $scope.$storage = $localStorage.$default({userSession: {}});
-      if ($scope.$storage.userSession) {
-        Session.importFrom($scope.$storage.userSession);
-      }
       $scope.currentUser = Session.user;
 
-      // Wath the storage for changes that origins from other instances running 
+      // Watch the storage for changes that origins from other instances running 
       // in other windows or tabs
-      $scope.$watch('$storage.userSession.userId', function() {
+      $scope.$watch('$storage.userSession', function() {
+        if ($scope.$storage.userSession) {
+          Session.importFrom($scope.$storage.userSession);
+        }
         $scope.currentUser = $scope.$storage.userSession.user;
-        if (!$scope.currentUser){
+        if (!$scope.currentUser) {
           // go to landingpage if user logged out
           $location.path('/').replace();
         }
@@ -95,24 +95,12 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       // Logout listener that cleans up state bound to the current user
       $scope.$on(AUTH_EVENTS.logoutSuccess, function() {
         console.log("EVENT: User logged out! Session: ", Session);
-
-        //Clean up state
-        //delete $scope.$storage;
-        $scope.$storage.$reset({
-          userSession: {
-            id: null,
-            userId: null,
-            userRole: null,
-            user: null
-          }
-        });
+        // reset local storage
+        $scope.$storage.$reset({userSession: {}});
         Session.importFrom($scope.$storage.userSession);
         $scope.currentUser = Session.user;
-
-        //$scope.currentUser = null;
         $scope.navigationTarget = null;
         $location.path('/').replace();
-        //Session.exportTo($scope.$storage.userSession);
       });
 
       // Login listener that listens for login failure
@@ -152,7 +140,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
           templateUrl: 'auth/loginDialog.html',
           controller: 'LoginController',
           size: 'sm',
-          backdrop: 'static',
+          backdrop: 'static'
         }).result.then(function() {
           // Login dialog closed
         }, function() {
