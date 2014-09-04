@@ -60,6 +60,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       $scope.$storage = $localStorage.$default({userSession: {}});
       if ($scope.$storage.userSession) {
         Session.importFrom($scope.$storage.userSession);
+      }
       $scope.currentUser = Session.user;
 
       // Wath the storage for changes that origins from other instances running 
