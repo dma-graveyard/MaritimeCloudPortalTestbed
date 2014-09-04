@@ -55,20 +55,31 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       $scope.navigationTarget = null;
       $scope.message = null;
       $scope.alertMessages = [];
-      $scope.$storage = $localStorage.$default({userSession: null});
-      if ($scope.$storage.userSession)
+
+      // Import user session from local storage (...if any)
+      $scope.$storage = $localStorage.$default({userSession: {}});
+      if ($scope.$storage.userSession) {
         Session.importFrom($scope.$storage.userSession);
       $scope.currentUser = Session.user;
 
+      // Wath the storage for changes that origins from other instances running 
+      // in other windows or tabs
       $scope.$watch('$storage.userSession.userId', function() {
-        console.log("User session changed! ", $scope.$storage.userSession.userId);
         $scope.currentUser = $scope.$storage.userSession.user;
+        if (!$scope.currentUser){
+          // go to landingpage if user logged out
+          $location.path('/').replace();
+        }
+        // TODO: we might should also should check if user had logged 
+        // in as somebody else without logging out first!?
       }, true);
 
       // Login listener that binds the login session to current user upon login success
       $scope.$on(AUTH_EVENTS.loginSuccess, function() {
         console.log("EVENT: User logged in! ", Session.user, "Session: ", Session);
         $scope.currentUser = Session.user;
+        if (!$scope.$storage.userSession)
+          $scope.$storage.userSession = {};
         Session.exportTo($scope.$storage.userSession);
         // Process pending requests
         httpAuthInterceptorService.loginConfirmed();
