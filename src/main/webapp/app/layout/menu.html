@@ -33,8 +33,10 @@
                     </a>
                     <ul class="dropdown-menu" >
                         <li class="menu-item-lead"> Switch dashboard context: </li>
-                        <li ng-repeat="organization in organizations">
+                        <li ng-repeat="organization in organizations | orderBy:orderProp">
+                            
                             <a href="#/orgs/{{organization.name}}">
+                                <span class="menu-item-check" ng-class="{'selected' : isCurrent(organization)}">&#x2713;</span>
                                 <i class="menu-icon fa fa-users"></i> {{organization.title}}
                             </a>
                             <b class="arrow"></b>

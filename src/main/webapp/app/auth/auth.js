@@ -47,7 +47,9 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
     /* Controllers */
 
     // A container for global application logic
-    .controller('ApplicationController', function($rootScope, $scope, $modal, $location, $localStorage, USER_ROLES, AUTH_EVENTS, AuthService, httpAuthInterceptorService, Session) {
+    .controller('ApplicationController', function(
+        $rootScope, $scope, $modal, $location, $localStorage,
+        USER_ROLES, AUTH_EVENTS, AuthService, httpAuthInterceptorService, Session, OrganizationContext, OrganizationService) {
       $scope.sidebar = {isMinified: false};
       $scope.userRoles = USER_ROLES;
       $scope.isAuthorized = AuthService.isAuthorized;
@@ -71,6 +73,10 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
           // go to landingpage if user logged out
           $location.path('/').replace();
         }
+        
+        // Set organization context
+        OrganizationContext.list = OrganizationService.query($scope.currentUser);
+        
         // TODO: we might should also should check if user had logged 
         // in as somebody else without logging out first!?
       }, true);
@@ -81,7 +87,11 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
         $scope.currentUser = Session.user;
         if (!$scope.$storage.userSession)
           $scope.$storage.userSession = {};
+        
+        // export to storage 
+        // (...this will trigger an import from the storage)
         Session.exportTo($scope.$storage.userSession);
+        
         // Process pending requests
         httpAuthInterceptorService.loginConfirmed();
         // Navigate to defered page
@@ -99,6 +109,10 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
         $scope.$storage.$reset({userSession: {}});
         Session.importFrom($scope.$storage.userSession);
         $scope.currentUser = Session.user;
+        
+        // Clear organization context
+        OrganizationContext.list = [];
+
         $scope.navigationTarget = null;
         $location.path('/').replace();
       });

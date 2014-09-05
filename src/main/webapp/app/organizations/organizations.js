@@ -4,10 +4,23 @@
 
 angular.module('mcp.organizations', ['ui.bootstrap'])
 
-    .controller('OrganizationListController', ['$scope', 'OrganizationService',
-      function($scope, OrganizationService) {
-        $scope.organizations = OrganizationService.query();
-        $scope.orderProp = 'age';
+    .controller('OrganizationListController', ['$scope', '$stateParams', 'OrganizationContext',
+      function($scope, $stateParams, OrganizationContext) {
+        
+        $scope.organizations = OrganizationContext.list;
+        $scope.currentOrganization = OrganizationContext.currentOrganization;
+        $scope.orderProp = 'description';
+        $scope.$stateParams = $stateParams;
+        
+        $scope.isCurrent = function(organization) {
+          return organization === $scope.currentOrganization;
+        };
+
+        $scope.$watch('$stateParams.organizationname', function(newOrganizationName) {
+          OrganizationContext.setCurrentOrganization(newOrganizationName);
+          $scope.currentOrganization = OrganizationContext.currentOrganization;
+        });
+
       }])
 
     .controller('OrganizationDetailsController', ['$scope', '$stateParams', 'OrganizationService',
@@ -59,6 +72,44 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
             $scope.alertMessages = ["Error on the serverside :( ", error];
           });
         };
-      }]);
+      }])
 
+    // OrganizationContext
+    // - the list of organizations the user is a member of
+    // - the currently selected organization
+    .service("OrganizationContext", [function() {
+
+        // Organizations that the current user is a member of
+        this.list = [];
+        this.currentOrganization = null;
+
+        this.setUsersOrganizations = function(organizations) {
+          this.list = organizations;
+        };
+
+        this.setCurrentOrganization = function(target) {
+          if (angular.isString(target)) {
+            this.currentOrganization = this.getOrganizationByName(target);
+          } else {
+            if (this.containsOrganization(target)) {
+              this.currentOrganization = target;
+            }
+          }
+        };
+
+        this.getOrganizationByName = function(name) {
+          for (var i = 0; i < this.list.length; i++) {
+            console.log(name, this.list[i].name);
+            if (name === this.list[i].name) {
+              return this.list[i];
+            }
+          }
+        };
+
+        this.containsOrganization = function(organization) {
+          return this.list.indexOf(organization) > -1;
+        };
+
+      }])
+    ;
 

@@ -154,6 +154,13 @@
     padding: 8px;
 }
 
+.menu-item-check {
+    visibility: hidden;
+}
+.menu-item-check.selected {
+    visibility: visible;
+}
+
 form .ng-invalid.ng-dirty, .mcp-invalid-input { 
     background-color: #ffeaea !important; 
 }
