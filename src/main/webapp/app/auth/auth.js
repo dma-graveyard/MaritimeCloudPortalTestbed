@@ -65,11 +65,12 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       // Watch the storage for changes that origins from other instances running 
       // in other windows or tabs
       $scope.$watch('$storage.userSession', function() {
+        var prevUser = $scope.currentUser;
         if ($scope.$storage.userSession) {
           Session.importFrom($scope.$storage.userSession);
         }
         $scope.currentUser = $scope.$storage.userSession.user;
-        if (!$scope.currentUser) {
+        if ($scope.currentUser !== prevUser) {
           // go to landingpage if user logged out
           $location.path('/').replace();
         }
