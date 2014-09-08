@@ -1,0 +1,15 @@
+<div class="boxed-group">
+    <div class="boxed-group-action" > 
+        Search: <input ng-model="filter_query"> <a href="#/orgs/new" class="minibutton btn btn-xs btn-round">New organization</a>
+    </div>
+    <h3>Organizations</h3>
+    <div class="boxed-group-inner">
+        <ul class="boxed-group-list standalone">
+            <li ng-repeat="organization in organizations| filter:filter_query | orderBy:orderProp">
+                <img alt="Danish Maritime Authority" class=" js-avatar" data-user="2655913" height="20" src="https://avatars3.githubusercontent.com/u/2655913?s=140" width="20">
+                <a href="#/orgs/{{organization.name}}">{{organization.title}}</a>
+                <a href="/orgs/{{organization.title}}/leave" class="minibutton btn btn-xs btn-round" data-confirm="Are you POSITIVE you want to leave {{organization.title}}? You'll lose access to all services and teams." data-method="post"><i class="ace-icon fa fa-times"></i> Leave</a>
+            </li>
+        </ul>
+    </div>
+</div>

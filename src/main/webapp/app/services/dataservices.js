@@ -36,7 +36,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           {// details: dmi
             name: "dmi",
             title: "Danish Meteoroligical Institute",
-            description: "Lorem ipsum dolor sit amet, ex quo sint aeque. Regione scribentur dissentiet eum ea, no atqui audiam ius, diam omittam efficiendi te usu.",
+            description: "DMI provides meteorological services in the Commonwealth of the Realm of Denmark, the Faroe Islands, Greenland, and surrounding waters and airspace. Meteorological services include forecasting and warnings and monitoring of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
             members: ["admin", "Tintin", "Haddock"],
             teams: [
               {
@@ -52,13 +52,13 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
                 isAdmin: false,
                 members: ["admin", "Tintin"],
                 accessLevel: "write"
-              },
+              }
             ]
           },
           {// details: dmi
             name: "dma",
             title: "Danish Maritime Authority",
-            description: "Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.",
+            description: "The Danish Maritime Authority is a government agency of Denmark that regulates maritime affairs. The field of responsibility is based on the shipping industry and its framework conditions, the ship and its crew. In addition, it is responsible for aids to navigation in the waters surrounding Denmark and ashore.",
             members: ["admin", "Haddock"],
             teams: [
               {
@@ -74,13 +74,13 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
                 isAdmin: false,
                 members: ["Hadock"],
                 accessLevel: "write"
-              },
+              }
             ]
           },
           {// details: dp
             name: "dp",
             title: "DanPilot",
-            description: "Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum.",
+            description: "DanPilot handles the public pilotage through Danish territorial waters from any destination in Denmark to all ports in the Baltic Sea. As the unique full-service provider in Denmark DanPilot offers pilotage to all Danish ports as well. DanPilot is obliged to deliver pilotage in Denmark and handles all transit pilotage.",
             members: ["admin", "Haddock", "Tintin"],
             teams: [
               {
@@ -96,7 +96,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
                 isAdmin: false,
                 members: ["Hadock"],
                 accessLevel: "read"
-              },
+              }
             ]
           }
         ];
@@ -125,13 +125,13 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
               return result;
           },
           query: function(user) {
-              console.log("ORGS U ", organizationsOfMember);
+            console.log("ORGS U ", organizationsOfMember);
 
             if (user && user.name) {
               var organizationsOfMember = [];
-              organizations.forEach(function(organization){
-                
-                if(arrayIndexOf(user.name, organization.members)) 
+              organizations.forEach(function(organization) {
+
+                if (arrayIndexOf(user.name, organization.members))
                   organizationsOfMember.push(organization);
               });
               console.log("ORGS ", organizationsOfMember);
@@ -186,12 +186,132 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           }
 
         };
+      }])
+
+    .factory('SpecificationService', ['$resource',
+      function($resource) {
+//    return $resource('/rest/specifications/:specificationname', {}, {
+//      query: {method: 'GET', params: {specificationname: ''}, isArray: true},
+//      signUp: {method: 'POST', params: {}, isArray: false}
+//    });
+        console.log("TODO: using mocked specifications data");
+        var specifications = [
+          {
+            ownerOrganization: "dmi",
+            id: "wfss",
+            version: 1,
+            type: "weather",
+            title: "Weather Forecast Service Specification",
+            description: "Regione scribentur dissentiet eum ea, no atqui audiam ius, diam omittam efficiendi te usu.",
+            instances: ["dmi-wfss-dk", "dmi-wfss-eu", "dmi-wfss-wrld"]
+          },
+          {
+            ownerOrganization: "dp",
+            id: "tpss",
+            version: 1,
+            type: "naval",
+            title: "Transit Pilotage Service Specification",
+            description: "Public pilotage through Danish territorial waters from any destination in Denmark to all ports in the Baltic Sea. As the unique full-service provider in Denmark DanPilot offers pilotage to all Danish ports as well.",
+            instances: ["dp-tpss-rt", "dp-tpss-so"]
+          },
+          {
+            ownerOrganization: "dma",
+            id: "ntmss",
+            version: 1,
+            type: "naval",
+            title: "Notice To Mariners Service Specification",
+            description: "A notice to mariners advises mariners of important matters affecting navigational safety, including new hydrographic information, changes in channels and aids to navigation, and other important data.",
+            instances: ["dma-ntmss-dk"]
+          }
+        ];
+
+        /**
+         * Helper function to find specification by name
+         * @param {type} specificationname
+         * @returns {_L16.Anonym$11|_L16.Anonym$8|_L16.Anonym$5}
+         */
+        var findSpecification = function(specificationname) {
+          for (var i = 0; i < specifications.length; i++) {
+            if (specificationname === specifications[i].name)
+              return specifications[i];
+          }
+          console.log("Error. Specificationname not found! ", specificationname);
+          return null;
+        };
+
+
+        return {
+          get: function(request) {
+            console.log("specificationname: ", request.specificationname);
+            var specificationname = request.specificationname;
+            var result = findSpecification(specificationname);
+            if (result)
+              return result;
+          },
+          query: function(request) {
+            if (request && request.organizationname) {
+              var specs = [];
+              specifications.forEach(function(specification) {
+                if (specification.ownerOrganization === request.organizationname)
+                  specs.push(specification);
+              });
+              return specs;
+            }
+            return specifications;
+          },
+          //create: {method: 'POST', params: {}, isArray: false}
+          create: function(newSpecificationRequest, success, failure) {
+
+            if (findSpecification(newSpecificationRequest.name)) {
+              console.log("An specification with that name already exists");
+              failure("An specification with that name already exists");
+              return;
+            }
+
+            var newSpecification =
+                {
+                  name: newSpecificationRequest.name,
+                  title: newSpecificationRequest.title,
+                  description: newSpecificationRequest.description,
+                  members: ["admin"],
+                  teams: [
+                    {
+                      name: "Owners",
+                      description: "Special team of owners. Owners can do just about anything.",
+                      isOwner: true,
+                      members: ["admin"],
+                      accessLevel: "admin"
+                    },
+                    {
+                      name: "Members",
+                      description: "Members of the specification with read access",
+                      isAdmin: false,
+                      members: ["admin"],
+                      accessLevel: "read"
+                    }
+                  ]
+                };
+            specifications.push(newSpecification);
+            console.log("specifications: ", specifications);
+            success(newSpecification);
+            //return
+          }
+
+        };
       }]);
 
-var arrayIndexOf = function(value, array){
+
+
+// ----------------------------------------------------------------------------
+// HELPER FUNCTIONS
+// ----------------------------------------------------------------------------
+
+var arrayIndexOf = function(value, array) {
   var i = 0;
-  array.forEach(function(element){
-    if(element === value) i++;
+  array.forEach(function(element) {
+    if (element === value)
+      i++;
   });
   return i;
-}
+};
+

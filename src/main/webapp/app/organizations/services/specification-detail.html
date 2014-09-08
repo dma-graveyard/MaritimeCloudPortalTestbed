@@ -17,7 +17,7 @@
     </div>
 
     <div class="col-sm-8">
-<!--        <div>
+        <div>
             <h2> Provided Services </h2>
             <p> List of services implemented and provided by this organization ({{organization.title}}).
                 Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum. Mirum est notare 
@@ -41,37 +41,26 @@
                         qui sequitur mutationem consuetudium lectorum.</p>
                 </li>
             </ul>
-        </div>-->
-
-        <div>
-            <h2> Provided Services</h2>
-            <div ng-if="!serviceInstances">
-                Currently no service instances!
-                <ul><li><a>+ Add new service instance</a></li></ul>
-            </div>
-            <ul ng-repeat="service in serviceInstances">
-                <li>
-                    <h4>{{service.title}}</h4>
-                    <p>{{service.description}}</p>
-                </li>
-            </ul>
         </div>
-
         <div>
-            <h2> Service Specifications</h2>
-            <ul ng-repeat="spec in specifications">
+            <h2> Service Definitions defined by {{organization.title}} </h2>
+            <ul>
                 <li>
-                    <h3>{{spec.title}}</h3>
-                    <p>{{spec.description}}</p>
+                    - List of service definitions defined by this organization<br/>
+                    - is/has a link to details view (perhaps gears?)<br/>
+                    - Admins also has a remove link ??<br/>
+                    - a short description line that outlines the purpose <br/>
                 </li>
+                <li>Should service definitions really it live here?</li>
             </ul>
-        </div>
 
-        <div>
-            <h2> Public Certificates</h2>
+
+            <h2> Public Certificates submitted by {{organization.title}} </h2>
             <ul>
                 <li> 
                     <h4> A public certificate with description and expirydates etc... </h4>
+                </li>
+                <li>
                 </li>
             </ul>
         </div>
