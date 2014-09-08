@@ -64,22 +64,31 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
 
       // Watch the storage for changes that origins from other instances running 
       // in other windows or tabs
+      // (this function is called on reload and whenever storage changes)
       $scope.$watch('$storage.userSession', function() {
+        var userHasLoggedOut = function() {
+          return !$scope.currentUser;
+        };
+        var userHasChanged = function() {
+          // true if a new user has logged in as somebody else without logging 
+          // out the previous user first
+          return prevUser && prevUser.name !== $scope.currentUser.name;
+        };
+        
         var prevUser = $scope.currentUser;
         if ($scope.$storage.userSession) {
           Session.importFrom($scope.$storage.userSession);
         }
         $scope.currentUser = $scope.$storage.userSession.user;
-        if ($scope.currentUser !== prevUser) {
-          // go to landingpage if user logged out
+        if (userHasLoggedOut() || userHasChanged()) {
+          // reset to landingpage
           $location.path('/').replace();
         }
-        
+
         // Set organization context
         OrganizationContext.list = OrganizationService.query($scope.currentUser);
-        
-        // TODO: we might should also should check if user had logged 
-        // in as somebody else without logging out first!?
+
+
       }, true);
 
       // Login listener that binds the login session to current user upon login success
@@ -88,11 +97,11 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
         $scope.currentUser = Session.user;
         if (!$scope.$storage.userSession)
           $scope.$storage.userSession = {};
-        
+
         // export to storage 
         // (...this will trigger an import from the storage)
         Session.exportTo($scope.$storage.userSession);
-        
+
         // Process pending requests
         httpAuthInterceptorService.loginConfirmed();
         // Navigate to defered page
@@ -110,7 +119,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
         $scope.$storage.$reset({userSession: {}});
         Session.importFrom($scope.$storage.userSession);
         $scope.currentUser = Session.user;
-        
+
         // Clear organization context
         OrganizationContext.list = [];
 
