@@ -66,29 +66,31 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       // in other windows or tabs
       // (this function is called on reload and whenever storage changes)
       $scope.$watch('$storage.userSession', function() {
+        // helper functions
         var userHasLoggedOut = function() {
-          return !$scope.currentUser;
+          // if we had a user but session user is cleared it indicates 
+          // that someone logged out from another window
+          return prevUser && !$scope.currentUser;
         };
         var userHasChanged = function() {
           // true if a new user has logged in as somebody else without logging 
           // out the previous user first
           return prevUser && prevUser.name !== $scope.currentUser.name;
         };
-        
+        // store previous user
         var prevUser = $scope.currentUser;
+        // read existing session
         if ($scope.$storage.userSession) {
           Session.importFrom($scope.$storage.userSession);
         }
+        // load storage user
         $scope.currentUser = $scope.$storage.userSession.user;
+        // should reset to landingpage?
         if (userHasLoggedOut() || userHasChanged()) {
-          // reset to landingpage
           $location.path('/').replace();
         }
-
         // Set organization context
         OrganizationContext.list = OrganizationService.query($scope.currentUser);
-
-
       }, true);
 
       // Login listener that binds the login session to current user upon login success
