@@ -1,7 +1,17 @@
 {
     "elements": {
         "slide": {},
-        "carousel": {}
+        "carousel": {},
+        "leaflet": {
+            "attributes": {
+                "event-broadcast": {},
+                "defaults": {},
+                "paths": {},
+                "width": {},
+                "id": {},
+                "height": {}
+            }
+        }
     },
     "attributes": {}
 }
