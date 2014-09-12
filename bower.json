@@ -12,7 +12,9 @@
     "angular-resource": "latest",
     "angular-bootstrap": "latest",
     "angular-ui-router": "latest",
-    "angular-busy": "~4.1.0"
+    "angular-busy": "~4.1.0",
+    "angular-leaflet-directive": "~0.7.8",
+    "leaflet": "~0.7.3"
   },
   "devDependencies": {
     "angular-mocks": "latest",

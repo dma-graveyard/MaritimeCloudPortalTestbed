@@ -18,6 +18,7 @@ module.exports = function(config) {
       'src/main/webapp/ext/bower/angular-mocks/angular-mocks.js',
       'src/main/webapp/ext/bower/angular-bootstrap/ui-bootstrap-tpls.js',
       'src/main/webapp/ext/bower/angular-ui-router/release/angular-ui-router.js',
+      'src/main/webapp/ext/bower/angular-leaflet-directive/dist/angular-leaflet-directive.js',
       'src/main/webapp/ext/js/angular-ui.github.io/ui-router/stateHelper/1.1.0/statehelper.min.js',
       'src/main/webapp/ext/js/rawgithub.com/gsklee/ngStorage/master/ngStorage.js',
       'src/main/webapp/app/**/*.js',
