@@ -12,7 +12,9 @@ var mcpApp = angular.module('mcpApp', [
   'mcp.auth',
   'mcp.layout',
   'mcp.organizations',
-  'mcp.users'
+  'mcp.organizations.services',
+  'mcp.users',
+  'leaflet-directive'
 ]);
 
 // Setup angular busy indicator

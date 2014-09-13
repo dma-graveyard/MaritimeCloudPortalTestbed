@@ -23,11 +23,13 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
       }])
 
-    .controller('OrganizationDetailsController', ['$scope', '$stateParams', 'OrganizationService', 'SpecificationService',
-      function($scope, $stateParams, OrganizationService, SpecificationService) {
+    .controller('OrganizationDetailsController', ['$scope', '$stateParams', 'OrganizationService', 'SpecificationService', 'ServiceInstanceService',
+      function($scope, $stateParams, OrganizationService, SpecificationService, ServiceInstanceService) {
         $scope.organization = OrganizationService.get({organizationname: $stateParams.organizationname}, function(organization) {
         });
         $scope.specifications = SpecificationService.query({organizationname: $stateParams.organizationname}, function(specifications) {
+        });
+        $scope.serviceInstances = ServiceInstanceService.query({organizationname: $stateParams.organizationname}, function(serviceInstances) {
         });
       }])
 

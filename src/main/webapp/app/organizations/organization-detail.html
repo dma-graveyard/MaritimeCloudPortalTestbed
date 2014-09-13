@@ -17,31 +17,31 @@
     </div>
 
     <div class="col-sm-8">
-<!--        <div>
-            <h2> Provided Services </h2>
-            <p> List of services implemented and provided by this organization ({{organization.title}}).
-                Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum. Mirum est notare 
-                quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula 
-                quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>
-            <ul>
-                <li>
-                    <h4> Service name </h4>
-                    - is/has a link to details view (perhaps gears?)<br/>
-                    - Admin also has a remove link ??
-                    - a short description line that outlines the purpose <br/>
-                </li>
-                <li>
-                    <h4>Should service definitions really it live here?</h4>
-                    <p></p>
-                </li>
-                <li>
-                    <h4>Flavligaf Service</h4>
-                    <p>Realtime flavligaf information provided directly to the polygothic tranfsmoglyph. Covers all of the 
-                        northern region east of the Caltic bay and provides bidirectional Claritas est etiam processus dynamicus, 
-                        qui sequitur mutationem consuetudium lectorum.</p>
-                </li>
-            </ul>
-        </div>-->
+        <!--        <div>
+                    <h2> Provided Services </h2>
+                    <p> List of services implemented and provided by this organization ({{organization.title}}).
+                        Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum. Mirum est notare 
+                        quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula 
+                        quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>
+                    <ul>
+                        <li>
+                            <h4> Service name </h4>
+                            - is/has a link to details view (perhaps gears?)<br/>
+                            - Admin also has a remove link ??
+                            - a short description line that outlines the purpose <br/>
+                        </li>
+                        <li>
+                            <h4>Should service definitions really it live here?</h4>
+                            <p></p>
+                        </li>
+                        <li>
+                            <h4>Flavligaf Service</h4>
+                            <p>Realtime flavligaf information provided directly to the polygothic tranfsmoglyph. Covers all of the 
+                                northern region east of the Caltic bay and provides bidirectional Claritas est etiam processus dynamicus, 
+                                qui sequitur mutationem consuetudium lectorum.</p>
+                        </li>
+                    </ul>
+                </div>-->
 
         <div>
             <h2> Provided Services</h2>
@@ -49,12 +49,21 @@
                 Currently no service instances!
                 <ul><li><a>+ Add new service instance</a></li></ul>
             </div>
-            <ul ng-repeat="service in serviceInstances">
-                <li>
-                    <h4>{{service.title}}</h4>
-                    <p>{{service.description}}</p>
-                </li>
-            </ul>
+            <div  class="container-fluid" ng-repeat="service in serviceInstances">
+                <!--<li>-->
+                <div ng-controller="ServiceInstanceDetailsController">
+                    <h4>{{service.name}} - {{service.specification.transportType}}</h4>
+                    <div>
+                        <div class="col-sm-7 col-lg-5" >
+                            <leaflet id="{{'map-'+$index}}" event-broadcast="events" defaults="map.defaults" height="160px" width="220px" paths="map.paths"></leaflet>
+                        </div>
+                        <div class="col-sm-5 col-lg-7" >
+                            <p>{{service.description}}</p>
+                        </div>
+                    </div>
+                </div>
+                <!--</li>-->
+            </div>
         </div>
 
         <div>
@@ -71,7 +80,7 @@
             <h2> Public Certificates</h2>
             <ul>
                 <li> 
-                    <h4> A public certificate with description and expirydates etc... </h4>
+                    <h4> A public certificate with description and expiry dates etc... </h4>
                 </li>
             </ul>
         </div>
