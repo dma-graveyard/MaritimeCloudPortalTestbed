@@ -44,6 +44,53 @@
             <b class="arrow"></b>
         </li>
 
+        <!-- SEARCH SERVICES --> 
+        <li>
+            <a href="#test" class="dropdown-toggle">
+                <i class="menu-icon fa fa-search"></i>
+                <span class="menu-text"> Find Services </span>
+            </a>
+        </li>            
+
+        <!-- CURRENT ORGANIZATION MENU --> 
+            
+        <li class="hover" ng-controller="OrganizationMenuController"  >
+            <a ng-if="currentOrganization" href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-map-marker"></i>
+                <span class="menu-text"> Services </span>
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+            <b class="arrow"></b>
+            <ul class="submenu" >
+                <li class="hover"><a href="#/orgs/{{currentOrganization.name}}"> <i class="menu-icon fa fa-user" style=""></i> Show </a></li>
+                <li class="hover"><a href="#/orgs/{{currentOrganization.name}}/createServiceInstance"> <i class="menu-icon fa fa-fire" style=""></i> Add </a></li>
+            </ul>
+        </li>            
+        <li class="hover" ng-controller="OrganizationMenuController"  >
+            <a ng-if="currentOrganization" href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-cogs"></i>
+                <span class="menu-text"> Specifications </span>
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+            <b class="arrow"></b>
+            <ul class="submenu" >
+                <li class="hover"><a href="#/orgs/{{currentOrganization.name}}"> <i class="menu-icon fa fa-user" style=""></i> Show </a></li>
+                <li class="hover"><a href="#/orgs/{{currentOrganization.name}}/createServiceInstance"> <i class="menu-icon fa fa-fire" style=""></i> Add </a></li>
+            </ul>
+        </li>            
+        <li class="hover" ng-controller="OrganizationMenuController"  >
+            <a ng-if="currentOrganization" href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-certificate"></i>
+                <span class="menu-text"> Certificates </span>
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+            <b class="arrow"></b>
+            <ul class="submenu" >
+                <li class="hover"><a href="#/orgs/{{currentOrganization.name}}"> <i class="menu-icon fa fa-user" style=""></i> Show </a></li>
+                <li class="hover"><a href="#/orgs/{{currentOrganization.name}}/createServiceInstance"> <i class="menu-icon fa fa-fire" style=""></i> Add </a></li>
+            </ul>
+        </li>            
+
         <!-- ADMINISTRATION --> 
         <li ng-if="isAuthorized(userRoles.admin)" class="hover" >
             <a href="#" class="dropdown-toggle">

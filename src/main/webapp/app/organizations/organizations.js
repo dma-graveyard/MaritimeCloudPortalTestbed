@@ -4,6 +4,19 @@
 
 angular.module('mcp.organizations', ['ui.bootstrap'])
 
+    .controller('OrganizationMenuController', ['$scope', 'OrganizationContext',
+      function($scope, OrganizationContext) {
+        
+        $scope.organizations = OrganizationContext.list;
+        $scope.currentOrganization = OrganizationContext.currentOrganization;
+        $scope.OrganizationContext = OrganizationContext;
+
+        $scope.$watch('OrganizationContext.currentOrganization', function(newOrganizationName) {
+          $scope.currentOrganization = OrganizationContext.currentOrganization;
+        });
+
+      }])
+
     .controller('OrganizationListController', ['$scope', '$stateParams', 'OrganizationContext',
       function($scope, $stateParams, OrganizationContext) {
         
