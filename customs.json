@@ -13,5 +13,9 @@
             }
         }
     },
-    "attributes": {}
+    "attributes": {
+        "ui-view": {
+            "context": "div"
+        }
+    }
 }

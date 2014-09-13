@@ -57,22 +57,22 @@
                 <li class="hover"><a href="#/log"> <i class="menu-icon fa fa-fire" style=""></i> Log </a></li>
             </ul>
         </li>
-        
+
     </ul><!-- /.nav-list -->
-    
-    
+
+
 
     <!-- #section:basics/sidebar.layout.minimize -->
     <div class="sidebar-toggle" id="sidebar-collapse" ng-click="sidebar.isMinified = !sidebar.isMinified">
-        <i ng-class="sidebar.isMinified ? 'ace-icon fa fa-angle-double-right' : 'ace-icon fa fa-angle-double-left'" ></i>
+        <i class="ace-icon fa" ng-class='{"fa-angle-double-right" : sidebar.isMinified, "fa-angle-double-left" : !sidebar.isMinified}' ></i>
     </div>
 
     <!-- /section:basics/sidebar.layout.minimize -->
-<!--    <script type="text/javascript">
-        try {
-            ace.settings.check('sidebar', 'collapsed')
-        } catch (e) {
-        }
-    </script>-->
+    <!--    <script type="text/javascript">
+            try {
+                ace.settings.check('sidebar', 'collapsed')
+            } catch (e) {
+            }
+        </script>-->
 </div>
 
