@@ -13,8 +13,9 @@
     "angular-bootstrap": "latest",
     "angular-ui-router": "latest",
     "angular-busy": "~4.1.0",
-    "angular-leaflet-directive": "~0.7.8",
-    "leaflet": "~0.7.3"
+    "angular-leaflet-directive": "*",
+    "leaflet": "~0.7.3",
+    "leaflet.draw": "*"
   },
   "devDependencies": {
     "angular-mocks": "latest",
