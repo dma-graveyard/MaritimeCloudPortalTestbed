@@ -8,7 +8,7 @@
  * Source: https://github.com/witoldsz/angular-http-auth
  * MCP Note: Refactored factory service from 'authService' to 'httpAuthInterceptorService'
  */
-(function () {
+;(function () {
   'use strict';
 
   angular.module('http-auth-interceptor', ['http-auth-interceptor-buffer'])
