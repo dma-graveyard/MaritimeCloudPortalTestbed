@@ -6,11 +6,12 @@ var mcpApp = angular.module('mcpApp', [
   'ui.router',
   'ui.router.stateHelper',
   'cgBusy',
-  'mcp.dataservices',
-  'mcp.filters',
-  'mcp.directives',
   'mcp.auth',
+  'mcp.dataservices',
+  'mcp.directives',
+  'mcp.filters',
   'mcp.layout',
+  'mcp.mapservices',
   'mcp.organizations',
   'mcp.organizations.services',
   'mcp.users',
@@ -119,7 +120,13 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
           url: "/orgs/{organizationname}",
           templateUrl: 'organizations/organization-detail.html',
           controller: 'OrganizationDetailsController',
-        }
+        },
+        {
+          name: 'serviceInstanceCreate',
+          url: "/orgs/{organizationname}/createServiceInstance",
+          templateUrl: 'organizations/services/instance-create.html',
+          controller: 'ServiceInstanceCreateController',
+        },
       ]
     };
 

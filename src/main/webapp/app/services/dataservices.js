@@ -309,6 +309,14 @@ var serviceInstance = {
   }
 };
 
+var globalServiceInstances = [
+  serviceInstance.dmiImoMisDkRest,
+  serviceInstance.dmiImoMisDkWww,
+  serviceInstance.dmiImoMisFoRest,
+  serviceInstance.dmiImoMisFoWww,
+  serviceInstance.dmiImoMisGlWww
+];
+
 // --------------------------------------------------
 /* Services */
 // --------------------------------------------------
@@ -363,14 +371,12 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         };
         return {
           get: function(request) {
-            console.log("organizationname: ", request.organizationname);
             var organizationname = request.organizationname;
             var result = findOrganization(organizationname);
             if (result)
               return result;
           },
           query: function(user) {
-            console.log("ORGS U ", organizationsOfMember);
             if (user && user.name) {
               var organizationsOfMember = [];
               organizations.forEach(function(organization) {
@@ -378,18 +384,9 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
                 if (arrayIndexOf(user.name, organization.members))
                   organizationsOfMember.push(organization);
               });
-              console.log("ORGS ", organizationsOfMember);
               return organizationsOfMember;
             }
-
             return organizations;
-//        return (
-//            [
-//              {name: "dma", title: "Danish Maritime Authority"},
-//              {name: "dmi", title: "Danish Meteoroligical Institute"},
-//              {name: "dp", title: "DanPilot"}
-//            ]
-//            );
           },
           //create: {method: 'POST', params: {}, isArray: false}
           create: function(newOrganizationRequest, success, failure) {
@@ -427,6 +424,26 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
             console.log("organizations: ", organizations);
             success(newOrganization);
             //return
+          },
+          registerServiceInstance: function(newServiceInstance, success, failure) {
+
+            // TOBE:
+            //  registerServiceInstance: {method: 'PUT', url: '/rest/org/:id/si/:serviceInstanceId', isArray: false},
+
+            // adds a service instance to the organization designated by the id
+            // (find organization)
+            var org = findOrganization(newServiceInstance.provider.name);
+
+            // FIXME: check if the service instance already exist
+            // ...
+            // add service
+            if (org) {
+              //newServiceInstance.coverage = area.dk;
+              //newServiceInstance.specification = technicalServices.imoMisRest;
+              globalServiceInstances.push(newServiceInstance);
+              success(newServiceInstance);
+            }
+
           }
 
         };
@@ -541,7 +558,6 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         };
       }])
 
-
     .factory('ServiceInstanceService', ['$resource',
       function($resource) {
 //    return $resource('/rest/serviceInstance/:specificationname', {}, {
@@ -549,102 +565,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 //      signUp: {method: 'POST', params: {}, isArray: false}
 //    });
         console.log("TODO: using mocked service instance data");
-        var geom =
-            {
-              "type": "Feature",
-              "id": "DNK",
-              "properties": {
-                "name": "Denmark"
-              },
-              "geometry": {
-                "type": "MultiPolygon",
-                "coordinates":
-                    [
-                      [[[12.690006, 55.609991], [12.089991, 54.800015], [11.043543, 55.364864], [10.903914, 55.779955], [12.370904, 56.111407]]]
-                    ]
-              }
-            };
-        var serviceInstances2 = [
-          {
-            ownerOrganization: "dmi",
-            id: "dmi-wfss-dk",
-            version: 1,
-            type: "weather",
-            title: "Meteorological Services in Denmark and surrounding waters",
-            description: "Meteorological services include forecasting and warnings and monitoring of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
-            coverage: [geom]
-          },
-          {
-            ownerOrganization: "dmi",
-            id: "dmi-wfss-fo",
-            version: 1,
-            type: "weather",
-            title: "Meteorological Services in Faroe Islands and surrounding waters",
-            description: "Meteorological services include forecasting and warnings and monitoring of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
-            coverage: [
-              {
-                "type": "Feature",
-                "id": "DNK",
-                "properties": {
-                  "name": "Denmark"
-                },
-                "geometry": {
-                  "type": "MultiPolygon",
-                  "coordinates": [
-                    [[[8.173828125, 54.84973402078036], [7.492675781249999, 56.29063241616282], [8.06396484375, 57.32503845095438],
-                        [9.140625, 57.44347144354234], [9.73388671875, 57.80818813313426], [10.08544921875, 57.80818813313426],
-                        [10.56884765625, 57.936725003674646], [11.00830078125, 57.71441809916714], [10.986328125, 57.58508660014084],
-                        [11.35986328125, 57.44347144354234], [11.53564453125, 57.23001638509267], [11.162109375, 57.02727908263874],
-                        [10.7666015625, 57.01531876758453], [10.65673828125, 56.82342990779178], [10.96435546875, 56.73916801839526],
-                        [11.271972656249998, 56.84746998772644], [11.66748046875, 56.93148877710671], [11.953125, 56.59427839029623],
-                        [11.53564453125, 56.473111073472246], [11.14013671875, 56.315013425566924], [10.72265625, 55.78738467626539],
-                        [11.71142578125, 56.412381965477785], [12.32666015625, 56.25403172382012], [12.722167968749998, 56.02141309205163],
-                        [12.76611328125, 55.67603572236134], [12.722167968749998, 55.40251032740405], [12.89794921875, 55.11451369585085],
-                        [12.94189453125, 54.90030293114211], [12.15087890625, 54.51948733886334], [11.93115234375, 54.44289461838544],
-                        [11.25, 54.51948733886334], [10.52490234375, 54.532238849162084], [9.95361328125, 54.81176569069303],
-                        [9.68994140625, 54.87502640669144], [8.173828125, 54.84973402078036]]]
-                  ]
-                }
-              }
-            ]
-          },
-          {
-            ownerOrganization: "dmi",
-            id: "dmi-wfss-gl",
-            version: 1,
-            type: "weather",
-            title: "Meteorological Services in Greenland and surrounding waters",
-            description: "Meteorological services include forecasting and warnings and monitoring of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
-            coverage: [geom]
-          },
-          {
-            ownerOrganization: "dp",
-            id: "dp-tpss-dtw",
-            version: 1,
-            type: "naval",
-            title: "Transit Pilotage Service through Danish territorial waters",
-            description: "Public pilotage through Danish territorial waters from any destination in Denmark to all ports in the Baltic Sea. As the unique full-service provider in Denmark DanPilot offers pilotage to all Danish ports as well. The regulation regarding mandatory use of pilots is found in the Pilotage Act. In order to ensure the safety at sea and to protect the environment the Pilotage Act and the corresponding Order on the use of a pilot make the use of a pilot mandatory for certain vessels for a number of specified geographical areas.",
-            coverage: [geom]
-          },
-          {
-            ownerOrganization: "dma",
-            id: "ntmss",
-            version: 1,
-            type: "naval",
-            title: "Notice To Mariners Service Instance",
-            description: "A notice to mariners advises mariners of important matters affecting navigational safety, including new hydrographic information, changes in channels and aids to navigation, and other important data.",
-            coverage: [geom]
-//            instances: ["dma-ntmss-dk"]
-          }
-        ];
-
-        var serviceInstances = [
-          serviceInstance.dmiImoMisDkRest,
-          serviceInstance.dmiImoMisDkWww,
-          serviceInstance.dmiImoMisFoRest,
-          serviceInstance.dmiImoMisFoWww,
-          serviceInstance.dmiImoMisGlWww
-        ];
+        var serviceInstances = globalServiceInstances;
 
 
         /**
@@ -670,6 +591,8 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           query: function(request) {
             if (request && request.organizationname) {
               var specs = [];
+              console.log('serviceInstances:', serviceInstances);
+
               serviceInstances.forEach(function(serviceInstance) {
                 if (serviceInstance.provider.name === request.organizationname)
                   specs.push(serviceInstance);
@@ -717,7 +640,57 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           }
 
         };
-      }]);
+      }])
+
+    .factory('OperationalServiceService', ['$resource',
+      function($resource) {
+//    return $resource('/rest/serviceInstance/:specificationname', {}, {
+//      query: {method: 'GET', params: {specificationname: ''}, isArray: true},
+//      signUp: {method: 'POST', params: {}, isArray: false}
+//    });
+        console.log("TODO: using mocked operational service data");
+        return {
+          query: function(request) {
+            var a = [
+              operationalServices.lps,
+              operationalServices.mis,
+              operationalServices.msi,
+              operationalServices.nas,
+              operationalServices.nga,
+              operationalServices.rme,
+              operationalServices.sre,
+              operationalServices.tos,
+              operationalServices.tre,
+              operationalServices.tus,
+              operationalServices.vsr,
+              operationalServices.wvtsg
+            ];
+            return a;
+          }
+        };
+      }])
+
+    .factory('TechnicalServiceService', ['$resource',
+      function($resource) {
+//    return $resource('/rest/serviceInstance/:specificationname', {}, {
+//      query: {method: 'GET', params: {specificationname: ''}, isArray: true},
+//      signUp: {method: 'POST', params: {}, isArray: false}
+//    });
+        console.log("TODO: using mocked technical service data");
+        return {
+          query: function(request) {
+            var array = [];
+            for (var key in technicalServices) {
+              if (technicalServices[key].operationalService.id === request) {
+                array.push(technicalServices[key]);
+              }
+            }
+            return array;
+          }
+        };
+      }])
+    ;
+
 // ----------------------------------------------------------------------------
 // HELPER FUNCTIONS
 // ----------------------------------------------------------------------------
@@ -730,83 +703,3 @@ var arrayIndexOf = function(value, array) {
   });
   return i;
 };
-var s = {
-  "provider": {
-    "name": "Oslo VTS",
-    "id": "NO-VTS-000001"
-  },
-  "specification": {
-    "transport": "web",
-    "variant": "web",
-    "version": "1.0",
-    "name": "Traffic Organisation Service (web)",
-    "operationalService": {
-      "name": "Traffic Organization Service"
-    },
-    "serviceId": "imo.tos"
-  },
-  "name": "Oslo VTS TOS (web)",
-  "type": "STATIC",
-  "description": "Oslo VTS Traffic Organization Service\n",
-  "endpoint": [
-    {
-      "url": "http://www.oslohavn.no/en/cargo/services_at_port_of_oslo/oslo_vts/",
-      "type": "URL"
-    }
-  ],
-  "extent": {
-    "area": {
-      "points": [
-        {
-          "lat": "59.14750415186919",
-          "lon": "10.24853945248625"
-        },
-        {
-          "lat": "59.06172493759117",
-          "lon": "10.31098239982662"
-        },
-        {
-          "lat": "58.94171911685134",
-          "lon": "10.48496615599738"
-        },
-        {
-          "lat": "58.94344692618775",
-          "lon": "10.9694846052578"
-        },
-        {
-          "lat": "58.97940934208044",
-          "lon": "11.05472607483105"
-        },
-        {
-          "lat": "59.00440988871283",
-          "lon": "11.1129057231445"
-        },
-        {
-          "lat": "59.03650001180731",
-          "lon": "11.12980251608729"
-        },
-        {
-          "lat": "59.08287209177146",
-          "lon": "11.21135420258818"
-        },
-        {
-          "lat": "59.19124730593956",
-          "lon": "11.22468488812276"
-        },
-        {
-          "lat": "59.78287464383528",
-          "lon": "10.87648363357374"
-        },
-        {
-          "lat": "59.78154420177945",
-          "lon": "10.19143359556659"
-        },
-        {
-          "lat": "59.14750415186919",
-          "lon": "10.24853945248625"
-        }
-      ],
-      "type": "polygon"
-    }
-  }
-}

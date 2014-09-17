@@ -1,0 +1,46 @@
+<div class="col-lg-6">
+    <h1>Register a service</h1>
+    <p>Fill out the form below to register the service provisioned by your organization.</p>
+
+    <!--MESSAGES-->
+    <div x-ng-show="alertMessages" class="alert alert-danger">
+        <span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+    </div>
+    <div x-ng-show="message" class="alert alert-info">{{message}}</div>
+    <!--FORM-->
+    <form role="form" name="form">
+        <div class="form-group">
+            <label for="operationalService">Operational Service</label>
+            <select required class='form-control' id='operationalService' ng-model="selectedOperationalService" ng-options="operationalService.name for operationalService in operationalServices" mcp-focus-me></select>
+            <p class="help-block">Select the operational service (the service category) that the provisioned service belong to.</p>
+        </div>
+        <div class="form-group">
+            <label for="specification">Technical Service Specification</label>
+            <select required class='form-control' id='specification' ng-model="selectedSpecification" ng-options="specification.name+' ('+specification.transportType+')' group by specification.owner.title for specification in specifications"></select>
+            <p class="help-block">Select the technical service specification that describes the interface of the provisioned service.</p>
+        </div>
+        <div class="form-group">
+            <label for="serviceId">Id</label>
+            <input type="text" required class="form-control" id="serviceName" placeholder="Enter a short id" ng-model="service.id" >
+            <p class="help-block">This name will be the id of the service and cannot be changed once created. It must be unique within the organization.</p>
+        </div>
+        <div class="form-group">
+            <label for="serviceName">Name</label>
+            <input type="text" required class="form-control" id="serviceName" placeholder="Enter a service name" ng-model="service.name" >
+            <p class="help-block">The name will be presented on result lists when searching for services. It should distinguish this service from others offered by the organization.</p>
+        </div>
+        <div class="form-group">
+            <label for="serviceDescription">Description</label>
+            <textarea class="form-control" id="serviceDescription" rows="3" placeholder="Enter a description of the service" ng-model="service.description"></textarea>
+            <p class="help-block">The description is usually presented together with the name and should capture the essence of the service in a few words.</p>
+        </div>
+        <div class="form-group">
+            <label for="serviceDescription">Coverage</label>
+            <leaflet center="center" height="320px" width="440px" controls="controls"></leaflet>
+            <p class="help-block">Select the geographical extend of the provided service. That is, specify the area where this service should be visible to consumers.</p>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-success center" ng-disabled="!form.$valid || !formIsSubmitable()" ng-click="submit()">Register service</button>
+        </div>
+    </form>
+</div>

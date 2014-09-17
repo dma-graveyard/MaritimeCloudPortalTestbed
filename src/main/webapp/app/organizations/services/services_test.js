@@ -44,11 +44,5 @@ describe('toLatLngObjects', function() {
   beforeEach(angular.mock.inject(function($controller, SpecificationService, leafletData) {
     controller = $controller("ServiceInstanceDetailsController", {$scope: scope, $stateParams: $stateParams, SpecificationService: SpecificationService, leafletData: leafletData});
   }));
-
-  it('should convert toLatLngObjects from array pairs to objects', function() {
-    var array = [[1, 2], [3, 4], [5, 6]];
-    expect(coordsToLatLngs(array)).to.have.length(3);
-    expect(coordsToLatLngs(array)).to.deep.equal([{lat: 2, lng: 1}, {lat: 4, lng: 3}, {lat: 6, lng: 5}]);
-  });
   
 });

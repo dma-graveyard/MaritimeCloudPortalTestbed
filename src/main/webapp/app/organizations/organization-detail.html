@@ -45,24 +45,25 @@
 
         <div>
             <h2> Provided Services</h2>
-            <div ng-if="!serviceInstances">
+            <div ng-if="serviceInstances.length === 0">
                 Currently no service instances!
-                <ul><li><a>+ Add new service instance</a></li></ul>
             </div>
             <div  class="container-fluid" ng-repeat="service in serviceInstances">
-                <!--<li>-->
                 <div ng-controller="ServiceInstanceDetailsController">
                     <h4>{{service.name}} - {{service.specification.transportType}}</h4>
                     <div>
                         <div class="col-sm-7 col-lg-5" >
-                            <leaflet id="{{'map-'+$index}}" event-broadcast="events" defaults="map.defaults" height="160px" width="220px" paths="map.paths"></leaflet>
+                            <leaflet id="{{'map-' + $index}}" event-broadcast="events" defaults="map.defaults" height="160px" width="220px" paths="map.paths"></leaflet>
                         </div>
                         <div class="col-sm-5 col-lg-7" >
                             <p>{{service.description}}</p>
                         </div>
                     </div>
                 </div>
-                <!--</li>-->
+            </div>
+            <div>
+                <br>
+                <a class="btn btn-minier btn-info" href="#/orgs/{{organization.name}}/createServiceInstance">+ Register a service</a>
             </div>
         </div>
 
