@@ -57,6 +57,10 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       $scope.navigationTarget = null;
       $scope.message = null;
       $scope.alertMessages = [];
+      
+      // FIXME: Remove this switch once carousels has been fixed
+      // HACK: carousel elements stall protractor during e2e testing - disabled it during tests
+      $scope.isProtractorTesting = function() {return typeof(window.protractorE2EtestIsRunning) !== 'undefined';};
 
       // Import user session from local storage (...if any)
       $scope.$storage = $localStorage.$default({userSession: {}});

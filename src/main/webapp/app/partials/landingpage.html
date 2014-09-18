@@ -1,30 +1,33 @@
 <div>
-    <carousel id="myCarousel" interval="8000"> 
+    <div ng-if="isProtractorTesting()">
+        <br><br><br><br> <center><i>Disabled carousel during protractor E2E test</i></center> <br><br><br><br>
+    </div>
+    <carousel ng-if="!isProtractorTesting()" id="myCarousel" interval="8000"> 
         <slide> 
-             SOURCE: http://www.rgbstock.com/photo/mHRgAs0/cloud+formations 
-            <!--<img x-ng-src="img/landingpage/clouds.jpg" alt="Clouds formations">-->
-            <img x-ng-src="img/landingpage/grenen20140730.jpg" alt="Antique world map">
+            <!--SOURCE: http://www.rgbstock.com/photo/mHRgAs0/cloud+formations--> 
+            <!--<img ng-src="img/landingpage/clouds.jpg" alt="Clouds formations">-->
+            <img ng-src="img/landingpage/grenen20140730.jpg" alt="Antique world map">
             <div class="carousel-caption">
                 <h2>Tailored Weather Forecasts</h2>
                 <p>Tailored weather forecasts from Danish Meteorological Institute for uploaded sailing routes.</p>
             </div>
         </slide> 
         <slide> 
-            <img x-ng-src="img/landingpage/Konsol-h350.jpg" alt="Vessel bridge">
+            <img ng-src="img/landingpage/Konsol-h350.jpg" alt="Vessel bridge">
             <div class="carousel-caption">
                 <h2>Coordinated Voyage</h2>
                 <p>Share routes and schedules with other ships and Ground Command.</p>
             </div>
         </slide> 
         <slide> 
-            <img x-ng-src="img/landingpage/map.jpg" alt="Antique world map">
+            <img ng-src="img/landingpage/map.jpg" alt="Antique world map">
             <div class="carousel-caption">
                 <h2>Live AIS-data and Streamlined Reporting</h2>
                 <p>AIS-data from satellite and base stations. </p>
             </div>
         </slide> 
         <slide> 
-            <img x-ng-src="img/landingpage/grenen_lighthouse_20140730.jpg" alt="Lighthouse">
+            <img ng-src="img/landingpage/grenen_lighthouse_20140730.jpg" alt="Lighthouse">
             <div class="carousel-caption">
                 <h2>Identity Services</h2>
                 <p>Know who is who and delegate identity trust. </p>

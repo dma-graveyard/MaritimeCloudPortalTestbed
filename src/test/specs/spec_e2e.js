@@ -8,6 +8,14 @@
 // HELPERS 
 // ----------------------------------------------------------------------------
 
+browser.addMockModule('mcp.e2e.protractor', function() {
+  angular.module('mcp.e2e.protractor', [])
+      .run(function() {
+        // Raise a e2e test flag to allow for protractor unfreindly elements like carrousel to be removed during testing 
+        window.protractorE2EtestIsRunning = true;
+      });
+});
+
 var expectIsEnabled = function(element) {
   return expect(element.isEnabled());
 };
@@ -350,8 +358,8 @@ describe('join form', function() {
   it('should require unique username', function() {
     page.typePreferredLogin('admin');
     expect(page.isValidLogin()).toBe(false);
-//    page.typePreferredLogin('somethingElse');
-//    expect(page.isValidLogin()).toBe(true);
+    //    page.typePreferredLogin('somethingElse');
+    //    expect(page.isValidLogin()).toBe(true);
   });
 
 });
