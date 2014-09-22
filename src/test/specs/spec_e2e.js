@@ -8,39 +8,39 @@
 // HELPERS 
 // ----------------------------------------------------------------------------
 
-browser.addMockModule('mcp.e2e.protractor', function() {
+browser.addMockModule('mcp.e2e.protractor', function () {
   angular.module('mcp.e2e.protractor', [])
-      .run(function() {
+      .run(function () {
         // Raise a e2e test flag to allow for protractor unfreindly elements like carrousel to be removed during testing 
         window.protractorE2EtestIsRunning = true;
       });
 });
 
-var expectIsEnabled = function(element) {
+var expectIsEnabled = function (element) {
   return expect(element.isEnabled());
 };
 
-var isDisabled = function(element) {
+var isDisabled = function (element) {
   // HACK: apparently protractor (or selenium?) cannot read the correct 
   // isEnabled-state of some elements, instead it always resolves to true?!!  
   // (It might be due to the transcluded nature of these elements, like buttons 
   // in panels-directive!?!)
   // Explicitly look for the "disabled"-attribute:
-  return element.getAttribute('disabled').then(function(result) {
+  return element.getAttribute('disabled').then(function (result) {
     return result === 'true';
   });
 };
 
-var echo = function(element) {
-  element.getOuterHtml().then(function(data) {
+var echo = function (element) {
+  element.getOuterHtml().then(function (data) {
     console.log(data);
     console.log("Data: " + data);
   });
-  element.isEnabled().then(function(data) {
+  element.isEnabled().then(function (data) {
     console.log(data);
     console.log("Data: " + data);
   });
-  element.getAttribute('disabled').then(function(data) {
+  element.getAttribute('disabled').then(function (data) {
     console.log(data);
     console.log("Data: " + data);
   });
@@ -50,7 +50,7 @@ var echo = function(element) {
 // PAGE OBJECTS
 // ----------------------------------------------------------------------------
 
-var Menu = function() {
+var Menu = function () {
   browser.get('app/index.html#/');
   this.brand = element(by.id('brand'));
   this.joinItem = element(by.id('menuLogin'));
@@ -58,13 +58,13 @@ var Menu = function() {
   this.logoutItem = element(by.id('menuLogout'));
 };
 
-var LandingPage = function() {
+var LandingPage = function () {
   browser.get('app/index.html#/');
   this.loginButton = element(by.id('login'));
   this.joinButton = element(by.id('join'));
 };
 
-var LoginDialogPage = function() {
+var LoginDialogPage = function () {
   // Init page
   var navbar = new Menu();
   navbar.loginItem.click();
@@ -77,11 +77,11 @@ var LoginDialogPage = function() {
   this.close = element(by.buttonText('x'));
   this.cancel = element(by.buttonText('Cancel'));
   this.signUpLink = element(by.id('signUpLink'));
-  this.typeEscape = function() {
+  this.typeEscape = function () {
     var e = this.close;
     e.sendKeys(protractor.Key.ESCAPE);
     // broken in safari (escape does not work!?) ...use close button instead 
-    browser.getCapabilities().then(function(data) {
+    browser.getCapabilities().then(function (data) {
       if (data.caps_.browserName === 'safari') {
         e.click();
       }
@@ -89,7 +89,7 @@ var LoginDialogPage = function() {
   };
 };
 
-var LoginDialogForgotPasswordPage = function() {
+var LoginDialogForgotPasswordPage = function () {
   // Init page
   var loginDialogPage = new LoginDialogPage();
   loginDialogPage.forgotPasswordLink.click();
@@ -98,7 +98,7 @@ var LoginDialogForgotPasswordPage = function() {
   this.dialog = loginDialogPage.loginDialog;
   this.forgotPasswordLink = element(by.id('forgotPasswordLink'));
   this.email = element(by.id('email'));
-  this.typeEmail = function(keys) {
+  this.typeEmail = function (keys) {
     return this.email.sendKeys(keys);
   };
   this.backToLoginLink = element(by.id('backToLoginLink'));
@@ -106,30 +106,30 @@ var LoginDialogForgotPasswordPage = function() {
   this.cancel = element(by.buttonText('Cancel'));
 };
 
-var SupplyPasswordSnippet = function() {
+var SupplyPasswordSnippet = function () {
   this.newPassword = element(by.id('newPassword'));
   this.repeatedPassword = element(by.id('repeatedPassword'));
-  this.typePassword = function(keys) {
+  this.typePassword = function (keys) {
     return this.newPassword.sendKeys(keys);
   };
-  this.retypePassword = function(keys) {
+  this.retypePassword = function (keys) {
     return this.repeatedPassword.sendKeys(keys);
   };
 };
 
-var JoinFormPage = function() {
+var JoinFormPage = function () {
   browser.get('app/index.html#/join');
   this.preferredLogin = element(by.id('preferredLogin'));
-  this.isValidLogin = function(keys) {
-    return this.preferredLogin.getAttribute('mcp-invalid-input').then(function(result) {
+  this.isValidLogin = function (keys) {
+    return this.preferredLogin.getAttribute('mcp-invalid-input').then(function (result) {
       return result === 'true';
     });
   };
-  this.typePreferredLogin = function(keys) {
+  this.typePreferredLogin = function (keys) {
     return this.preferredLogin.sendKeys(keys);
   };
   this.email = element(by.id('email'));
-  this.typeEmail = function(keys) {
+  this.typeEmail = function (keys) {
     return this.email.sendKeys(keys);
   };
   // import password snippet
@@ -141,11 +141,11 @@ var JoinFormPage = function() {
   this.submitButton = element(by.id('submitButton'));
 };
 
-var JoinConfirmPage = function() {
+var JoinConfirmPage = function () {
   browser.get('app/index.html#/join-confirm');
 };
 
-var ResetPasswordPage = function() {
+var ResetPasswordPage = function () {
   browser.get('app/index.html#/users/admin/reset/some-unique-verification-code-XYZ-123');
   // import password snippet
   var supplyPasswordSnippet = new SupplyPasswordSnippet();
@@ -162,17 +162,17 @@ var ResetPasswordPage = function() {
 // Specs
 // ----------------------------------------------------------------------------
 
-describe('menu bar', function() {
+describe('menu bar', function () {
 
   var menu;
 
-  beforeEach(function() {
+  beforeEach(function () {
     browser.get('app/index.html#/');
     menu = new Menu();
   });
 
-  it('should logout before testing', function() {
-    menu.logoutItem.isPresent().then(function(present) {
+  it('should logout before testing', function () {
+    menu.logoutItem.isPresent().then(function (present) {
       if (present) {
         console.log("Logging out to be in a clean state");
         menu.logoutItem.click();
@@ -180,7 +180,7 @@ describe('menu bar', function() {
     });
   });
 
-  it('should have a brand, a join and a login', function() {
+  it('should have a brand, a join and a login', function () {
     expect(menu.brand.isPresent()).toBe(true);
     expect(menu.joinItem.isPresent()).toBe(true);
     expect(menu.loginItem.isPresent()).toBe(true);
@@ -189,15 +189,15 @@ describe('menu bar', function() {
 
 });
 
-describe('maritime cloud portal landingpage', function() {
+describe('maritime cloud portal landingpage', function () {
 
   var page;
 
-  beforeEach(function() {
+  beforeEach(function () {
     page = new LandingPage();
   });
 
-  it('should have a title, a brand, a join and a login', function() {
+  it('should have a title, a brand, a join and a login', function () {
     expect(browser.getTitle()).toEqual('Maritime Cloud Portal');
     expect(page.joinButton.isPresent()).toBe(true);
     expect(page.loginButton.isPresent()).toBe(true);
@@ -205,15 +205,15 @@ describe('maritime cloud portal landingpage', function() {
 
 });
 
-describe('login dialog', function() {
+describe('login dialog', function () {
 
   var page;
 
-  beforeEach(function() {
+  beforeEach(function () {
     page = new LoginDialogPage();
   });
 
-  it('should require both username and minimum 4 characters password', function() {
+  it('should require both username and minimum 4 characters password', function () {
     expectIsEnabled(page.login).toBe(false);
     page.usernamefield.sendKeys('admin');
     expectIsEnabled(page.login).toBe(false);
@@ -223,13 +223,13 @@ describe('login dialog', function() {
     expectIsEnabled(page.login).toBe(true);
   });
 
-  it('should have a link "forgot password"', function() {
+  it('should have a link "forgot password"', function () {
     expect(page.forgotPasswordLink.isPresent()).toBe(true);
     page.forgotPasswordLink.click();
     expect(page.usernamefield.isPresent()).toBe(false);
   });
 
-  it('should close dialog on cancel', function() {
+  it('should close dialog on cancel', function () {
     expect(page.loginDialog.isPresent()).toBe(true);
     // should have enabled cancel button
     expect(page.cancel.isPresent()).toBe(true);
@@ -238,7 +238,7 @@ describe('login dialog', function() {
     expect(page.loginDialog.isPresent()).toBe(false);
   });
 
-  it('should close dialog on close-x-button', function() {
+  it('should close dialog on close-x-button', function () {
     expect(page.loginDialog.isPresent()).toBe(true);
     // should have enabled cancel button
     expectIsEnabled(page.close).toBe(true);
@@ -246,14 +246,14 @@ describe('login dialog', function() {
     expect(page.loginDialog.isPresent()).toBe(false);
   });
 
-  it('should close dialog on escape', function() {
+  it('should close dialog on escape', function () {
     expect(page.loginDialog.isPresent()).toBe(true);
     page.typeEscape();
     //page.loginDialog.sendKeys(protractor.Key.ESCAPE);
     expect(page.loginDialog.isPresent()).toBe(false);
   });
 
-  it('should navigate to the sign up page', function() {
+  it('should navigate to the sign up page', function () {
     expect(page.signUpLink.isPresent()).toBe(true);
     page.signUpLink.click();
     expect(browser.getLocationAbsUrl()).toMatch("/join");
@@ -261,15 +261,15 @@ describe('login dialog', function() {
 
 });
 
-describe('login dialog forgot password', function() {
+describe('login dialog forgot password', function () {
 
   var page;
 
-  beforeEach(function() {
+  beforeEach(function () {
     page = new LoginDialogForgotPasswordPage();
   });
 
-  it('should require email', function() {
+  it('should require email', function () {
     // should have a link "back to login"
     expect(page.backToLoginLink.isPresent()).toBe(true);
     // should have enabled cancel button
@@ -290,21 +290,21 @@ describe('login dialog forgot password', function() {
 
 });
 
-describe('reset password page', function() {
+describe('reset password page', function () {
 
   var page;
 
-  beforeEach(function() {
+  beforeEach(function () {
     page = new ResetPasswordPage();
   });
 
-  it('should require at least 4 character password', function() {
+  it('should require at least 4 character password', function () {
     expect(page.repeatedPassword.isDisplayed()).toBe(false);
     page.typePassword('abc');
     expect(page.repeatedPassword.isDisplayed()).toBe(false);
   });
 
-  it('should require password different from username', function() {
+  it('should require password different from username', function () {
     // HACK: apparently protractor (or selenium?) cannot read the correct 
     // isEnabled-state of this element, instead it always resolves to true?!!  
     // (It might be due to the transcluded nature of the button!?!)
@@ -315,7 +315,7 @@ describe('reset password page', function() {
     expect(isDisabled(page.changePasswordButton)).toBe(true);
   });
 
-  it('should verify password', function() {
+  it('should verify password', function () {
     expect(page.newPassword.isDisplayed()).toBe(true);
     expect(page.repeatedPassword.isDisplayed()).toBe(false);
     expect(isDisabled(page.changePasswordButton)).toBe(true);
@@ -325,7 +325,7 @@ describe('reset password page', function() {
     expect(isDisabled(page.changePasswordButton)).toBe(false);
   });
 
-  it('should deny change of password with expired reset-id', function() {
+  it('should deny change of password with expired reset-id', function () {
     expect(page.closeButton.isDisplayed()).toBe(false);
     page.typePassword('secret');
     page.retypePassword('secret');
@@ -335,15 +335,15 @@ describe('reset password page', function() {
 
 });
 
-describe('join form', function() {
+describe('join form', function () {
 
   var page;
 
-  beforeEach(function() {
+  beforeEach(function () {
     page = new JoinFormPage();
   });
 
-  it('should sign up', function() {
+  it('should sign up', function () {
     page.typePreferredLogin('JohnDoe');
     page.typeEmail('john_doe@email.com');
     page.typePassword('secret');
