@@ -89,6 +89,31 @@ var LoginDialogPage = function () {
   };
 };
 
+var LoginHelper = function () {
+  var logoutItem = element(by.id('menuLogout'));
+//  if(logoutItem.isDisplayed()){
+//    logoutItem.click();
+//  }
+  // Init page
+  var loginPage = new LoginDialogPage();
+  function typeUsername(keys) {
+    return loginPage.usernamefield.sendKeys(keys);
+  }
+  ;
+  function typePassword(keys) {
+    return loginPage.passwordfield.sendKeys(keys);
+  }
+  ;
+  this.login = function (username, password) {
+    typeUsername(username);
+    typePassword(password);
+    loginPage.login.click();
+  };
+  this.isLoggedIn = function () {
+    return logoutItem.isDisplayed();
+  };
+};
+
 var LoginDialogForgotPasswordPage = function () {
   // Init page
   var loginDialogPage = new LoginDialogPage();
@@ -143,6 +168,8 @@ var JoinFormPage = function () {
 
 var JoinConfirmPage = function () {
   browser.get('app/index.html#/join-confirm');
+
+  this.panelBody = element(by.css('.mcp-panel-body'));
 };
 
 var ResetPasswordPage = function () {
@@ -156,6 +183,17 @@ var ResetPasswordPage = function () {
   this.changePasswordButton = element(by.id('changePasswordButton'));
   this.loginButton = element(by.id('loginButton'));
   this.closeButton = element(by.id('closeButton'));
+};
+
+var SearchServiceMapPage = function () {
+  browser.get('http://localhost:8080/app/index.html#/search/service/map');
+
+  var svgElement = '//*[local-name()="svg" and namespace-uri()="http://www.w3.org/2000/svg"]',
+      svgPathElementXpath = svgElement + '//*[local-name()="path"]';
+
+  this.searchmap = element(by.id('searchmap'));
+  this.svgPathElementXpath = svgPathElementXpath;
+  this.svgPathElements = element.all(by.xpath(svgPathElementXpath));
 };
 
 // ----------------------------------------------------------------------------
@@ -355,7 +393,7 @@ describe('join form', function () {
     //expect(browser.getLocationAbsUrl()).toMatch("/join-confirm");
   });
 
-  it('should require unique username', function() {
+  it('should require unique username', function () {
     page.typePreferredLogin('admin');
     expect(page.isValidLogin()).toBe(false);
     //    page.typePreferredLogin('somethingElse');
@@ -364,18 +402,97 @@ describe('join form', function () {
 
 });
 
-/*
- describe('activate account', function() {
- 
- var page;
- 
- beforeEach(function() {
- page = new JoinConfirmPage();
- });
- 
- it('should show account activated', function() {
- // not sure we can do this at the moment
- });
- 
- });
- */
+describe('Join confirmation', function () {
+
+  var page;
+
+  beforeEach(function () {
+    page = new JoinConfirmPage();
+  });
+
+  it('should inform that an email has been sent', function () {
+    expect(page.panelBody.getText()).toContain('email has been sent');
+  });
+
+});
+
+// --------------------------------------------------------------------
+// LOG IN as 'Tintin'
+// ...for testing protected pages
+// --------------------------------------------------------------------
+
+describe('HELPER: Log in to test protected pages', function () {
+
+  var page;
+
+  it('should log out if already logged in', function () {
+    var menu = new Menu();
+    var logoutItem = menu.logoutItem;
+    logoutItem.click().then(function () {
+      //console.log('Logged out');
+    }, function (err) {
+      //console.log('Never Logged in');
+    });
+  });
+
+  it('should log in', function () {
+    page = new LoginHelper();
+    page.login('Tintin', 'test');
+  });
+
+  it('should still be logged in', function () {
+    expect(element(by.id('menuLogout')).isDisplayed()).toBe(true);
+  });
+
+});
+
+// --------------------------------------------------------------------
+// TEST PROTECTED PAGES
+// --------------------------------------------------------------------
+
+describe('search on map', function () {
+
+  var page;
+
+  beforeEach(function () {
+    page = new SearchServiceMapPage();
+  });
+
+  it('should show map', function () {
+    expect(page.searchmap.isDisplayed()).toBe(true);
+  });
+
+  it('should load a marker when clicked on the map', function () {
+
+    // wait until the first svgPath element is present
+    browser.wait(function () {
+      //return element(by.css('img.leaflet-tile-loaded')).isPresent();
+      return page.svgPathElements.first().isPresent();
+    });
+
+    //    element(by.css('img.leaflet-tile-loaded')).click().then(function () {
+    //      browser.sleep(100);
+    //      expect(element(by.css('img.leaflet-marker-icon')).isPresent()).toBe(true);
+    //    });
+
+    expect(page.svgPathElements.count()).toBe(6);
+
+
+    //    page.svgPathElements.each(function (element) {
+    //      // Will print First, Second, Third.
+    //      console.log(element);
+    //      element.getAttribute('d').then(function (data) {
+    //        console.log(data);
+    //      });
+    //    });
+
+    // find circle coverage of west Greenland
+    //expect(element(by.xpath(page.svgElement + '//*[local-name()="path" and @d="M271 634L271 74L641 74L641 634z"]')).isPresent()).toBe(true);
+  });
+
+//  it('should show map', function () {
+//    expect(page.searchmap.isDisplayed()).toBe(true);
+//  });
+
+});
+
