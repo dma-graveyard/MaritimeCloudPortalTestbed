@@ -3,7 +3,7 @@
 angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
 
     .controller('SearchServiceMapController', ['$scope', 'mapService', 'leafletData', '$timeout', 'ServiceInstanceService',
-      function($scope, mapService, leafletData, $timeout, ServiceInstanceService) {
+      function ($scope, mapService, leafletData, $timeout, ServiceInstanceService) {
 
         angular.extend($scope, {
           services: ServiceInstanceService.query(),
@@ -30,26 +30,26 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
           servicesLayer: servicesToLayers($scope.services)
         });
 
-        $scope.$on('leafletDirectiveMap.click', function(event) {
+        $scope.$on('leafletDirectiveMap.click', function (event) {
           console.log("Event click: ", event);
         });
 
         // register a timeout that will fit (position and zoom) the map to its paths
-        $timeout(function() {
+        $timeout(function () {
           fitToPaths("searchmap");
         }, 100);
-        
+
         function servicesToLayers(services) {
           // associative map 
           //var servicesAsLayers = {};
-          
+
           var servicesLayer = L.layerGroup();
 
           // iterate services, and for each, convert its shapes to layers and 
           // add it to a layerGroup, finally add the layerGroup to the array-object 
-          services.forEach(function(service) {
+          services.forEach(function (service) {
             var layerGroup = L.layerGroup();
-            service.coverage.forEach(function(shape) {
+            service.coverage.forEach(function (shape) {
               layerGroup.addLayer(mapService.shapeToLayer(shape));
             });
             //servicesAsLayers[service.provider.id + '#' + service.id] = layerGroup;
@@ -58,13 +58,13 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
 
           return servicesLayer;
         }
-        
-        leafletData.getMap("searchmap").then(function(map) {
+
+        leafletData.getMap("searchmap").then(function (map) {
           map.addLayer($scope.servicesLayer);
         });
 
         function fitToPaths(mapId) {
-          leafletData.getMap(mapId).then(function(map) {
+          leafletData.getMap(mapId).then(function (map) {
             mapService.fitToGeomitryLayers(map);
           });
         }
