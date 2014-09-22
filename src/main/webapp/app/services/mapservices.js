@@ -117,6 +117,50 @@ mapservices.factory('mapService', ['$rootScope', function($rootScope) {
     }
 
     /**
+     * Parse and converts a MCP shape to a Leaflet Layer
+     * @param {Object} shape
+     * @returns {Object} a corresponding Layer object
+     */
+    function shapeToLayer(shape) {
+      var options = {
+        //color: '#008000',
+        //color: '#ff612f', //orange
+        color: '#ffb752',
+        fillOpacity: 0.106,
+        //color: '#ffff2f',
+        weight: 1,
+        //fillColor: '#ff69b4'
+        //fillColor: '#ffffff'
+      };
+      if (shape.type === 'polygon') {
+        return L.polygon(coordsToLatLngs(shape.points), options);
+      }
+      if (shape.type === 'circle') {
+        var latlngs = {
+          lat: shape['center-latitude'],
+          lng: shape['center-longitude']
+        };
+        return L.circle(latlngs, shape.radius, options);
+      }
+      if (shape.type === 'rectangle') {
+        var latlngBounds = [
+          {
+            lat: shape.buttomRightLatitude,
+            lng: shape.buttomRightLongitude
+          },
+          {
+            lat: shape.topLeftLatitude,
+            lng: shape.topLeftLongitude
+          }
+        ];
+        return L.rectangle(latlngBounds, options);
+
+      }
+      console.log("unknown area type", shape);
+      error('unknown area type!');
+    }
+
+    /**
      * Converts an array of 'MCP shapes' to an array of 'ALD paths'
      * @param {array} shapes of MCP shapes
      * @returns {array} of ALD paths
@@ -157,7 +201,6 @@ mapservices.factory('mapService', ['$rootScope', function($rootScope) {
         return path;
       }
       if (shape.type === 'rectangle') {
-        path.radius = shape.radius;
         path.latlngs = [
           {
             lat: shape.buttomRightLatitude,
@@ -272,6 +315,7 @@ mapservices.factory('mapService', ['$rootScope', function($rootScope) {
       isPolygonLayer: isPolygonLayer,
       isPolylineLayer: isPolylineLayer,
       isRectangleLayer: isRectangleLayer,
+      shapeToLayer: shapeToLayer,
       shapesToPaths: shapesToPaths,
       latLngsToCoordinates: latLngsToCoordinates,
       layersToShapes: layersToShapes

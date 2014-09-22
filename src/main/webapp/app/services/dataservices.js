@@ -325,7 +325,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 
     .constant("servicePort", /*"8080"*/ null)
     .factory('serviceBaseUrl', ['$location', 'servicePort',
-      function($location, servicePort) {
+      function ($location, servicePort) {
         var protocol = $location.protocol();
         var host = $location.host();
         var port = servicePort ? servicePort : $location.port();
@@ -333,7 +333,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
       }])
 
     .factory('UserService', ['$resource', 'serviceBaseUrl',
-      function($resource, serviceBaseUrl) {
+      function ($resource, serviceBaseUrl) {
         return $resource(serviceBaseUrl + '/rest/users/:username', {}, {
           query: {method: 'GET', params: {username: ''}, isArray: true},
           signUp: {method: 'POST', params: {}, isArray: false},
@@ -343,7 +343,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
       }])
 
     .factory('OrganizationService', ['$resource',
-      function($resource) {
+      function ($resource) {
 //    return $resource('/rest/organizations/:organizationname', {}, {
 //      query: {method: 'GET', params: {organizationname: ''}, isArray: true},
 //      signUp: {method: 'POST', params: {}, isArray: false}
@@ -361,7 +361,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
          * @param {type} organizationname
          * @returns {_L16.Anonym$11|_L16.Anonym$8|_L16.Anonym$5}
          */
-        var findOrganization = function(organizationname) {
+        var findOrganization = function (organizationname) {
           for (var i = 0; i < organizations.length; i++) {
             if (organizationname === organizations[i].name)
               return organizations[i];
@@ -370,16 +370,16 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           return null;
         };
         return {
-          get: function(request) {
+          get: function (request) {
             var organizationname = request.organizationname;
             var result = findOrganization(organizationname);
             if (result)
               return result;
           },
-          query: function(user) {
+          query: function (user) {
             if (user && user.name) {
               var organizationsOfMember = [];
-              organizations.forEach(function(organization) {
+              organizations.forEach(function (organization) {
 
                 if (arrayIndexOf(user.name, organization.members))
                   organizationsOfMember.push(organization);
@@ -389,7 +389,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
             return organizations;
           },
           //create: {method: 'POST', params: {}, isArray: false}
-          create: function(newOrganizationRequest, success, failure) {
+          create: function (newOrganizationRequest, success, failure) {
 
             if (findOrganization(newOrganizationRequest.name)) {
               console.log("An organization with that name already exists");
@@ -425,7 +425,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
             success(newOrganization);
             //return
           },
-          registerServiceInstance: function(newServiceInstance, success, failure) {
+          registerServiceInstance: function (newServiceInstance, success, failure) {
 
             // TOBE:
             //  registerServiceInstance: {method: 'PUT', url: '/rest/org/:id/si/:serviceInstanceId', isArray: false},
@@ -450,7 +450,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
       }])
 
     .factory('SpecificationService', ['$resource',
-      function($resource) {
+      function ($resource) {
 //    return $resource('/rest/specifications/:specificationname', {}, {
 //      query: {method: 'GET', params: {specificationname: ''}, isArray: true},
 //      signUp: {method: 'POST', params: {}, isArray: false}
@@ -490,7 +490,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
          * @param {type} specificationname
          * @returns {_L16.Anonym$11|_L16.Anonym$8|_L16.Anonym$5}
          */
-        var findSpecification = function(specificationname) {
+        var findSpecification = function (specificationname) {
           for (var i = 0; i < specifications.length; i++) {
             if (specificationname === specifications[i].name)
               return specifications[i];
@@ -499,17 +499,17 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           return null;
         };
         return {
-          get: function(request) {
+          get: function (request) {
             console.log("specificationname: ", request.specificationname);
             var specificationname = request.specificationname;
             var result = findSpecification(specificationname);
             if (result)
               return result;
           },
-          query: function(request) {
+          query: function (request) {
             if (request && request.organizationname) {
               var specs = [];
-              specifications.forEach(function(specification) {
+              specifications.forEach(function (specification) {
                 if (specification.ownerOrganization === request.organizationname)
                   specs.push(specification);
               });
@@ -518,7 +518,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
             return specifications;
           },
           //create: {method: 'POST', params: {}, isArray: false}
-          create: function(newSpecificationRequest, success, failure) {
+          create: function (newSpecificationRequest, success, failure) {
 
             if (findSpecification(newSpecificationRequest.name)) {
               console.log("An specification with that name already exists");
@@ -559,7 +559,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
       }])
 
     .factory('ServiceInstanceService', ['$resource',
-      function($resource) {
+      function ($resource) {
 //    return $resource('/rest/serviceInstance/:specificationname', {}, {
 //      query: {method: 'GET', params: {specificationname: ''}, isArray: true},
 //      signUp: {method: 'POST', params: {}, isArray: false}
@@ -567,12 +567,44 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         console.log("TODO: using mocked service instance data");
         var serviceInstances = globalServiceInstances;
 
+        function createRandomCoverage(index) {
+          return [
+            {
+              "type": "circle",
+              "center-latitude": 80 - Math.random() * 160,
+              "center-longitude": 180 - Math.random() * 360,
+              "radius": 450000 - Math.random() * 22000
+            }
+          ];
+        }
+
+        function createRandomServiceInstance(index) {
+
+          return   {
+            provider: organization.dp,
+            specification: technicalServices.imoMsiSoap,
+            key: {
+              specificationId: "imo-mis-rest", // [TechnicalServiceId]
+              providerId: "dp", // [MaritimeId (=OrganizationId/UserId)]
+              instanceId: "dk-" + index   // [ServiceInstanceId]
+            },
+            id: "dk-" + index, // [TechnicalServiceId].[OrganizationId].[ServiceInstanceId]
+            // or id: "fo.imo-met-metocroute.dmi.dk", // [ServiceInstanceId].[TechnicalServiceId].[OrganizationId].[OrganizationType]
+            name: "DMI METOC on route (Denmark) " + index,
+            description: "Route based Meteorological Services for the waters surrounding Denmark including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea. " + index,
+            coverage: createRandomCoverage(index)
+          };
+        }
+
+        for (var i = 1; i < 1000; i++) {
+          serviceInstances.push(createRandomServiceInstance(i));
+        }
 
         /**
          * Helper function to find Service Instance by name
          * @param {type} serviceInstanceName
          */
-        var findServiceInstance = function(serviceInstanceName) {
+        var findServiceInstance = function (serviceInstanceName) {
           for (var i = 0; i < serviceInstances.length; i++) {
             if (serviceInstanceName === serviceInstances[i].name)
               return serviceInstances[i];
@@ -581,19 +613,19 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           return null;
         };
         return {
-          get: function(request) {
+          get: function (request) {
             console.log("serviceInstanceName: ", request.serviceInstanceName);
             var serviceInstanceName = request.serviceInstanceName;
             var result = findServiceInstance(serviceInstanceName);
             if (result)
               return result;
           },
-          query: function(request) {
+          query: function (request) {
             if (request && request.organizationname) {
               var specs = [];
               console.log('serviceInstances:', serviceInstances);
 
-              serviceInstances.forEach(function(serviceInstance) {
+              serviceInstances.forEach(function (serviceInstance) {
                 if (serviceInstance.provider.name === request.organizationname)
                   specs.push(serviceInstance);
               });
@@ -602,7 +634,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
             return serviceInstances;
           },
           //create: {method: 'POST', params: {}, isArray: false}
-          create: function(newServiceInstanceRequest, success, failure) {
+          create: function (newServiceInstanceRequest, success, failure) {
 
             if (findServiceInstance(newServiceInstanceRequest.name)) {
               console.log("An service instance with that name already exists");
@@ -643,14 +675,14 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
       }])
 
     .factory('OperationalServiceService', ['$resource',
-      function($resource) {
+      function ($resource) {
 //    return $resource('/rest/serviceInstance/:specificationname', {}, {
 //      query: {method: 'GET', params: {specificationname: ''}, isArray: true},
 //      signUp: {method: 'POST', params: {}, isArray: false}
 //    });
         console.log("TODO: using mocked operational service data");
         return {
-          query: function(request) {
+          query: function (request) {
             var a = [
               operationalServices.lps,
               operationalServices.mis,
@@ -671,14 +703,14 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
       }])
 
     .factory('TechnicalServiceService', ['$resource',
-      function($resource) {
+      function ($resource) {
 //    return $resource('/rest/serviceInstance/:specificationname', {}, {
 //      query: {method: 'GET', params: {specificationname: ''}, isArray: true},
 //      signUp: {method: 'POST', params: {}, isArray: false}
 //    });
         console.log("TODO: using mocked technical service data");
         return {
-          query: function(request) {
+          query: function (request) {
             var array = [];
             for (var key in technicalServices) {
               if (technicalServices[key].operationalService.id === request) {
@@ -695,9 +727,9 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 // HELPER FUNCTIONS
 // ----------------------------------------------------------------------------
 
-var arrayIndexOf = function(value, array) {
+var arrayIndexOf = function (value, array) {
   var i = 0;
-  array.forEach(function(element) {
+  array.forEach(function (element) {
     if (element === value)
       i++;
   });

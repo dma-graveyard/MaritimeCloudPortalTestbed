@@ -14,6 +14,7 @@ var mcpApp = angular.module('mcpApp', [
   'mcp.mapservices',
   'mcp.organizations',
   'mcp.organizations.services',
+  'mcp.search.services',
   'mcp.users',
   'leaflet-directive'
 ]);
@@ -126,6 +127,12 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
           url: "/orgs/{organizationname}/createServiceInstance",
           templateUrl: 'organizations/services/instance-create.html',
           controller: 'ServiceInstanceCreateController',
+        },
+        {
+          name: 'searchServiceMap',
+          url: "/search/service/map",
+          templateUrl: 'search/search-service-map.html',
+          controller: 'SearchServiceMapController',
         },
       ]
     };
