@@ -188,3 +188,16 @@ div.map-info-box-topright {
     border-color: blue;
 }
 
+div.map-info-box-bottomright {
+    position: absolute;
+    bottom: 5em;
+    right: 3em;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 5px;
+    z-index: 100;
+    padding: 6px;
+    text-align: center;
+    border-width: 1;
+    border-color: blue;
+}
+

@@ -7,7 +7,14 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
 
         angular.extend($scope, {
           services: ServiceInstanceService.query(),
-          filterLocation: {lat: 0, lng: 0}
+          filterLocation: {
+            lat: 51,
+            lng: 0,
+            //focus: true,
+            //message: "Hey, drag me if you want",
+            draggable: true
+          },
+          mouseLocation: {lat: 0, lng: 0}
         });
 
         angular.extend($scope, {
@@ -26,24 +33,35 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
               logic: 'emit'
             }
           },
+          markers: {
+          },
           servicesLayer: servicesToLayers($scope.services)
         });
 
+        $scope.moveFilterLocation = function (latlng) {
+          if (!$scope.markers['filterLocation'])
+            $scope.markers['filterLocation'] = $scope.filterLocation;
+          $scope.filterLocation.lat = latlng.lat;
+          $scope.filterLocation.lng = latlng.lng;
+        };
+
         function clickEventHandler(e) {
+
           e.target.setStyle({
             color: 0
           });
+
+          $scope.moveFilterLocation(e.latlng);
+          $scope.$apply();
         }
 
         function mouseMoveEventHandler(e) {
           // update mouse location
-          $scope.filterLocation = e.latlng;
+          $scope.mouseLocation = e.latlng;
           $scope.$apply();
 
-          // show distance in meters to previous mouse location 
-          //if (prevMmEvent)
-          //  console.log(e.latlng.distanceTo(prevMmEvent.latlng));
-          //prevMmEvent = e;
+          // show distance in meters to filterMarker
+          $scope.distance = e.latlng.distanceTo($scope.filterLocation);
         }
 
         function fitToPaths(mapId) {
@@ -52,8 +70,9 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
           });
         }
 
-        $scope.$on('leafletDirectiveMap.click', function (event) {
-          console.log("Event click: ", event);
+        $scope.$on('leafletDirectiveMap.click', function (event, args) {
+          console.log("Event click: ", event, args);
+          $scope.moveFilterLocation(args.leafletEvent.latlng);
         });
 
         // register a timeout that will fit (position and zoom) the map to its paths

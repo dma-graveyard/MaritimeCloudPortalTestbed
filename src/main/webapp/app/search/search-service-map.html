@@ -1,11 +1,15 @@
 
 <div class="map">
     <div class="map-info-box-topright">
-        <div>LatLng: {{filterLocation | latlng2dms:'lat, lng':'D04'}}</div>
-        <div>DMS: {{filterLocation | latlng2dms}}</div>
-        <div>NMI: {{filterLocation | latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}</div>
+        <!--<div>LatLng: {{filterLocation | latlng2dms:'lat, lng':'D04'}}</div>-->
+        <!--<div>DMS: {{filterLocation | latlng2dms}}</div>-->
+        <div>
+            Filter location: {{filterLocation | latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}<br>
+            Distance: {{distance | distance}}, {{distance | distance:'nm'}} <br>
+        </div>
     </div>
-    <leaflet id="searchmap" height="760" zoomControl="true" event-broadcast="events" defaults="map.defaults" paths="map.paths" ></leaflet>
+    <div class="map-info-box-bottomright">{{mouseLocation | latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}</div>
+    <leaflet id="searchmap" markers="markers" height="760" zoomControl="true" event-broadcast="events" defaults="map.defaults" paths="map.paths" ></leaflet>
 </div>
 <!--<div class="simple-box">
     <div class="container-fluid">

@@ -388,6 +388,29 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
         return positionDirective('longitude', formatLongitude, parseLongitude);
       }])
 
+    .filter('distance', ['mapService', function (mapService) {
+        return function (distanceInMeters, format) {
+          var digits;
+          
+          if(!distanceInMeters)
+            return null;
+          
+          if(format && format.match(/\d/))
+            digits = format.match(/\d/);
+          
+          digits = digits || 2;
+          
+          if(format && format.match(/nm/)){
+            return (distanceInMeters / 1852).toFixed(digits) + ' nmi';
+          }
+          
+          if(distanceInMeters > 10000){
+            return (distanceInMeters / 1000).toFixed(digits) + ' km';
+          }
+          return distanceInMeters.toFixed(digits) + ' m';
+        };
+      }])
+
     .filter('latlng2dms', ['mapService',
       function (mapService) {
         /**
