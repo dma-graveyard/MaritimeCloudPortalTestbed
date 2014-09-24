@@ -7,11 +7,14 @@
  * 'Maritime Cloud Portal Shapes' (MCP shapes), 'Angular Leaflet Directive Paths' 
  * (ALD paths) and Leaflet Layers (layers).
  * 
+ * It also contains various filters and directives for smooth convertion and presentation
+ * of geographical data.
+ * 
  * MCP shapes are a JSON representation of the Maritim Cloud java shapes.
  */
 var mapservices = angular.module('mcp.mapservices', []);
 
-mapservices.factory('mapService', ['$rootScope', function($rootScope) {
+mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
 
     function getLayerShapeType(layer) {
 
@@ -77,7 +80,7 @@ mapservices.factory('mapService', ['$rootScope', function($rootScope) {
     function layersToShapes(layersObject) {
 
       var shapes = [];
-      Object.keys(layersObject).forEach(function(prop) {
+      Object.keys(layersObject).forEach(function (prop) {
         shapes.push(layerToShape(layersObject[prop]));
       });
       return shapes;
@@ -224,7 +227,7 @@ mapservices.factory('mapService', ['$rootScope', function($rootScope) {
      */
     function latLngsToCoordinates(latLngs) {
       var coords = [];
-      latLngs.forEach(function(e) {
+      latLngs.forEach(function (e) {
         coords.push(latLngToCoordinate(e));
       });
       return coords;
@@ -251,7 +254,7 @@ mapservices.factory('mapService', ['$rootScope', function($rootScope) {
       }
 
       var a = [];
-      array.forEach(function(e) {
+      array.forEach(function (e) {
         a.push(coordsToLatLngs(e));
       });
       return a;
@@ -295,12 +298,66 @@ mapservices.factory('mapService', ['$rootScope', function($rootScope) {
      */
     function fitToGeomitryLayers(map) {
       var featureGroup = L.featureGroup();
-      map.eachLayer(function(l) {
+      map.eachLayer(function (l) {
         if (isGeometry(l)) {
           featureGroup.addLayer(l);
         }
       });
       map.fitBounds(featureGroup.getBounds());
+    }
+
+    //function nm2km(nm) {
+    //  if (!nm) {
+    //    return undefined;
+    //  }
+    //  return Math.round(nm * 1852 / 1000);
+    //}
+    //
+    //function km2nm(km) {
+    //  if (!km) {
+    //    return undefined;
+    //  }
+    //  return Math.round(km * 1000 / 1852);
+    //}
+    //
+    //function m2nm(m) {
+    //  if (!m) {
+    //    return undefined;
+    //  }
+    //  return Math.round(m / 1852);
+    //}
+
+    /**
+     * Takes on decimal degrees argument and convert it to degrees, minutes, seconds. 
+     * The original value is retained in the resulting object in the property 'decDeg'
+     * 
+     * @param {type} decimalDegrees A decimal number reflecting a latitude or longitude degree.
+     * @param {type} direction a direction indicator, eg. N, S, E or W (will not impact 
+     * calculations, just propagated to the property 'dir' for convinience)
+     * @returns {object}
+     */
+    function decimalDegreesToDegreesMinutesSeconds(decimalDegrees, direction) {
+      var value = Math.abs(decimalDegrees),
+          degrees = Math.floor(value),
+          minutesWithFraction = (value - degrees) * 60,
+          minutes = Math.floor(minutesWithFraction),
+          seconds = Math.round((value - degrees - minutes / 60) * 1000 * 3600) / 1000;
+
+      return {
+        dir: direction,
+        deg: degrees,
+        min: minutes,
+        sec: seconds,
+        decDeg: decimalDegrees,
+        decMin: minutesWithFraction
+      };
+    }
+
+    function latLngToDms(latlng) {
+      return {
+        latDms: decimalDegreesToDegreesMinutesSeconds(latlng.lat, latlng.lat >= 0 ? "N" : "S"),
+        lngDms: decimalDegreesToDegreesMinutesSeconds(latlng.lng, latlng.lng >= 0 ? "E" : "W")
+      };
     }
 
     return {
@@ -318,7 +375,111 @@ mapservices.factory('mapService', ['$rootScope', function($rootScope) {
       shapeToLayer: shapeToLayer,
       shapesToPaths: shapesToPaths,
       latLngsToCoordinates: latLngsToCoordinates,
+      latLngToDms: latLngToDms,
       layersToShapes: layersToShapes
     };
-  }]);
+  }])
+
+    .directive('latitude', ['mapService', function (mapService) {
+        return positionDirective('latitude', formatLatitude, parseLatitude);
+      }])
+
+    .directive('longitude', ['mapService', function (mapService) {
+        return positionDirective('longitude', formatLongitude, parseLongitude);
+      }])
+
+    .filter('latlng2dms', ['mapService',
+      function (mapService) {
+        /**
+         * Filter that formats a LatLang value into a Degeres, Minutes, Seconds 
+         * format according to a set of patterns:
+         * 
+         * argument 1: a pattern where 'lat' and 'lng' kaewords are replaced with their formatted values
+         * argument 2: a pattern that specifies how the 'lat' part above should be formatted. Defaults to ""
+         * argument 3: a pattern that specifies how the 'lng' part above should be formatted. Will use the lat-pattern if omitted.
+         * 
+         * Pattern: [other]*[symbol[maxLeadingZeroes][fixedDecimals][other]*]*
+         *  
+         *  symbol: [idDmMs] - symbol designating the fractional value to include:
+         *      i: dms.dir    - the directional indicator (usually N, S, E or W)
+         *      d: dms.deg    - the integer part of the degrees fraction
+         *      D: dms.decDeg - the degrees including decimals
+         *      m: dms.min    - the integer minutes part of the degrees
+         *      M: dms.decMin - the minutes part of the degrees including decimals
+         *      s: dms.sec    - the seconds part of the degrees including decimals
+         *      
+         *  maxLeadingZeroes: [digit] - the maximum number of leading zeroes added to the fraction value 
+         *  fixedDecimals: [digit]    - the fixed size of decimal digits (if supplied) 
+         *  
+         * @param {type} dms
+         * @param {type} latlngFormat
+         * @param {type} latFormat
+         * @param {type} lngFormat
+         * @returns {String}
+         */
+        function formatLatLngAsDms(dms, latlngFormat, latFormat, lngFormat) {
+          latFormat = latFormat || "i d2° m2' s21''";
+          var lat = formatDmsPart(dms.latDms, latFormat),
+              lng = formatDmsPart(dms.lngDms, lngFormat || latFormat);
+          latlngFormat = latlngFormat || 'lat - lng';
+          return latlngFormat.replace(/lat/, lat).replace(/lng/, lng);
+        }
+
+        function formatDmsPart(dms, format) {
+          var formatted = format,
+              regexMatchSymbol = /[idmsDM]\d*/g,
+              symbolMatch;
+
+          while (symbolMatch = regexMatchSymbol.exec(format)) {
+            formatted = formatFraction(symbolMatch[0], dms, formatted);
+          }
+
+          // replace '' with " 
+          formatted = formatted.replace("''", '"');
+          return formatted;
+        }
+
+        function formatFraction(symbolFormat, dms, target) {
+          var symbol = symbolFormat[0],
+              digits = symbolFormat.match(/\d+/),
+              value,
+              maxLeadingZeroes,
+              fixedDecimals;
+
+          if (digits) {
+            maxLeadingZeroes = digits[0][0] || 0;
+            fixedDecimals = digits[0][1];
+          }
+
+          value = selectFractionValue(dms, symbol);
+          value = fixedDecimals ? value.toFixed(fixedDecimals) : value;
+          value = maxLeadingZeroes ? leadingZeroes(maxLeadingZeroes, value) : value;
+
+          return target.replace(symbolFormat, value);
+        }
+
+        function selectFractionValue(dms, symbol) {
+          return symbol === 'i' ? dms.dir :
+              symbol === 'd' ? dms.deg :
+              symbol === 'D' ? dms.decDeg :
+              symbol === 'm' ? dms.min :
+              symbol === 'M' ? dms.decMin :
+              symbol === 's' ? dms.sec : '?';
+        }
+
+        function leadingZeroes(size, value) {
+          var s = '' + value;
+          while (s.indexOf('.') > 0 && s.indexOf('.') < size || s.length < size) {
+            s = '0' + s;
+          }
+          return s;
+        }
+
+        return function (input, latlngFormat, latFormat, lngFormat) {
+          input = input || {lat: 0, lon: 0};
+          var dms = mapService.latLngToDms(input);
+          return formatLatLngAsDms(dms, latlngFormat, latFormat, lngFormat);
+        };
+      }])
+    ;
 

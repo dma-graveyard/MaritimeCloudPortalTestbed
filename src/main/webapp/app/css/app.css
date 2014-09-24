@@ -173,3 +173,18 @@ span.summary.ng-invalid {
 span.summary.ng-valid { 
     color: green; 
 }
+
+/* Search Map */
+div.map-info-box-topright {
+    position: absolute;
+    top: 3em;
+    right: 3em;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 5px;
+    z-index: 100;
+    padding: 1em;
+    text-align: center;
+    border-width: 1;
+    border-color: blue;
+}
+

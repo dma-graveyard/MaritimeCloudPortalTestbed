@@ -7,8 +7,7 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
 
         angular.extend($scope, {
           services: ServiceInstanceService.query(),
-          swindowHeight: 600,
-          velementWidth: 123
+          filterLocation: {lat: 0, lng: 0}
         });
 
         angular.extend($scope, {
@@ -23,12 +22,35 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
           },
           events: {
             map: {
-              enable: ['click'],
+              enable: ['click', 'mousemove'],
               logic: 'emit'
             }
           },
           servicesLayer: servicesToLayers($scope.services)
         });
+
+        function clickEventHandler(e) {
+          e.target.setStyle({
+            color: 0
+          });
+        }
+
+        function mouseMoveEventHandler(e) {
+          // update mouse location
+          $scope.filterLocation = e.latlng;
+          $scope.$apply();
+
+          // show distance in meters to previous mouse location 
+          //if (prevMmEvent)
+          //  console.log(e.latlng.distanceTo(prevMmEvent.latlng));
+          //prevMmEvent = e;
+        }
+
+        function fitToPaths(mapId) {
+          leafletData.getMap(mapId).then(function (map) {
+            mapService.fitToGeomitryLayers(map);
+          });
+        }
 
         $scope.$on('leafletDirectiveMap.click', function (event) {
           console.log("Event click: ", event);
@@ -39,6 +61,11 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
           fitToPaths("searchmap");
         }, 100);
 
+        leafletData.getMap("searchmap").then(function (map) {
+          map.addLayer($scope.servicesLayer);
+          map.on('mousemove', mouseMoveEventHandler);
+        });
+
         function servicesToLayers(services) {
           // associative map 
           //var servicesAsLayers = {};
@@ -48,25 +75,17 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
           // iterate services, and for each, convert its shapes to layers and 
           // add it to a layerGroup, finally add the layerGroup to the array-object 
           services.forEach(function (service) {
-            var layerGroup = L.layerGroup();
+            var featureGroup = L.featureGroup();
+            featureGroup.service = service;
+            featureGroup.on('click', clickEventHandler);
+            featureGroup.on('mousemove', mouseMoveEventHandler);
             service.coverage.forEach(function (shape) {
-              layerGroup.addLayer(mapService.shapeToLayer(shape));
+              featureGroup.addLayer(mapService.shapeToLayer(shape));
             });
-            //servicesAsLayers[service.provider.id + '#' + service.id] = layerGroup;
-            servicesLayer.addLayer(layerGroup);
+            servicesLayer.addLayer(featureGroup);
           });
 
           return servicesLayer;
-        }
-
-        leafletData.getMap("searchmap").then(function (map) {
-          map.addLayer($scope.servicesLayer);
-        });
-
-        function fitToPaths(mapId) {
-          leafletData.getMap(mapId).then(function (map) {
-            mapService.fitToGeomitryLayers(map);
-          });
         }
 
       }])
