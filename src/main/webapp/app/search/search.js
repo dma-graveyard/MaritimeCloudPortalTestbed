@@ -38,21 +38,29 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
           },
           markers: {
           },
-          servicesLayer: L.featureGroup()
+          servicesLayer: L.featureGroup(),
+          servicesLayerMap: {}
         });
-        
+
         showServices($scope.services);
 
         function featureGroupCallback(featureGroup) {
           // (called whenever servicesToLayers creates a layer)
           featureGroup.on('click', clickEventHandler);
           featureGroup.on('mousemove', mouseMoveEventHandler);
+          featureGroup.on('mouseover', function (e) {
+            $scope.highlightService(e.target.service);
+          });
+          featureGroup.on('mouseout', function (e) {
+            $scope.unhighlightService(e.target.service);
+          });
+          $scope.servicesLayerMap[featureGroup.service.id] = featureGroup;
         }
-        
+
         $scope.clearSelection = function () {
-          
+
           delete $scope.markers.filterLocation;
-          
+
           // filter services to those that contains the filterLocation
           $scope.services = $scope.allServices;
 
@@ -74,13 +82,16 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
         };
 
         function showServices(servicesAtLocation) {
+          // Cleanup
+          $scope.servicesLayerMap = {};
           $scope.servicesLayer.clearLayers();
+          // Rebuild
           $scope.servicesLayer.addLayer(L.featureGroup(mapService.servicesToLayers(servicesAtLocation, featureGroupCallback)));
           fitToSelectedLayers();
         }
 
         function clickEventHandler(e) {
-
+//fixme: never called?
           e.target.setStyle({
             color: 0
           });
@@ -104,6 +115,22 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
               map.fitBounds($scope.servicesLayer.getBounds());
           });
         }
+
+        $scope.selectedService = null;
+        $scope.selectService = function (service) {
+          //$scope.highlightService(service);
+        };
+
+        $scope.highlightService = function (service) {
+          $scope.selectedService = service;
+          $scope.servicesLayerMap[service.id].highlight();
+        };
+
+        $scope.unhighlightService = function (service) {
+          $scope.selectedService = null;
+          $scope.servicesLayerMap[service.id].resetStyle();
+        };
+
 
         $scope.$on('leafletDirectiveMap.click', function (event, args) {
           console.log("Event click: ", event, args);

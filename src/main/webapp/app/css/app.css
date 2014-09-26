@@ -201,3 +201,9 @@ div.map-info-box-bottomright {
     border-color: blue;
 }
 
+li.active { 
+    color:blue;  
+    border-width: 1;
+    border-color: blue;
+    background: #99c392;
+}

@@ -16,6 +16,39 @@ var mapservices = angular.module('mcp.mapservices', []);
 
 mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
 
+    var Styles = {
+      DEFAULT: {
+        //color: '#008000',
+        //color: '#ff612f', //orange
+        color: '#ffb752',
+        fillOpacity: 0.106,
+        //color: '#ffff2f',
+        weight: 1,
+        //fillColor: '#ff69b4'
+        //fillColor: '#ffffff'
+      },
+      HIGHLIGHT: {
+        weight: 2,
+        //dashArray: [5,10],
+        color: '#008000',
+        fillOpacity: 0.206,
+      }
+    }
+
+    L.FeatureGroup.prototype.highlight = function () {
+      if (!this.originalStyle) {
+        this.originalStyle = this.getLayers()[0].options;
+        this.setStyle(Styles.HIGHLIGHT);
+      }
+    };
+
+    L.FeatureGroup.prototype.resetStyle = function () {
+      if (this.originalStyle) {
+        this.setStyle(this.originalStyle);
+        delete this.originalStyle;
+      }
+    };
+
     function getLayerShapeType(layer) {
 
       if (layer instanceof L.Circle) {
@@ -125,16 +158,7 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
      * @returns {Object} a corresponding Layer object
      */
     function shapeToLayer(shape) {
-      var options = {
-        //color: '#008000',
-        //color: '#ff612f', //orange
-        color: '#ffb752',
-        fillOpacity: 0.106,
-        //color: '#ffff2f',
-        weight: 1,
-        //fillColor: '#ff69b4'
-        //fillColor: '#ffffff'
-      };
+      var options = Styles.DEFAULT;
       if (shape.type === 'polygon') {
         return L.polygon(coordsToLatLngs(shape.points), options);
       }
@@ -317,18 +341,18 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
     }
 
     function filterServicesAtLocation(filterLocation, services) {
-      
+
       // convert to layers so that we can use leaflet bounding boxs
       var serviceLayers = L.featureGroup(servicesToLayers(services)),
           filteredServices = [];
-      
+
       // iterate and select all those whith a bounding box that contains the location
       serviceLayers.eachLayer(function (serviceLayer) {
         //console.log('filterLocation',filterLocation);
-        if(serviceLayer.getBounds().contains(filterLocation))
+        if (serviceLayer.getBounds().contains(filterLocation))
           filteredServices.push(serviceLayer.service);
       });
-      
+
       return filteredServices;
     }
 
