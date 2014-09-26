@@ -163,6 +163,30 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
       error('unknown area type!');
     }
 
+    function servicesToLayers(services, featureGroupCallback) {
+      // associative map 
+      //var servicesAsLayers = {};
+
+      var servicesLayers = [];
+
+      // iterate services, and for each, convert its shapes to layers and 
+      // add it to a layerGroup, finally add the layerGroup to the array-object 
+      services.forEach(function (service) {
+        var featureGroup = L.featureGroup();
+        featureGroup.service = service;
+        if (featureGroupCallback) {
+          featureGroupCallback(featureGroup);
+        }
+        service.coverage.forEach(function (shape) {
+          featureGroup.addLayer(shapeToLayer(shape));
+        });
+        servicesLayers.push(featureGroup);
+      });
+
+      return servicesLayers;
+    }
+
+
     /**
      * Converts an array of 'MCP shapes' to an array of 'ALD paths'
      * @param {array} shapes of MCP shapes
@@ -292,6 +316,23 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
       };
     }
 
+    function filterServicesAtLocation(filterLocation, services) {
+      
+      // convert to layers so that we can use leaflet bounding boxs
+      var serviceLayers = L.featureGroup(servicesToLayers(services)),
+          filteredServices = [];
+      
+      // iterate and select all those whith a bounding box that contains the location
+      serviceLayers.eachLayer(function (serviceLayer) {
+        //console.log('filterLocation',filterLocation);
+        if(serviceLayer.getBounds().contains(filterLocation))
+          filteredServices.push(serviceLayer.service);
+      });
+      
+      return filteredServices;
+    }
+
+
     /**
      * Fits the map to the bounds of the contained layers of type 'Geomitry' 
      * @param {Map} map
@@ -363,6 +404,7 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
     return {
       coordsToLatLngs: coordsToLatLngs,
       createDrawingOptions: createDrawingOptions,
+      filterServicesAtLocation: filterServicesAtLocation,
       fitToGeomitryLayers: fitToGeomitryLayers,
       getLayerShapeType: getLayerShapeType,
       isCircleLayer: isCircleLayer,
@@ -372,6 +414,7 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
       isPolygonLayer: isPolygonLayer,
       isPolylineLayer: isPolylineLayer,
       isRectangleLayer: isRectangleLayer,
+      servicesToLayers: servicesToLayers,
       shapeToLayer: shapeToLayer,
       shapesToPaths: shapesToPaths,
       latLngsToCoordinates: latLngsToCoordinates,
@@ -391,20 +434,20 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
     .filter('distance', ['mapService', function (mapService) {
         return function (distanceInMeters, format) {
           var digits;
-          
-          if(!distanceInMeters)
+
+          if (!distanceInMeters)
             return null;
-          
-          if(format && format.match(/\d/))
+
+          if (format && format.match(/\d/))
             digits = format.match(/\d/);
-          
+
           digits = digits || 2;
-          
-          if(format && format.match(/nm/)){
+
+          if (format && format.match(/nm/)) {
             return (distanceInMeters / 1852).toFixed(digits) + ' nmi';
           }
-          
-          if(distanceInMeters > 10000){
+
+          if (distanceInMeters > 10000) {
             return (distanceInMeters / 1000).toFixed(digits) + ' km';
           }
           return distanceInMeters.toFixed(digits) + ' m';

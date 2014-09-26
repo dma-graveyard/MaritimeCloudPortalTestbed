@@ -5,8 +5,10 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
     .controller('SearchServiceMapController', ['$scope', 'mapService', 'leafletData', '$timeout', 'ServiceInstanceService',
       function ($scope, mapService, leafletData, $timeout, ServiceInstanceService) {
 
+        var SEARCHMAP_ID = 'searchmap';
+
         angular.extend($scope, {
-          services: ServiceInstanceService.query(),
+          allServices: ServiceInstanceService.query(),
           filterLocation: {
             lat: 51,
             lng: 0,
@@ -18,6 +20,7 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
         });
 
         angular.extend($scope, {
+          services: $scope.allServices,
           map: {
             defaults: {
               scrollWheelZoom: true,
@@ -35,15 +38,46 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
           },
           markers: {
           },
-          servicesLayer: servicesToLayers($scope.services)
+          servicesLayer: L.featureGroup()
         });
+        
+        showServices($scope.services);
+
+        function featureGroupCallback(featureGroup) {
+          // (called whenever servicesToLayers creates a layer)
+          featureGroup.on('click', clickEventHandler);
+          featureGroup.on('mousemove', mouseMoveEventHandler);
+        }
+        
+        $scope.clearSelection = function () {
+          
+          delete $scope.markers.filterLocation;
+          
+          // filter services to those that contains the filterLocation
+          $scope.services = $scope.allServices;
+
+          // show services that are reachable 
+          showServices($scope.services);
+        }
 
         $scope.moveFilterLocation = function (latlng) {
-          if (!$scope.markers['filterLocation'])
-            $scope.markers['filterLocation'] = $scope.filterLocation;
+          if (!$scope.markers.filterLocation)
+            $scope.markers.filterLocation = $scope.filterLocation;
           $scope.filterLocation.lat = latlng.lat;
           $scope.filterLocation.lng = latlng.lng;
+
+          // filter services to those that contains the filterLocation
+          $scope.services = mapService.filterServicesAtLocation(latlng, $scope.allServices);
+
+          // show services that are reachable 
+          showServices($scope.services);
         };
+
+        function showServices(servicesAtLocation) {
+          $scope.servicesLayer.clearLayers();
+          $scope.servicesLayer.addLayer(L.featureGroup(mapService.servicesToLayers(servicesAtLocation, featureGroupCallback)));
+          fitToSelectedLayers();
+        }
 
         function clickEventHandler(e) {
 
@@ -64,9 +98,10 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
           $scope.distance = e.latlng.distanceTo($scope.filterLocation);
         }
 
-        function fitToPaths(mapId) {
-          leafletData.getMap(mapId).then(function (map) {
-            mapService.fitToGeomitryLayers(map);
+        function fitToSelectedLayers() {
+          leafletData.getMap(SEARCHMAP_ID).then(function (map) {
+            if ($scope.services.length)
+              map.fitBounds($scope.servicesLayer.getBounds());
           });
         }
 
@@ -75,37 +110,37 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
           $scope.moveFilterLocation(args.leafletEvent.latlng);
         });
 
-        // register a timeout that will fit (position and zoom) the map to its paths
-        $timeout(function () {
-          fitToPaths("searchmap");
-        }, 100);
+//        // register a timeout that will fit (position and zoom) the map to its paths
+//        $timeout(function () {
+//          fitToSelectedLayers();
+//        }, 100);
 
-        leafletData.getMap("searchmap").then(function (map) {
+        leafletData.getMap(SEARCHMAP_ID).then(function (map) {
           map.addLayer($scope.servicesLayer);
           map.on('mousemove', mouseMoveEventHandler);
         });
 
-        function servicesToLayers(services) {
-          // associative map 
-          //var servicesAsLayers = {};
-
-          var servicesLayer = L.layerGroup();
-
-          // iterate services, and for each, convert its shapes to layers and 
-          // add it to a layerGroup, finally add the layerGroup to the array-object 
-          services.forEach(function (service) {
-            var featureGroup = L.featureGroup();
-            featureGroup.service = service;
-            featureGroup.on('click', clickEventHandler);
-            featureGroup.on('mousemove', mouseMoveEventHandler);
-            service.coverage.forEach(function (shape) {
-              featureGroup.addLayer(mapService.shapeToLayer(shape));
-            });
-            servicesLayer.addLayer(featureGroup);
-          });
-
-          return servicesLayer;
-        }
+//        function servicesToLayers(services) {
+//          // associative map 
+//          //var servicesAsLayers = {};
+//
+//          var servicesLayer = L.layerGroup();
+//
+//          // iterate services, and for each, convert its shapes to layers and 
+//          // add it to a layerGroup, finally add the layerGroup to the array-object 
+//          services.forEach(function (service) {
+//            var featureGroup = L.featureGroup();
+//            featureGroup.service = service;
+//            featureGroup.on('click', clickEventHandler);
+//            featureGroup.on('mousemove', mouseMoveEventHandler);
+//            service.coverage.forEach(function (shape) {
+//              featureGroup.addLayer(mapService.shapeToLayer(shape));
+//            });
+//            servicesLayer.addLayer(featureGroup);
+//          });
+//
+//          return servicesLayer;
+//        }
 
       }])
     ;

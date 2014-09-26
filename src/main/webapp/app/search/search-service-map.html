@@ -1,15 +1,31 @@
 
 <div class="map">
-    <div class="map-info-box-topright">
+    
+    <!--FILTER INFO BOX-->
+    <div ng-if="markers.filterLocation" class="map-info-box-topright">
         <!--<div>LatLng: {{filterLocation | latlng2dms:'lat, lng':'D04'}}</div>-->
         <!--<div>DMS: {{filterLocation | latlng2dms}}</div>-->
         <div>
-            Filter location: {{filterLocation | latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}<br>
-            Distance: {{distance | distance}}, {{distance | distance:'nm'}} <br>
+            <img style="vertical-align: sub;" src="../../ext/bower/leaflet/dist/images/marker-icon.png" height="16"/> {{filterLocation| latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}
+            <button type="button" style="vertical-align: inherit;" class="btn btn-xs btn-white" ng-click="clearSelection()">X</button>
+        </div>
+        <div>
+
+            <ul>
+                <li ng-repeat="service in services| limitTo:10 "> ({{service.id}}) {{service.name}} </li>
+                <li ng-if="services.length > 10"> ... {{services.length - 10}} more ...</li>
+                <li ng-if="!services.length"> no disturbing services at this location </li>
+            </ul>
+
         </div>
     </div>
-    <div class="map-info-box-bottomright">{{mouseLocation | latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}</div>
     <leaflet id="searchmap" markers="markers" height="760" zoomControl="true" event-broadcast="events" defaults="map.defaults" paths="map.paths" ></leaflet>
+    <div class="map-info-box-bottomright">
+        {{mouseLocation| latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}
+        <div ng-if="markers.filterLocation">
+            {{distance| distance}} ({{distance| distance:'nm'}}) from mark 
+        </div>
+    </div>
 </div>
 <!--<div class="simple-box">
     <div class="container-fluid">
