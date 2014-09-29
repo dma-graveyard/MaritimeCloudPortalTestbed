@@ -1,0 +1,78 @@
+/* app css stylesheet */
+html {
+    min-height: 100%; 
+    font-family: 'PT Sans' !important;
+    position: relative;
+}
+body {
+    font-family: 'PT Sans' !important;
+}
+
+/* FIXME: remove container from restricted partial!!! */
+
+.main-container {
+    /*background-color: #fff;*/
+}
+
+.main-container:before {
+    display: block;
+    content: "";
+    position: absolute;
+    z-index: -2;
+    width: 100%;
+    max-width: inherit;
+    bottom: 0;
+    top: 0;
+    background-color: #FFF;
+}
+
+.main-content {
+    //    z-index: -2;
+    margin-left: 190px;
+    min-height: 100%;
+    padding: 0;
+}
+
+.sidebar {
+    background-color: #222a2d;
+    width: 190px;
+    /*height: 100%;*/
+    float: left;
+    position: static;
+    /*position: absolute;*/
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.sidebar:before{
+    content:"";
+    display:block;
+    width:inherit;
+    position:absolute;
+    top:0;
+    bottom:0;
+    z-index: -1;
+    background-color:inherit;
+    border-style:inherit;
+    border-color:inherit;
+    border-width:inherit
+}
+
+.sidebar li a {
+    color: #b1bac1;
+}
+
+.navbar {
+    background: #2c6aa0;
+    border-color: #595F2B;
+}
+
+.navbar .navbar-nav>li>a {
+    color: #fff;
+}
+
+.navbar .navbar-nav>li>a:hover, .navbar .navbar-nav>li>a:focus, .navbar .navbar-nav>li.open>a {
+    background-color: rgba(0,0,0,0.1) !important;
+    color: #fff !important;
+}
+

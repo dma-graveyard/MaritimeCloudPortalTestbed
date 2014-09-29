@@ -15,7 +15,9 @@
     "angular-busy": "~4.1.0",
     "angular-leaflet-directive": "*",
     "leaflet": "~0.7.3",
-    "leaflet.draw": "*"
+    "leaflet.draw": "*",
+    "open-sans-fontface": "~1.1.0",
+    "components-font-awesome": "~4.2.0"
   },
   "devDependencies": {
     "angular-mocks": "latest",
