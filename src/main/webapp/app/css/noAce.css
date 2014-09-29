@@ -1,11 +1,10 @@
 /* app css stylesheet */
 html {
     min-height: 100%; 
-    font-family: 'PT Sans' !important;
     position: relative;
 }
 body {
-    font-family: 'PT Sans' !important;
+    font-family: 'Open Sans' !important;
 }
 
 /* FIXME: remove container from restricted partial!!! */
@@ -31,6 +30,16 @@ body {
     margin-left: 190px;
     min-height: 100%;
     padding: 0;
+}
+
+.navbar-brand {
+    color: #eee !important;
+    font-size: x-large;
+}
+
+.brand-sub {
+    color: #aaa !important;
+    font-size: large;
 }
 
 .sidebar {
@@ -76,3 +85,11 @@ body {
     color: #fff !important;
 }
 
+.navbar .navbar-nav > li:first-child {
+    border-width: 0 1px 0 1px;
+}
+
+.navbar .navbar-nav > li {
+    border: 1px solid darkslategray;
+    border-width: 0 1px 0 0;
+}
