@@ -1,5 +1,5 @@
 <nav class="navbar navbar-default" role="navigation">
-    <div class="navbar-container container">
+    <div class="navbar-container">
 
         <!-- Responsive Navbar for angular-ui explained here: https://github.com/angular-ui/bootstrap/issues/1672 -->
 
@@ -10,7 +10,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#/" id="brand"><font color="#eee">MaritimeCloud</font><font color="#aaa" size="3">Portal</font></a>
+            <a class="navbar-brand" href="#/" id="brand">MaritimeCloud<span class="brand-sub">Portal</span></a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -27,7 +27,7 @@
                 <!-- ORGANIZATIONS -->
                 <li class="dropdown" ng-controller="OrganizationListController">
                     <a class="dropdown-toggle" href="#/orgs">
-                        <i class="menu-icon fa fa-users"></i>
+                        <i class="menu-icon fa fa-university"></i>
                         <span class="menu-text"> {{currentOrganization.title}}</span>
                         <i class="ace-icon fa fa-caret-down"></i>
                     </a>
@@ -37,7 +37,7 @@
                             
                             <a href="#/orgs/{{organization.name}}">
                                 <span class="menu-item-check" ng-class="{'selected' : isCurrent(organization)}">&#x2713;</span>
-                                <i class="menu-icon fa fa-users"></i> {{organization.title}}
+                                <i class="menu-icon fa fa-university"></i> {{organization.title}}
                             </a>
                             <b class="arrow"></b>
                         </li>
