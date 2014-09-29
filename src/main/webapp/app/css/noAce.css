@@ -6,19 +6,25 @@ html {
 
 body {
     font-family: 'Open Sans' !important;
-    padding-bottom:40px;   /* Height of the footer */
+    padding-bottom:30px;   /* Height of the footer */
 }
 
 #searchmap {
-    height: calc(100vh - 60px - 40px); /* window height minus height of navbar and footer */
+    height: calc(100vh - 52px - 30px); /* window height minus height of navbar and footer */
 }
 
 footer {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 40px;
-    /*background: #2c6aa0;*/
+    height: 30px;
+    background: #305B80;
+}
+
+footer .navbar-text, footer a {
+    padding: 5px 15px !important; 
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
 }
 
 .main-container {
