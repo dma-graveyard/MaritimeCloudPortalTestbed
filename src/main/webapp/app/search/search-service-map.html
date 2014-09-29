@@ -4,9 +4,10 @@
     <!--FILTER INFO BOX-->
     <div ng-if="markers.filterLocation" class="map-info-box-topright">
         <button type="button" style="font-size: medium;" class="close btn btn-xs btn-white" ng-click="clearSelection()">X</button>
-        <div>
-            <img style="vertical-align: sub;" src="../../ext/bower/leaflet/dist/images/marker-icon.png" height="16"/> {{filterLocation| latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}
-        </div>
+        <div class="pull-left">
+            <img style="vertical-align: sub;" src="../../ext/bower/leaflet/dist/images/marker-icon.png" height="16"/> 
+            <b>{{filterLocation| latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}</b>
+        </div><br>
         <div>
 
             <ul>

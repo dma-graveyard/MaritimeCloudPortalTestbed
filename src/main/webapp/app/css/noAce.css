@@ -27,6 +27,16 @@ footer .navbar-text, footer a {
     margin-bottom: 0 !important;
 }
 
+.navbar-brand {
+    color: #eee !important;
+    font-size: x-large;
+}
+
+.brand-sub {
+    color: #aaa !important;
+    font-size: large;
+}
+
 .main-container {
     /*background-color: #fff;*/
 }
@@ -48,16 +58,6 @@ footer .navbar-text, footer a {
     margin-left: 190px;
     min-height: 100%;
     padding: 0;
-}
-
-.navbar-brand {
-    color: #eee !important;
-    font-size: x-large;
-}
-
-.brand-sub {
-    color: #aaa !important;
-    font-size: large;
 }
 
 .sidebar {

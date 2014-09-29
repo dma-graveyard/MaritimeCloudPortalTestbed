@@ -168,28 +168,30 @@ span.summary.ng-valid {
 /* Search Map */
 div.map-info-box-topright {
     position: absolute;
-    top: 3em;
-    right: 3em;
+    top: 5em;
+    right: 2em;
     background: rgba(255, 255, 255, 0.8);
-    border-radius: 5px;
     z-index: 100;
     padding: 1em;
     text-align: center;
-    border-width: 1;
-    border-color: blue;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(75, 109, 195, 0.5);
 }
 
 div.map-info-box-bottomright {
     position: absolute;
     bottom: 5em;
-    right: 3em;
+    right: 2em;
     background: rgba(255, 255, 255, 0.8);
-    border-radius: 5px;
     z-index: 100;
     padding: 6px;
     text-align: center;
-    border-width: 1;
-    border-color: blue;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(75, 109, 195, 0.5);
 }
 
 li.active { 
@@ -197,4 +199,54 @@ li.active {
     border-width: 1;
     border-color: blue;
     background: #99c392;
+}
+
+
+
+ /*#B2B1A3*/
+
+
+
+
+
+.panel-group {
+    margin-bottom: 0px;
+    border:0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+}    
+
+.panel-heading {
+    height: 34px;
+    border-top: 1px solid #717171; /* inner stroke */
+    border-bottom: 1px solid #5A5A5A; /* inner stroke */
+    background-color: #353535; /* layer fill content */
+    background-image: -moz-linear-gradient(90deg, #595b59 0%, #616161 100%); /* gradient overlay */
+    background-image: -o-linear-gradient(90deg, #595b59 0%, #616161 100%); /* gradient overlay */
+    background-image: -webkit-linear-gradient(90deg, #595b59 0%, #616161 100%); /* gradient overlay */
+    background-image: linear-gradient(90deg, #595b59 0%, #616161 100%); /* gradient overlay */
+    list-style-type:none;
+}  
+
+.panel-heading  a{  
+    color: #cbcbcb; /* text color */
+    text-shadow: 0 1px 0 #3b3b3b; /* drop shadow */
+    text-decoration:none;
+    font-weight:bold;  
+}
+
+.panel-heading  a:hover{  
+    color:#ccc     
+}
+
+.panel-heading .active {
+    width: 182px;
+    height: 34px;
+    border: 1px solid #5b5b5b; /* inner stroke */
+    background-color: #353535; /* layer fill content */
+    background-image: -moz-linear-gradient(90deg, #4b4b4b 0%, #555 100%); /* gradient overlay */
+    background-image: -o-linear-gradient(90deg, #4b4b4b 0%, #555 100%); /* gradient overlay */
+    background-image: -webkit-linear-gradient(90deg, #4b4b4b 0%, #555 100%); /* gradient overlay */
+    background-image: linear-gradient(90deg, #4b4b4b 0%, #555 100%); /* gradient overlay */
 }
