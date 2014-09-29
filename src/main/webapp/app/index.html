@@ -11,7 +11,7 @@
         <!--link rel="stylesheet" href="./assets/css/bootstrap.min.css" /-->
         <link rel="stylesheet" href="../ext/bower/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="../ext/bower/angular-busy/angular-busy.css" />
-        
+
         <!-- Font Open sans -->
         <link rel="stylesheet" href="../ext/bower/open-sans-fontface/open-sans.css" />
 
@@ -55,8 +55,9 @@
         <link rel="stylesheet" href="css/app.css">
         <link rel="stylesheet" href="css/noAce.css">
     </head>
-    <body class="skin-1" ng-controller="ApplicationController">
-        <div x-ng-include="'layout/menu.html'"></div>
+    <body class="" ng-controller="ApplicationController">
+        <div ng-include="'layout/menu.html'"></div>
         <div ui-view></div>
+        <div ng-include="'layout/footer.html'"></div>
     </body>
 </html>

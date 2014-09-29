@@ -5,11 +5,9 @@
     margin-bottom: 0px;
 }
 
-
 .max-content {
     margin-left: 43px;
 }
-
 
 #myCarousel img {
     min-width: 100%;
@@ -25,7 +23,6 @@
     color: black;
 }
 
-
 .simple-box { 
     padding:15px;
     margin-bottom:20px;
@@ -33,7 +30,6 @@
     background-color:#fff;
     border-radius:8px
 }
-
 
 .team { 
     margin-top: 1em;
@@ -72,11 +68,6 @@
     list-style: none;
     color: #ccc;
 
-}
-
-/* Maritime Cloud Portal content */
-.mcp-content {
-    margin: 15px 15px;
 }
 
 /* Organization List */

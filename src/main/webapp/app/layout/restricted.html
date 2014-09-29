@@ -1,16 +1,14 @@
-
 <div class="main-container" id="main-container">
-
+    <!--SIDEBAR-->
     <div x-ng-include="'layout/sidebar.html'"></div>
-    <div ng-class="sidebar.isMinified ? 'main-content max-content' : 'main-content'">
-        <div class="page-content">
+    <!--MAIN CONTENT-->
+    <div class="main-content" ng-class="{max-content: sidebar.isMinified}">
+        <div class="page-content container-fluid">
             <div class="row">
                 <!-- PAGE CONTENT BEGINS -->
-                <div class="mcp-content" ui-view></div><!-- /.col -->
+                <div ui-view></div>
                 <!-- PAGE CONTENT ENDS -->
             </div>
         </div>
     </div>
-    <div x-ng-include="'layout/footer.html'"></div>
-
 </div>

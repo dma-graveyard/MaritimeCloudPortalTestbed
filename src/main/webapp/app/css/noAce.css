@@ -3,11 +3,23 @@ html {
     min-height: 100%; 
     position: relative;
 }
+
 body {
     font-family: 'Open Sans' !important;
+    padding-bottom:40px;   /* Height of the footer */
 }
 
-/* FIXME: remove container from restricted partial!!! */
+#searchmap {
+    height: calc(100vh - 60px - 40px); /* window height minus height of navbar and footer */
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 40px;
+    /*background: #2c6aa0;*/
+}
 
 .main-container {
     /*background-color: #fff;*/
