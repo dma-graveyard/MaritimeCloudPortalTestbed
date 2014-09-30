@@ -1,9 +1,7 @@
-<div class="widget-container-col widget-box {{panelClass}}" cg-busy="busyPromise">
-    <div class="widget-main">
-        <h4 class="header lighter bigger-200 {{panelSubjectClass}}" ng-class="{'green lighter' : !panelSubjectClass}"><i class="ace-icon fa {{panelIconClass}}"></i>
-            {{panelSubject}}
-        </h4>
-        <div class="mcp-panel-body"></div> 
+<div class="{{panelClass}} {{panelRowOffset}}">
+    <div class="panel panel-{{panelType}}" cg-busy="busyPromise">
+        <div class="panel-heading panel-title" style="{{panelSubjectStyle}}"> <i class="{{panelIconClass}}"></i> {{panelSubject}} </div>
+        <div class="panel-body"></div> 
+        <div class="panel-footer"> </div>
     </div>
-    <div class="widget-toolbox padding-8 clearfix"> </div>
 </div>

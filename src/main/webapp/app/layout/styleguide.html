@@ -30,43 +30,57 @@
         <div class="col-sm-1">column 1</div>
         <div class="col-sm-1">column 2</div>
     </div>
-    
-    <div class="row" >
-        <div class="col-sm-offset-1 col-sm-6">
-            <br>
-            Input bound to model='test':<br>
-            <input ng-model="test"  type='text'> TEST = {{test}}
-            <br>
-        </div>
-    </div>
 
     <div class="row" >
         <div class="col-sm-1"></div>
-        
-        <panel title="Default Panel">
-            This is a default panel<br>
-            <br>
-            It uses the following default values:
+
+        <panel title="Default Panel based on the panel-directive">
+            <p>
+                The panel element has a title-section with a title and a icon, a body-section and a footer-section with buttons. The buttons 
+                are added as 'panel-button'-elements.
+            </p>
+            <p>
+                The panel element has the following customizable attributes:<br>
+            </p>
+            Mandatory:
             <ul>
-                <li>col: "6" (adds the class "col-sm-6")</li>
-                <li>icon:  "info" (blue)</li>
+                <li><b>title</b>: sets the panel title</li>
             </ul>
+            Optional:
+            <ul>
+                <li><b>category</b>: shorthand for choosing the bootstrap contextual state class (panel-type). Defaults to "default" which yield 
+                    the class panel-default. See bootstrap. Valid values are "default, primary, success, info, warning, danger"</li>
+                <li><b>title-color</b>:</li>
+                <li><b>title-size</b>: sets the font size of the title in pixels</li>
+                <li><b>col</b>: shorthand of setting the class col-sm-X where X is a number from 1-12. Defaults to 6</li>
+                <li><b>offset</b>: shorthand of col-sm-offset-X</li>
+                <li><b>icon</b>: shorthand of setting a fontawesome icon (omit the 'fa-' prefix). Specify "none" to suppres the icon completely. Defaults to 'info-circle' </li>
+                <li><b>icon-class</b>: Overrides the icon-class with a class of your own choise. E.g. 'glyphicon glyphicon-search'</li>
+            </ul>
+
             <br>
-            Try and type: (Input bound to model='test'):<br>
+            This is a default panel. It uses the following default values:
+            <ul>
+                <li>category: "default"</li>
+                <li>col: "6" (adds the class "col-sm-6")</li>
+                <li>icon:  "info-circle"</li>
+            </ul>
+
+            <br>
+            Try and type: (Input bound to model='test'. WILL BREAK LINK TO OUTSIDE MODEL!):<br>
             <input ng-model="test"  type='text'>
             <br>
             This is the body part with resolved stuff like {{currentUser.name + ' ' + test}} as you may type in the field above.
             <panel-button ui-sref="restricted.dashboard">Close</panel-button>
         </panel>
 
-        <div class="col-sm-1"></div>
-
-        <panel panel-class="col-sm-3" title="Customized Panel" icon="user" col="3">
+        <panel title="Customized Panel" category="primary" icon="user" offset="1" col="3">
             This is a customized panel<br>
             <br>
             It <b>overrides</b> the following values:
             <ul>
                 <li>col: "3"</li>
+                <li>offset: "1" (adds the class "col-sm-offset-1")</li>
                 <li>icon:  "user"</li>
             </ul>
             <panel-button ng-click="alert('test');">Close</panel-button>
@@ -74,10 +88,22 @@
     </div>
 
     <div class="row" >
+        <div class="col-sm-offset-1 col-sm-6">
+            <br>
+            Input bound to model='test':<br>
+            <input ng-model="test"  type='text'> TEST = {{test}}
+            <br>
+            <br>
+        </div>
+    </div>
+
+
+
+    <div class="row" >
 
         <div class="col-sm-1"></div>
 
-        <panel title="Another Panel" icon="none">
+        <panel title="Another Panel with BIG, GREEN title" icon="none" title-color="green" title-size="24">
             This is another panel but without a title icon and with customized buttons<br>
             <br>
             It <b>overrides</b> the following values:
@@ -89,14 +115,24 @@
                 <li>btn-type: "danger"</li>
                 <li>btn-type: "success"</li>
             </ul>
-            Notice that the buttons appear in the inverse sequence than defined, that is they build up from right to left.
+
+            <div class="row"></div>
+            <panel title="Nested Panel" category="info" icon-class="glyphicon glyphicon-search" col='5' offset='0'>
+                Look Ma - nested panels! <br>
+                <br>
+                <br>
+                Reeeeeally cool, huh!<br>
+            </panel>
+            <panel title="Nested Panel" category="success" icon-class="glyphicon glyphicon-search" col='6' offset='1'>
+                Look Ma - nested panels! <br>
+            </panel>
+
+            <div class="row"></div>
             <panel-button btn-type="danger" onclick="alert('Now you are alerted!');" >Alert</panel-button>
             <panel-button btn-type="success" ui-sref="restricted.dashboard" >Go to dashboard</panel-button>
         </panel>
 
-        <div class="col-sm-1"></div>
-
-        <panel class="col-sm-3" title="Customized Panel" title-color="red" icon-class="fa-warning red">
+        <panel class="col-sm-3 col-sm-offset-1" title="Customized Panel" category="danger" icon-class="glyphicon glyphicon-search">
             This is a customized panel<br>
             <br>
             It <b>overrides</b> the following values:

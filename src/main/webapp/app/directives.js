@@ -26,25 +26,27 @@ angular.module('mcp.directives', [])
         scope: true,
         templateUrl: "layout/panel.html",
         link: function(scope, element, attrs, controller, transclude) {
+          scope.panelType = attrs["category"] || "default";
           scope.panelSubject = attrs["title"];
-          scope.panelSubjectClass = attrs["titleColor"];
-          scope.panelClass = attrs["col"] === "none" ? "" : "col-sm-" + (attrs["col"] ? attrs["col"] : "6");
-          scope.panelIcon = attrs["icon"] === "none" ? "" : "blue fa-" + (attrs["icon"] ? attrs["icon"] : "info");
-          scope.panelIconClass = attrs["iconClass"] ? attrs["iconClass"] : scope.panelIcon;
+          scope.panelSubjectStyle = attrs["titleColor"] ? 'color: ' + attrs["titleColor"] +';': '';
+          scope.panelSubjectStyle += attrs["titleSize"] ? 'font-size: ' + attrs["titleSize"] +'px;': '';
+          scope.panelClass = attrs["col"] === "none" ? "" : "col-sm-" + (attrs["col"] || "6");
+          scope.panelRowOffset = attrs["offset"] === "" ? "" : "col-sm-offset-" + attrs["offset"];
+          scope.panelIcon = attrs["icon"] === "none" ? "" : "fa fa-" + (attrs["icon"] || "info-circle");
+          scope.panelIconClass = attrs["iconClass"] || scope.panelIcon;
 
           transclude(scope, function(clone, scope) {
 
             // Find the transclude targets (body and buttons nodes) in the template
-            var body = element[0].querySelector('.mcp-panel-body');
-            var buttons = element[0].querySelector('.widget-toolbox');
+            var body = element[0].querySelector('.panel-body');
+            var buttons = element[0].querySelector('.panel-footer');
 
             // Iterate the children of the source element
             Array.prototype.forEach.call(clone, function(node) {
 
-              // If it is a A-element 
-              // (hint: 'btn'-elements are converted to 'A'-elements by its own directive in advance)
-              //console.log(node.tagName);
-              if (node.tagName === 'A') {
+              // If it is a A-element or PANEL-BUTTON element
+              // (hint: 'panel-button'-elements may have been converted to 'A'-elements by its own directive in advance)
+              if (node.tagName === 'A' || node.tagName === 'PANEL-BUTTON') {
                 // then move it to the buttons section
                 buttons.appendChild(node);
                 return;
