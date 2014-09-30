@@ -1,21 +1,22 @@
 {
-    "elements": {
-        "slide": {},
-        "carousel": {},
-        "leaflet": {
-            "attributes": {
-                "event-broadcast": {},
-                "defaults": {},
-                "paths": {},
-                "width": {},
-                "id": {},
-                "height": {}
-            }
-        }
-    },
-    "attributes": {
-        "ui-view": {
-            "context": "div"
-        }
+  "elements": {
+    "slide": {},
+    "carousel": {},
+    "leaflet": {
+      "attributes": {
+        "event-broadcast": {},
+        "defaults": {},
+        "paths": {},
+        "width": {},
+        "id": {},
+        "height": {}
+      }
     }
+  },
+  "attributes": {
+    "cg-busy": {},
+    "ui-view": {
+      "context": "div"
+    }
+  }
 }
