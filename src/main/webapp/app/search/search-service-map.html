@@ -1,40 +1,40 @@
+<div class="row">
+    <div class="map">
+        <!--FILTER INFO BOX-->
+        <div ng-if="markers.filterLocation" class="map-info-box-topright">
+            <button type="button" style="font-size: medium;" class="close btn btn-xs btn-white" ng-click="clearSelection()">X</button>
+            <div class="pull-left">
+                <img style="vertical-align: sub;" src="../../ext/bower/leaflet/dist/images/marker-icon.png" height="16"/> 
+                <b>{{filterLocation| latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}</b>
+            </div><br>
+            <div>
 
-<div class="map">
+                <ul>
+                    <li ng-repeat="service in services| limitTo:10 " 
+                        ng-click="selectService(service)" ng-class="{active: service === selectedService}"
+                        ng-mouseover="highlightService(service)" 
+                        ng-mouseleave="unhighlightService(service)"
+                        > 
+                        ({{service.id}}) {{service.name}} {{service.count}}
+                    </li>
+                    <li ng-if="services.length > 10"> ... {{services.length - 10}} more ...</li>
+                    <li ng-if="!services.length"> nothing here - only silence </li>
+                </ul>
 
-    <!--FILTER INFO BOX-->
-    <div ng-if="markers.filterLocation" class="map-info-box-topright">
-        <button type="button" style="font-size: medium;" class="close btn btn-xs btn-white" ng-click="clearSelection()">X</button>
-        <div class="pull-left">
-            <img style="vertical-align: sub;" src="../../ext/bower/leaflet/dist/images/marker-icon.png" height="16"/> 
-            <b>{{filterLocation| latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}</b>
-        </div><br>
-        <div>
-
-            <ul>
-                <li ng-repeat="service in services| limitTo:10 " 
-                    ng-click="selectService(service)" ng-class="{active: service === selectedService}"
-                    ng-mouseover="highlightService(service)" 
-                    ng-mouseleave="unhighlightService(service)"
-                    > 
-                    ({{service.id}}) {{service.name}} {{service.count}}
-                </li>
-                <li ng-if="services.length > 10"> ... {{services.length - 10}} more ...</li>
-                <li ng-if="!services.length"> nothing here - only silence </li>
-            </ul>
-
+            </div>
         </div>
-    </div>
-    
-    <!--MAP-->
-    <leaflet id="searchmap" markers="markers" zoomControl="true" event-broadcast="events" defaults="map.defaults" paths="map.paths" ></leaflet>
-    
-    <!--MOUSE POSITION & DISTANCE-->
-    <div class="map-info-box-bottomright">
-        <!--<div>LatLng: {{filterLocation | latlng2dms:'lat, lng':'D04'}}</div>-->
-        <!--<div>DMS: {{filterLocation | latlng2dms}}</div>-->
-        {{mouseLocation| latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}
-        <div ng-if="markers.filterLocation">
-            {{distance| distance}} ({{distance| distance:'nm'}}) from mark 
+
+        <!--MAP-->
+        <leaflet id="searchmap" markers="markers" zoomControl="true" event-broadcast="events" defaults="map.defaults" paths="map.paths" ></leaflet>
+
+        <!--MOUSE POSITION & DISTANCE-->
+        <div class="map-info-box-bottomright">
+            <!--<div>LatLng: {{filterLocation | latlng2dms:'lat, lng':'D04'}}</div>-->
+            <!--<div>DMS: {{filterLocation | latlng2dms}}</div>-->
+            {{mouseLocation| latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}
+            <div ng-if="markers.filterLocation">
+                {{distance| distance}} ({{distance| distance:'nm'}}) from mark 
+            </div>
         </div>
     </div>
 </div>
