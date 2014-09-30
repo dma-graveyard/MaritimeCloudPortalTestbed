@@ -16,12 +16,12 @@
             <!--USERNAME-->
             <div class="form-group">
                 <label for="preferredLogin">Preferred Username:</label> 
-                <span class="block input-icon input-icon-right">
+                <div class="input-group">
                     <input type="text" class="form-control input-sm" id="preferredLogin" name="userName" placeholder="Username" 
                            ng-model="user.username" required ng-minlength="2" ng-maxlength="20" ng-pattern="/^[a-zA-Z]+[a-zA-Z0-9_]*$/" 
                            ng-class="form.userName.$valid && form.userName.$dirty && usernameAlreadyExist ? 'mcp-invalid-input' : '' " mcp-focus-me>
-                    <i class="ace-icon fa fa-user"></i>
-                </span>
+                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                </div>
                 <div class="text-danger" ng-show="form.userName.$error && form.userName.$dirty">
                     {{getError(form.userName.$error, 2, 20, "No weird characters. Letters and numbers only. Must start with a letter.")}}
                 </div>
@@ -33,11 +33,11 @@
             <!--EMAIL-->
             <div class="form-group">
                 <label for="email">Primary Email Address:</label> 
-                <span class="block input-icon input-icon-right">
+                <div class="input-group">
                     <input type="email" class="form-control input-sm" placeholder="Email Address" id="email" name="email" 
                            autocorrect="off" autocapitalize="off" spellcheck="false" x-ng-model="user.emailAddress">
-                    <i class="ace-icon fa fa-envelope"></i>
-                </span>
+                    <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                </div>
                 <div class="text-danger" ng-show="form.email.$error && form.email.$dirty">
                     {{getError(form.email.$error, 2, 20, "No weird characters. Letters and numbers only. Must start with a letter.")}}
                 </div>

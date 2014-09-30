@@ -111,3 +111,8 @@ footer .navbar-text, footer a {
     border: 1px solid darkslategray;
     border-width: 0 1px 0 0;
 }
+
+.input-group i{
+    color: rgba(0,0,0,0.5);
+    width: 16px;
+}
