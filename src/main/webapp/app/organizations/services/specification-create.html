@@ -3,10 +3,10 @@
     <p>Fill out the form below to register a new organization.</p>
 
     <!--MESSAGES-->
-    <div x-ng-show="alertMessages" class="alert alert-danger">
-        <span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+    <div ng-show="alertMessages" class="alert alert-danger">
+        <span ng-repeat="msg in alertMessages">{{msg}}<br /></span>
     </div>
-    <div x-ng-show="message" class="alert alert-info">{{message}}</div>
+    <div ng-show="message" class="alert alert-info">{{message}}</div>
     <!--FORM-->
     <form role="form">
         <div class="form-group">
@@ -30,7 +30,7 @@
             <p class="help-block">Organization logo that will be used to enhance visual recognition.</p>
         </div>
         <div>
-            <button type="submit" class="btn btn-success center" x-ng-disabled="!formIsSubmitable()" x-ng-click="submit()">Create organization</button>
+            <button type="submit" class="btn btn-success center" ng-disabled="!formIsSubmitable()" ng-click="submit()">Create organization</button>
         </div>
     </form>
 </div>

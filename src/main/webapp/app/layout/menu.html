@@ -29,7 +29,7 @@
                     <a class="dropdown-toggle" href="#/orgs">
                         <i class="menu-icon fa fa-university"></i>
                         <span class="menu-text"> {{currentOrganization.title}}</span>
-                        <i class="ace-icon fa fa-caret-down"></i>
+                        <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu" >
                         <li class="menu-item-lead"> Switch dashboard context: </li>
@@ -59,7 +59,7 @@
                 <!-- About -->
                 <!--li class="dropdown">
                     <a class="dropdown-toggle" href="#">About
-                        <i class="ace-icon fa fa-caret-down"></i>
+                        <i class="fa fa-caret-down"></i>
                     </a>
                     <ul style="width: 70px;" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
                         <li><a tabindex="-1" href="content.html#cookies">Cookies</a></li>
@@ -71,13 +71,13 @@
                 <li ng-if="currentUser" class="dropdown open">
                     <a class='dropdown-toggle' href='#'>
                         <i class='fa fa-user' style='vertical-align: middle; margin-bottom: 4px'></i> {{currentUser.name}} 
-                        <i class="ace-icon fa fa-caret-down"></i>
+                        <i class="fa fa-caret-down"></i>
                     </a>
                     <ul style="width: 70px;" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
                         <li><a href="#"><i class="fa fa-cog"></i> Settings </a></li>
                         <li><a data-ui-sref="restricted.userProfile({username : currentUser.name})"><i class="fa fa-user"></i> Profile </a></li>
                         <li class="divider"></li>
-                        <li><a href="#" x-ng-click="logout($event)"><i class="fa fa-power-off"></i> Logout </a></li>
+                        <li><a href="#" ng-click="logout($event)"><i class="fa fa-power-off"></i> Logout </a></li>
                     </ul>
                 </li>
 

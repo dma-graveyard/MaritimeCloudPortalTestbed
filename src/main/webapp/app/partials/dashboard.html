@@ -12,10 +12,10 @@
                 <p><a href="#/join"> Register new User</a></p>
             </div> 
 
-            <div x-ng-show="alertMessages" class="alert alert-danger">
-                <span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+            <div ng-show="alertMessages" class="alert alert-danger">
+                <span ng-repeat="msg in alertMessages">{{msg}}<br /></span>
             </div>
-            <div x-ng-show="message" class="alert alert-info">{{message}}</div>
+            <div ng-show="message" class="alert alert-info">{{message}}</div>
 
 
             <div ng-if="currentUser">Welcome, {{ currentUser.name}}</div>

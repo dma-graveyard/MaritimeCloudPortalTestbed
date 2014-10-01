@@ -3,10 +3,10 @@
     <p>Fill out the form below to register the service provisioned by your organization.</p>
 
     <!--MESSAGES-->
-    <div x-ng-show="alertMessages" class="alert alert-danger">
-        <span x-ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+    <div ng-show="alertMessages" class="alert alert-danger">
+        <span ng-repeat="msg in alertMessages">{{msg}}<br /></span>
     </div>
-    <div x-ng-show="message" class="alert alert-info">{{message}}</div>
+    <div ng-show="message" class="alert alert-info">{{message}}</div>
     <!--FORM-->
     <form role="form" name="form">
         <div class="form-group">
