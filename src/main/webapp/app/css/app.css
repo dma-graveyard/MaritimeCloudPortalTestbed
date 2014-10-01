@@ -166,10 +166,7 @@ span.summary.ng-valid {
 }
 
 /* Search Map */
-div.map-info-box-topright {
-    position: absolute;
-    top: 5em;
-    right: 2em;
+.map-info-box {
     background: rgba(255, 255, 255, 0.8);
     z-index: 100;
     padding: 1em;
@@ -180,21 +177,19 @@ div.map-info-box-topright {
     border-color: rgba(75, 109, 195, 0.5);
 }
 
-div.map-info-box-bottomright {
+.map-info-box.topright {
+    position: absolute;
+    top: 5em;
+    right: 2em;
+}
+
+.map-info-box.bottomright {
     position: absolute;
     bottom: 5em;
     right: 2em;
-    background: rgba(255, 255, 255, 0.8);
-    z-index: 100;
-    padding: 6px;
-    text-align: center;
-    border-radius: 5px;
-    border-style: solid;
-    border-width: 1px;
-    border-color: rgba(75, 109, 195, 0.5);
 }
 
-li.active { 
+.map-info-box li.active { 
     color:blue;  
     border-width: 1;
     border-color: blue;

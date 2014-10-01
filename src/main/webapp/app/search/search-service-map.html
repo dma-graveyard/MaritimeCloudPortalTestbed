@@ -1,7 +1,7 @@
 <div class="row">
     <div class="map">
         <!--FILTER INFO BOX-->
-        <div ng-if="markers.filterLocation" class="map-info-box-topright">
+        <div ng-if="markers.filterLocation" class="map-info-box topright">
             <button type="button" style="font-size: medium;" class="close btn btn-xs btn-white" ng-click="clearSelection()">X</button>
             <div class="pull-left">
                 <img style="vertical-align: sub;" src="../../ext/bower/leaflet/dist/images/marker-icon.png" height="16"/> 
@@ -28,7 +28,7 @@
         <leaflet id="searchmap" markers="markers" zoomControl="true" event-broadcast="events" defaults="map.defaults" paths="map.paths" ></leaflet>
 
         <!--MOUSE POSITION & DISTANCE-->
-        <div class="map-info-box-bottomright">
+        <div class="map-info-box bottomright">
             <!--<div>LatLng: {{filterLocation | latlng2dms:'lat, lng':'D04'}}</div>-->
             <!--<div>DMS: {{filterLocation | latlng2dms}}</div>-->
             {{mouseLocation| latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}
