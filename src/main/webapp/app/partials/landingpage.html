@@ -5,19 +5,19 @@
         </div>
         <carousel ng-if="!isProtractorTesting()" id="myCarousel" interval="8000"> 
             <slide> 
+                <img ng-src="img/landingpage/Konsol-h350.jpg" alt="Vessel bridge">
+                <div class="carousel-caption">
+                    <h2>Coordinated Voyage</h2>
+                    <p>Share routes and schedules with other ships and Ground Command.</p>
+                </div>
+            </slide> 
+            <slide> 
                 <!--SOURCE: http://www.rgbstock.com/photo/mHRgAs0/cloud+formations--> 
                 <!--<img ng-src="img/landingpage/clouds.jpg" alt="Clouds formations">-->
                 <img ng-src="img/landingpage/grenen20140730.jpg" alt="Antique world map">
                 <div class="carousel-caption">
                     <h2>Tailored Weather Forecasts</h2>
                     <p>Tailored weather forecasts from Danish Meteorological Institute for uploaded sailing routes.</p>
-                </div>
-            </slide> 
-            <slide> 
-                <img ng-src="img/landingpage/Konsol-h350.jpg" alt="Vessel bridge">
-                <div class="carousel-caption">
-                    <h2>Coordinated Voyage</h2>
-                    <p>Share routes and schedules with other ships and Ground Command.</p>
                 </div>
             </slide> 
             <slide> 
@@ -35,7 +35,9 @@
                 </div>
             </slide> 
         </carousel>
-        <hr class="soften">
+        <!--<hr class="soften">-->
+        <div class="vertical-center">
+            
         <!-- Primary marketing message -->
         <div class="col-md-12 hero-content" style="text-align: center">
             <h1 style="margin-top: 30px; margin-bottom: 20px;">Welcome to Maritime Cloud Portal</h1>
@@ -55,11 +57,11 @@
                 </div>
             </div>
         </div>
-        <hr class="soften" />
+        </div>
+        <!--<hr class="soften" />-->
         <!--Temporary debug info etc...-->
         <div class="col-md-6 " style="position: absolute; bottom: 0; padding-bottom: 40px;">
             <a href="#/styleguide" >Styleguide</a><br>
-            <a href="../bootstrap-template/html/index.html" target="#" >Bootstrap Template Demo</a><br>
         </div>
     </div>
 </div>

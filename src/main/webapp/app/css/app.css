@@ -18,9 +18,10 @@
     background-color: rgba(255, 255, 255, 0.6);
     padding: 16px;
     margin: 20px;
-    bottom: 50px;    
+    bottom: 75px;    
     text-shadow: none;
     color: black;
+    border-radius: 120px;
 }
 
 .simple-box { 
@@ -197,14 +198,23 @@ span.summary.ng-valid {
 }
 
 
+.vertical-center {
+  min-height: calc(100vh - 52px - 320px - 20px - 30px - 40px); 
+  display: flex;
+  align-items: center;
+}
 
  /*#B2B1A3*/
 
 
 
-
-
-.panel-group {
+/* 
+--------------------------------------------------------------------------
+  SIDEBAR 
+--------------------------------------------------------------------------
+   FIXME: under construction - see index_1.html mock-page on CB's machine'.
+*/ 
+.sidebar accordion .panel-group {
     margin-bottom: 0px;
     border:0px;
     -webkit-border-radius: 0px;
@@ -212,7 +222,7 @@ span.summary.ng-valid {
     border-radius: 0px;
 }    
 
-.panel-heading {
+.sidebar accordion .panel-heading {
     height: 34px;
     border-top: 1px solid #717171; /* inner stroke */
     border-bottom: 1px solid #5A5A5A; /* inner stroke */
@@ -224,18 +234,18 @@ span.summary.ng-valid {
     list-style-type:none;
 }  
 
-.panel-heading  a{  
+.sidebar accordion .panel-heading  a{  
     color: #cbcbcb; /* text color */
     text-shadow: 0 1px 0 #3b3b3b; /* drop shadow */
     text-decoration:none;
     font-weight:bold;  
 }
 
-.panel-heading  a:hover{  
+.sidebar accordion .panel-heading  a:hover{  
     color:#ccc     
 }
 
-.panel-heading .active {
+.sidebar accordion .panel-heading .active {
     width: 182px;
     height: 34px;
     border: 1px solid #5b5b5b; /* inner stroke */
