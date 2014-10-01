@@ -1,16 +1,16 @@
 <div class="col-sm-3"></div>
 
-<panel ng-show="viewState === 'accountActivated'" icon="user" title="Account activated">
+<panel ng-show="viewState === 'accountActivated'" category="success" icon="user" title="Account activated">
     <p>
         Your account has been activated.
     </p>
     <p>
         Press the button below to go navigate to the login page.
     </p>
-    <panel-button btn-type="info" ui-sref="restricted.dashboard">Log in</panel-button>
+    <panel-button btn-type="primary" ui-sref="restricted.dashboard">Log in</panel-button>
 </panel>
 
-<panel ng-show="viewState === 'accountNotActivated'" icon-class="fa-warning" title="Unable to activate the account" title-color="red">
+<panel ng-show="viewState === 'accountNotActivated'" category="danger" icon="warning" title="Unable to activate the account">
     <p>
         Oh snap! It seems like we have a disagreement here.
     </p>
@@ -23,9 +23,9 @@
     <panel-button btn-type="danger" ui-sref="public.landingpage">Close</panel-button>
 </panel>
 
-<panel ng-show="viewState === 'error'" icon-class="fa-warning" title="An error occurred during activation" title-color="red">
+<panel ng-show="viewState === 'error'" category="danger" icon="warning" title="An error occurred during activation">
     <p>
-        Hmm... something went wrong on the server :-( X
+        Hmm... something went wrong on the server :-(
     </p>
     <p>
         Wait for a while and then try again.
