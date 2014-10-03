@@ -12,9 +12,9 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
           filterLocation: {
             lat: 51,
             lng: 0,
-            //focus: true,
-            //message: "Hey, drag me if you want",
-            draggable: true
+            draggable: false,
+            message: "",
+            focus: false
           },
           mouseLocation: {lat: 0, lng: 0}
         });
