@@ -171,7 +171,6 @@ span.summary.ng-valid {
     background: rgba(255, 255, 255, 0.8);
     z-index: 100;
     padding: 1em;
-    text-align: center;
     border-radius: 5px;
     border-style: solid;
     border-width: 1px;
@@ -190,13 +189,27 @@ span.summary.ng-valid {
     right: 2em;
 }
 
-.map-info-box li.active { 
-    color:blue;  
-    border-width: 1;
-    border-color: blue;
+.map-info-box ul { 
+    padding-left: 0px;      
+}
+
+.map-info-box li { 
+    list-style-type: none;
+}
+
+.map-info-box li.selected { 
+    font-weight: bold;
+    color:blue;
+    background: #e5e5e5;
+}
+
+.map-info-box li.highlighted { 
     background: #99c392;
 }
 
+.map-info-box-description {
+    text-align: left;
+}
 
 .vertical-center {
   min-height: calc(100vh - 52px - 320px - 20px - 30px - 40px); 

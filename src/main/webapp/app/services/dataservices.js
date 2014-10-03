@@ -565,7 +565,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 //      signUp: {method: 'POST', params: {}, isArray: false}
 //    });
         console.log("TODO: using mocked service instance data");
-        var serviceInstances = globalServiceInstances;
+        var serviceInstances = [].concat(globalServiceInstances);
 
         function createRandomCoverage(index) {
           return [
@@ -579,23 +579,47 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         }
 
         function createRandomServiceInstance(index) {
+          var provider = randomOf(organization.dp, organization.dma),
+              //transportType = randomOf(transportTypes),
+              specification = randomOf(technicalServices),
+              instanceId = randomOf('dk', 'gl', 'uk', 'se', 'nl', 'no') + '-' + index,
+              serviceInstance = randomOf(globalServiceInstances);
+
 
           return   {
-            provider: organization.dp,
-            specification: technicalServices.imoMsiSoap,
+            provider: provider,
+            specification: specification,
             key: {
-              specificationId: "imo-mis-rest", // [TechnicalServiceId]
-              providerId: "dp", // [MaritimeId (=OrganizationId/UserId)]
-              instanceId: "dk-" + index   // [ServiceInstanceId]
+              specificationId: specification.id, // [TechnicalServiceId]
+              providerId: provider.id, // [MaritimeId (=OrganizationId/UserId)]
+              instanceId: instanceId   // [ServiceInstanceId]
             },
-            id: "dk-" + index, // [TechnicalServiceId].[OrganizationId].[ServiceInstanceId]
+            id: instanceId, // [TechnicalServiceId].[OrganizationId].[ServiceInstanceId]
             // or id: "fo.imo-met-metocroute.dmi.dk", // [ServiceInstanceId].[TechnicalServiceId].[OrganizationId].[OrganizationType]
-            name: "DMI METOC on route (Denmark) " + index,
-            description: "Route based Meteorological Services for the waters surrounding Denmark including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea. " + index,
+            name: serviceInstance.name + ' ' + index,
+            description: serviceInstance.description + index,
             coverage: createRandomCoverage(index)
           };
         }
 
+
+        /**
+         * @returns a randomly picked argument, or, if a single object argument is given, it returns one of its properties.
+         */
+        function randomOf() {
+          var args = [],
+              a = arguments;
+          if (arguments.length === 1) {
+            Object.keys(a[0]).forEach(function (prop) {
+              args.push(a[0][prop]);
+            });
+          } else {
+            args = arguments;
+          }
+          var i = Math.floor(Math.random() * args.length);
+          return args[i];
+        }
+        
         for (var i = 1; i < 1000; i++) {
           serviceInstances.push(createRandomServiceInstance(i));
         }

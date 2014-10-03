@@ -39,7 +39,9 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
           markers: {
           },
           servicesLayer: L.featureGroup(),
-          servicesLayerMap: {}
+          servicesLayerMap: {},
+          selectedService: null,
+          highlightedService: null
         });
 
         showServices($scope.services);
@@ -110,24 +112,35 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
         }
 
         function fitToSelectedLayers() {
+          if ($scope.services.length)
+            fitToLayer($scope.servicesLayer);
+        }
+
+        function fitToLayer(layer) {
           leafletData.getMap(SEARCHMAP_ID).then(function (map) {
-            if ($scope.services.length)
-              map.fitBounds($scope.servicesLayer.getBounds());
+            if (layer)
+              map.fitBounds(layer.getBounds());
           });
         }
 
-        $scope.selectedService = null;
-        $scope.selectService = function (service) {
-          //$scope.highlightService(service);
+        $scope.toggleSelectService = function (service) {
+          if ($scope.selectedService) {
+            $scope.selectedService = null;
+            $scope.highlightService(service);
+            fitToSelectedLayers();
+          } else {
+            $scope.selectedService = service;
+          }
+          fitToLayer($scope.servicesLayerMap[service.id]);
         };
 
         $scope.highlightService = function (service) {
-          $scope.selectedService = service;
+          $scope.highlightedService = service;
           $scope.servicesLayerMap[service.id].highlight();
         };
 
         $scope.unhighlightService = function (service) {
-          $scope.selectedService = null;
+          $scope.highlightedService = null;
           $scope.servicesLayerMap[service.id].resetStyle();
         };
 
