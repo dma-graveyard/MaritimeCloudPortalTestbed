@@ -7,8 +7,9 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
 
         var SEARCHMAP_ID = 'searchmap';
 
+        $scope.allServices = ServiceInstanceService.query();
+        
         angular.extend($scope, {
-          allServices: ServiceInstanceService.query(),
           filterLocation: {
             lat: 51,
             lng: 0,
@@ -16,11 +17,7 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
             message: "",
             focus: false
           },
-          mouseLocation: {lat: 0, lng: 0}
-        });
-
-        angular.extend($scope, {
-          services: $scope.allServices,
+          mouseLocation: {lat: 0, lng: 0},
           map: {
             defaults: {
               scrollWheelZoom: true,
@@ -38,15 +35,17 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
           },
           markers: {
           },
-          servicesLayer: L.featureGroup(),
-          servicesLayerMap: {},
+          services: $scope.allServices,
           selectedService: null,
-          highlightedService: null
+          highlightedService: null,
+          servicesLayer: L.featureGroup(),
+          servicesLayerMap: {}
         });
 
         showServices($scope.services);
 
         function featureGroupCallback(featureGroup) {
+          
           // (called whenever servicesToLayers creates a layer)
           featureGroup.on('click', clickEventHandler);
           featureGroup.on('mousemove', mouseMoveEventHandler);
@@ -59,16 +58,13 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
           $scope.servicesLayerMap[featureGroup.service.id] = featureGroup;
         }
 
-        $scope.clearSelection = function () {
-
+        $scope.clearFilterlocation = function () {
           delete $scope.markers.filterLocation;
 
-          // filter services to those that contains the filterLocation
+          // reset to show all services
           $scope.services = $scope.allServices;
-
-          // show services that are reachable 
           showServices($scope.services);
-        }
+        };
 
         $scope.moveFilterLocation = function (latlng) {
           if (!$scope.markers.filterLocation)
@@ -81,6 +77,14 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
 
           // show services that are reachable 
           showServices($scope.services);
+          $scope.filterLocation.message = "" + $scope.services.length + " services near this location";
+
+          // Clear any previously selected service
+          $scope.selectedService = null;
+
+          // Autoselect single service
+          if ($scope.services.length === 1)
+            $scope.selectedService = $scope.services[0];
         };
 
         function showServices(servicesAtLocation) {
@@ -93,11 +97,6 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
         }
 
         function clickEventHandler(e) {
-//fixme: never called?
-          e.target.setStyle({
-            color: 0
-          });
-
           $scope.moveFilterLocation(e.latlng);
           $scope.$apply();
         }
@@ -118,20 +117,21 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
 
         function fitToLayer(layer) {
           leafletData.getMap(SEARCHMAP_ID).then(function (map) {
-            if (layer)
-              map.fitBounds(layer.getBounds());
+            if (layer) {
+              map.fitBounds(layer.getBounds(), {paddingBottomRight: [$scope.selectedService ? 450 : 0, 0]});
+            }
           });
         }
 
         $scope.toggleSelectService = function (service) {
-          if ($scope.selectedService) {
+          if (service === $scope.selectedService) {
             $scope.selectedService = null;
             $scope.highlightService(service);
             fitToSelectedLayers();
           } else {
             $scope.selectedService = service;
+            fitToLayer($scope.servicesLayerMap[service.id]);
           }
-          fitToLayer($scope.servicesLayerMap[service.id]);
         };
 
         $scope.highlightService = function (service) {
@@ -150,121 +150,10 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
           $scope.moveFilterLocation(args.leafletEvent.latlng);
         });
 
-//        // register a timeout that will fit (position and zoom) the map to its paths
-//        $timeout(function () {
-//          fitToSelectedLayers();
-//        }, 100);
-
         leafletData.getMap(SEARCHMAP_ID).then(function (map) {
           map.addLayer($scope.servicesLayer);
           map.on('mousemove', mouseMoveEventHandler);
         });
 
-//        function servicesToLayers(services) {
-//          // associative map 
-//          //var servicesAsLayers = {};
-//
-//          var servicesLayer = L.layerGroup();
-//
-//          // iterate services, and for each, convert its shapes to layers and 
-//          // add it to a layerGroup, finally add the layerGroup to the array-object 
-//          services.forEach(function (service) {
-//            var featureGroup = L.featureGroup();
-//            featureGroup.service = service;
-//            featureGroup.on('click', clickEventHandler);
-//            featureGroup.on('mousemove', mouseMoveEventHandler);
-//            service.coverage.forEach(function (shape) {
-//              featureGroup.addLayer(mapService.shapeToLayer(shape));
-//            });
-//            servicesLayer.addLayer(featureGroup);
-//          });
-//
-//          return servicesLayer;
-//        }
-
       }])
     ;
-//    .controller('ServiceInstanceCreateController', ['$scope', '$location', 'OrganizationService', '$stateParams',
-//      'OperationalServiceService', 'TechnicalServiceService', 'leafletData', 'mapService',
-//      function($scope, $location, OrganizationService, $stateParams,
-//          OperationalServiceService, TechnicalServiceService, leafletData, mapService) {
-//
-//        var options = mapService.createDrawingOptions(),
-//            drawnItems = options.edit.featureGroup,
-//            drawControl = new L.Control.Draw(options);
-//
-//        angular.extend($scope, {
-//          center: {
-//            // FIXME: get current position from browser instead of using pos of LONDON
-//            lat: 51.505,
-//            lng: -0.09,
-//            zoom: 4
-//          },
-//          controls: {
-//            custom: [drawControl]
-//          },
-//          latlongs: []
-//        });
-//
-//        leafletData.getMap().then(function(map) {
-//          map.addLayer(drawnItems);
-//
-//          // FIXME: when angular leaflet 0.7.9 is released use this instead:
-//          //var drawnItems = $scope.controls.draw.edit.featureGroup;
-//
-//          map.on('draw:created', function(e) {
-//            var layer = e.layer;
-//            drawnItems.addLayer(layer);
-//            console.log(JSON.stringify(layer.toGeoJSON()));
-//          });
-//        });
-//
-//        angular.extend($scope, {
-//          message: null,
-//          alertMessages: null,
-//          selectedOperationalService: null,
-//          selectedSpecification: null,
-//          operationalServices: OperationalServiceService.query(),
-//          service: {
-//            provider: {
-//              name: $stateParams.organizationname
-//            },
-//            key: {
-//              specificationId: "imo-mis-rest",
-//              providerId: $stateParams.organizationname,
-//              instanceId: 'test'
-//            },
-//            id: null,
-//            name: null,
-//            description: null,
-//            coverage: []
-//          },
-//          formIsSubmitable: function() {
-//            return ($scope.service.id && $scope.service.name /*&& $scope.service.coverage*/);
-//          },
-//          submit: function() {
-//            $scope.service.coverage = mapService.layersToShapes(drawnItems.getLayers());
-//            $scope.service.specification = $scope.selectedSpecification;
-//
-//            $scope.service.key = {
-//              specificationId: $scope.selectedSpecification.id,
-//              providerId: $stateParams.organizationname,
-//              instanceId: $scope.service.id
-//            };
-//
-//            $scope.alertMessages = null;
-//            $scope.message = "Sending request to register service instance...";
-//            
-//            OrganizationService.registerServiceInstance($scope.service, function(result) {
-//              $location.path('/orgs/' + $scope.service.provider.name).replace();
-//            }, function(error) {
-//              $scope.message = null;
-//              $scope.alertMessages = ["Error on the serverside :( ", error];
-//            });
-//          }
-//        });
-//
-//        $scope.$watch('selectedOperationalService', function(selectedOperationalService) {
-//          $scope.specifications = selectedOperationalService ? TechnicalServiceService.query(selectedOperationalService.id) : [];
-//        });
-//      }]);

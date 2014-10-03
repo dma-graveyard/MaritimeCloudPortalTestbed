@@ -340,6 +340,12 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
       };
     }
 
+    /**
+     * Filters the source array of services based on a location
+     * @param {type} filterLocation
+     * @param {type} services source
+     * @returns {Array} an array of the services at the supplied filterLocation
+     */
     function filterServicesAtLocation(filterLocation, services) {
 
       // convert to layers so that we can use leaflet bounding boxs
