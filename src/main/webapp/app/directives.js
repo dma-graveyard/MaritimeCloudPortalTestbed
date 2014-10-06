@@ -6,18 +6,18 @@ angular.module('mcp.directives', [])
     /**
      * mcp-focus-me: Simpleminded directive that transfer focus to the selected element after 100 ms.
      */
-    .directive('mcpFocusMe', function($timeout) {
+    .directive('mcpFocusMe', function ($timeout) {
       // see http://stackoverflow.com/questions/14833326/how-to-set-focus-in-angularjs
       return {
-        link: function(scope, element) {
-          $timeout(function() {
+        link: function (scope, element) {
+          $timeout(function () {
             element[0].focus();
           }, 100);
         }
       };
     })
 
-    .directive('panel', function() {
+    .directive('panel', function () {
       // as inspired by http://stackoverflow.com/questions/22584357/angularjs-is-there-a-difference-between-transclude-local-in-directive-controll?rq=1
       return {
         restrict: 'E',
@@ -25,24 +25,24 @@ angular.module('mcp.directives', [])
         replace: true,
         scope: true,
         templateUrl: "layout/panel.html",
-        link: function(scope, element, attrs, controller, transclude) {
+        link: function (scope, element, attrs, controller, transclude) {
           scope.panelType = attrs["category"] || "default";
           scope.panelSubject = attrs["title"];
-          scope.panelSubjectStyle = attrs["titleColor"] ? 'color: ' + attrs["titleColor"] +';': '';
-          scope.panelSubjectStyle += attrs["titleSize"] ? 'font-size: ' + attrs["titleSize"] +'px;': '';
+          scope.panelSubjectStyle = attrs["titleColor"] ? 'color: ' + attrs["titleColor"] + ';' : '';
+          scope.panelSubjectStyle += attrs["titleSize"] ? 'font-size: ' + attrs["titleSize"] + 'px;' : '';
           scope.panelClass = attrs["col"] === "none" ? "" : "col-sm-" + (attrs["col"] || "6");
           scope.panelRowOffset = attrs["offset"] === "" ? "" : "col-sm-offset-" + attrs["offset"];
           scope.panelIcon = attrs["icon"] === "none" ? "" : "fa fa-" + (attrs["icon"] || "info-circle");
           scope.panelIconClass = attrs["iconClass"] || scope.panelIcon;
 
-          transclude(scope, function(clone, scope) {
+          transclude(scope, function (clone, scope) {
 
             // Find the transclude targets (body and buttons nodes) in the template
             var body = element[0].querySelector('.panel-body');
             var buttons = element[0].querySelector('.panel-footer');
 
             // Iterate the children of the source element
-            Array.prototype.forEach.call(clone, function(node) {
+            Array.prototype.forEach.call(clone, function (node) {
 
               // If it is a A-element or PANEL-BUTTON element
               // (hint: 'panel-button'-elements may have been converted to 'A'-elements by its own directive in advance)
@@ -60,9 +60,9 @@ angular.module('mcp.directives', [])
       };
     })
 
-    .directive("buttons", function() {
+    .directive("buttons", function () {
       return {
-        link: function(scope, element, attrs) {
+        link: function (scope, element, attrs) {
           scope.panelSubject = attrs["title"];
         },
         restrict: "E",
@@ -71,9 +71,9 @@ angular.module('mcp.directives', [])
         transclude: true
       };
     })
-    .directive("panelButton", function() {
+    .directive("panelButton", function () {
       return {
-        link: function(scope, element, attrs) {
+        link: function (scope, element, attrs) {
           scope.btnType = attrs["btnType"];
           scope.btnClass = attrs["btnClass"] ? attrs["btnClass"] : "btn-" + (scope.btnType ? scope.btnType : "info");
         },
@@ -82,6 +82,41 @@ angular.module('mcp.directives', [])
         scope: true,
         templateUrl: "layout/panel-button.html",
         transclude: true
+      };
+    })
+
+    /**
+     * The resize directive binds the current height and width of its target element to
+     * the scope properties windowWidth and windowHeight. The values are updated on 
+     * window resize
+     */
+    .directive('resize', function ($window, $timeout) {
+      return function (scope) {
+        var w = angular.element($window, $timeout);
+        scope.initializeDimensions = function () {
+          scope.windowHeight = $window.innerHeight;
+          scope.windowWidth = $window.innerWidth;
+        };
+
+        // fire once on startup
+        scope.initializeDimensions();
+
+        angular.element($window).bind('resize', function () {
+          scope.initializeDimensions();
+          scope.$apply();
+        });
+      };
+    })
+
+    .directive('elementProperties', function ($timeout) {
+      return {
+        restrict: 'A',
+        link: function (scope, element) {
+          if (scope.element) {
+            scope.element.height = element.prop('offsetHeight');
+            scope.element.width = element.prop('offsetWidth');
+          }
+        }
       };
     })
     ;
