@@ -4,9 +4,13 @@
 
 angular.module('mcp.layout', [])
 
-    .controller('SidebarController', ['$scope',
-      function($scope) {
-        // TODO: not really using this controller just yet. 
+    .controller('SidebarController', ['$scope', '$state',
+      function($scope, $state) {
+        
+        // holder for accordion header 'open status' properties 
+        $scope.isOpen = {
+        };
+        
       }])
     ;
 

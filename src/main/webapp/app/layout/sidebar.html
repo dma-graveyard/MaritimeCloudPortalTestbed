@@ -1,82 +1,145 @@
 <div id="sidebar" ng-class="sidebar.isMinified ? 'sidebar responsive menu-min' : 'sidebar responsive'" ng-controller="SidebarController" >
 
-    <ul class="nav nav-list" ng-controller="OrganizationMenuController" >
+    <accordion close-others="true">
 
-        <li class="">
-            <a href="#dashboard">
-                <i class="menu-icon fa fa-tachometer"></i>
-                <span class="menu-text"> Dashboard </span>
-            </a>
-
-            <b class="arrow"></b>
-        </li>
+        <ul class="nav nav-list" >
+            <li><a ui-sref="restricted.dashboard"><i class="fa fa-tachometer"></i> Dashboard </a></li>
+        </ul>        
 
         <!-- SEARCH SERVICES --> 
-        <li>
-            <a href="#search/service/map" class="dropdown-toggle">
-                <i class="menu-icon fa fa-search"></i>
-                <span class="menu-text"> Find Services </span>
-            </a>
-        </li>            
+        <accordion-group is-open="isOpen.findService">
+            <accordion-heading>
+                <a ui-sref="restricted.searchServiceMap"><i class="fa fa-search"></i> Find Service
+                    <i class="pull-right fa" ng-class="{'fa-angle-down': isOpen.findService, 'fa-angle-right': !isOpen.findService}"></i>
+                </a>
+            </accordion-heading>
+            filter x <br>
+            Filter Y
+        </accordion-group>
 
         <!-- CURRENT ORGANIZATION MENU --> 
-            
-        <li ng-if="currentOrganization" class="hover" >
-            <a href="#/orgs/{{currentOrganization.name}}" class="dropdown-toggle">
-                <i class="menu-icon fa fa-wifi"></i>
-                <span class="menu-text"> Services </span>
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu" >
-                <li class="hover"><a href="#/orgs/{{currentOrganization.name}}"> <i class="menu-icon fa fa-user" style=""></i> Show </a></li>
-                <li class="hover"><a href="#/orgs/{{currentOrganization.name}}/createServiceInstance"> <i class="menu-icon fa fa-fire" style=""></i> Add </a></li>
-            </ul>
-        </li>            
-        <!--FIXME: introduce specification stuff  -->
-        <!--li ng-if="currentOrganization" class="hover" ng-controller="OrganizationMenuController" >
-            <a href="#/orgs/{{currentOrganization.name}}" class="dropdown-toggle">
-                <i class="menu-icon fa fa-cogs"></i>
-                <span class="menu-text"> Specifications </span>
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu" >
-                <li class="hover"><a href="#/orgs/{{currentOrganization.name}}"> <i class="menu-icon fa fa-user" style=""></i> Show </a></li>
-                <li class="hover"><a href="#/orgs/{{currentOrganization.name}}/createServiceInstance"> <i class="menu-icon fa fa-fire" style=""></i> Add </a></li>
-            </ul>
-        </li-->            
-        <!--FIXME: introduce identity and certificate stuff  -->
-        <!--li ng-if="currentOrganization" class="hover" ng-controller="OrganizationMenuController"  >
-            <a href="#/orgs/{{currentOrganization.name}}" class="dropdown-toggle">
-                <i class="menu-icon fa fa-certificate"></i>
-                <span class="menu-text"> Certificates </span>
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu" >
-                <li class="hover"><a href="#/orgs/{{currentOrganization.name}}"> <i class="menu-icon fa fa-user" style=""></i> Show </a></li>
-                <li class="hover"><a href="#/orgs/{{currentOrganization.name}}/createServiceInstance"> <i class="menu-icon fa fa-fire" style=""></i> Add </a></li>
-            </ul>
-        </li-->            
+        <div ng-controller="OrganizationMenuController" >
+
+            <accordion-group ng-if="currentOrganization" is-open="isOpen.organization">
+                <accordion-heading>
+                    <a><i class="fa fa-university"></i> Organization 
+                        <i class="pull-right fa" ng-class="{'fa-angle-down': isOpen.organization, 'fa-angle-right': !isOpen.organization}"></i>
+                    </a>
+                </accordion-heading>
+                <accordion close-others="true">
+                    <accordion-group is-open="isOpen.organizationSub">
+                        <accordion-heading>
+                            <a ui-sref="restricted.organizationDetails({organizationname:currentOrganization.name})"><i class="fa fa-wifi"></i> Services
+                                <i class="pull-right fa" ng-class="{'fa-angle-down': isOpen.organizationSub, 'fa-angle-right': !isOpen.organizationSub}"></i>
+                            </a>
+                        </accordion-heading>
+                        <ul class="nav nav-list">
+                            <!--<li><a href="#/orgs/{{currentOrganization.name}}"> <i class="fa fa-user" style=""></i> Show </a></li>-->
+                            <li><a ui-sref="restricted.serviceInstanceCreate({organizationname:currentOrganization.name})"> 
+                                    <i class="fa fa-plus" style=""></i> Add </a></li>
+                        </ul>
+                    </accordion-group>
+                </accordion>
+            </accordion-group>
+
+            <!--FIXME: introduce specification stuff  -->
+            <!--li ng-if="currentOrganization" class="hover" ng-controller="OrganizationMenuController" >
+                <a href="#/orgs/{{currentOrganization.name}}" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-cogs"></i>
+                    <span class="menu-text"> Specifications </span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+                <b class="arrow"></b>
+                <ul class="submenu" >
+                    <li class="hover"><a href="#/orgs/{{currentOrganization.name}}"> <i class="menu-icon fa fa-user" style=""></i> Show </a></li>
+                    <li class="hover"><a href="#/orgs/{{currentOrganization.name}}/createServiceInstance"> <i class="menu-icon fa fa-fire" style=""></i> Add </a></li>
+                </ul>
+            </li-->            
+            <!--FIXME: introduce identity and certificate stuff  -->
+            <!--li ng-if="currentOrganization" class="hover" ng-controller="OrganizationMenuController"  >
+                <a href="#/orgs/{{currentOrganization.name}}" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-certificate"></i>
+                    <span class="menu-text"> Certificates </span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+                <b class="arrow"></b>
+                <ul class="submenu" >
+                    <li class="hover"><a href="#/orgs/{{currentOrganization.name}}"> <i class="menu-icon fa fa-user" style=""></i> Show </a></li>
+                    <li class="hover"><a href="#/orgs/{{currentOrganization.name}}/createServiceInstance"> <i class="menu-icon fa fa-fire" style=""></i> Add </a></li>
+                </ul>
+            </li-->            
+
+
+        </div>
 
         <!-- ADMINISTRATION --> 
-        <li ng-if="isAuthorized(userRoles.admin)" class="hover" >
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-desktop"></i>
-                <span class="menu-text"> Administration </span>
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu" >
-                <li class="hover"><a href="#/users"> <i class="menu-icon fa fa-user" style=""></i> Users </a></li>
-                <li class="hover"><a href="#/log"> <i class="menu-icon fa fa-fire" style=""></i> Log </a></li>
+        <accordion-group ng-if="isAuthorized(userRoles.admin)" is-open="isOpen.administration">
+            <accordion-heading>
+                <a><i class="fa fa-desktop"></i> Administration 
+                    <i class="pull-right fa" ng-class="{'fa-angle-down': isOpen.administration, 'fa-angle-right': !isOpen.administration}"></i>
+                </a>
+            </accordion-heading>
+            <ul class="nav nav-list">
+                <li><a href="#/users"> <i class="menu-icon fa fa-users" style=""></i> Users </a></li>
+                <!--<li><a href="#/log"> <i class="menu-icon fa fa-fire" style=""></i> Log </a></li>-->
             </ul>
-        </li>
+        </accordion-group>
 
-    </ul><!-- /.nav-list -->
+        <accordion-group heading="{{group.title}}" ng-repeat="group in groups">
+            {{group.content}}
+        </accordion-group>
 
+    </accordion>
 
+    <!--    <ul class="nav nav-list" ng-controller="OrganizationMenuController" >
+    
+            <li class="">
+                <a href="#dashboard">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text"> Dashboard </span>
+                </a>
+    
+                <b class="arrow"></b>
+            </li>
+    
+             SEARCH SERVICES  
+            <li>
+                <a href="#search/service/map" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-search"></i>
+                    <span class="menu-text"> Find Service </span>
+                </a>
+            </li>            
+    
+             CURRENT ORGANIZATION MENU  
+    
+            <li ng-if="currentOrganization" class="hover" >
+                <a href="#/orgs/{{currentOrganization.name}}" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-wifi"></i>
+                    <span class="menu-text"> Services </span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+                <b class="arrow"></b>
+                <ul class="submenu" >
+                    <li class="hover"><a href="#/orgs/{{currentOrganization.name}}"> <i class="menu-icon fa fa-user" style=""></i> Show </a></li>
+                    <li class="hover"><a href="#/orgs/{{currentOrganization.name}}/createServiceInstance"> <i class="menu-icon fa fa-fire" style=""></i> Add </a></li>
+                </ul>
+            </li>            
+    
+             ADMINISTRATION  
+            <li ng-if="isAuthorized(userRoles.admin)" class="hover" >
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-desktop"></i>
+                    <span class="menu-text"> Administration </span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+                <b class="arrow"></b>
+                <ul class="submenu" >
+                    <li class="hover"><a href="#/users"> <i class="menu-icon fa fa-user" style=""></i> Users </a></li>
+                    <li class="hover"><a href="#/log"> <i class="menu-icon fa fa-fire" style=""></i> Log </a></li>
+                </ul>
+            </li>
+    
+        </ul> /.nav-list -->
 
     <!-- #section:basics/sidebar.layout.minimize -->
     <div class="sidebar-toggle" id="sidebar-collapse" ng-click="sidebar.isMinified = !sidebar.isMinified">
@@ -90,5 +153,6 @@
             } catch (e) {
             }
         </script>-->
+
 </div>
 
