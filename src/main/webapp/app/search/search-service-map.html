@@ -1,8 +1,7 @@
 <div class="row">
     <div class="map">
         <!--FILTER INFO BOX-->
-        <div ng-if="markers.filterLocation" class="map-info-box topright  col-xs-4" element-properties>
-            Width: {{element.width}}
+        <div ng-if="markers.filterLocation" class="map-info-box topright  col-xs-4" element-property="offsetWidth">
             <button type="button" style="font-size: medium;" class="close btn btn-xs btn-white" ng-click="clearFilterlocation()">X</button>
             <div class="pull-left">
                 <img style="vertical-align: sub;" src="../../ext/bower/leaflet/dist/images/marker-icon.png" height="16"/> 
@@ -24,7 +23,7 @@
                 </ul>
             </div>
             <div ng-if="selectedService" class="map-info-box-description">
-                <!--summary info box-->
+                <!--SUMMARY INFO-->
                 <hr class="soften">
                 <div style="text-align: center;">
                     <b>{{selectedService.name}}</b>

@@ -108,13 +108,24 @@ angular.module('mcp.directives', [])
       };
     })
 
-    .directive('elementProperties', function ($timeout) {
+    /**
+     * Directive that will add the value of the named property of the target 
+     * element to the scope property 'element' if this exists in advance
+     * 
+     * Example: <div element-property="offsetWidth"> 
+     *   
+     * will the value of the element property 'offsetWidth' to $scope.element.offsetWidth.
+     *  
+     * @param {type} $timeout
+     * @returns {directives_L114.directivesAnonym$5}
+     */
+    .directive('elementProperty', function ($timeout) {
       return {
         restrict: 'A',
-        link: function (scope, element) {
+        link: function (scope, element, attrs) {
+          var property = attrs['elementProperty'];
           if (scope.element) {
-            scope.element.height = element.prop('offsetHeight');
-            scope.element.width = element.prop('offsetWidth');
+            scope.element[property] = element.prop(property);
           }
         }
       };

@@ -120,7 +120,7 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
         function fitToLayer(layer) {
           leafletData.getMap(SEARCHMAP_ID).then(function (map) {
             if (layer) {
-              map.fitBounds(layer.getBounds(), {paddingBottomRight: [$scope.selectedService ? $scope.element.width : 0, 0]});
+              map.fitBounds(layer.getBounds(), {paddingBottomRight: [$scope.selectedService ? $scope.element.offsetWidth : 0, 0]});
             }
           });
         }
