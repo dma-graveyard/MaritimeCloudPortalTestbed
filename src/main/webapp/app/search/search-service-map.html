@@ -41,16 +41,17 @@
         </div>
 
         <!--MAP-->
-        <leaflet id="searchmap" markers="markers" zoomControl="true" event-broadcast="events" defaults="map.defaults" paths="map.paths" ></leaflet>
+        <leaflet id="searchmap" markers="markers" zoomControl="true" event-broadcast="events" defaults="map.defaults" paths="map.paths" >
 
-        <!--MOUSE POSITION & DISTANCE-->
-        <div class="map-info-box bottomright">
-            <!--<div>LatLng: {{filterLocation | latlng2dms:'lat, lng':'D04'}}</div>-->
-            <!--<div>DMS: {{filterLocation | latlng2dms}}</div>-->
-            {{mouseLocation| latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}
-            <div ng-if="markers.filterLocation">
-                {{distance| distance}} ({{distance| distance:'nm'}}) from mark 
+            <!--MOUSE POSITION & DISTANCE-->
+            <div class="map-info-box bottomright">
+                <!--<div>LatLng: {{filterLocation | latlng2dms:'lat, lng':'D04'}}</div>-->
+                <!--<div>DMS: {{filterLocation | latlng2dms}}</div>-->
+                {{mouseLocation| latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}
+                <div ng-if="markers.filterLocation">
+                    {{distance| distance}} ({{distance| distance:'nm'}}) from mark 
+                </div>
             </div>
-        </div>
+        </leaflet>
     </div>
 </div>
