@@ -62,6 +62,7 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
           delete $scope.markers.filterLocation;
 
           // reset to show all services
+          $scope.selectedService = null;
           $scope.services = $scope.allServices;
           showServices($scope.services);
         };
