@@ -175,6 +175,7 @@ span.summary.ng-valid {
     border-style: solid;
     border-width: 1px;
     border-color: rgba(75, 109, 195, 0.5);
+    font-size: 12px;
 }
 
 .map-info-box.topright {
@@ -302,5 +303,5 @@ accordion accordion a {
 .sidebar accordion .panel-body {  
     color: #b1bac1;
     background-color: #353535; /* layer fill content */
-    padding: 0px 0px 0px 10px;
+    padding: 0px 10px 0px 10px;
 }
