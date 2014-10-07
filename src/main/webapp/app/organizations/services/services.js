@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mcp.organizations.services', ['leaflet-directive', 'mcp.mapservices'])
+angular.module('mcp.organizations.services', [])
 
     .controller('ServiceInstanceDetailsController', ['$scope', 'mapService', 'leafletData', '$timeout',
       function($scope, mapService, leafletData, $timeout) {
