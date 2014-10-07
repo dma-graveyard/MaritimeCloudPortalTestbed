@@ -104,8 +104,14 @@ angular.module('mcp.search.services', [])
         }
 
         function match(service, filter) {
-
+          
           if (filter.operationalService && service.specification.operationalService.id !== filter.operationalService.id)
+            return false;
+          
+          if (filter.technicalSpecification && service.specification.id !== filter.technicalSpecification.id)
+            return false;
+
+          if (filter.transportType && service.specification.transportType !== filter.transportType)
             return false;
 
           return true;
@@ -206,18 +212,42 @@ angular.module('mcp.search.services', [])
 
     // Search Filter Object
     // that holds the various filters supplied by controls in eg. the sidebar and used to filter services
-    .service('searchServiceFilterModel', function (OperationalServiceService) {
+    .service('searchServiceFilterModel', function (OperationalServiceService, SpecificationService) {
 
       this.data = {
-        operationalServices: OperationalServiceService.query()
+        operationalServices: OperationalServiceService.query(),
+        technicalSpecifications: null,
+        transportTypes: {
+          mms: 'MMS',
+          rest: 'REST',
+          soap: 'SOAP',
+          www: 'WWW',
+          tcp: 'TCP',
+          udp: 'UDP',
+          aisasm: 'AISASM',
+          tel: 'TEL',
+          vhf: 'VHF',
+          dgnss: 'DGNSS',
+          other: 'OTHER'
+        }
       };
 
       this.filters = {
-        operationalService: null
+        operationalService: null,
+        technicalSpecification: null,
+        transportType: null
       };
 
       this.setOperationalService = function (operationalService) {
         this.filters.operationalService = operationalService;
+      };
+
+      this.setTechnicalSpecification = function (technicalSpecification) {
+        this.filters.technicalSpecification = technicalSpecification;
+      };
+
+      this.setTransportType = function (transportType) {
+        this.filters.transportType = transportType;
       };
 
     });
