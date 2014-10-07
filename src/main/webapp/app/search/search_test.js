@@ -5,6 +5,7 @@ describe('toLatLngObjects', function() {
 
   beforeEach(angular.mock.module("mcp.search.services"));
   beforeEach(angular.mock.module("mcp.dataservices"));
+  beforeEach(angular.mock.module("mcp.mapservices"));
   beforeEach(angular.mock.module("leaflet-directive"));
 
   beforeEach(angular.mock.inject(function($rootScope, ServiceInstanceService) {

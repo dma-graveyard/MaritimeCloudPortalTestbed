@@ -1,5 +1,5 @@
 <div id="sidebar" ng-class="sidebar.isMinified ? 'sidebar responsive menu-min' : 'sidebar responsive'" ng-controller="SidebarController" >
-
+  
     <accordion close-others="true">
 
         <ul class="nav nav-list" >
@@ -13,8 +13,16 @@
                     <i class="pull-right fa" ng-class="{'fa-angle-down': isOpen.findService, 'fa-angle-right': !isOpen.findService}"></i>
                 </a>
             </accordion-heading>
-            filter x <br>
-            Filter Y
+
+            <div class="form-group">
+                <label for="operationalService">Operational Service</label>
+                <select class='form-control input-sm' id='operationalService'
+                        ng-model="$parent.selectedOperationalService" ng-options="operationalService.name for operationalService in operationalServices"
+                        ng-change="setFilterByOperationalService($parent.selectedOperationalService)"
+                        popover="Filter by operational service" popover-trigger="mouseenter" popover-placement="right">
+                    <option value="">All</option>
+                </select>
+            </div>
         </accordion-group>
 
         <!-- CURRENT ORGANIZATION MENU --> 

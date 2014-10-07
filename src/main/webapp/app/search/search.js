@@ -1,14 +1,14 @@
 'use strict';
 
-angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
+angular.module('mcp.search.services', [])
 
-    .controller('SearchServiceMapController', ['$scope', 'mapService', 'leafletData', '$timeout', 'ServiceInstanceService',
-      function ($scope, mapService, leafletData, $timeout, ServiceInstanceService) {
+    .controller('SearchServiceMapController', ['$scope', 'mapService', 'leafletData', 'ServiceInstanceService', 'searchServiceFilterModel',
+      function ($scope, mapService, leafletData, ServiceInstanceService, searchServiceFilterModel) {
 
         var SEARCHMAP_ID = 'searchmap';
 
         $scope.allServices = ServiceInstanceService.query();
-        
+
         angular.extend($scope, {
           element: {},
           filterLocation: {
@@ -40,13 +40,14 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
           selectedService: null,
           highlightedService: null,
           servicesLayer: L.featureGroup(),
-          servicesLayerMap: {}
+          servicesLayerMap: {},
+          filter: searchServiceFilterModel.filters
         });
 
-        showServices($scope.services);
+        filterAndShowServices();
 
         function featureGroupCallback(featureGroup) {
-          
+
           // (called whenever servicesToLayers creates a layer)
           featureGroup.on('click', clickEventHandler);
           featureGroup.on('mousemove', mouseMoveEventHandler);
@@ -62,10 +63,11 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
         $scope.clearFilterlocation = function () {
           delete $scope.markers.filterLocation;
 
+          // (this change will trigger filter watch!)
+          delete $scope.filter.location;
+
           // reset to show all services
           $scope.selectedService = null;
-          $scope.services = $scope.allServices;
-          showServices($scope.services);
         };
 
         $scope.moveFilterLocation = function (latlng) {
@@ -74,20 +76,58 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
           $scope.filterLocation.lat = latlng.lat;
           $scope.filterLocation.lng = latlng.lng;
 
-          // filter services to those that contains the filterLocation
-          $scope.services = mapService.filterServicesAtLocation(latlng, $scope.allServices);
-
-          // show services that are reachable 
-          showServices($scope.services);
-          $scope.filterLocation.message = "" + $scope.services.length + " services near this location";
-
           // Clear any previously selected service
           $scope.selectedService = null;
+
+          // (this change will trigger filter watch!)
+          $scope.filter.location = latlng;
+        };
+
+        function filterServices(byFilter) {
+
+          //FIXME: should delegate to server instead (...or at least in advance)
+
+          var allServices = $scope.allServices;
+          var services = [];
+
+          allServices.forEach(function (service) {
+            if (match(service, byFilter)) {
+              services.push(service);
+            }
+          });
+
+          // filter services to those that contains the filterLocation
+          if (byFilter.location)
+            services = mapService.filterServicesAtLocation(byFilter.location, services);
+
+          return services;
+        }
+
+        function match(service, filter) {
+
+          if (filter.operationalService && service.specification.operationalService.id !== filter.operationalService.id)
+            return false;
+
+          return true;
+        }
+
+        function filterChanged() {
+          //console.log("Filter changed: ", newValue, oldValue);
+          filterAndShowServices();
+        }
+
+        function filterAndShowServices() {
+          $scope.services = filterServices($scope.filter);
+
+          // update marker info
+          $scope.filterLocation.message = "" + $scope.services.length + " services near this location";
 
           // Autoselect single service
           if ($scope.services.length === 1)
             $scope.selectedService = $scope.services[0];
-        };
+
+          showServices($scope.services);
+        }
 
         function showServices(servicesAtLocation) {
           // Cleanup
@@ -99,9 +139,15 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
         }
 
         function clickEventHandler(e) {
+          //console.log('Shape clicked: ', e.latlng);
           $scope.moveFilterLocation(e.latlng);
           $scope.$apply();
         }
+        
+        $scope.$on('leafletDirectiveMap.click', function (event, args) {
+          //console.log("Map clicked: ", event, args);
+          $scope.moveFilterLocation(args.leafletEvent.latlng);
+        });
 
         function mouseMoveEventHandler(e) {
           // update mouse location
@@ -120,6 +166,7 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
         function fitToLayer(layer) {
           leafletData.getMap(SEARCHMAP_ID).then(function (map) {
             if (layer) {
+              //console.log('fit map to services', layer.getBounds());
               map.fitBounds(layer.getBounds(), {paddingBottomRight: [$scope.selectedService ? $scope.element.offsetWidth : 0, 0]});
             }
           });
@@ -146,11 +193,9 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
           $scope.servicesLayerMap[service.id].resetStyle();
         };
 
-
-        $scope.$on('leafletDirectiveMap.click', function (event, args) {
-          console.log("Event click: ", event, args);
-          $scope.moveFilterLocation(args.leafletEvent.latlng);
-        });
+        $scope.$watch('filter', function (newValue, oldValue) {
+          filterChanged();
+        }, true);
 
         leafletData.getMap(SEARCHMAP_ID).then(function (map) {
           map.addLayer($scope.servicesLayer);
@@ -158,4 +203,23 @@ angular.module('mcp.search.services', ['leaflet-directive', 'mcp.mapservices'])
         });
 
       }])
-    ;
+
+    // Search Filter Object
+    // that holds the various filters supplied by controls in eg. the sidebar and used to filter services
+    .service('searchServiceFilterModel', function (OperationalServiceService) {
+
+      this.data = {
+        operationalServices: OperationalServiceService.query()
+      };
+
+      this.filters = {
+        operationalService: null
+      };
+
+      this.setOperationalService = function (operationalService) {
+        this.filters.operationalService = operationalService;
+      };
+
+    });
+
+;
