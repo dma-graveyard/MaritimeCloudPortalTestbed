@@ -21,6 +21,7 @@ angular.module('mcp.layout', [])
 
         $scope.operationalServices = searchServiceFilterModel.data.operationalServices;
         $scope.specifications = null;
+        $scope.organizations = searchServiceFilterModel.data.organizations;
         $scope.transportTypes  = searchServiceFilterModel.data.transportTypes;
 
         $scope.setFilterByOperationalService = function (selection) {
@@ -46,17 +47,35 @@ angular.module('mcp.layout', [])
           $scope.filter.selectedTransportType = selection;
         };
 
+        $scope.setFilterByProvider = function (selection) {
+          console.log("selected provider", selection);
+          searchServiceFilterModel.setProvider(selection);
+          $scope.filter.selectedProvider = selection;
+        };
+
+        $scope.setFilterByAnyText = function (aText) {
+          console.log("anytext", aText);
+          searchServiceFilterModel.setAnyText(aText);
+          $scope.filter.anyText = aText;
+        };
+
         $scope.$watch('state.is("restricted.searchServiceMap")', function (newValue, oldValue) {
            $scope.isOpen.findService = newValue;
         });
 
         $scope.isDirty = function () {
-          return $scope.filter.selectedOperationalService || $scope.filter.selectedSpecification || $scope.filter.selectedTransportType;
+          return $scope.filter.selectedOperationalService 
+              || $scope.filter.selectedSpecification 
+              || $scope.filter.selectedTransportType
+              || $scope.filter.selectedProvider
+              || $scope.filter.anyText;
         };
 
         $scope.clearFilter = function () {
           $scope.setFilterByOperationalService(null);
           $scope.setFilterByTransportType(null);
+          $scope.setFilterByProvider(null);
+          $scope.setFilterByAnyText(null);
         };
       }])
     ;

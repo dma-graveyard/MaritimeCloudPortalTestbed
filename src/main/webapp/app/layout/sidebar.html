@@ -6,7 +6,9 @@
             <li><a ui-sref="restricted.dashboard"><i class="fa fa-tachometer"></i> Dashboard </a></li>
         </ul>        
 
+        <!----------------------------------------------------->
         <!-- SEARCH SERVICES --> 
+        <!----------------------------------------------------->
         <accordion-group is-open="isOpen.findService">
             <accordion-heading>
                 <a ui-sref="restricted.searchServiceMap"><i class="fa fa-search"></i> Find Service
@@ -35,6 +37,37 @@
                 </select>
             </div>
 
+            <!--div class="form-group">
+                <label for="provider">Provider</label>
+                <select class='form-control input-sm' id='provider' 
+                        ng-model="filter.selectedProvider" ng-options="provider.title+' ('+provider.name+')' for provider in organizations"
+                        ng-change="setFilterByProvider(filter.selectedProvider)"
+                        popover="Filter by service provider" popover-trigger="mouseenter" popover-placement="right">
+                    <option value="">All</option>
+                </select>
+            </div-->
+
+            <div class="form-group">
+                <label class="control-label">Provider</label>
+                <div class="input-group">
+
+                    <ui-select ng-model="filter.selectedProvider" theme="bootstrap" on-select="setFilterByProvider($model)">
+                        <ui-select-match placeholder="provider">{{$select.selected.title}}</ui-select-match>
+                        <ui-select-choices repeat="provider in organizations | filter: $select.search ">
+                            <span ng-bind-html="provider.title | highlight: $select.search"></span>
+                            <small>(</small><small ng-bind-html="provider.name | highlight: $select.search"></small><small>)</small>
+                        </ui-select-choices>
+                    </ui-select>
+
+                    <span class="input-group-btn">
+                        <button ng-click="setFilterByProvider(null)" class="btn btn-default">
+                            <span class="fa fa-trash-o"></span>
+                        </button>
+                    </span>
+
+                </div>
+            </div>
+
             <div class="form-group">
                 <label for="transportType">Transport type</label>
                 <select class='form-control input-sm' id='transportType' 
@@ -45,12 +78,24 @@
                 </select>
             </div>
 
-            <button ng-disabled="!isDirty()" class="btn btn-danger btn-xs" ng-click="clearFilter();">clear all <i class="fa fa-trash-o"></i></button>
+            <div class="form-group form-group-sm">
+                <label for="serviceName">Any text</label>
+                <input type="text" class="form-control input-sm" id="serviceName" placeholder="Searchtext" 
+                       ng-model="filter.anyText"
+                       ng-change="setFilterByAnyText(filter.anyText)"
+                       popover="Enter a search phrase to look for in the services" popover-trigger="mouseenter" popover-placement="right">
+            </div>
+            <div style="padding-top: 8px;">
+                <button ng-disabled="!isDirty()" class="btn btn-danger btn-xs" ng-click="clearFilter();">clear all <i class="fa fa-trash-o"></i></button>
+            </div>
+
             <p></p>
 
         </accordion-group>
 
+        <!----------------------------------------------------->
         <!-- CURRENT ORGANIZATION MENU --> 
+        <!----------------------------------------------------->
         <div ng-controller="OrganizationMenuController" >
 
             <accordion-group ng-if="currentOrganization" is-open="isOpen.organization">
@@ -101,11 +146,11 @@
                     <li class="hover"><a href="#/orgs/{{currentOrganization.name}}/createServiceInstance"> <i class="menu-icon fa fa-fire" style=""></i> Add </a></li>
                 </ul>
             </li-->            
-
-
         </div>
-
+        
+        <!----------------------------------------------------->
         <!-- ADMINISTRATION --> 
+        <!----------------------------------------------------->
         <accordion-group ng-if="isAuthorized(userRoles.admin)" is-open="isOpen.administration">
             <accordion-heading>
                 <a><i class="fa fa-desktop"></i> Administration 

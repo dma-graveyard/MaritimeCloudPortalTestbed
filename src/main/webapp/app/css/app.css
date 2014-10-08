@@ -303,5 +303,68 @@ accordion accordion a {
 .sidebar accordion .panel-body {  
     color: #b1bac1;
     background-color: #353535; /* layer fill content */
-    padding: 0px 10px 0px 10px;
+    padding: 5px 10px 0px 10px;
+}
+
+
+.form-control[disabled] {
+    background-color: #BABABA;
+}
+
+.form-control:focus {
+    outline: -webkit-focus-ring-color auto 5px;
+}
+
+.sidebar .form-group {
+    margin-bottom: 5px;
+}
+
+.sidebar label {
+    margin-bottom: 0px;
+    font-weight: lighter;
+}
+
+.sidebar .input-sm, .sidebar select.input-sm {
+    height: 25px;
+    padding: 0px 10px;
+}
+
+.sidebar .ui-select-bootstrap {
+    font-size: 12px;
+}
+
+.sidebar .ui-select-bootstrap > .ui-select-choices {
+    width: inherit;
+    font-size: 12px;
+}
+
+.sidebar .ui-select-toggle {
+    display: none !important;
+}
+
+.sidebar .ui-select-bootstrap > .ui-select-match, .sidebar .ui-select-bootstrap > .ui-select-search {
+    height: 25px;
+    /*    width: inherit;*/
+    font-size: 12px;
+    padding: 0px 6px;
+    width: 148px;
+}
+
+.sidebar .ui-select-bootstrap + span button {
+    height: 25px;
+    /*    width: inherit;*/
+    font-size: 12px;
+    padding: 0px 6px;
+    z-index: 2; /* firefox */
+}
+
+.sidebar .ui-select-bootstrap .btn-default-focus, .sidebar .ui-select-bootstrap + span .btn-default:focus,
+.sidebar .ui-select-bootstrap .btn-default:hover, .sidebar .ui-select-bootstrap + span .btn-default:hover {
+    background: white;
+}
+
+.sidebar .ui-select-choices-row-inner {
+    border: 0px;
+    padding-bottom: 2px !important;
+    padding-top: 0px !important;
 }

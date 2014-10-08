@@ -2,8 +2,8 @@
 
 angular.module('mcp.search.services', [])
 
-    .controller('SearchServiceMapController', ['$scope', 'mapService', 'leafletData', 'ServiceInstanceService', 'searchServiceFilterModel',
-      function ($scope, mapService, leafletData, ServiceInstanceService, searchServiceFilterModel) {
+    .controller('SearchServiceMapController', ['$scope', '$filter', 'mapService', 'leafletData', 'ServiceInstanceService', 'searchServiceFilterModel',
+      function ($scope, $filter, mapService, leafletData, ServiceInstanceService, searchServiceFilterModel) {
 
         var SEARCHMAP_ID = 'searchmap';
 
@@ -96,6 +96,12 @@ angular.module('mcp.search.services', [])
             }
           });
 
+
+          if (byFilter.anyText) {
+            var searchFilter = {$: byFilter.anyText};
+            services = $filter('filter')(services, searchFilter, false)
+          }
+
           // filter services to those that contains the filterLocation
           if (byFilter.location)
             services = mapService.filterServicesAtLocation(byFilter.location, services);
@@ -104,10 +110,13 @@ angular.module('mcp.search.services', [])
         }
 
         function match(service, filter) {
-          
+
+          if (filter.provider && service.provider.name !== filter.provider.name)
+            return false;
+
           if (filter.operationalService && service.specification.operationalService.id !== filter.operationalService.id)
             return false;
-          
+
           if (filter.technicalSpecification && service.specification.id !== filter.technicalSpecification.id)
             return false;
 
@@ -149,7 +158,7 @@ angular.module('mcp.search.services', [])
           $scope.moveFilterLocation(e.latlng);
           $scope.$apply();
         }
-        
+
         $scope.$on('leafletDirectiveMap.click', function (event, args) {
           //console.log("Map clicked: ", event, args);
           $scope.moveFilterLocation(args.leafletEvent.latlng);
@@ -212,11 +221,12 @@ angular.module('mcp.search.services', [])
 
     // Search Filter Object
     // that holds the various filters supplied by controls in eg. the sidebar and used to filter services
-    .service('searchServiceFilterModel', function (OperationalServiceService, SpecificationService) {
+    .service('searchServiceFilterModel', function (OperationalServiceService, SpecificationService, OrganizationService) {
 
       this.data = {
         operationalServices: OperationalServiceService.query(),
         technicalSpecifications: null,
+        organizations: OrganizationService.query(),
         transportTypes: {
           mms: 'MMS',
           rest: 'REST',
@@ -235,7 +245,9 @@ angular.module('mcp.search.services', [])
       this.filters = {
         operationalService: null,
         technicalSpecification: null,
-        transportType: null
+        transportType: null,
+        provider: null,
+        anyText: null
       };
 
       this.setOperationalService = function (operationalService) {
@@ -248,6 +260,14 @@ angular.module('mcp.search.services', [])
 
       this.setTransportType = function (transportType) {
         this.filters.transportType = transportType;
+      };
+
+      this.setProvider = function (provider) {
+        this.filters.provider = provider;
+      };
+
+      this.setAnyText = function (aText) {
+        this.filters.anyText = aText;
       };
 
     });
