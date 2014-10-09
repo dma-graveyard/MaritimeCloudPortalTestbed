@@ -63,7 +63,7 @@ angular.module('mcp.organizations.services', [])
           latlongs: []
         });
 
-        leafletData.getMap().then(function(map) {
+        leafletData.getMap("instanceCreateMap").then(function(map) {
           map.addLayer(drawnItems);
 
           // FIXME: when angular leaflet 0.7.9 is released use this instead:
