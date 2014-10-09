@@ -67,7 +67,7 @@
 
             <div class="form-group">
                 <label class="control-label">Provider</label>
-                <div class="input-group">
+                <div class="input-group" popover="Select a provider to filter by" popover-trigger="mouseenter" popover-placement="right">
 
                     <ui-select ng-model="filter.provider" theme="bootstrap">
                         <ui-select-match placeholder="provider">{{$select.selected.title}}</ui-select-match>
@@ -101,7 +101,7 @@
                        ng-model="filter.anyText" mcp-focus-me
                        popover="Enter a search phrase to look for in the services" popover-trigger="mouseenter" popover-placement="right">
             </div>
-            
+
             <div style="padding-top: 8px;">
                 <small>Count: {{data.result.length}}</small>
                 <button ng-disabled="!isDirty()" class="pull-right btn btn-danger btn-xs" ng-click="clearFilter();"

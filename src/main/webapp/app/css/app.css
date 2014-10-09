@@ -365,6 +365,7 @@ accordion accordion a {
     font-size: 12px;
     padding: 0px 6px;
     width: 148px;
+    cursor: default;
 }
 
 .sidebar .ui-select-bootstrap + span button {
