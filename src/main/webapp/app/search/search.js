@@ -9,6 +9,7 @@ angular.module('mcp.search.services', [])
 
         $scope.allServices = ServiceInstanceService.query();
         $scope.filter = searchServiceFilterModel.filter;
+        $scope.data = searchServiceFilterModel.data;
 
         angular.extend($scope, {
           element: {},
@@ -81,7 +82,7 @@ angular.module('mcp.search.services', [])
           $scope.filter.location = latlng;
         };
 
-        function filterServices(byFilter) {
+        function filterServices(filterBy) {
 
           //FIXME: should delegate to server instead (...or at least in advance)
 
@@ -90,19 +91,19 @@ angular.module('mcp.search.services', [])
 
           // filter by predefined criterias (see match function)
           allServices.forEach(function (service) {
-            if (match(service, byFilter)) {
+            if (match(service, filterBy)) {
               services.push(service);
             }
           });
 
-          if (byFilter.anyText) {
-            var searchFilter = {$: byFilter.anyText};
+          if (filterBy.anyText) {
+            var searchFilter = {$: filterBy.anyText};
             services = $filter('filter')(services, searchFilter, false)
           }
 
           // filter services to those that contains the filterLocation
-          if (byFilter.location)
-            services = mapService.filterServicesAtLocation(byFilter.location, services);
+          if (filterBy.location)
+            services = mapService.filterServicesAtLocation(filterBy.location, services);
 
           return services;
         }
@@ -130,24 +131,26 @@ angular.module('mcp.search.services', [])
         }
 
         function updateLocationMarker() {
-          if(!$scope.filter.location)
+          if (!$scope.filter.location)
             $scope.clearFilterlocation();
         }
 
         function filterAndShowServices() {
           $scope.services = filterServices($scope.filter);
-          
+
           // share the result with the service filter
-          $scope.filter.result = $scope.services;
+          $scope.data.result = $scope.services;
 
           // update marker info
           $scope.filterLocation.message = "" + $scope.services.length + " services near this location";
 
-          // Autoselect single service
-          if ($scope.services.length === 1)
-            $scope.selectedService = $scope.services[0];
-          
           showServices($scope.services);
+
+          // Autoselect single service
+          if ($scope.services.length === 1) {
+            $scope.unselectService();
+            $scope.selectService($scope.services[0]);
+          }
         }
 
         function showServices(servicesAtLocation) {
@@ -195,11 +198,32 @@ angular.module('mcp.search.services', [])
 
         $scope.toggleSelectService = function (service) {
           if (service === $scope.selectedService) {
-            $scope.selectedService = null;
-            $scope.highlightService(service);
-            fitToSelectedLayers();
+            $scope.unselectService();
           } else {
+            $scope.selectService(service);
+          }
+        };
+
+        $scope.unselectService = function () {
+          if ($scope.selectedService) {
+
+            // unselect prevous service layer
+            if ($scope.servicesLayerMap[$scope.selectedService.id])
+              $scope.servicesLayerMap[$scope.selectedService.id].unselect();
+
+            $scope.selectedService = null;
+            fitToSelectedLayers();
+          }
+        };
+
+        $scope.selectService = function (service) {
+          // unselect prevous service
+          if ($scope.selectedService && $scope.servicesLayerMap[$scope.selectedService.id])
+            $scope.servicesLayerMap[$scope.selectedService.id].unselect();
+
+          if (service !== $scope.selectedService) {
             $scope.selectedService = service;
+            $scope.servicesLayerMap[service.id].select();
             fitToLayer($scope.servicesLayerMap[service.id]);
           }
         };
@@ -211,10 +235,10 @@ angular.module('mcp.search.services', [])
 
         $scope.unhighlightService = function (service) {
           $scope.highlightedService = null;
-          $scope.servicesLayerMap[service.id].resetStyle();
+          $scope.servicesLayerMap[service.id].unhighlight();
         };
 
-        if ($scope.filter.location){
+        if ($scope.filter.location) {
            $scope.moveFilterLocation($scope.filter.location);
         }
 
@@ -251,7 +275,8 @@ angular.module('mcp.search.services', [])
           vhf: 'VHF',
           dgnss: 'DGNSS',
           other: 'OTHER'
-        }
+        },
+        result: []
       };
 
       this.filter = {
@@ -271,7 +296,7 @@ angular.module('mcp.search.services', [])
         delete this.filter.technicalSpecification;
         delete this.filter.transportType;
       };
-      
+
     });
 
 ;

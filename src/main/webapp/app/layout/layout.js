@@ -22,8 +22,9 @@ angular.module('mcp.layout', [])
         $scope.operationalServices = searchServiceFilterModel.data.operationalServices;
         $scope.specifications = null;
         $scope.organizations = searchServiceFilterModel.data.organizations;
-        $scope.transportTypes  = searchServiceFilterModel.data.transportTypes;
-        $scope.filter  = searchServiceFilterModel.filter;
+        $scope.transportTypes = searchServiceFilterModel.data.transportTypes;
+        $scope.filter = searchServiceFilterModel.filter;
+        $scope.data = searchServiceFilterModel.data;
 
         $scope.setFilterByOperationalService = function (selection) {
 
@@ -36,8 +37,8 @@ angular.module('mcp.layout', [])
         };
 
         $scope.isDirty = function () {
-          return $scope.filter.operationalService 
-              || $scope.filter.technicalSpecification 
+          return $scope.filter.operationalService
+              || $scope.filter.technicalSpecification
               || $scope.filter.transportType
               || $scope.filter.provider
               || $scope.filter.anyText
@@ -48,7 +49,7 @@ angular.module('mcp.layout', [])
           $scope.setFilterByOperationalService(null);
           searchServiceFilterModel.clean();
         };
-        
+
         $scope.$watch('state.is("restricted.searchServiceMap")', function (newValue, oldValue) {
            $scope.isOpen.findService = newValue;
         });

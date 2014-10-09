@@ -20,33 +20,61 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
       DEFAULT: {
         //color: '#008000',
         //color: '#ff612f', //orange
+        weight: 1,
         color: '#ffb752',
         fillOpacity: 0.106,
+        dashArray: [],
         //color: '#ffff2f',
-        weight: 1,
         //fillColor: '#ff69b4'
         //fillColor: '#ffffff'
       },
       HIGHLIGHT: {
         weight: 2,
-        //dashArray: [5,10],
         color: '#008000',
         fillOpacity: 0.206,
+        dashArray: [],
+      },
+      SELECTED: {
+        weight: 2,
+        color: '#0003ff',
+        fillOpacity: 0.206,
+        dashArray: [5, 10],
       }
     }
 
+    //L.FeatureGroup.prototype.styles = {};
+
     L.FeatureGroup.prototype.highlight = function () {
-      if (!this.originalStyle) {
-        this.originalStyle = this.getLayers()[0].options;
-        this.setStyle(Styles.HIGHLIGHT);
+      if (!this.isHighlighted) {
+        this.isHighlighted = true;
+        this.applyStyle();
       }
     };
 
-    L.FeatureGroup.prototype.resetStyle = function () {
-      if (this.originalStyle) {
-        this.setStyle(this.originalStyle);
-        delete this.originalStyle;
+    L.FeatureGroup.prototype.unhighlight = function () {
+      if (this.isHighlighted) {
+        delete this.isHighlighted;
+        this.applyStyle();
       }
+    };
+
+    L.FeatureGroup.prototype.select = function () {
+      this.isSelected = true;
+      this.applyStyle();
+    };
+
+    L.FeatureGroup.prototype.unselect = function () {
+      delete this.isSelected;
+      this.applyStyle();
+    };
+
+    L.FeatureGroup.prototype.applyStyle = function () {
+      if (this.isSelected)
+        this.setStyle(Styles.SELECTED);
+      else if (this.isHighlighted)
+        this.setStyle(Styles.HIGHLIGHT);
+      else
+        this.setStyle(Styles.DEFAULT);
     };
 
     function getLayerShapeType(layer) {
