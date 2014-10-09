@@ -8,12 +8,13 @@ angular.module('mcp.search.services', [])
         var SEARCHMAP_ID = 'searchmap';
 
         $scope.allServices = ServiceInstanceService.query();
+        $scope.filter = searchServiceFilterModel.filter;
 
         angular.extend($scope, {
           element: {},
           filterLocation: {
-            lat: 51,
-            lng: 0,
+            lat: $scope.filter.location ? $scope.filter.location.lat : 51,
+            lng: $scope.filter.location ? $scope.filter.location.lng : 0,
             draggable: false,
             message: "",
             focus: false
@@ -40,11 +41,8 @@ angular.module('mcp.search.services', [])
           selectedService: null,
           highlightedService: null,
           servicesLayer: L.featureGroup(),
-          servicesLayerMap: {},
-          filter: searchServiceFilterModel.filters
+          servicesLayerMap: {}
         });
-
-        filterAndShowServices();
 
         function featureGroupCallback(featureGroup) {
 
@@ -90,12 +88,12 @@ angular.module('mcp.search.services', [])
           var allServices = $scope.allServices;
           var services = [];
 
+          // filter by predefined criterias (see match function)
           allServices.forEach(function (service) {
             if (match(service, byFilter)) {
               services.push(service);
             }
           });
-
 
           if (byFilter.anyText) {
             var searchFilter = {$: byFilter.anyText};
@@ -127,12 +125,20 @@ angular.module('mcp.search.services', [])
         }
 
         function filterChanged() {
-          //console.log("Filter changed: ", newValue, oldValue);
+          updateLocationMarker();
           filterAndShowServices();
+        }
+
+        function updateLocationMarker() {
+          if(!$scope.filter.location)
+            $scope.clearFilterlocation();
         }
 
         function filterAndShowServices() {
           $scope.services = filterServices($scope.filter);
+          
+          // share the result with the service filter
+          $scope.filter.result = $scope.services;
 
           // update marker info
           $scope.filterLocation.message = "" + $scope.services.length + " services near this location";
@@ -140,7 +146,7 @@ angular.module('mcp.search.services', [])
           // Autoselect single service
           if ($scope.services.length === 1)
             $scope.selectedService = $scope.services[0];
-
+          
           showServices($scope.services);
         }
 
@@ -208,6 +214,12 @@ angular.module('mcp.search.services', [])
           $scope.servicesLayerMap[service.id].resetStyle();
         };
 
+        if ($scope.filter.location){
+           $scope.moveFilterLocation($scope.filter.location);
+        }
+
+        filterAndShowServices();
+
         $scope.$watch('filter', function (newValue, oldValue) {
           filterChanged();
         }, true);
@@ -242,34 +254,24 @@ angular.module('mcp.search.services', [])
         }
       };
 
-      this.filters = {
+      this.filter = {
+        anyText: null,
+        location: null,
         operationalService: null,
-        technicalSpecification: null,
-        transportType: null,
         provider: null,
-        anyText: null
+        technicalSpecification: null,
+        transportType: null
       };
 
-      this.setOperationalService = function (operationalService) {
-        this.filters.operationalService = operationalService;
+      this.clean = function () {
+        delete this.filter.anyText;
+        delete this.filter.location;
+        delete this.filter.operationalService;
+        delete this.filter.provider;
+        delete this.filter.technicalSpecification;
+        delete this.filter.transportType;
       };
-
-      this.setTechnicalSpecification = function (technicalSpecification) {
-        this.filters.technicalSpecification = technicalSpecification;
-      };
-
-      this.setTransportType = function (transportType) {
-        this.filters.transportType = transportType;
-      };
-
-      this.setProvider = function (provider) {
-        this.filters.provider = provider;
-      };
-
-      this.setAnyText = function (aText) {
-        this.filters.anyText = aText;
-      };
-
+      
     });
 
 ;

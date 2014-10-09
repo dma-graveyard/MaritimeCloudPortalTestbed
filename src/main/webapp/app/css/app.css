@@ -324,6 +324,23 @@ accordion accordion a {
     font-weight: lighter;
 }
 
+.sidebar .location-filter {
+    margin-bottom: 5px;
+    font-size: 12px;
+}
+
+.sidebar .location-filter .closex {
+    font-size: 14px;
+    padding: 0;    
+    float: right;
+    font-weight: normal;
+    line-height: 1;
+    /* color: #000; */
+    /* text-shadow: 0 1px 0 #fff; */
+    filter: alpha(opacity=20);
+    opacity: .8;
+}
+
 .sidebar .input-sm, .sidebar select.input-sm {
     height: 25px;
     padding: 0px 10px;

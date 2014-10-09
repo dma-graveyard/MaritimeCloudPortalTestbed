@@ -17,10 +17,29 @@
             </accordion-heading>
 
             <div class="form-group">
+                <label for="operationalService">Location</label>
+                <div class="location-filter">
+                    <img style="vertical-align: sub;" src="../../ext/bower/leaflet/dist/images/marker-icon.png" height="16"/> 
+                    <span ng-if="!filter.location"
+                          popover="Click on a location on the map to see services provided in that area" popover-trigger="mouseenter" popover-placement="right">
+                        <i>no location selected</i>
+                    </span>
+                    <span ng-if="filter.location">
+                        {{filter.location| latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}
+                        <button ng-disabled="!filter.location" class="btn btn-danger btn-xs closex" ng-click="filter.location = null"
+                                popover="Clear location marker" popover-trigger="mouseenter" popover-placement="top">
+                            <i class="fa fa-trash-o"></i>
+                        </button>
+                    </span>
+
+                </div>            
+            </div>            
+
+            <div class="form-group">
                 <label for="operationalService">Operational Service</label>
                 <select class='form-control input-sm' id='operationalService'
-                        ng-model="filter.selectedOperationalService" ng-options="operationalService.name for operationalService in operationalServices"
-                        ng-change="setFilterByOperationalService(filter.selectedOperationalService)"
+                        ng-model="filter.operationalService" ng-options="operationalService.name for operationalService in operationalServices"
+                        ng-change="setFilterByOperationalService(filter.operationalService)"
                         popover="Filter by operational service" popover-trigger="mouseenter" popover-placement="right">
                     <option value="">All</option>
                 </select>
@@ -30,8 +49,7 @@
                 <label for="specification">Technical Specification</label>
                 <select class='form-control input-sm' id='specification' 
                         ng-disabled="!specifications"
-                        ng-model="filter.selectedSpecification" ng-options="specification.name+' ('+specification.transportType+')' group by specification.owner.title for specification in specifications"
-                        ng-change="setFilterByTechnicalSpecification(filter.selectedSpecification)"
+                        ng-model="filter.technicalSpecification" ng-options="specification.name+' ('+specification.transportType+')' group by specification.owner.title for specification in specifications"
                         popover="Filter by technical service specification" popover-trigger="mouseenter" popover-placement="right">
                     <option value="">All</option>
                 </select>
@@ -51,7 +69,7 @@
                 <label class="control-label">Provider</label>
                 <div class="input-group">
 
-                    <ui-select ng-model="filter.selectedProvider" theme="bootstrap" on-select="setFilterByProvider($model)">
+                    <ui-select ng-model="filter.provider" theme="bootstrap">
                         <ui-select-match placeholder="provider">{{$select.selected.title}}</ui-select-match>
                         <ui-select-choices repeat="provider in organizations | filter: $select.search ">
                             <span ng-bind-html="provider.title | highlight: $select.search"></span>
@@ -60,7 +78,7 @@
                     </ui-select>
 
                     <span class="input-group-btn">
-                        <button ng-click="setFilterByProvider(null)" class="btn btn-default">
+                        <button ng-click="filter.provider = null;" class="btn btn-default">
                             <span class="fa fa-trash-o"></span>
                         </button>
                     </span>
@@ -71,8 +89,7 @@
             <div class="form-group">
                 <label for="transportType">Transport type</label>
                 <select class='form-control input-sm' id='transportType' 
-                        ng-model="filter.selectedTransportType" ng-options="value for (key, value) in transportTypes"
-                        ng-change="setFilterByTransportType(filter.selectedTransportType)"
+                        ng-model="filter.transportType" ng-options="value for (key, value) in transportTypes"
                         popover="Filter by transport type" popover-trigger="mouseenter" popover-placement="right">
                     <option value="">All</option>
                 </select>
@@ -81,14 +98,16 @@
             <div class="form-group form-group-sm">
                 <label for="serviceName">Any text</label>
                 <input type="text" class="form-control input-sm" id="serviceName" placeholder="Searchtext" 
-                       ng-model="filter.anyText"
-                       ng-change="setFilterByAnyText(filter.anyText)"
+                       ng-model="filter.anyText" mcp-focus-me
                        popover="Enter a search phrase to look for in the services" popover-trigger="mouseenter" popover-placement="right">
             </div>
+            
             <div style="padding-top: 8px;">
-                <button ng-disabled="!isDirty()" class="btn btn-danger btn-xs" ng-click="clearFilter();">clear all <i class="fa fa-trash-o"></i></button>
+                <small>Count: {{filter.result.length}}</small>
+                <button ng-disabled="!isDirty()" class="pull-right btn btn-danger btn-xs" ng-click="clearFilter();"
+                        popover="Restore all filter settings" popover-trigger="mouseenter" popover-placement="right"
+                        >Reset <i class="fa fa-trash-o"></i></button>
             </div>
-
             <p></p>
 
         </accordion-group>
@@ -147,7 +166,7 @@
                 </ul>
             </li-->            
         </div>
-        
+
         <!----------------------------------------------------->
         <!-- ADMINISTRATION --> 
         <!----------------------------------------------------->

@@ -1,11 +1,11 @@
 <div class="row">
     <div class="map">
         <!--FILTER INFO BOX-->
-        <div ng-if="markers.filterLocation" class="map-info-box topright  col-xs-4" element-property="offsetWidth">
+        <div ng-if="filter.location" class="map-info-box topright  col-xs-4" element-property="offsetWidth">
             <button type="button" style="font-size: medium;" class="close btn btn-xs btn-white" ng-click="clearFilterlocation()">X</button>
             <div class="pull-left">
                 <img style="vertical-align: sub;" src="../../ext/bower/leaflet/dist/images/marker-icon.png" height="16"/> 
-                <b>{{filterLocation| latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}</b>
+                <b>{{filter.location| latlng2dms:'lat lng':"d2 M23i":"d3 M23i"}}</b>
             </div>
             <hr class="soften">
             <div>
