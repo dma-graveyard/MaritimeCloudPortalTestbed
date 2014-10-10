@@ -149,8 +149,22 @@ angular.module('mcp.search.services', [])
           // Autoselect single service
           if ($scope.services.length === 1) {
             $scope.unselectService();
-            $scope.selectService($scope.services[0]);
+            if ($scope.filter.location)
+              $scope.selectService($scope.services[0]);
           }
+
+          // Clear selected service if not in list
+          if ($scope.selectedService) {
+            if ($scope.services.indexOf($scope.selectedService) === -1) {
+              $scope.unselectService();
+            } else {
+              console.log($scope.filter.location);
+              // when location marker is placed we should refresh the selection of the service layer 
+              var service = $scope.selectedService;
+              $scope.servicesLayerMap[service.id].select();
+            }
+          }
+
         }
 
         function showServices(servicesAtLocation) {
