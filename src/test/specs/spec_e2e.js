@@ -446,7 +446,7 @@ describe('Join confirmation', function () {
 // ...for testing protected pages
 // --------------------------------------------------------------------
 
-ddescribe('HELPER: Log in to test protected pages', function () {
+describe('HELPER: Log in to test protected pages', function () {
 
   var page;
 
@@ -475,7 +475,7 @@ ddescribe('HELPER: Log in to test protected pages', function () {
 // TEST PROTECTED PAGES
 // --------------------------------------------------------------------
 
-ddescribe('create service instance', function () {
+describe('create service instance', function () {
   var page;
 
   beforeEach(function () {
@@ -519,7 +519,8 @@ ddescribe('create service instance', function () {
     // should see service on list
     expect(page.serviceInstanceList.count()).toBe(6);
     expect(page.serviceInstanceList.get(5).element(by.css('h4')).getText()).toEqual('A Service Name - REST');
-    browser.sleep(10000);
+    
+    //browser.sleep(10000);
   });
 
 });
