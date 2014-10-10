@@ -40,7 +40,7 @@
                 <select class='form-control input-sm' id='operationalService'
                         ng-model="filter.operationalService" ng-options="operationalService.name for operationalService in operationalServices"
                         ng-change="setFilterByOperationalService(filter.operationalService)"
-                        popover="Filter by operational service" popover-trigger="mouseenter" popover-placement="right">
+                        popover="Filter by operational service" popover-trigger="mouseenter" popover-placement="right" mcp-focus-me>
                     <option value="">All</option>
                 </select>
             </div>
@@ -96,15 +96,15 @@
             </div>
 
             <div class="form-group form-group-sm">
-                <label for="serviceName">Any text</label>
-                <input type="text" class="form-control input-sm" id="serviceName" placeholder="Searchtext" 
-                       ng-model="filter.anyText" mcp-focus-me
+                <label for="anyText">Any text</label>
+                <input type="text" class="form-control input-sm" id="anyText" placeholder="Searchtext" 
+                       ng-model="filter.anyText"
                        popover="Enter a search phrase to look for in the services" popover-trigger="mouseenter" popover-placement="right">
             </div>
 
             <div style="padding-top: 8px;">
                 <small>Count: {{data.result.length}}</small>
-                <button ng-disabled="!isDirty()" class="pull-right btn btn-danger btn-xs" ng-click="clearFilter();"
+                <button id="mapFilterResetAll" ng-disabled="!isDirty()" class="pull-right btn btn-danger btn-xs" ng-click="clearFilter();"
                         popover="Restore all filter settings" popover-trigger="mouseenter" popover-placement="right"
                         >Reset <i class="fa fa-trash-o"></i></button>
             </div>

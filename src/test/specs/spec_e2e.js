@@ -4,6 +4,11 @@
 //   https://github.com/angular/protractor/issues/156
 //   http://www.thoughtworks.com/insights/blog/using-page-objects-overcome-protractors-shortcomings
 
+// TIP:
+//   Add an extra 'd' to 'descripe(...)' to test only those senarios!
+//   Also, be aware that many scenarios need to the log-in scenario to have run 
+//   in advance, so remember to also enable that.  
+
 // ----------------------------------------------------------------------------
 // HELPERS 
 // ----------------------------------------------------------------------------
@@ -169,7 +174,7 @@ var JoinFormPage = function () {
 var JoinConfirmPage = function () {
   browser.get('app/index.html#/join-confirm');
 
-  this.panelBody = element(by.css('.mcp-panel-body'));
+  this.panelBody = element(by.css('.panel-body'));
 };
 
 var ResetPasswordPage = function () {
@@ -194,6 +199,11 @@ var SearchServiceMapPage = function () {
   this.searchmap = element(by.id('searchmap'));
   this.svgPathElementXpath = svgPathElementXpath;
   this.svgPathElements = element.all(by.xpath(svgPathElementXpath));
+  this.anyText = element(by.id('anyText'));
+  this.providerOpen = element(by.buttonText('provider'));
+  this.provider = element(by.model('$select.search'));
+  this.providerList = element.all(by.repeater('provider in $select.items'));
+  this.reset = element(by.id('mapFilterResetAll'));
 };
 
 // ----------------------------------------------------------------------------
@@ -421,7 +431,7 @@ describe('Join confirmation', function () {
 // ...for testing protected pages
 // --------------------------------------------------------------------
 
-describe('HELPER: Log in to test protected pages', function () {
+ddescribe('HELPER: Log in to test protected pages', function () {
 
   var page;
 
@@ -450,16 +460,12 @@ describe('HELPER: Log in to test protected pages', function () {
 // TEST PROTECTED PAGES
 // --------------------------------------------------------------------
 
-describe('search on map', function () {
+ddescribe('search on map', function () {
 
   var page;
 
   beforeEach(function () {
     page = new SearchServiceMapPage();
-  });
-
-  it('should show map', function () {
-    expect(page.searchmap.isDisplayed()).toBe(true);
   });
 
   it('should load a marker when clicked on the map', function () {
@@ -475,8 +481,13 @@ describe('search on map', function () {
     //      expect(element(by.css('img.leaflet-marker-icon')).isPresent()).toBe(true);
     //    });
 
-    expect(page.svgPathElements.count()).toBe(6);
+    //    element(by.css('img.leaflet-tile-loaded')).click().then(function () {
+    //      browser.sleep(100);
+    //      expect(element(by.css('img.leaflet-marker-icon')).isPresent()).toBe(true);
+    //    });
 
+    //expect(page.svgPathElements.count()).toBe(1);
+    expect(page.svgPathElements.count()).toBeGreaterThan(5);
 
     //    page.svgPathElements.each(function (element) {
     //      // Will print First, Second, Third.
@@ -489,10 +500,50 @@ describe('search on map', function () {
     // find circle coverage of west Greenland
     //expect(element(by.xpath(page.svgElement + '//*[local-name()="path" and @d="M271 634L271 74L641 74L641 634z"]')).isPresent()).toBe(true);
   });
-
-//  it('should show map', function () {
-//    expect(page.searchmap.isDisplayed()).toBe(true);
-//  });
+  
+  it('should filter list by provider', function () {
+    
+    // hack: reset provider dropdown 
+    page.providerOpen.click();
+    page.anyText.click();
+    expect(page.svgPathElements.count()).toBeGreaterThan(6);
+    
+    // when I focus the provider
+    page.providerOpen.click();
+    // I should see a dropdown list with more than 3 elements
+    expect(page.providerList.count()).toBeGreaterThan(3);
+    
+    // when I start to enter something (as 'meteoroligical')
+    page.provider.sendKeys('me');
+    // then the list should be reduced
+    expect(page.providerList.count()).toBe(3);
+    page.provider.sendKeys('t');
+    // ... reduced to 'Danish Meteoroligical Institute'
+    expect(page.providerList.count()).toBe(1);
+    
+    // when I click the only item on the list
+    page.providerList.first().click();
+    // then the number of visible services on the map should be reduced to 6
+    expect(page.svgPathElements.count()).toBe(6);
+    
+    // when I click the reset button
+    page.reset.click();
+    expect(page.svgPathElements.count()).toBeGreaterThan(6);
+  });
+  
+  it('should filter list by any text', function () {
+    
+    // hack: reset provider dropdown 
+    page.providerOpen.click();
+    page.anyText.click();
+    expect(page.svgPathElements.count()).toBeGreaterThan(1);
+ 
+    page.anyText.sendKeys('-888');
+    expect(page.svgPathElements.count()).toBe(1);
+    
+    page.reset.click();
+    expect(page.svgPathElements.count()).toBeGreaterThan(1);
+  });
 
 });
 
