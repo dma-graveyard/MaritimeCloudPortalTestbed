@@ -431,7 +431,7 @@ describe('Join confirmation', function () {
 // ...for testing protected pages
 // --------------------------------------------------------------------
 
-ddescribe('HELPER: Log in to test protected pages', function () {
+describe('HELPER: Log in to test protected pages', function () {
 
   var page;
 
@@ -460,7 +460,7 @@ ddescribe('HELPER: Log in to test protected pages', function () {
 // TEST PROTECTED PAGES
 // --------------------------------------------------------------------
 
-ddescribe('search on map', function () {
+describe('search on map', function () {
 
   var page;
 
