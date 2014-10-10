@@ -190,6 +190,21 @@ var ResetPasswordPage = function () {
   this.closeButton = element(by.id('closeButton'));
 };
 
+var CreateServiceInstancePage = function () {
+  browser.get('app/index.html#/orgs/dmi/createServiceInstance');
+
+  this.operationalService = element(by.model('selectedOperationalService'));
+  this.specification = element(by.model('selectedSpecification'));
+  this.id = element(by.model('service.id'));
+  this.name = element(by.model('service.name'));
+  this.description = element(by.model('service.description'));
+  this.submitButton = element(by.css('.btn-success'));
+  this.map = element(by.css('.angular-leaflet-map'));
+  
+  // (on services page) 
+  this.serviceInstanceList = element.all(by.repeater('service in serviceInstances'));
+};
+
 var SearchServiceMapPage = function () {
   browser.get('http://localhost:8080/app/index.html#/search/service/map');
 
@@ -431,7 +446,7 @@ describe('Join confirmation', function () {
 // ...for testing protected pages
 // --------------------------------------------------------------------
 
-describe('HELPER: Log in to test protected pages', function () {
+ddescribe('HELPER: Log in to test protected pages', function () {
 
   var page;
 
@@ -459,6 +474,55 @@ describe('HELPER: Log in to test protected pages', function () {
 // --------------------------------------------------------------------
 // TEST PROTECTED PAGES
 // --------------------------------------------------------------------
+
+ddescribe('create service instance', function () {
+  var page;
+
+  beforeEach(function () {
+    page = new CreateServiceInstancePage();
+  });
+
+  it('should create service instance', function () {
+
+    expect(page.submitButton.isEnabled()).toBe(false);
+    
+    page.operationalService.sendKeys('M');
+    page.specification.sendKeys('M');
+    page.id.sendKeys('id1');
+    page.name.sendKeys('A Service Name');
+    page.description.sendKeys('a very long description');
+    
+    // Draw circle on map
+    element(by.css('.leaflet-draw-draw-circle')).click();
+    browser.actions().mouseDown(page.map).mouseMove({x: 30, y:30}).mouseUp().perform();
+    
+    element(by.css('.leaflet-draw-draw-rectangle')).click();
+    browser.actions().mouseDown(page.map).mouseMove({x: -30, y:-30}).mouseUp().perform();
+    
+    element(by.css('.leaflet-draw-draw-polygon')).click();
+    browser.actions()
+        .mouseDown(page.map).mouseUp()
+        .mouseMove({x: 10, y:10}).mouseDown().mouseUp()
+        .mouseMove({x: 10, y:-10}).mouseDown().mouseUp()
+        .mouseDown(page.map).mouseUp()
+        .perform();
+    //browser.sleep(5000);
+    
+    expect(page.submitButton.isEnabled()).toBe(true);
+    expect(browser.getLocationAbsUrl()).toMatch("orgs/dmi/createServiceInstance");
+    page.submitButton.click();
+    
+    // should be on services list page
+    expect(browser.getLocationAbsUrl()).not.toMatch("orgs/dmi/createServiceInstance");
+    expect(browser.getLocationAbsUrl()).toMatch("orgs/dmi");
+    
+    // should see service on list
+    expect(page.serviceInstanceList.count()).toBe(6);
+    expect(page.serviceInstanceList.get(5).element(by.css('h4')).getText()).toEqual('A Service Name - REST');
+    browser.sleep(10000);
+  });
+
+});
 
 describe('search on map', function () {
 
@@ -500,19 +564,19 @@ describe('search on map', function () {
     // find circle coverage of west Greenland
     //expect(element(by.xpath(page.svgElement + '//*[local-name()="path" and @d="M271 634L271 74L641 74L641 634z"]')).isPresent()).toBe(true);
   });
-  
+
   it('should filter list by provider', function () {
-    
+
     // hack: reset provider dropdown 
     page.providerOpen.click();
     page.anyText.click();
     expect(page.svgPathElements.count()).toBeGreaterThan(6);
-    
+
     // when I focus the provider
     page.providerOpen.click();
     // I should see a dropdown list with more than 3 elements
     expect(page.providerList.count()).toBeGreaterThan(3);
-    
+
     // when I start to enter something (as 'meteoroligical')
     page.provider.sendKeys('me');
     // then the list should be reduced
@@ -520,27 +584,27 @@ describe('search on map', function () {
     page.provider.sendKeys('t');
     // ... reduced to 'Danish Meteoroligical Institute'
     expect(page.providerList.count()).toBe(1);
-    
+
     // when I click the only item on the list
     page.providerList.first().click();
     // then the number of visible services on the map should be reduced to 6
     expect(page.svgPathElements.count()).toBe(6);
-    
+
     // when I click the reset button
     page.reset.click();
     expect(page.svgPathElements.count()).toBeGreaterThan(6);
   });
-  
+
   it('should filter list by any text', function () {
-    
+
     // hack: reset provider dropdown 
     page.providerOpen.click();
     page.anyText.click();
     expect(page.svgPathElements.count()).toBeGreaterThan(1);
- 
+
     page.anyText.sendKeys('-888');
     expect(page.svgPathElements.count()).toBe(1);
-    
+
     page.reset.click();
     expect(page.svgPathElements.count()).toBeGreaterThan(1);
   });
