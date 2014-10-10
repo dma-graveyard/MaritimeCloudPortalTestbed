@@ -424,28 +424,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
             console.log("organizations: ", organizations);
             success(newOrganization);
             //return
-          },
-          registerServiceInstance: function (newServiceInstance, success, failure) {
-
-            // TOBE:
-            //  registerServiceInstance: {method: 'PUT', url: '/rest/org/:id/si/:serviceInstanceId', isArray: false},
-
-            // adds a service instance to the organization designated by the id
-            // (find organization)
-            var org = findOrganization(newServiceInstance.provider.name);
-
-            // FIXME: check if the service instance already exist
-            // ...
-            // add service
-            if (org) {
-              //newServiceInstance.coverage = area.dk;
-              //newServiceInstance.specification = technicalServices.imoMisRest;
-              globalServiceInstances.push(newServiceInstance);
-              success(newServiceInstance);
-            }
-
           }
-
         };
       }])
 
@@ -633,7 +612,6 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
             if (serviceInstanceName === serviceInstances[i].name)
               return serviceInstances[i];
           }
-          console.log("Error. ServiceInstancename not found! ", serviceInstanceName);
           return null;
         };
         return {
@@ -643,6 +621,8 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
             var result = findServiceInstance(serviceInstanceName);
             if (result)
               return result;
+            else
+              console.log("Error. ServiceInstancename not found! ", serviceInstanceName);
           },
           query: function (request) {
             if (request && request.organizationname) {
@@ -658,41 +638,16 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
             return serviceInstances;
           },
           //create: {method: 'POST', params: {}, isArray: false}
-          create: function (newServiceInstanceRequest, success, failure) {
+          create: function (newServiceInstance, success, failure) {
 
-            if (findServiceInstance(newServiceInstanceRequest.name)) {
+            if (findServiceInstance(newServiceInstance.name)) {
               console.log("An service instance with that name already exists");
               failure("An service instance with that name already exists");
               return;
             }
 
-            var newServiceInstance =
-                {
-                  name: newServiceInstanceRequest.name,
-                  title: newServiceInstanceRequest.title,
-                  description: newServiceInstanceRequest.description,
-                  members: ["admin"],
-                  teams: [
-                    {
-                      name: "Owners",
-                      description: "Special team of owners. Owners can do just about anything.",
-                      isOwner: true,
-                      members: ["admin"],
-                      accessLevel: "admin"
-                    },
-                    {
-                      name: "Members",
-                      description: "Members of the specification with read access",
-                      isAdmin: false,
-                      members: ["admin"],
-                      accessLevel: "read"
-                    }
-                  ]
-                };
             serviceInstances.push(newServiceInstance);
-            console.log("serviceInstance: ", serviceInstances);
             success(newServiceInstance);
-            //return
           }
 
         };

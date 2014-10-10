@@ -41,9 +41,9 @@ angular.module('mcp.organizations.services', [])
 
       }])
 
-    .controller('ServiceInstanceCreateController', ['$scope', '$location', 'OrganizationService', '$stateParams',
+    .controller('ServiceInstanceCreateController', ['$scope', '$location', 'ServiceInstanceService', '$stateParams',
       'OperationalServiceService', 'TechnicalServiceService', 'leafletData', 'mapService',
-      function($scope, $location, OrganizationService, $stateParams,
+      function($scope, $location, ServiceInstanceService, $stateParams,
           OperationalServiceService, TechnicalServiceService, leafletData, mapService) {
 
         var options = mapService.createDrawingOptions(),
@@ -108,11 +108,11 @@ angular.module('mcp.organizations.services', [])
               providerId: $stateParams.organizationname,
               instanceId: $scope.service.id
             };
-
+            
             $scope.alertMessages = null;
             $scope.message = "Sending request to register service instance...";
             
-            OrganizationService.registerServiceInstance($scope.service, function(result) {
+            ServiceInstanceService.create($scope.service, function(result) {
               $location.path('/orgs/' + $scope.service.provider.name).replace();
             }, function(error) {
               $scope.message = null;
