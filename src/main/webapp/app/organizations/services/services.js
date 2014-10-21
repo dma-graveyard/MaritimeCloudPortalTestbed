@@ -9,10 +9,16 @@ angular.module('mcp.organizations.services', [])
         angular.extend($scope, {
           map: {
             defaults: {
-              scrollWheelZoom: false,
-              zoomControl: false,
               attributionControl: false,
-              zoomAnimation: false
+              //  boxZoom: false, //not supported by angular-leaflet-directive
+              doubleClickZoom: false,
+              dragging: false,
+              keyboard: false,
+              scrollWheelZoom: false,
+              //tap: false,       //not supported by angular-leaflet-directive
+              touchZoom: false,
+              zoomAnimation: false,
+              zoomControl: false,
             },
             paths: mapService.shapesToPaths($scope.service.coverage)
           },
