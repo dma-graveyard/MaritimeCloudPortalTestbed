@@ -5,8 +5,10 @@
     "leaflet": {
       "attributes": {
         "event-broadcast": {},
+        "controls": {},
         "defaults": {},
         "paths": {},
+        "center": {},
         "width": {},
         "id": {},
         "height": {}
