@@ -1,25 +1,20 @@
 'use strict';
 
+var fitToPaths = function fitToPaths(mapId, leafletData, mapService) {
+  leafletData.getMap(mapId).then(function (map) {
+    mapService.fitToGeomitryLayers(map);
+  });
+};
+
 angular.module('mcp.organizations.services', [])
 
-    .controller('ServiceInstanceDetailsController', ['$scope', 'mapService', 'leafletData', '$timeout',
-      function ($scope, mapService, leafletData, $timeout) {
+    .controller('ServiceInstanceDetailsController', ['$scope', 'mapService', 'MAP_DEFAULTS', 'leafletData', '$timeout',
+      function ($scope, mapService, MAP_DEFAULTS, leafletData, $timeout) {
         console.log('$scope.service ', $scope.service);
 
         angular.extend($scope, {
           map: {
-            defaults: {
-              attributionControl: false,
-              //  boxZoom: false, //not supported by angular-leaflet-directive
-              doubleClickZoom: false,
-              dragging: false,
-              keyboard: false,
-              scrollWheelZoom: false,
-              //tap: false,       //not supported by angular-leaflet-directive
-              touchZoom: false,
-              zoomAnimation: false,
-              zoomControl: false,
-            },
+            defaults: MAP_DEFAULTS.STATIC,
             paths: mapService.shapesToPaths($scope.service.coverage)
           },
           events: {
@@ -36,24 +31,17 @@ angular.module('mcp.organizations.services', [])
 
         // register a timeout that will fit (position and zoom) the map to its paths
         $timeout(function () {
-          fitToPaths('map-' + $scope.$index);
+          fitToPaths('map-' + $scope.$index, leafletData, mapService);
         }, 0);
-
-        function fitToPaths(mapId) {
-          leafletData.getMap(mapId).then(function (map) {
-            mapService.fitToGeomitryLayers(map);
-          });
-        }
 
       }])
 
     .controller('ServiceInstanceCreateController', ['$scope', '$location', 'ServiceInstanceService', '$stateParams',
-      'OperationalServiceService', 'TechnicalServiceService', 'leafletData', 'mapService', '$modal',
+      'OperationalServiceService', 'TechnicalServiceService', 'leafletData', 'mapService', 'MAP_DEFAULTS', '$modal', '$timeout',
       function ($scope, $location, ServiceInstanceService, $stateParams,
-          OperationalServiceService, TechnicalServiceService, leafletData, mapService, $modal) {
+          OperationalServiceService, TechnicalServiceService, leafletData, mapService, MAP_DEFAULTS, $modal, $timeout) {
 
-        var options = mapService.createDrawingOptions(),
-            drawnItems = options.edit.featureGroup;
+        var serviceLayer = new L.FeatureGroup();
 
         angular.extend($scope, {
           center: {
@@ -62,11 +50,22 @@ angular.module('mcp.organizations.services', [])
             lng: -0.09,
             zoom: 4
           },
+          map: {
+            defaults: MAP_DEFAULTS.STATIC
+          },
+          events: {
+            map: {
+              enable: ['click'],
+              logic: 'emit'
+            }
+          },
           latlongs: []
         });
 
+        // add layers to map and add a draw-listener
         leafletData.getMap("instanceCreateMap").then(function (map) {
-          map.addLayer(drawnItems);
+          map.addLayer(serviceLayer);
+          map.on('click', clickEventHandler);
         });
 
         angular.extend($scope, {
@@ -75,9 +74,6 @@ angular.module('mcp.organizations.services', [])
           selectedOperationalService: null,
           selectedSpecification: null,
           operationalServices: OperationalServiceService.query(),
-          map: {
-            paths: mapService.shapesToPaths([])
-          },
           service: {
             provider: {
               name: $stateParams.organizationname
@@ -117,6 +113,29 @@ angular.module('mcp.organizations.services', [])
           $scope.specifications = selectedOperationalService ? TechnicalServiceService.query(selectedOperationalService.id) : [];
         });
 
+        function clickEventHandler(event) {
+          $scope.openCoverageEditor();
+        }
+
+        function showService() {
+          // Cleanup
+          serviceLayer.clearLayers();
+          // Rebuild
+          serviceLayer.addLayer(L.featureGroup(mapService.servicesToLayers([$scope.service], function (featureGroup) {
+            featureGroup.on('click', clickEventHandler);
+          })));
+          serviceLayer.setStyle(mapService.Styles.STATIC);
+          fitToLayer(serviceLayer);
+        }
+
+        function fitToLayer(layer) {
+          leafletData.getMap('instanceCreateMap').then(function (map) {
+            if (layer) {
+              map.fitBounds(layer.getBounds());
+            }
+          });
+        }
+
         $scope.openCoverageEditor = function () {
           $modal.open({
             templateUrl: 'organizations/services/coverageEditor.html',
@@ -128,32 +147,23 @@ angular.module('mcp.organizations.services', [])
                 return $scope.service.coverage;
               }
             }
-
           }).result.then(function (result) {
-
             // coverage graph submitted
-            
             $scope.service.coverage = result;
-            $scope.map.paths = mapService.shapesToPaths($scope.service.coverage);
-
+            showService();
           }, function () {
-
             // dialog dismissed (user pressed CANCEL or ESCAPE)
-
           });
         };
-
 
       }])
 
     .controller('CoverageEditorController', ['$scope', 'leafletData', 'mapService', 'coverage',
       function ($scope, leafletData, mapService, coverage) {
-
-        // This service expects the scope to inherit a property "service" containing a property "coverage" consisting of an array of shapes!  
-
+        
         var options = mapService.createDrawingOptions(),
-            drawnItems = options.edit.featureGroup,
-            drawControl = new L.Control.Draw(options);
+            drawControl = new L.Control.Draw(options),
+            serviceLayer = options.edit.featureGroup;
 
         angular.extend($scope, {
           center: {
@@ -170,28 +180,26 @@ angular.module('mcp.organizations.services', [])
 
         // convert supplied coverage shapes to layers 
         mapService.shapesToLayers(coverage).forEach(function (layer) {
-          drawnItems.addLayer(layer);
+          serviceLayer.addLayer(layer);
         });
 
         // add layers to map and add a draw-listener
         leafletData.getMap("coverageEditorMap").then(function (map) {
-          map.addLayer(drawnItems);
-
-          // FIXME: when angular leaflet 0.7.9 is released use this instead:
-          //var drawnItems = $scope.controls.draw.edit.featureGroup;
+          map.addLayer(serviceLayer);
+          serviceLayer.setStyle(mapService.Styles.STATIC);
 
           map.on('draw:created', function (e) {
             var layer = e.layer;
-            drawnItems.addLayer(layer);
+            serviceLayer.addLayer(layer);
           });
         });
 
         angular.extend($scope, {
           formIsSubmitable: function () {
-            return (drawnItems.getLayers().length);
+            return (serviceLayer.getLayers().length);
           },
           submit: function () {
-            $scope.$close(mapService.layersToShapes(drawnItems.getLayers()));
+            $scope.$close(mapService.layersToShapes(serviceLayer.getLayers()));
           }
         });
 

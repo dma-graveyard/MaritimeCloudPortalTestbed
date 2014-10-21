@@ -34,11 +34,14 @@
             <textarea class="form-control" id="serviceDescription" rows="3" placeholder="Enter a description of the service" ng-model="service.description"></textarea>
             <p class="help-block">The description is usually presented together with the name and should capture the essence of the service in a few words.</p>
         </div>
-        <div class="form-group">
-            <label for="serviceDescription">Coverage</label>
-            <leaflet id="instanceCreateMap" center="center" height="320px" width="100%" paths="map.paths"></leaflet>
+        <div class="form-group" >
+            <label for="serviceDescription">Coverage </label>
+            <p class="help-block" style="display: inline"> <I>Click the map to edit the coverage</I></p>
+            <div popover="Click the map to edit the coverage" popover-trigger="mouseenter" popover-placement="top">
+                <leaflet id="instanceCreateMap" defaults="map.defaults" center="center" height="320px" width="100%"></leaflet>
+                <a class="btn btn-default center" style="display: inherit;" ng-click="openCoverageEditor()">Edit Coverage</a>
+            </div>
             <p class="help-block">Select the geographical extend of the provided service. That is, specify the area where this service should be visible to consumers.</p>
-            <a class="btn btn-success center" ng-click="openCoverageEditor()">Edit Coverage</a>
         </div>
         <div>
             <button type="submit" class="btn btn-success center" ng-disabled="!form.$valid || !formIsSubmitable()" ng-click="submit()">Register service</button>

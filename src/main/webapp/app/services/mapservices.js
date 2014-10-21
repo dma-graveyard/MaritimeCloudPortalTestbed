@@ -13,34 +13,58 @@
  * MCP shapes are a JSON representation of the Maritim Cloud java shapes.
  */
 var mapservices = angular.module('mcp.mapservices', []);
-
-mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
-
-    var Styles = {
-      DEFAULT: {
-        //color: '#008000',
-        //color: '#ff612f', //orange
-        weight: 1,
-        color: '#ffb752',
-        fillOpacity: 0.106,
-        dashArray: [],
+var Styles = {
+  DEFAULT: {
+    //color: '#008000',
+    //color: '#ff612f', //orange
+    weight: 1,
+    color: '#ffb752',
+    fillOpacity: 0.106,
+    dashArray: []
         //color: '#ffff2f',
         //fillColor: '#ff69b4'
         //fillColor: '#ffffff'
-      },
-      HIGHLIGHT: {
-        weight: 2,
-        color: '#008000',
-        fillOpacity: 0.206,
-        dashArray: [],
-      },
-      SELECTED: {
-        weight: 2,
-        color: '#0003ff',
-        fillOpacity: 0.206,
-        dashArray: [5, 10],
-      }
-    }
+  },
+  HIGHLIGHT: {
+    weight: 2,
+    color: '#008000',
+    fillOpacity: 0.206,
+    dashArray: []
+  },
+  SELECTED: {
+    weight: 2,
+    color: '#0003ff',
+    fillOpacity: 0.206,
+    dashArray: [5, 10]
+  },
+  STATIC: {
+    weight: 2,
+    color: '#0f00ff', //blue
+    opacity: 0.8,
+    fillColor: '#ff69b4',
+    fillOpacity: 0.206
+  }
+};
+var MapDefaults = {
+  STATIC: {
+    attributionControl: false,
+    //  boxZoom: false, //not supported by angular-leaflet-directive
+    doubleClickZoom: false,
+    dragging: false,
+    keyboard: false,
+    scrollWheelZoom: false,
+    //tap: false,       //not supported by angular-leaflet-directive
+    touchZoom: false,
+    zoomAnimation: false,
+    zoomControl: false
+  }
+};
+
+mapservices.constant('MAP_STYLES', Styles);
+mapservices.constant('MAP_DEFAULTS', MapDefaults);
+
+mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
+
 
     //L.FeatureGroup.prototype.styles = {};
 
@@ -218,7 +242,7 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
     function shapesToLayers(shapes) {
       var layers = [];
       shapes.forEach(function (shape) {
-          layers.push(shapeToLayer(shape));
+        layers.push(shapeToLayer(shape));
       });
       return layers;
     }
@@ -353,6 +377,7 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
     function createDrawingOptions() {
       return {
         draw: {
+          marker: false,
           polyline: false,
           polygon: {
             allowIntersection: false,
@@ -360,19 +385,25 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
             drawError: {
               color: '#b00b00',
               timeout: 1000
-            }
-            //shapeOptions: {
-            //  color: '#bada55'
-            //}
+            },
+            shapeOptions: Styles.STATIC
           },
           circle: {
-            //shapeOptions: {
-            //  color: '#662d91'
-            //}
+            shapeOptions: Styles.STATIC
           },
-          marker: false
+          rectangle: {
+            shapeOptions: Styles.STATIC
+          }
         },
-        edit: {featureGroup: new L.FeatureGroup()}
+        edit: {
+          featureGroup: new L.FeatureGroup(),
+          edit: {
+            selectedPathOptions: {
+              dashArray: '5, 5',
+              maintainColor: true
+            }
+          }
+        }
       };
     }
 
@@ -410,7 +441,8 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
           featureGroup.addLayer(l);
         }
       });
-      map.fitBounds(featureGroup.getBounds());
+      if (featureGroup.getLayers().length)
+        map.fitBounds(featureGroup.getBounds());
     }
 
     //function nm2km(nm) {
@@ -481,6 +513,7 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
       isPolylineLayer: isPolylineLayer,
       isRectangleLayer: isRectangleLayer,
       servicesToLayers: servicesToLayers,
+      Styles: Styles,
       shapeToLayer: shapeToLayer,
       shapesToLayers: shapesToLayers,
       shapesToPaths: shapesToPaths,

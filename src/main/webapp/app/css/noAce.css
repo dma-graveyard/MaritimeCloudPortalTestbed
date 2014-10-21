@@ -10,13 +10,26 @@ body {
 }
 
 #searchmap {
-    height: calc(100vh - 52px - 30px); /* window height minus height of navbar and footer */
+    height: 600px;
+    height: -webkit-calc(100vh - 52px - 30px);  
+    height: -moz-calc(100vh - 52px - 30px);  
+    height: calc(100vh - 52px - 30px);  /*window height minus height of navbar and footer */
 }
 
 #coverageEditorMap {
-    height: calc(70vh); /* window height minus height of navbar and footer */
+    height: 260px; 
+    height: -webkit-calc(70vh);
+    height: -moz-calc(70vh);
+    height: calc(70vh);
     border-radius: 5px;
     z-index: 0;
+}
+
+#instanceCreateMap {
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    z-index: 0;
+    cursor: pointer;
 }
 
 footer {
