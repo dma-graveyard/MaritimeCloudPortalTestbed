@@ -24,6 +24,10 @@
     border-radius: 120px;
 }
 
+.carousel-indicators li {
+    border-color: #ECECEC;
+}
+
 .simple-box { 
     padding:15px;
     margin-bottom:20px;
