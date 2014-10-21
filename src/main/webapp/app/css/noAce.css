@@ -13,6 +13,12 @@ body {
     height: calc(100vh - 52px - 30px); /* window height minus height of navbar and footer */
 }
 
+#coverageEditorMap {
+    height: calc(70vh); /* window height minus height of navbar and footer */
+    border-radius: 5px;
+    z-index: 0;
+}
+
 footer {
     position: absolute;
     bottom: 0;

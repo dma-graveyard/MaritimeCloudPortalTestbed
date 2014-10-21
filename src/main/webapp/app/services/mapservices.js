@@ -3,7 +3,7 @@
 /**
  * # mapService
  * 
- * The 'mapService' module provides varous helper functions for switching between
+ * The 'mapService' module provides various helper functions for switching between
  * 'Maritime Cloud Portal Shapes' (MCP shapes), 'Angular Leaflet Directive Paths' 
  * (ALD paths) and Leaflet Layers (layers).
  * 
@@ -213,6 +213,14 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
       }
       console.log("unknown area type", shape);
       error('unknown area type!');
+    }
+
+    function shapesToLayers(shapes) {
+      var layers = [];
+      shapes.forEach(function (shape) {
+          layers.push(shapeToLayer(shape));
+      });
+      return layers;
     }
 
     function servicesToLayers(services, featureGroupCallback) {
@@ -474,6 +482,7 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
       isRectangleLayer: isRectangleLayer,
       servicesToLayers: servicesToLayers,
       shapeToLayer: shapeToLayer,
+      shapesToLayers: shapesToLayers,
       shapesToPaths: shapesToPaths,
       latLngsToCoordinates: latLngsToCoordinates,
       latLngToDms: latLngToDms,
