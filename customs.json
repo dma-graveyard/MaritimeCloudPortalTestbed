@@ -17,6 +17,7 @@
   },
   "attributes": {
     "cg-busy": {},
+    "popover": {},
     "ui-view": {
       "context": "div"
     }
