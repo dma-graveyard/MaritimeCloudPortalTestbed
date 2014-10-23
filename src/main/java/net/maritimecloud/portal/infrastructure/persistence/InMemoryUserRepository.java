@@ -46,7 +46,7 @@ public class InMemoryUserRepository implements UserRepository, CleanableStore {
     }
 
     private void initWithDummyUsers() {
-        add(activate(new User("admin", "test", "admin@dma.dk", Role.ADMIN, Role.USER)));
+        add(activate(new User("admin", "test", "admin@dma.dk", Role.ADMIN/*, Role.USER*/)));
         add(activate(new User("Tintin", "test", "tintin@dma.org")));
         add(activate(new User("Haddock", "test", "hadock@dma.org")));
     }
