@@ -261,10 +261,10 @@ var serviceInstance = {
     key: {
       specificationId: "imo-mis-www",
       providerId: "dmi",
-      instanceId: "dk"
+      instanceId: "dk2"
     },
-    id: "dk",
-    name: "DMI METOC on route (Denmark)",
+    id: "dk2",
+    name: "DMI METOC on route (Denmark II)",
     description: "Route based Meteorological Services for the waters surrounding Denmark including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
     coverage: area.dk,
   },
@@ -300,10 +300,10 @@ var serviceInstance = {
     key: {
       specificationId: "imo-mis-www",
       providerId: "dmi",
-      instanceId: "fo"
+      instanceId: "fo2"
     },
-    id: "fo",
-    name: "DMI METOC on route (Faroe Islands)",
+    id: "fo2",
+    name: "DMI METOC on route (Faroe Islands II)",
     description: "Route based Meteorological Services for the waters surrounding the Faroe Islands including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
     coverage: area.fo
   }
