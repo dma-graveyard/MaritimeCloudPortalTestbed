@@ -44,6 +44,11 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
         });
         $scope.serviceInstances = ServiceInstanceService.query({organizationname: $stateParams.organizationname}, function(serviceInstances) {
         });
+        
+        $scope.userHasWriteAccess = function(){
+          console.log('$scope.currentUser', $scope.currentUser);
+          return $scope.organization.teams[0].members[0] === $scope.currentUser.name;
+        }
       }])
 
     .controller('OrganizationCreateController', ['$scope', '$location', 'OrganizationService',

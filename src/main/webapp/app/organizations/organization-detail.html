@@ -24,10 +24,15 @@
             </div>
             <div  class="container-fluid" ng-repeat="service in serviceInstances">
                 <div ng-controller="ServiceInstanceDetailsController">
-                    <h4>{{service.name}} - {{service.specification.transportType}}</h4>
+                    <h4>
+                        <span>{{service.name}} - {{service.specification.transportType}}</span>
+                        <a ng-if="userHasWriteAccess()" class="edit-gear" href="#/orgs/{{organization.name}}/{{service.id}}/edit" data-tooltip="Service instance settings" data-tooltip-placement="right">
+                            <span class="fa fa-gear"></span>
+                        </a>
+                    </h4>
                     <div>
                         <div class="col-sm-7 col-lg-5" >
-                            <leaflet id="{{'map-' + $index}}" event-broadcast="events" defaults="map.defaults" height="160px" width="100%" paths="map.paths"></leaflet>
+                            <leaflet class="border-rounded-corners" id="{{'map-' + $index}}" event-broadcast="events" defaults="map.defaults" height="160px" width="100%" paths="map.paths"></leaflet>
                         </div>
                         <div class="col-sm-5 col-lg-7" >
                             <p>{{service.description}}</p>
@@ -35,7 +40,7 @@
                     </div>
                 </div>
             </div>
-            <div>
+            <div ng-if="userHasWriteAccess()">
                 <br>
                 <a class="btn btn-minier btn-info" href="#/orgs/{{organization.name}}/createServiceInstance">+ Register a service</a>
             </div>

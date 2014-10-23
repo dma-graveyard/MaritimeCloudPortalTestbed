@@ -68,6 +68,15 @@
     font-size: 18px;
 }
 
+.edit-gear {
+/*    position: relative;
+    top: -3px;
+    display: inline-block;
+    padding-left: 3px;*/
+    color: #ccc;
+    /*font-size: 18px;*/
+}
+
 .org-header-meta {
     font-size: 12px;
     list-style: none;

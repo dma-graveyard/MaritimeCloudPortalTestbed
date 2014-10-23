@@ -130,7 +130,7 @@
                                 <i class="pull-right fa" ng-class="{'fa-angle-down': isOpen.organizationSub, 'fa-angle-right': !isOpen.organizationSub}"></i>
                             </a>
                         </accordion-heading>
-                        <ul class="nav nav-list">
+                        <ul class="nav nav-list" ng-if="isAuthorized(userRoles.admin)">
                             <!--<li><a href="#/orgs/{{currentOrganization.name}}"> <i class="fa fa-user" style=""></i> Show </a></li>-->
                             <li><a ui-sref="restricted.serviceInstanceCreate({organizationname:currentOrganization.name})"> 
                                     <i class="fa fa-plus" style=""></i> Add </a></li>

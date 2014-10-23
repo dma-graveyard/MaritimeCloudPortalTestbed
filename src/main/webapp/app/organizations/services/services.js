@@ -36,9 +36,9 @@ angular.module('mcp.organizations.services', [])
 
       }])
 
-    .controller('ServiceInstanceCreateController', ['$scope', '$location', 'ServiceInstanceService', '$stateParams',
+    .controller('CreateServiceInstanceController', ['$scope', '$location', 'ServiceInstanceService', '$stateParams', '$state',
       'OperationalServiceService', 'TechnicalServiceService', 'leafletData', 'mapService', 'MAP_DEFAULTS', '$modal', '$timeout',
-      function ($scope, $location, ServiceInstanceService, $stateParams,
+      function ($scope, $location, ServiceInstanceService, $stateParams, $state,
           OperationalServiceService, TechnicalServiceService, leafletData, mapService, MAP_DEFAULTS, $modal, $timeout) {
 
         var serviceLayer = new L.FeatureGroup();
@@ -59,7 +59,7 @@ angular.module('mcp.organizations.services', [])
               logic: 'emit'
             }
           },
-          latlongs: []
+          viewState: 'create',
         });
 
         // add layers to map and add a draw-listener
@@ -69,6 +69,13 @@ angular.module('mcp.organizations.services', [])
         });
 
         angular.extend($scope, {
+          //isCreateState: function(){ return $scope.viewState === 'create'},
+          isCreateState: function () {
+            return $state.current.data.createState;
+          },
+          isEditState: function () {
+            return $state.current.data.editState;
+          },
           message: null,
           alertMessages: null,
           selectedOperationalService: null,
@@ -100,14 +107,34 @@ angular.module('mcp.organizations.services', [])
             $scope.alertMessages = null;
             $scope.message = "Sending request to register service instance...";
 
-            ServiceInstanceService.create($scope.service, function (result) {
-              $location.path('/orgs/' + $scope.service.provider.name).replace();
-            }, function (error) {
-              $scope.message = null;
-              $scope.alertMessages = ["Error on the serverside :( ", error];
-            });
+            if ($scope.isEditState()) {
+              $scope.service.$save(function (result) {
+                $location.path('/orgs/' + $scope.service.provider.name).replace();
+              }, function (error) {
+                $scope.message = null;
+                $scope.alertMessages = ["Error on the serverside :( ", error];
+              });
+
+            } else {
+              ServiceInstanceService.create($scope.service, function (result) {
+                $location.path('/orgs/' + $scope.service.provider.name).replace();
+              }, function (error) {
+                $scope.message = null;
+                $scope.alertMessages = ["Error on the serverside :( ", error];
+              });
+            }
           }
         });
+
+        if ($scope.isEditState()) {
+          $scope.service = ServiceInstanceService.get({serviceInstanceId: $stateParams.serviceInstanceId});
+          // FIXME: should lookup value based on id $scope.service.specificationId
+          $scope.selectedSpecification = $scope.service.specification;
+          // FIXME: should lookup value based on id $scope.selectedSpecification.operationalServiceId
+          $scope.selectedOperationalService = $scope.service.specification.operationalService;
+          showService();
+          console.log('SERVICE', $scope.service);
+        }
 
         $scope.$watch('selectedOperationalService', function (selectedOperationalService) {
           $scope.specifications = selectedOperationalService ? TechnicalServiceService.query(selectedOperationalService.id) : [];
@@ -160,7 +187,7 @@ angular.module('mcp.organizations.services', [])
 
     .controller('CoverageEditorController', ['$scope', 'leafletData', 'mapService', 'coverage',
       function ($scope, leafletData, mapService, coverage) {
-        
+
         var options = mapService.createDrawingOptions(),
             drawControl = new L.Control.Draw(options),
             serviceLayer = options.edit.featureGroup;

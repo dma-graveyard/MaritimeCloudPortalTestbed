@@ -614,15 +614,27 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           }
           return null;
         };
+        
+        var getServiceInstance = function (serviceInstanceId) {
+          for (var i = 0; i < serviceInstances.length; i++) {
+            if (serviceInstanceId === serviceInstances[i].id)
+              return serviceInstances[i];
+          }
+          return null;
+        };
         return {
           get: function (request) {
-            console.log("serviceInstanceName: ", request.serviceInstanceName);
-            var serviceInstanceName = request.serviceInstanceName;
-            var result = findServiceInstance(serviceInstanceName);
-            if (result)
+            console.log("serviceInstanceName: ", request.serviceInstanceId);
+            var serviceInstanceId = request.serviceInstanceId;
+            var result = getServiceInstance(serviceInstanceId);
+            if (result){
+              result.$save = function(success, failure){
+                  success(result);
+              };
               return result;
+            }
             else
-              console.log("Error. ServiceInstancename not found! ", serviceInstanceName);
+              console.log("Error. Service Instance with id not found! ", serviceInstanceId);
           },
           query: function (request) {
             if (request && request.organizationname) {
