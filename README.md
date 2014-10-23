@@ -164,9 +164,9 @@ To run the cucumber scripts use instead:
 
 ## Launch
 
-The build produces a launchable .war-file in the /target folder. The application can be launched with:
+The build produces a executable .war-file in the /target folder. The application can be launched with:
 
-    java -jar target/service-0.0.1-SNAPSHOT.war
+    java -jar target/maritimecloud-portal-0.0.1-SNAPSHOT.war
 
 or by using maven:
 
