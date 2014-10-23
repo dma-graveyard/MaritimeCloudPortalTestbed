@@ -14,6 +14,8 @@
  */
 package net.maritimecloud.portal;
 
+import net.maritimecloud.portal.resource.AuthenticationResource;
+import net.maritimecloud.portal.resource.UserResource;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.web.filter.RequestContextFilter;
@@ -26,7 +28,12 @@ public class JerseyConfig extends ResourceConfig {
     public JerseyConfig() {
         System.out.println("********************************************* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
         register(RequestContextFilter.class);
-        packages("net.maritimecloud.portal.resource");
+        
+        // TODO: scanning does not appear to work with java jar launcher (as opposed to 'mvn springboot:run' which does) !?
+        //       Explicitly register all resources here instead :-(
+        //packages("net.maritimecloud.portal.resource");
+        register(UserResource.class);
+        register(AuthenticationResource.class);
         register(LoggingFilter.class);
     }
 }
