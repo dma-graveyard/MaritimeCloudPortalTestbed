@@ -37,17 +37,17 @@ angular.module('mcp.organizations.services', [])
       }])
 
     .controller('CreateServiceInstanceController', ['$scope', '$location', 'ServiceInstanceService', '$stateParams', '$state',
-      'OperationalServiceService', 'TechnicalServiceService', 'leafletData', 'mapService', 'MAP_DEFAULTS', '$modal', '$timeout',
+      'OperationalServiceService', 'TechnicalServiceService', 'leafletData', 'mapService', 'MAP_DEFAULTS', '$modal', 
       function ($scope, $location, ServiceInstanceService, $stateParams, $state,
-          OperationalServiceService, TechnicalServiceService, leafletData, mapService, MAP_DEFAULTS, $modal, $timeout) {
+          OperationalServiceService, TechnicalServiceService, leafletData, mapService, MAP_DEFAULTS, $modal) {
 
-        var serviceLayer = new L.FeatureGroup();
+        var serviceLayer = new L.FeatureGroup(),
+            instanceMap;
 
         angular.extend($scope, {
           center: {
-            // FIXME: get current position from browser instead of using pos of LONDON
-            lat: 51.505,
-            lng: -0.09,
+            lat: 51,
+            lng: 0,
             zoom: 4
           },
           map: {
