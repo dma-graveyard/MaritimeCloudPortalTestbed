@@ -195,8 +195,8 @@ angular.module('mcp.organizations.services', [])
         angular.extend($scope, {
           center: {
             // FIXME: get current position from browser instead of using pos of LONDON
-            lat: 51.505,
-            lng: -0.09,
+            lat: 51,
+            lng: 0,
             zoom: 4
           },
           controls: {
@@ -214,6 +214,12 @@ angular.module('mcp.organizations.services', [])
         leafletData.getMap("coverageEditorMap").then(function (map) {
           map.addLayer(serviceLayer);
           serviceLayer.setStyle(mapService.Styles.STATIC);
+
+          if (coverage.length) {
+            mapService.fitToGeomitryLayers(map);
+          } else {
+            map.locate({setView: true, maxZoom: 7});
+          }
 
           map.on('draw:created', function (e) {
             var layer = e.layer;

@@ -46,9 +46,8 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
         });
         
         $scope.userHasWriteAccess = function(){
-          console.log('$scope.currentUser', $scope.currentUser);
           return $scope.organization.teams[0].members[0] === $scope.currentUser.name;
-        }
+        };
       }])
 
     .controller('OrganizationCreateController', ['$scope', '$location', 'OrganizationService',
@@ -121,7 +120,6 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
         this.getOrganizationByName = function(name) {
           for (var i = 0; i < this.list.length; i++) {
-            console.log(name, this.list[i].name);
             if (name === this.list[i].name) {
               return this.list[i];
             }
