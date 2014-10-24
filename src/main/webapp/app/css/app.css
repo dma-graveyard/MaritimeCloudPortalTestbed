@@ -35,7 +35,7 @@ body {
     z-index: 0;
 }
 
-#instanceCreateMap {
+#instanceEditorMap {
     border: 1px solid #CCC;
     border-radius: 4px;
     z-index: 0;
