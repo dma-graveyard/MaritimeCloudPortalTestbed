@@ -44,7 +44,7 @@
             <label for="serviceDescription">Coverage </label>
             <p class="help-block" style="display: inline"> <I>Click the map to edit the coverage</I></p>
             <div popover="Click the map to edit the coverage" popover-trigger="mouseenter" popover-placement="top">
-                <thumbnail-map id="instanceEditorMap" services="services" on-click="clickEventHandler();" map="map"></thumbnail-map>
+                <thumbnail-map id="instanceEditorMap" services="services" on-click="openCoverageEditor()" map="map"></thumbnail-map>
                 <a class="btn btn-default center" style="display: inherit;" ng-click="openCoverageEditor()">Edit Coverage</a>
             </div>
             <p class="help-block">Select the geographical extend of the provided service. That is, specify the area where this service should be visible to consumers.</p>
