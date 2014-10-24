@@ -38,8 +38,19 @@ body {
 #instanceEditorMap {
     border: 1px solid #CCC;
     border-radius: 4px;
-    z-index: 0;
     cursor: pointer;
+    height: 320px;
+    z-index: 0;
+}
+
+thumbnail-map {
+    border: 1px solid #CCC;
+    border-radius: 3px;
+    cursor: pointer !important;
+    display: block;
+    height: 160px;
+    width: 100%;
+    z-index: 0;
 }
 
 footer {

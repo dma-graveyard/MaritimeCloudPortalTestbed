@@ -1,5 +1,13 @@
 {
   "elements": {
+    "thumbnail-map": {
+      "attributes": {
+        "on-click": {},
+        "id": {},
+        "services": {},
+        "class": {}
+      }
+    },
     "slide": {},
     "carousel": {},
     "leaflet": {

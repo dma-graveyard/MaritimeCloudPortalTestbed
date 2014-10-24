@@ -128,14 +128,14 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
           name: 'serviceInstanceCreate',
           url: "/orgs/{organizationname}/createServiceInstance",
           templateUrl: 'organizations/services/instance-editor.html',
-          controller: 'CreateServiceInstanceController',
+          controller: 'EditServiceInstanceController',
           data: {createState: true}
         },
         {
           name: 'serviceInstanceEdit',
           url: "/orgs/{organizationname}/{serviceInstanceId}/edit",
           templateUrl: 'organizations/services/instance-editor.html',
-          controller: 'CreateServiceInstanceController',
+          controller: 'EditServiceInstanceController',
           data: {editState: true}
         },
         {

@@ -22,6 +22,8 @@
             <div ng-if="serviceInstances.length === 0">
                 Currently no service instances!
             </div> 
+            <thumbnail-map class="border-rounded-corners" id="allServices" services="serviceInstances" on-click="openDetails()"></thumbnail-map>
+
             <div  class="container-fluid serviceInstanceListItem" ng-repeat="service in serviceInstances">
                 <div ng-controller="ServiceInstanceDetailsController">
                     <h4>
@@ -32,7 +34,7 @@
                     </h4>
                     <div>
                         <div class="col-sm-7 col-lg-5" >
-                            <leaflet class="border-rounded-corners" id="{{'map-' + $index}}" event-broadcast="events" defaults="map.defaults" height="160px" width="100%" paths="map.paths"></leaflet>
+                            <thumbnail-map id="{{'tmap-' + $index}}" services="[service]" on-click="openDetails()"></thumbnail-map>
                         </div>
                         <div class="col-sm-5 col-lg-7" >
                             <p>{{service.description}}</p>

@@ -22,6 +22,10 @@ angular.module('mcp.organizations.services', [])
               enable: ['click'],
               logic: 'emit'
             }
+          },
+          openDetails: function () {
+            console.log('clicked');
+            ;
           }
         });
 
@@ -36,7 +40,7 @@ angular.module('mcp.organizations.services', [])
 
       }])
 
-    .controller('CreateServiceInstanceController', ['$scope', '$location', 'ServiceInstanceService', '$stateParams', '$state',
+    .controller('EditServiceInstanceController', ['$scope', '$location', 'ServiceInstanceService', '$stateParams', '$state',
       'OperationalServiceService', 'TechnicalServiceService', 'leafletData', 'mapService', 'MAP_DEFAULTS', '$modal',
       function ($scope, $location, ServiceInstanceService, $stateParams, $state,
           OperationalServiceService, TechnicalServiceService, leafletData, mapService, MAP_DEFAULTS, $modal) {
@@ -53,6 +57,7 @@ angular.module('mcp.organizations.services', [])
           map: {
             defaults: MAP_DEFAULTS.STATIC
           },
+          mapHandle: {},
           events: {
             map: {
               enable: ['click'],
@@ -60,7 +65,9 @@ angular.module('mcp.organizations.services', [])
             }
           },
           viewState: 'create',
+          clickEventHandler: clickEventHandler
         });
+
 
         // add layers to map and add a draw-listener
         leafletData.getMap("instanceEditorMap").then(function (map) {
@@ -141,6 +148,8 @@ angular.module('mcp.organizations.services', [])
           console.log('SERVICE', $scope.service);
         }
 
+        $scope.services = [$scope.service];
+
         $scope.$watch('selectedOperationalService', function (selectedOperationalService) {
           $scope.specifications = selectedOperationalService ? TechnicalServiceService.query(selectedOperationalService.id) : [];
         });
@@ -179,13 +188,17 @@ angular.module('mcp.organizations.services', [])
                 return $scope.service.coverage;
               },
               mapOptions: function () {
-                return {bounds: instanceMap.getBounds()};
+                //return {bounds: instanceMap.getBounds()};
+                console.log('$scope.mapHandle', $scope.mapHandle);
+                return {bounds: $scope.map.handle.getBounds()};
               }
             }
           }).result.then(function (result) {
             // coverage graph submitted
             $scope.service.coverage = result;
-            showService();
+//            serviceLayer = $scope.map.group;
+            $scope.map.rebuild();
+//            showService();
           }, function () {
             // dialog dismissed (user pressed CANCEL or ESCAPE)
           });
@@ -244,4 +257,80 @@ angular.module('mcp.organizations.services', [])
           }
         });
 
-      }]);
+      }])
+
+
+    .directive('thumbnailMap', function (mapService) {
+      return {
+        priority: 0,
+        restrict: 'E',
+        replace: false,
+        scope: {
+          services: "=",
+          map: "=",
+          onClick: "&" // " on-click='handle(...)' "
+        },
+        link: function (scope, element, attrs) {
+          var group = new L.FeatureGroup(),
+              map = L.map(element[0], {
+                center: [40, -86],
+                zoom: 4,
+                attributionControl: false,
+                boxZoom: false, 
+                doubleClickZoom: false,
+                dragging: false,
+                keyboard: false,
+                scrollWheelZoom: false,
+                tap: false, 
+                touchZoom: false,
+                zoomAnimation: false,
+                zoomControl: false
+              });
+
+          function populateServicesGroup(group, services) {
+            group.clearLayers();
+            group.addLayer(L.featureGroup(mapService.servicesToLayers(services, function (featureGroup) {
+              // add click handler to layers
+              featureGroup.on('click', scope.onClick);
+            })));
+            group.setStyle(mapService.Styles.STATIC);
+          }
+
+          function fitToContent(group, services) {
+
+            // (a service can be new, that is, has no coverage defined yet)
+            var isNewService = services.length === 1 && services[0].coverage.length === 0;
+            
+            if (isNewService) {
+              map.locate({setView: true, maxZoom: 7});
+            } else {
+              map.fitBounds(group.getBounds());
+            }
+          }
+
+          function rebuild() {
+            populateServicesGroup(group, scope.services);
+            fitToContent(group, scope.services);
+          }
+
+          rebuild();
+
+          // Add click-handler to map
+          map.on('click', scope.onClick);
+          L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          }).addTo(map);
+          group.addTo(map);
+
+          // expose the map and group layer to the outer scope 
+          // as $scope.map.handle and $scope.map.group
+          if (scope.map) {
+            scope.map.handle = map;
+            scope.map.group = group;
+            scope.map.rebuild = rebuild;
+          }
+        }
+
+      };
+    });
+;
