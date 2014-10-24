@@ -15,6 +15,10 @@ body {
     z-index: 0;
 }
 
+.serviceInstanceListItem {
+    margin-bottom: 6px;
+}
+
 #searchmap {
     height: 600px;
     height: -webkit-calc(100vh - 52px - 30px);  
@@ -214,12 +218,7 @@ footer .navbar-text, footer a {
 }
 
 .edit-gear {
-/*    position: relative;
-    top: -3px;
-    display: inline-block;
-    padding-left: 3px;*/
     color: #ccc;
-    /*font-size: 18px;*/
 }
 
 .org-header-meta {

@@ -21,8 +21,8 @@
             <h2> Provided Services</h2>
             <div ng-if="serviceInstances.length === 0">
                 Currently no service instances!
-            </div>
-            <div  class="container-fluid" ng-repeat="service in serviceInstances">
+            </div> 
+            <div  class="container-fluid serviceInstanceListItem" ng-repeat="service in serviceInstances">
                 <div ng-controller="ServiceInstanceDetailsController">
                     <h4>
                         <span>{{service.name}} - {{service.specification.transportType}}</span>
