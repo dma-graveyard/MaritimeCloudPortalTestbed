@@ -37,7 +37,7 @@ angular.module('mcp.organizations.services', [])
       }])
 
     .controller('CreateServiceInstanceController', ['$scope', '$location', 'ServiceInstanceService', '$stateParams', '$state',
-      'OperationalServiceService', 'TechnicalServiceService', 'leafletData', 'mapService', 'MAP_DEFAULTS', '$modal', 
+      'OperationalServiceService', 'TechnicalServiceService', 'leafletData', 'mapService', 'MAP_DEFAULTS', '$modal',
       function ($scope, $location, ServiceInstanceService, $stateParams, $state,
           OperationalServiceService, TechnicalServiceService, leafletData, mapService, MAP_DEFAULTS, $modal) {
 
@@ -66,7 +66,7 @@ angular.module('mcp.organizations.services', [])
         leafletData.getMap("instanceEditorMap").then(function (map) {
           map.addLayer(serviceLayer);
           map.on('click', clickEventHandler);
-          
+
           // zoom to current location when no coverage graph
           if (!$scope.isEditState())
             map.locate({setView: true, maxZoom: 7});
@@ -170,7 +170,7 @@ angular.module('mcp.organizations.services', [])
 
         $scope.openCoverageEditor = function () {
           $modal.open({
-            templateUrl: 'organizations/services/coverageEditor.html',
+            templateUrl: 'organizations/services/coverage-editor.html',
             controller: 'CoverageEditorController',
             size: 'lg',
             backdrop: 'static',
