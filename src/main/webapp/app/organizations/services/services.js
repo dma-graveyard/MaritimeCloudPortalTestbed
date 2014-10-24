@@ -63,9 +63,14 @@ angular.module('mcp.organizations.services', [])
         });
 
         // add layers to map and add a draw-listener
-        leafletData.getMap("instanceCreateMap").then(function (map) {
+        leafletData.getMap("instanceEditorMap").then(function (map) {
           map.addLayer(serviceLayer);
           map.on('click', clickEventHandler);
+          
+          // zoom to current location when no coverage graph
+          if (!$scope.isEditState())
+            map.locate({setView: true, maxZoom: 7});
+          instanceMap = map;
         });
 
         angular.extend($scope, {
@@ -86,7 +91,7 @@ angular.module('mcp.organizations.services', [])
               name: $stateParams.organizationname
             },
             key: {
-              providerId: $stateParams.organizationname,
+              providerId: $stateParams.organizationname
             },
             id: null,
             name: null,
@@ -156,7 +161,7 @@ angular.module('mcp.organizations.services', [])
         }
 
         function fitToLayer(layer) {
-          leafletData.getMap('instanceCreateMap').then(function (map) {
+          leafletData.getMap('instanceEditorMap').then(function (map) {
             if (layer) {
               map.fitBounds(layer.getBounds());
             }
@@ -172,6 +177,9 @@ angular.module('mcp.organizations.services', [])
             resolve: {
               coverage: function () {
                 return $scope.service.coverage;
+              },
+              mapOptions: function () {
+                return {bounds: instanceMap.getBounds()};
               }
             }
           }).result.then(function (result) {
@@ -185,8 +193,8 @@ angular.module('mcp.organizations.services', [])
 
       }])
 
-    .controller('CoverageEditorController', ['$scope', 'leafletData', 'mapService', 'coverage',
-      function ($scope, leafletData, mapService, coverage) {
+    .controller('CoverageEditorController', ['$scope', 'leafletData', 'mapService', 'coverage', 'mapOptions',
+      function ($scope, leafletData, mapService, coverage, mapOptions) {
 
         var options = mapService.createDrawingOptions(),
             drawControl = new L.Control.Draw(options),
@@ -194,7 +202,6 @@ angular.module('mcp.organizations.services', [])
 
         angular.extend($scope, {
           center: {
-            // FIXME: get current position from browser instead of using pos of LONDON
             lat: 51,
             lng: 0,
             zoom: 4
@@ -218,7 +225,8 @@ angular.module('mcp.organizations.services', [])
           if (coverage.length) {
             mapService.fitToGeomitryLayers(map);
           } else {
-            map.locate({setView: true, maxZoom: 7});
+            if (mapOptions.bounds)
+              map.fitBounds(mapOptions.bounds);
           }
 
           map.on('draw:created', function (e) {
