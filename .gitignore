@@ -9,3 +9,4 @@ pom.xml.releaseBackup
 pom.xml.next
 release.properties
 /src/main/webapp/ext/bower/
+/node_modules/
