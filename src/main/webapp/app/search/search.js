@@ -45,20 +45,6 @@ angular.module('mcp.search.services', [])
           servicesLayerMap: {}
         });
 
-        function featureGroupCallback(featureGroup) {
-
-          // (called whenever servicesToLayers creates a layer)
-          featureGroup.on('click', clickEventHandler);
-          featureGroup.on('mousemove', mouseMoveEventHandler);
-          featureGroup.on('mouseover', function (e) {
-            $scope.highlightService(e.target.service);
-          });
-          featureGroup.on('mouseout', function (e) {
-            $scope.unhighlightService(e.target.service);
-          });
-          $scope.servicesLayerMap[featureGroup.service.id] = featureGroup;
-        }
-
         $scope.clearFilterlocation = function () {
           delete $scope.markers.filterLocation;
 
@@ -161,7 +147,7 @@ angular.module('mcp.search.services', [])
               console.log($scope.filter.location);
               // when location marker is placed we should refresh the selection of the service layer 
               var service = $scope.selectedService;
-              $scope.servicesLayerMap[service.id].select();
+              serviceLayer(service).select();
             }
           }
 
@@ -174,6 +160,28 @@ angular.module('mcp.search.services', [])
           // Rebuild
           $scope.servicesLayer.addLayer(L.featureGroup(mapService.servicesToLayers(servicesAtLocation, featureGroupCallback)));
           fitToSelectedLayers();
+        }
+        
+        function featureGroupCallback(featureGroup) {
+
+          // (called whenever servicesToLayers creates a layer)
+          featureGroup.on('click', clickEventHandler);
+          featureGroup.on('mousemove', mouseMoveEventHandler);
+          featureGroup.on('mouseover', function (e) {
+            $scope.highlightService(e.target.service);
+          });
+          featureGroup.on('mouseout', function (e) {
+            $scope.unhighlightService(e.target.service);
+          });
+          $scope.servicesLayerMap[uniqueId(featureGroup.service)] = featureGroup;
+        }
+        
+        function serviceLayer(service) {
+          return $scope.servicesLayerMap[uniqueId(service)];
+        }
+
+        function uniqueId(service) {
+          return service.key.providerId+'-'+service.id;
         }
 
         function clickEventHandler(e) {
@@ -222,8 +230,8 @@ angular.module('mcp.search.services', [])
           if ($scope.selectedService) {
 
             // unselect prevous service layer
-            if ($scope.servicesLayerMap[$scope.selectedService.id])
-              $scope.servicesLayerMap[$scope.selectedService.id].unselect();
+            if (serviceLayer($scope.selectedService))
+              serviceLayer($scope.selectedService).unselect();
 
             $scope.selectedService = null;
             fitToSelectedLayers();
@@ -232,24 +240,26 @@ angular.module('mcp.search.services', [])
 
         $scope.selectService = function (service) {
           // unselect prevous service
-          if ($scope.selectedService && $scope.servicesLayerMap[$scope.selectedService.id])
-            $scope.servicesLayerMap[$scope.selectedService.id].unselect();
+          if ($scope.selectedService && serviceLayer($scope.selectedService))
+            serviceLayer($scope.selectedService).unselect();
 
           if (service !== $scope.selectedService) {
             $scope.selectedService = service;
-            $scope.servicesLayerMap[service.id].select();
-            fitToLayer($scope.servicesLayerMap[service.id]);
+            serviceLayer(service).select();
+            fitToLayer(serviceLayer(service));
+            console.log("Selected service", service);
+            console.log("Selected service", JSON.stringify(service,null,"    "));
           }
         };
 
         $scope.highlightService = function (service) {
           $scope.highlightedService = service;
-          $scope.servicesLayerMap[service.id].highlight();
+          serviceLayer(service).highlight();
         };
 
         $scope.unhighlightService = function (service) {
           $scope.highlightedService = null;
-          $scope.servicesLayerMap[service.id].unhighlight();
+          serviceLayer(service).unhighlight();
         };
 
         if ($scope.filter.location) {
