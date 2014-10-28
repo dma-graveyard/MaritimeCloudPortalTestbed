@@ -19,12 +19,12 @@
         <!--PROVIDED SERVICES-->
         <div>
             <h2> Provided Services</h2>
-            <div ng-if="serviceInstances.length === 0">
+            <div ng-if="!serviceInstances.length">
                 Currently no service instances!
             </div> 
-            <thumbnail-map class="border-rounded-corners" id="allServices" services="serviceInstances" on-click="openDetails()"></thumbnail-map>
+            <thumbnail-map ng-if="serviceInstances.length" class="border-rounded-corners" id="allServices" services="serviceInstances" on-click="openDetails()"></thumbnail-map>
 
-            <div  class="container-fluid serviceInstanceListItem" ng-repeat="service in serviceInstances">
+            <div  class="container-fluid serviceInstanceListItem" ng-repeat="service in serviceInstances|limitTo:20">
                 <div ng-controller="ServiceInstanceDetailsController">
                     <h4>
                         <span>{{service.name}} - {{service.specification.transportType}}</span>
@@ -42,6 +42,7 @@
                     </div>
                 </div>
             </div>
+            <div ng-if="serviceInstances.length > 20" class="container-fluid serviceInstanceListItem"> <br> ... and {{serviceInstances.length - 20}} more ...</div>
             <div ng-if="userHasWriteAccess()">
                 <br>
                 <a class="btn btn-minier btn-info" href="#/orgs/{{organization.name}}/createServiceInstance">+ Register a service</a>

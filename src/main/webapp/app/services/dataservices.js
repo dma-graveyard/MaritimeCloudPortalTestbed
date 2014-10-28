@@ -3,319 +3,7 @@
 // ----------------------------------------------------------------------------
 // TEST DATA - INSTANCE EXAMPLE
 // ----------------------------------------------------------------------------
-
-var organization = {
-  dmi:
-      {
-        name: "dmi",
-        title: "Danish Meteoroligical Institute",
-        description: "DMI provides meteorological services in the Commonwealth of the Realm of Denmark, the Faroe Islands, Greenland, and surrounding waters and airspace. Meteorological services include forecasting and warnings and monitoring of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
-        members: ["admin", "Tintin", "Haddock"],
-        teams: [
-          {
-            name: "Owners",
-            description: "Special team of owners. Owners can do just about anything.",
-            isOwner: true,
-            members: ["admin"],
-            accessLevel: "admin"
-          },
-          {
-            name: "DMI service producers",
-            description: "DMI personel that produces info for our various services",
-            isAdmin: false,
-            members: ["admin", "Tintin"],
-            accessLevel: "write"
-          }
-        ]
-      },
-  dma: {
-    name: "dma",
-    title: "Danish Maritime Authority",
-    description: "The Danish Maritime Authority is a government agency of Denmark that regulates maritime affairs. The field of responsibility is based on the shipping industry and its framework conditions, the ship and its crew. In addition, it is responsible for aids to navigation in the waters surrounding Denmark and ashore.",
-    members: ["admin", "Haddock"],
-    teams: [
-      {
-        name: "Owners",
-        description: "Special team of owners. Owners can do just about anything.",
-        isOwner: true,
-        members: ["admin"],
-        accessLevel: "admin"
-      },
-      {
-        name: "Captains",
-        description: "Captains of the royal danish fleet with priviledge of editing stuff.",
-        isAdmin: false,
-        members: ["Hadock"],
-        accessLevel: "write"
-      }
-    ]
-  },
-  dp: {
-    name: "dp",
-    title: "DanPilot",
-    description: "DanPilot handles the public pilotage through Danish territorial waters from any destination in Denmark to all ports in the Baltic Sea. As the unique full-service provider in Denmark DanPilot offers pilotage to all Danish ports as well. DanPilot is obliged to deliver pilotage in Denmark and handles all transit pilotage.",
-    members: ["admin", "Haddock", "Tintin"],
-    teams: [
-      {
-        name: "Owners",
-        description: "Special team of owners. Owners can do just about anything.",
-        isOwner: true,
-        members: ["admin"],
-        accessLevel: "admin"
-      },
-      {
-        name: "Captains",
-        description: "Captains of the royal danish pilot fleet with priviledge of reading stuff.",
-        isAdmin: false,
-        members: ["Hadock"],
-        accessLevel: "read"
-      }
-    ]
-  },
-  imo: {
-    name: 'imo',
-    title: 'IMO - International Maritime Organization',
-    description: 'the United Nations specialized agency with responsibility for the safety and security of shipping and the prevention of marine pollution by ships.',
-    members: ["Haddock"],
-    teams: [
-      {
-        name: "Owners",
-        description: "Special team of owners. Owners can do just about anything.",
-        isOwner: true,
-        members: ["Hadock"],
-        accessLevel: "admin"
-      }
-    ]
-  }
-};
-var operationalServices = {
-  lps: {
-    id: 'lps',
-    name: 'Local Port Services'
-  },
-  mis: {
-    id: 'mis',
-    name: 'Meteorological Information Services',
-    description: 'Meteorological services include forecasting and warnings and monitoring of weather, climate and related environmental conditions in the atmosphere, on land and at sea.'
-  },
-  msi: {
-    id: 'msi',
-    name: 'Maritime Safety Information'
-  },
-  nas: {
-    id: 'nas',
-    name: 'Navigational Assistance Service'
-  },
-  nga: {
-    id: 'nga',
-    name: 'No-Go Area'
-  },
-  rme: {
-    id: 'rme',
-    name: 'Route METOC'
-  },
-  sre: {
-    id: 'sre',
-    name: 'Strategical Route Exchange'
-  },
-  tos: {
-    id: 'tos',
-    name: 'Traffic Organization Service'
-  },
-  vsr: {
-    id: 'vsr',
-    name: 'Vessel Shore Reporting'
-  },
-  wvtsg: {
-    id: 'wvtsg',
-    name: 'World Vessel Traffic Services Guide'
-  },
-  tre: {
-    id: 'tre',
-    name: 'Tactical Route Exchange'
-  },
-  tus: {
-    id: 'tus',
-    name: 'Tugs Services'
-  }
-};
-
-var transportTypes = {
-  mms: 'MMS',
-  rest: 'REST',
-  soap: 'SOAP',
-  www: 'WWW',
-  tcp: 'TCP',
-  udp: 'UDP',
-  aisasm: 'AISASM',
-  tel: 'TEL',
-  vhf: 'VHF',
-  dgnss: 'DGNSS',
-  other: 'OTHER'
-};
-
-var technicalServices = {
-  imoMisRest: {
-    id: 'imo-mis-rest',
-    owner: organization.imo,
-    operationalService: operationalServices.mis,
-    transportType: transportTypes.rest,
-    name: 'METOC en route (rest)',
-    description: 'Meteorological services provided as a REST api'
-  },
-  imoMisWww: {
-    id: 'imo-mis-www',
-    owner: organization.imo,
-    operationalService: operationalServices.mis,
-    transportType: transportTypes.www,
-    name: 'METOC en route (www)',
-    description: 'Meteorological services provided on the internet'
-  },
-  imoMsiSoap: {
-    id: 'imo-msi-soap',
-    owner: organization.imo,
-    operationalService: operationalServices.msi,
-    transportType: transportTypes.soap,
-    name: 'MSI (soap)',
-    description: 'Maritime Safety Information provided as a SOAP-service'
-  },
-  imoMsiVhf: {
-    id: 'imo-msi-vhf',
-    owner: organization.imo,
-    operationalService: operationalServices.msi,
-    transportType: transportTypes.vhf,
-    name: 'MSI (vhf)',
-    description: 'Maritime Safety Information broadcasted on VHF'
-  },
-  imoMsiWww: {
-    id: 'imo-msi-www',
-    owner: organization.imo,
-    operationalService: operationalServices.msi,
-    transportType: transportTypes.www,
-    name: 'MSI (www)',
-    description: 'Maritime Safety Information provided on the internet'
-  }
-};
-
-var area = {
-  dk: [// array of shapes (polygon/rectangle/circle/multipolygon)
-    {
-      type: "polygon",
-      points: [// [longitude,lattitude]-pairs
-        [8.173828125, 54.84973402078036], [7.492675781249999, 56.29063241616282], [8.06396484375, 57.32503845095438],
-        [9.140625, 57.44347144354234], [9.73388671875, 57.80818813313426], [10.08544921875, 57.80818813313426],
-        [10.56884765625, 57.936725003674646], [11.00830078125, 57.71441809916714], [10.986328125, 57.58508660014084],
-        [11.35986328125, 57.44347144354234], [11.53564453125, 57.23001638509267], [11.162109375, 57.02727908263874],
-        [10.7666015625, 57.01531876758453], [10.65673828125, 56.82342990779178], [10.96435546875, 56.73916801839526],
-        [11.271972656249998, 56.84746998772644], [11.66748046875, 56.93148877710671], [11.953125, 56.59427839029623],
-        [11.53564453125, 56.473111073472246], [11.14013671875, 56.315013425566924], [10.72265625, 55.78738467626539],
-        [11.71142578125, 56.412381965477785], [12.32666015625, 56.25403172382012], [12.722167968749998, 56.02141309205163],
-        [12.76611328125, 55.67603572236134], [12.722167968749998, 55.40251032740405], [12.89794921875, 55.11451369585085],
-        [12.94189453125, 54.90030293114211], [12.15087890625, 54.51948733886334], [11.93115234375, 54.44289461838544],
-        [11.25, 54.51948733886334], [10.52490234375, 54.532238849162084], [9.95361328125, 54.81176569069303],
-        [9.68994140625, 54.87502640669144], [8.173828125, 54.84973402078036]
-      ]
-    }
-  ],
-  gl: [
-    {
-      type: "polygon",
-      points: [[-73.47656249999999, 59.33318942659219], [-73.47656249999999, 84.36725432248352], [-8.4375, 84.36725432248352], [-8.4375, 59.33318942659219]]
-    },
-    {
-      "type": "circle",
-      "center-latitude": 75.30888448476105,
-      "center-longitude": -73.828125,
-      "radius": 456789
-    }
-
-  ],
-  fo: [
-    {
-      "type": "circle",
-      "center-latitude": 62.00992920374125,
-      "center-longitude": -6.96533203125,
-      "radius": 234567
-    }
-  ]
-};
-
-var serviceInstance = {
-  dmiImoMisDkRest: {
-    provider: organization.dmi,
-    specification: technicalServices.imoMisRest,
-    key: {
-      specificationId: "imo-mis-rest", // [TechnicalServiceId]
-      providerId: "dmi", // [MaritimeId (=OrganizationId/UserId)]
-      instanceId: "dk"   // [ServiceInstanceId]
-    },
-    id: "dk", // [TechnicalServiceId].[OrganizationId].[ServiceInstanceId]
-    // or id: "fo.imo-met-metocroute.dmi.dk", // [ServiceInstanceId].[TechnicalServiceId].[OrganizationId].[OrganizationType]
-    name: "DMI METOC on route (Denmark)",
-    description: "Route based Meteorological Services for the waters surrounding Denmark including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
-    coverage: area.dk
-  },
-  dmiImoMisDkWww: {
-    provider: organization.dmi,
-    specification: technicalServices.imoMisWww,
-    key: {
-      specificationId: "imo-mis-www",
-      providerId: "dmi",
-      instanceId: "dk2"
-    },
-    id: "dk2",
-    name: "DMI METOC on route (Denmark II)",
-    description: "Route based Meteorological Services for the waters surrounding Denmark including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
-    coverage: area.dk,
-  },
-  dmiImoMisGlWww: {
-    provider: organization.dmi,
-    specification: technicalServices.imoMisWww,
-    key: {
-      specificationId: "imo-mis-www",
-      providerId: "dmi",
-      instanceId: "gl"
-    },
-    id: "gl",
-    name: "DMI METOC on route (Greenland)",
-    description: "Route based Meteorological Services for the waters surrounding Greenland including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
-    coverage: area.gl
-  },
-  dmiImoMisFoRest: {
-    provider: organization.dmi,
-    specification: technicalServices.imoMisRest,
-    key: {
-      specificationId: "imo-mis-rest",
-      providerId: "dmi",
-      instanceId: "fo"
-    },
-    id: "fo",
-    name: "DMI METOC on route (Faroe Islands)",
-    description: "Route based Meteorological Services for the waters surrounding the Faroe Islands including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
-    coverage: area.fo
-  },
-  dmiImoMisFoWww: {
-    provider: organization.dmi,
-    specification: technicalServices.imoMisWww,
-    key: {
-      specificationId: "imo-mis-www",
-      providerId: "dmi",
-      instanceId: "fo2"
-    },
-    id: "fo2",
-    name: "DMI METOC on route (Faroe Islands II)",
-    description: "Route based Meteorological Services for the waters surrounding the Faroe Islands including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
-    coverage: area.fo
-  }
-};
-
-var globalServiceInstances = [
-  serviceInstance.dmiImoMisDkRest,
-  serviceInstance.dmiImoMisDkWww,
-  serviceInstance.dmiImoMisFoRest,
-  serviceInstance.dmiImoMisFoWww,
-  serviceInstance.dmiImoMisGlWww
-];
+var data = demoData();
 
 // --------------------------------------------------
 /* Services */
@@ -350,12 +38,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 //    });
 
         console.log("TODO: using mocked organizations data");
-        var organizations = [
-          organization.dma,
-          organization.dmi,
-          organization.dp,
-          organization.imo
-        ];
+        var organizations = data.organizationList;
         /**
          * Helper function to find organization by name
          * @param {type} organizationname
@@ -544,92 +227,38 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 //      signUp: {method: 'POST', params: {}, isArray: false}
 //    });
         console.log("TODO: using mocked service instance data");
-        var serviceInstances = [].concat(globalServiceInstances);
-
-        function createRandomCoverage(index) {
-          return [
-            {
-              "type": "circle",
-              "center-latitude": 80 - Math.random() * 160,
-              "center-longitude": 180 - Math.random() * 360,
-              "radius": 450000 - Math.random() * 22000
-            }
-          ];
-        }
-
-        function createRandomServiceInstance(index) {
-          var provider = randomOf(organization.dp, organization.dma),
-              //transportType = randomOf(transportTypes),
-              specification = randomOf(technicalServices),
-              instanceId = randomOf('dk', 'gl', 'uk', 'se', 'nl', 'no') + '-' + index,
-              serviceInstance = randomOf(globalServiceInstances);
-
-
-          return   {
-            provider: provider,
-            specification: specification,
-            key: {
-              specificationId: specification.id, // [TechnicalServiceId]
-              providerId: provider.id, // [MaritimeId (=OrganizationId/UserId)]
-              instanceId: instanceId   // [ServiceInstanceId]
-            },
-            id: instanceId, // [TechnicalServiceId].[OrganizationId].[ServiceInstanceId]
-            // or id: "fo.imo-met-metocroute.dmi.dk", // [ServiceInstanceId].[TechnicalServiceId].[OrganizationId].[OrganizationType]
-            name: serviceInstance.name + ' ' + index,
-            description: serviceInstance.description + index,
-            coverage: createRandomCoverage(index)
-          };
-        }
-
+        var serviceInstances = data.serviceInstanceList;
 
         /**
-         * @returns a randomly picked argument, or, if a single object argument is given, it returns one of its properties.
-         */
-        function randomOf() {
-          var args = [],
-              a = arguments;
-          if (arguments.length === 1) {
-            Object.keys(a[0]).forEach(function (prop) {
-              args.push(a[0][prop]);
-            });
-          } else {
-            args = arguments;
-          }
-          var i = Math.floor(Math.random() * args.length);
-          return args[i];
-        }
-        
-        for (var i = 1; i < 1000; i++) {
-          serviceInstances.push(createRandomServiceInstance(i));
-        }
-
-        /**
-         * Helper function to find Service Instance by name
+         * Helper function to find Service Instance by name (to avoid duplicates)
          * @param {type} serviceInstanceName
          */
-        var findServiceInstance = function (serviceInstanceName) {
+        var findServiceInstance = function (organizationname, serviceInstanceName) {
           for (var i = 0; i < serviceInstances.length; i++) {
-            if (serviceInstanceName === serviceInstances[i].name)
+            // FIXME: We should also check that the ID is unique within the organization!!! (defer this to the serverside implementation!)
+            if (organizationname === serviceInstances[i].provider.name && serviceInstanceName === serviceInstances[i].name)
               return serviceInstances[i];
           }
           return null;
         };
-        
-        var getServiceInstance = function (serviceInstanceId) {
+
+        var getServiceInstance = function (organizationname, serviceInstanceId) {
           for (var i = 0; i < serviceInstances.length; i++) {
-            if (serviceInstanceId === serviceInstances[i].id)
+            if (organizationname === serviceInstances[i].provider.name && serviceInstanceId === serviceInstances[i].id) {
               return serviceInstances[i];
+           }
           }
           return null;
         };
         return {
           get: function (request) {
-            console.log("serviceInstanceName: ", request.serviceInstanceId);
+            console.log("request: ", request);
+            var organizationname = request.organizationname;
             var serviceInstanceId = request.serviceInstanceId;
-            var result = getServiceInstance(serviceInstanceId);
-            if (result){
-              result.$save = function(success, failure){
-                  success(result);
+            var result = getServiceInstance(organizationname, serviceInstanceId);
+            if (result) {
+              result.$save = function (success, failure) {
+                success(result);
               };
               return result;
             }
@@ -652,9 +281,9 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           //create: {method: 'POST', params: {}, isArray: false}
           create: function (newServiceInstance, success, failure) {
 
-            if (findServiceInstance(newServiceInstance.name)) {
-              console.log("An service instance with that name already exists");
-              failure("An service instance with that name already exists");
+            if (findServiceInstance(newServiceInstance.provider.name, newServiceInstance.name)) {
+              console.log("A service instance with that name already exists");
+              failure("A service instance with that name already exists");
               return;
             }
 
@@ -674,21 +303,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         console.log("TODO: using mocked operational service data");
         return {
           query: function (request) {
-            var a = [
-              operationalServices.lps,
-              operationalServices.mis,
-              operationalServices.msi,
-              operationalServices.nas,
-              operationalServices.nga,
-              operationalServices.rme,
-              operationalServices.sre,
-              operationalServices.tos,
-              operationalServices.tre,
-              operationalServices.tus,
-              operationalServices.vsr,
-              operationalServices.wvtsg
-            ];
-            return a;
+            return data.operationalServicesList;
           }
         };
       }])
@@ -703,9 +318,9 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         return {
           query: function (request) {
             var array = [];
-            for (var key in technicalServices) {
-              if (technicalServices[key].operationalService.id === request) {
-                array.push(technicalServices[key]);
+            for (var key in data.technicalServices) {
+              if (data.technicalServices[key].operationalService.id === request) {
+                array.push(data.technicalServices[key]);
               }
             }
             return array;

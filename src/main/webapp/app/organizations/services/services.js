@@ -104,7 +104,7 @@ angular.module('mcp.organizations.services', [])
         });
 
         if ($scope.isEditState()) {
-          $scope.service = ServiceInstanceService.get({serviceInstanceId: $stateParams.serviceInstanceId});
+          $scope.service = ServiceInstanceService.get({organizationname: $stateParams.organizationname, serviceInstanceId: $stateParams.serviceInstanceId});
           // FIXME: should lookup value based on id $scope.service.specificationId
           $scope.selectedSpecification = $scope.service.specification;
           // FIXME: should lookup value based on id $scope.selectedSpecification.operationalServiceId
