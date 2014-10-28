@@ -247,8 +247,6 @@ angular.module('mcp.search.services', [])
             $scope.selectedService = service;
             serviceLayer(service).select();
             fitToLayer(serviceLayer(service));
-            console.log("Selected service", service);
-            console.log("Selected service", JSON.stringify(service,null,"    "));
           }
         };
 
