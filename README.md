@@ -162,6 +162,38 @@ To run the cucumber scripts use instead:
 
     ./node_modules/.bin/protractor ./src/test/specs/cucumber.conf.js
 
+## Deploy
+
+### Prepare deployment GIT project
+
+To get the WAR-file moved onto the target server (AWS) we use a git repository as middle station. 
+
+Clone the deployment project https://github.com/dma-dk/enav-appsrv
+
+Copy your prepared WAR-file into the folder enav-appsrv/mc_portal/. Eg.
+
+     mv *.war enav-appsrv/mc_portal/ 
+
+Commit og push
+
+### Install and launch on target AWS server
+
+Log on to server, fetch new version and restart the application  
+
+    ssh enav@appsrv.e-navigation.net
+    cd enav-appsrv/mc_portal
+    git pull
+    ./portal.sh stop
+    ./portal.sh start
+
+Follow the startup process with
+
+    tail –f portal.log
+
+Once up-n-running the result can be seen from the link below
+
+### [Maritime Cloud Portal Demo] (http://portal.maritimecloud.net/app/index.html)
+
 ## Launch
 
 The build produces a executable .war-file in the /target folder. The application can be launched with:
