@@ -235,6 +235,8 @@ Once up-n-running the result can be seen from the link below
 
 ### Demo [Maritime Cloud Portal] (http://portal.maritimecloud.net/app/index.html)
 
+Login with with "Tintin" or "admin". Password is "test" in both cases.
+
 ## Netbeans setup ##
 
 Simply open the project as an existing maven-based project. Thats it - no mumbojumbo here ;)
