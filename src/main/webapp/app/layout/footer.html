@@ -5,6 +5,7 @@
                 <span class="navbar-text">&copy; 2013 - 2014</span>
             </div>
             <div class="col-xs-9 content">
+                <span class="navbar-text">{{mcpInfo.isInitialised ? mcpInfo.version : 'Developer Version under construction'}}{{mcpInfo.build.isInitialised ? '-'+mcpInfo.build.number: ''}}</span>
                 <div class="nav">
                     <div class="navbar-inner">
                         <ul class="nav navbar-nav navtabs pull-right">

@@ -56,6 +56,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       $scope.isLoggedIn = AuthService.isAuthenticated;
       $scope.navigationTarget = null;
       $scope.message = null;
+      $scope.mcpInfo = mcpInfo; // from "info.js"
       $scope.alertMessages = [];
       
       // FIXME: Remove this switch once carousels has been fixed

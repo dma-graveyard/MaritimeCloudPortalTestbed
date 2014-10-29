@@ -8,7 +8,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>Maritime Cloud Identity Access Management Portal</name>
+    <name>Maritime Cloud Portal</name>
     <description>Rest services for portal</description>
 
     <parent>
@@ -146,14 +146,41 @@
         <shiro.version>1.2.2</shiro.version>
     </properties>
 
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <!-- add filtering of version info-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <filtering>true</filtering>
+                            <directory>src/main/webapp/app</directory>
+                            <includes>
+                                <include>info.js</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+                    <!-- add manifest info -->
+                    <manifest>
+                        <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                    </manifest>
+                    <archive>
+                        <manifestEntries>
+                            <Specification-Title>${project.name}</Specification-Title>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Implementation-Version>${BUILD_NUMBER}</Implementation-Version>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>            
         </plugins>
     </build>
-
+    
 </project>
