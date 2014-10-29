@@ -161,9 +161,9 @@
                     <webResources>
                         <resource>
                             <filtering>true</filtering>
-                            <directory>src/main/webapp/app</directory>
+                            <directory>src/main/webapp</directory>
                             <includes>
-                                <include>info.js</include>
+                                <include>app/info.js</include>
                             </includes>
                         </resource>
                     </webResources>
