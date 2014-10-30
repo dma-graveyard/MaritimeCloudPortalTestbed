@@ -31,6 +31,7 @@ function demoData() {
     dma: {
       name: "dma",
       title: "Danish Maritime Authority",
+      url: "http://dma.dk",
       description: "The Danish Maritime Authority is a government agency of Denmark that regulates maritime affairs. The field of responsibility is based on the shipping industry and its framework conditions, the ship and its crew. In addition, it is responsible for aids to navigation in the waters surrounding Denmark and ashore.",
       members: ["admin", "Haddock"],
       teams: [
@@ -53,6 +54,7 @@ function demoData() {
     dmi: {
       name: "dmi",
       title: "Danish Meteoroligical Institute",
+      url: "http://dmi.dk",
       description: "DMI provides meteorological services in the Commonwealth of the Realm of Denmark, the Faroe Islands, Greenland, and surrounding waters and airspace. Meteorological services include forecasting and warnings and monitoring of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
       members: ["admin", "Tintin", "Haddock"],
       teams: [
@@ -75,6 +77,7 @@ function demoData() {
     dp: {
       name: "dp",
       title: "DanPilot",
+      url: "http://danpilot.dk",
       description: "DanPilot handles the public pilotage through Danish territorial waters from any destination in Denmark to all ports in the Baltic Sea. As the unique full-service provider in Denmark DanPilot offers pilotage to all Danish ports as well. DanPilot is obliged to deliver pilotage in Denmark and handles all transit pilotage.",
       members: ["admin", "Haddock", "Tintin"],
       teams: [
@@ -97,6 +100,7 @@ function demoData() {
     imo: {
       name: 'imo',
       title: 'IMO - International Maritime Organization',
+      url: "http://www.imo.org",
       description: 'the United Nations specialized agency with responsibility for the safety and security of shipping and the prevention of marine pollution by ships.',
       members: ["Haddock"],
       teams: [
@@ -113,6 +117,7 @@ function demoData() {
     mca: {
       name: "mca",
       title: "Maritime & Coastguard Agency (United Kingdom)",
+      url: "https://www.gov.uk/government/organisations/maritime-and-coastguard-agency",
       description: "The Maritime and Coastguard Agency (MCA) is a UK executive agency working to prevent the loss of lives at sea and is responsible for implementing British and International maritime law and safety policy.",
       members: ["admin", "Haddock"],
       teams: [
@@ -135,6 +140,7 @@ function demoData() {
     nca: {
       name: "nca",
       title: "Norwegian Coastal Administration",
+      url: "http://www.kystverket.no",
       description: "The Norwegian Coastal Administration is an agency of the Norwegian Ministry of Transport and Communications responsible for services related to maritime safety, maritime infrastructure, transport planning and efficiency, and emergency response to acute pollution.",
       members: ["admin", "Haddock"],
       teams: [
@@ -157,6 +163,7 @@ function demoData() {
     fmha: {
       name: "fmha",
       title: "Federal Maritime and Hydrographic Agency (Germany)",
+      url: "http://www.bsh.de",
       description: "As a partner to maritime shipping and a supporter of environmental conservation efforts and maritime uses, the Federal Maritime and Hydrographic Agency supports maritime shipping and the maritime industry, promote sustainable use of the oceans, ensure the continuity of measurements, provide competent information about the status of the Northand Baltic Seas.",
       members: ["admin", "Tintin", "Haddock"],
       teams: [
@@ -179,6 +186,7 @@ function demoData() {
     flh: {
       name: "flh",
       title: "Flemish Hydrography",
+      url: "http://www.vlaamsehydrografie.be",
       description: "The Flemish Hydrography is responsible for measuring thestructure, gathering data for navigation and other marineactivities; offshore activities; research; environmental protection and tide, weather and climate forecasts. All the information is published or made available on our website.",
       members: ["admin", "Tintin", "Haddock"],
       teams: [
@@ -201,6 +209,7 @@ function demoData() {
     rnn: {
       name: "rnn",
       title: "Royal Netherlands Navy",
+      url: "http://www.defensie.nl/english/organisation/navy/contents/navy-units/hydrographic-service",
       description: "The Hydrographic Service of the Royal Netherlands Navy informs mariners about shipping routes, the seabed and underwater hazards such as shipwrecks. To this end, the Hydrographic Service compiles nautical charts, carefully details the maritime borders of the Netherlands and carries out depth measurements. The Hydrographic Service thus contributes to the protection of Dutch interests at sea and to safe shipping routes",
       members: ["admin", "Tintin", "Haddock"],
       teams: [
@@ -223,6 +232,7 @@ function demoData() {
     sma: {
       name: "sma",
       title: "Swedish Maritime Administration",
+      url: "http://www.sjofartsverket.se",
       description: "The Swedish Maritime Administration (SMA) offers modern and safe shipping routes with 24 hour service. We take responsibility for the future of shipping. SMA is a governmental agency and enterprise within the transport sector and is responsible for maritime safety and availability. Our services include, for example: Pilotage,Fairway Service, Maritime Traffic Information, Icebreaking, Hydrograpy, Maritime and Aeronautical Search and Rescue & Seamen's Service Our activities focus primarily on merchant shipping, but also take the pleasure boating and fishing interests into account.",
       members: ["admin", "Tintin", "Haddock"],
       teams: [
@@ -355,6 +365,14 @@ function demoData() {
       name: 'MSI-NM (mms)',
       description: 'Maritime Safety Information & Notices to Mariners provided over the MMS protocol'
     },
+    imoMsinmWww: {
+      id: 'imo-msinm-www',
+      owner: organization.imo,
+      operationalService: operationalServices.msinm,
+      transportType: transportTypes.www,
+      name: 'MSI-NM (www)',
+      description: 'Maritime Safety Information & Notices to Mariners provided as an internet website'
+    },
     imoMsiNavtex: {
       id: 'imo-msi-navtext',
       owner: organization.imo,
@@ -467,7 +485,27 @@ function demoData() {
       id: "imo-msinm-mms-1",
       name: "DMA MSI-NM Danish waters (mms)",
       description: "The Danish Maritime Authority issues navigational warnings for Danish waters. Navigational warnings are generally based on information reported to the Danish Maritime Administration by vessels, ports, military agencies, etc.",
-      coverage: area.eez_dk
+      coverage: area.eez_dk,
+      endpoints: [
+        {id: "primary", urn: "mms://999000301"},
+        {id: "secondary", urn: "mms://dma/imo-msinm-mms-1/secondary"}
+      ]
+    },
+    dmaImoMsinmWww: {
+      provider: organization.dma,
+      specification: technicalServices.imoMsinmWww,
+      key: {
+        specificationId: "imo-msinm-www",
+        providerId: "dma",
+        instanceId: "imo-msinm-www-1"
+      },
+      id: "imo-msinm-www-1",
+      name: "DMA MSI-NM Danish waters (www)",
+      description: "The Danish Maritime Authority issues navigational warnings for Danish waters. Navigational warnings are generally based on information reported to the Danish Maritime Administration by vessels, ports, military agencies, etc.",
+      coverage: area.eez_dk,
+      endpoints: [
+        {id: "endpoint", urn: "https://msinm-dk.e-navigation.net"},
+      ]
     },
     dmiImoMisDkRest: {
       provider: organization.dmi,
@@ -546,7 +584,26 @@ function demoData() {
       id: "imo-msinm-mms-uk",
       name: "MCA MSI-NM United Kingdom North Sea (mms)",
       description: "Her Majesty’s Coastguard is responsible in the UK for the broadcast of Maritime Safety Information (MSI) on NAVTEX, VHF and MF and for providing the Radio Medical Advice Link Call (MEDILINK) Service.",
-      coverage: area.eez_uk
+      coverage: area.eez_uk,
+      endpoints: [
+        {id: "endpoint", urn: "mms://999000307"},
+      ]
+    },
+    mcaImoMsinmWww: {
+      provider: organization.mca,
+      specification: technicalServices.imoMsinmWww,
+      key: {
+        specificationId: "imo-msinm-www",
+        providerId: "mca",
+        instanceId: "imo-msinm-www-uk"
+      },
+      id: "imo-msinm-www-uk",
+      name: "MCA MSI-NM United Kingdom North Sea (www)",
+      description: "Her Majesty’s Coastguard is responsible in the UK for the broadcast of Maritime Safety Information (MSI) on NAVTEX, VHF and MF and for providing the Radio Medical Advice Link Call (MEDILINK) Service.",
+      coverage: area.eez_uk,
+      endpoints: [
+        {id: "endpoint", urn: "https://msinm-uk.e-navigation.net"},
+      ]
     },
     ncaImoMsinmMms: {
       provider: organization.nca,
@@ -559,7 +616,26 @@ function demoData() {
       id: "imo-msinm-mms-no",
       name: "NCA MSI-NM Norwegian waters (mms)",
       description: "The Norwegian Coastal Administration issues navigational warnings for Norwegian waters twice a day. Navigational warnings are generally based on information recieved from The Norwegian Mapping Authority (kartverket). Transmissions to mariners are provided by NCA.",
-      coverage: area.eez_no
+      coverage: area.eez_no,
+      endpoints: [
+        {id: "endpoint", urn: "mms://999000305"},
+      ]
+    },
+    ncaImoMsinmWww: {
+      provider: organization.nca,
+      specification: technicalServices.imoMsinmWww,
+      key: {
+        specificationId: "imo-msinm-www",
+        providerId: "nca",
+        instanceId: "imo-msinm-www-no"
+      },
+      id: "imo-msinm-www-no",
+      name: "NCA MSI-NM Norwegian waters (www)",
+      description: "The Norwegian Coastal Administration issues navigational warnings for Norwegian waters twice a day. Navigational warnings are generally based on information recieved from The Norwegian Mapping Authority (kartverket). Transmissions to mariners are provided by NCA.",
+      coverage: area.eez_no,
+      endpoints: [
+        {id: "endpoint", urn: "https://msinm-no.e-navigation.net"},
+      ]
     },
     fmhaImoMsinmMms: {
       provider: organization.fmha,
@@ -572,7 +648,26 @@ function demoData() {
       id: "imo-msinm-mms-fmha",
       name: "FMHA MSI-NM German waters (mms)",
       description: "The Navigational Warnings and Information Service informs about important navigational occurrences and alterations in German waters and adjacent European waters.",
-      coverage: area.eez_de      
+      coverage: area.eez_de,
+      endpoints: [
+        {id: "endpoint", urn: "mms://999000302"},
+      ]
+    },
+    fmhaImoMsinmWww: {
+      provider: organization.fmha,
+      specification: technicalServices.imoMsinmWww,
+      key: {
+        specificationId: "imo-msinm-www",
+        providerId: "fmha",
+        instanceId: "imo-msinm-www-fmha"
+      },
+      id: "imo-msinm-www-fmha",
+      name: "FMHA MSI-NM German waters (www)",
+      description: "The Navigational Warnings and Information Service informs about important navigational occurrences and alterations in German waters and adjacent European waters.",
+      coverage: area.eez_de,
+      endpoints: [
+        {id: "endpoint", urn: "https://msinm-de.e-navigation.net"},
+      ]
     },
     flhImoMsinmMms: {
       provider: organization.flh,
@@ -598,7 +693,26 @@ function demoData() {
       id: "imo-msinm-mms-rnn",
       name: "RNN MSI-NM Dutch waters (mms)",
       description: "As a mariner, you need reliable data for safe navigation. Therefore, the Hydrographic Service publishes nautical charts and nautical publications. Since the situation at sea changes continuously, you are required to keep these products up to date. You can do so by using the Notices to Mariners (NtMs).",
-      coverage: area.eez_nl
+      coverage: area.eez_nl,
+      endpoints: [
+        {id: "endpoint", urn: "mms://999000304"},
+      ]
+    },
+    rnnImoMsinmWww: {
+      provider: organization.rnn,
+      specification: technicalServices.imoMsinmWww,
+      key: {
+        specificationId: "imo-msinm-www",
+        providerId: "rnn",
+        instanceId: "imo-msinm-www-rnn"
+      },
+      id: "imo-msinm-www-rnn",
+      name: "RNN MSI-NM Dutch waters (www)",
+      description: "As a mariner, you need reliable data for safe navigation. Therefore, the Hydrographic Service publishes nautical charts and nautical publications. Since the situation at sea changes continuously, you are required to keep these products up to date. You can do so by using the Notices to Mariners (NtMs).",
+      coverage: area.eez_nl,
+      endpoints: [
+        {id: "endpoint", urn: "https://msinm-nl.e-navigation.net"},
+      ]
     },
     smaImoMsinmMms: {
       provider: organization.sma,
@@ -611,7 +725,26 @@ function demoData() {
       id: "imo-msinm-mms-1",
       name: "SMA MSI-NM Swedish waters (mms)",
       description: "The Swedish Maritime Administration issues navigational warnings for Swedish waters. Navigational warnings are generally based on information reported to the Swedish Maritime Administration by vessels, ports, military agencies, etc. Transmissions to mariners are provided by MSI SWEDEN.",
-      coverage: area.eez_se
+      coverage: area.eez_se,
+      endpoints: [
+        {id: "endpoint", urn: "mms://999000306"},
+      ]
+    },
+    smaImoMsinmWww: {
+      provider: organization.sma,
+      specification: technicalServices.imoMsinmWww,
+      key: {
+        specificationId: "imo-msinm-www",
+        providerId: "sma",
+        instanceId: "imo-msinm-www-1"
+      },
+      id: "imo-msinm-www-1",
+      name: "SMA MSI-NM Swedish waters (www)",
+      description: "The Swedish Maritime Administration issues navigational warnings for Swedish waters. Navigational warnings are generally based on information reported to the Swedish Maritime Administration by vessels, ports, military agencies, etc. Transmissions to mariners are provided by MSI SWEDEN.",
+      coverage: area.eez_se,
+      endpoints: [
+        {id: "endpoint", urn: "https://msinm-se.e-navigation.net"},
+      ]
     }
   };
 
