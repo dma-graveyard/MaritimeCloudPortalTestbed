@@ -158,6 +158,12 @@ footer .navbar-text, footer a {
     margin-bottom: 10px;
 }
 
+.truncated {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* app css stylesheet */
 
 .navbar {
