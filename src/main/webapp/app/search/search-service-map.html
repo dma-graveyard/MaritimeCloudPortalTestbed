@@ -36,9 +36,8 @@
                     <dt>provider</dt>        <dd>{{selectedService.provider.title}}</dd>
                     <dt>provider website</dt><dd class="truncated"><a target="_blank" href="{{selectedService.provider.url}}">{{selectedService.provider.url}}</a></dd>
                     <dt>description</dt>     <dd>{{selectedService.description}}</dd>
-                    <!--<dt>endpoint</dt>        <dd><a>{{selectedService.specification.transportType}}:{{selectedService.specification.id}}.{{selectedService.provider.name}}.{{selectedService.id}}</a></dd>-->
-                    <dt ng-if="selectedService.endpoints.length > 1">Endpoints:</dt><dd></dd>
-                    <dt ng-repeat-start="endpoint in selectedService.endpoints">{{endpoint.id}}</dt>
+                    <dt>Endpoints:</dt>
+                    <dt ng-repeat-start="endpoint in selectedService.endpoints"></dt>
                     <dd ng-repeat-end class="truncated"><a target="_blank" href="{{endpoint.urn}}">{{endpoint.urn}}</a></dd>
                 </dl>
             </div>
