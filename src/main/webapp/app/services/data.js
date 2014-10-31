@@ -487,8 +487,8 @@ function demoData() {
       description: "The Danish Maritime Authority issues navigational warnings for Danish waters. Navigational warnings are generally based on information reported to the Danish Maritime Administration by vessels, ports, military agencies, etc.",
       coverage: area.eez_dk,
       endpoints: [
-        {id: "primary", urn: "mms://999000301"},
-        {id: "secondary", urn: "mms://dma/imo-msinm-mms-1/secondary"}
+        {uri: "mms://999000301"},
+        {uri: "mms://dma/imo-msinm-mms-1/secondary"}
       ]
     },
     dmaImoMsinmWww: {
@@ -504,7 +504,7 @@ function demoData() {
       description: "The Danish Maritime Authority issues navigational warnings for Danish waters. Navigational warnings are generally based on information reported to the Danish Maritime Administration by vessels, ports, military agencies, etc.",
       coverage: area.eez_dk,
       endpoints: [
-        {id: "endpoint", urn: "https://msinm-dk.e-navigation.net"},
+        {uri: "https://msinm-dk.e-navigation.net"},
       ]
     },
     dmiImoMisDkRest: {
@@ -586,7 +586,7 @@ function demoData() {
       description: "Her Majesty’s Coastguard is responsible in the UK for the broadcast of Maritime Safety Information (MSI) on NAVTEX, VHF and MF and for providing the Radio Medical Advice Link Call (MEDILINK) Service.",
       coverage: area.eez_uk,
       endpoints: [
-        {id: "endpoint", urn: "mms://999000307"},
+        {uri: "mms://999000307"},
       ]
     },
     mcaImoMsinmWww: {
@@ -602,7 +602,7 @@ function demoData() {
       description: "Her Majesty’s Coastguard is responsible in the UK for the broadcast of Maritime Safety Information (MSI) on NAVTEX, VHF and MF and for providing the Radio Medical Advice Link Call (MEDILINK) Service.",
       coverage: area.eez_uk,
       endpoints: [
-        {id: "endpoint", urn: "https://msinm-uk.e-navigation.net"},
+        {uri: "https://msinm-uk.e-navigation.net"},
       ]
     },
     ncaImoMsinmMms: {
@@ -618,7 +618,7 @@ function demoData() {
       description: "The Norwegian Coastal Administration issues navigational warnings for Norwegian waters twice a day. Navigational warnings are generally based on information recieved from The Norwegian Mapping Authority (kartverket). Transmissions to mariners are provided by NCA.",
       coverage: area.eez_no,
       endpoints: [
-        {id: "endpoint", urn: "mms://999000305"},
+        {uri: "mms://999000305"},
       ]
     },
     ncaImoMsinmWww: {
@@ -634,7 +634,7 @@ function demoData() {
       description: "The Norwegian Coastal Administration issues navigational warnings for Norwegian waters twice a day. Navigational warnings are generally based on information recieved from The Norwegian Mapping Authority (kartverket). Transmissions to mariners are provided by NCA.",
       coverage: area.eez_no,
       endpoints: [
-        {id: "endpoint", urn: "https://msinm-no.e-navigation.net"},
+        {uri: "https://msinm-no.e-navigation.net"},
       ]
     },
     fmhaImoMsinmMms: {
@@ -650,7 +650,7 @@ function demoData() {
       description: "The Navigational Warnings and Information Service informs about important navigational occurrences and alterations in German waters and adjacent European waters.",
       coverage: area.eez_de,
       endpoints: [
-        {id: "endpoint", urn: "mms://999000302"},
+        {uri: "mms://999000302"},
       ]
     },
     fmhaImoMsinmWww: {
@@ -666,7 +666,7 @@ function demoData() {
       description: "The Navigational Warnings and Information Service informs about important navigational occurrences and alterations in German waters and adjacent European waters.",
       coverage: area.eez_de,
       endpoints: [
-        {id: "endpoint", urn: "https://msinm-de.e-navigation.net"},
+        {uri: "https://msinm-de.e-navigation.net"},
       ]
     },
     flhImoMsinmMms: {
@@ -695,7 +695,7 @@ function demoData() {
       description: "As a mariner, you need reliable data for safe navigation. Therefore, the Hydrographic Service publishes nautical charts and nautical publications. Since the situation at sea changes continuously, you are required to keep these products up to date. You can do so by using the Notices to Mariners (NtMs).",
       coverage: area.eez_nl,
       endpoints: [
-        {id: "endpoint", urn: "mms://999000304"},
+        {uri: "mms://999000304"},
       ]
     },
     rnnImoMsinmWww: {
@@ -711,7 +711,7 @@ function demoData() {
       description: "As a mariner, you need reliable data for safe navigation. Therefore, the Hydrographic Service publishes nautical charts and nautical publications. Since the situation at sea changes continuously, you are required to keep these products up to date. You can do so by using the Notices to Mariners (NtMs).",
       coverage: area.eez_nl,
       endpoints: [
-        {id: "endpoint", urn: "https://msinm-nl.e-navigation.net"},
+        {uri: "https://msinm-nl.e-navigation.net"},
       ]
     },
     smaImoMsinmMms: {
@@ -727,7 +727,7 @@ function demoData() {
       description: "The Swedish Maritime Administration issues navigational warnings for Swedish waters. Navigational warnings are generally based on information reported to the Swedish Maritime Administration by vessels, ports, military agencies, etc. Transmissions to mariners are provided by MSI SWEDEN.",
       coverage: area.eez_se,
       endpoints: [
-        {id: "endpoint", urn: "mms://999000306"},
+        {uri: "mms://999000306"},
       ]
     },
     smaImoMsinmWww: {
@@ -743,7 +743,7 @@ function demoData() {
       description: "The Swedish Maritime Administration issues navigational warnings for Swedish waters. Navigational warnings are generally based on information reported to the Swedish Maritime Administration by vessels, ports, military agencies, etc. Transmissions to mariners are provided by MSI SWEDEN.",
       coverage: area.eez_se,
       endpoints: [
-        {id: "endpoint", urn: "https://msinm-se.e-navigation.net"},
+        {uri: "https://msinm-se.e-navigation.net"},
       ]
     }
   };
