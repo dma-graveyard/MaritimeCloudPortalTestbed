@@ -8,36 +8,12 @@ var fitToPaths = function fitToPaths(mapId, leafletData, mapService) {
 
 angular.module('mcp.organizations.services', [])
 
-    .controller('ServiceInstanceDetailsController', ['$scope', 'mapService', 'MAP_DEFAULTS', 'leafletData', '$timeout',
-      function ($scope, mapService, MAP_DEFAULTS, leafletData, $timeout) {
-        console.log('$scope.service ', $scope.service);
-
-        angular.extend($scope, {
-          map: {
-            defaults: MAP_DEFAULTS.STATIC,
-            paths: mapService.shapesToPaths($scope.service.coverage)
-          },
-          events: {
-            map: {
-              enable: ['click'],
-              logic: 'emit'
-            }
-          },
-          openDetails: function () {
-            console.log('clicked');
-            ;
-          }
-        });
-
-        $scope.$on('leafletDirectiveMap.click', function (event) {
-          console.log("Event click: ", event);
-        });
-
-        // register a timeout that will fit (position and zoom) the map to its paths
-        $timeout(function () {
-          fitToPaths('map-' + $scope.$index, leafletData, mapService);
-        }, 0);
-
+    .controller('ServiceInstanceDetailsController', ['$scope',
+      function ($scope) {
+          $scope.details = { isCollapsed: true };
+          $scope.toggleDetails = function () {
+            $scope.details.isCollapsed = !$scope.details.isCollapsed;
+          };
       }])
 
     .controller('EditServiceInstanceController', ['$scope', '$location', '$modal', '$stateParams', '$state',
