@@ -233,6 +233,25 @@ Follow the startup process with
 
 Once up-n-running the result can be seen from the link below
 
+### Alternatively, skip the git-part
+
+Commit chamges and await build on jenkins.
+
+Log on to server and "reploy"
+
+    ssh enav@appsrv.e-navigation.net
+    cd enav-appsrv/mc_portal
+    ./portal.sh reploy
+
+This will download the latest build from jenkins and restart the server, hence short-cutting the git-commit-push-and-pull steps. Use this 
+method to avoid polluting the git deployment project repository with a lot of intermediate minor correction version 
+
+Follow the startup process with
+
+    tail –f portal.log
+
+Once up-n-running the result can be seen from the link below
+
 ### Demo [Maritime Cloud Portal] (http://portal.maritimecloud.net/app/index.html)
 
 Login with with "Tintin" or "admin". Password is "test" in both cases.
