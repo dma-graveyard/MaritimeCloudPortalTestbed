@@ -14,8 +14,8 @@
  */
 package net.maritimecloud.serviceregistry.query;
 
-import net.maritimecloud.serviceregistry.organizations.OrganizationCreatedEvent;
-import net.maritimecloud.serviceregistry.organizations.OrganizationNameAndSummaryChangedEvent;
+import net.maritimecloud.serviceregistry.organization.OrganizationCreatedEvent;
+import net.maritimecloud.serviceregistry.organization.OrganizationNameAndSummaryChangedEvent;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
