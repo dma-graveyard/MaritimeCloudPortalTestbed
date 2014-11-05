@@ -136,6 +136,23 @@
             <version>2.0</version>
         </dependency>
         
+        <dependency>
+            <groupId>org.axonframework</groupId>
+            <artifactId>axon-core</artifactId>
+            <version>2.3.2</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.axonframework</groupId>
+            <artifactId>axon-test</artifactId>
+            <version>2.3.2</version>
+        </dependency>        
+        <dependency>
+            <!-- added this one because axon serializer warned that it would ignore something when it was missing - not sure what it helped though!??! -->
+            <groupId>xom</groupId>
+            <artifactId>xom</artifactId>
+            <version>1.2.5</version>
+        </dependency>
+        
     </dependencies>
 
     <properties>
