@@ -12,27 +12,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.organizations;
-
-import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
-import org.axonframework.common.Assert;
+package net.maritimecloud.serviceregistry.organization;
 
 /**
- *
  * @author Christoffer Børrild
  */
-public class ChangeOrganizationNameAndSummaryCommand {
+public class OrganizationNameAndSummaryChangedEvent {
 
-    @TargetAggregateIdentifier
     private final OrganizationId organizationId;
     private final String name;
     private final String summary;
-    
-    public ChangeOrganizationNameAndSummaryCommand(OrganizationId organizationId, String name, String summary) {
-        Assert.notNull(organizationId, "The organizationId must be provided");
-        Assert.notNull(name, "The provided name cannot be null");
-        Assert.notNull(summary, "The provided summary cannot be null");
-        
+
+    public OrganizationNameAndSummaryChangedEvent(OrganizationId organizationId, String name, String summary) {
         this.organizationId = organizationId;
         this.name = name;
         this.summary = summary;
@@ -49,5 +40,5 @@ public class ChangeOrganizationNameAndSummaryCommand {
     public String getSummary() {
         return summary;
     }
-    
+
 }

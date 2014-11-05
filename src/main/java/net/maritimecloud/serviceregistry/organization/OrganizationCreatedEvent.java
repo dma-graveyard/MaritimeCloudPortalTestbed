@@ -12,18 +12,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.organizations;
+package net.maritimecloud.serviceregistry.organization;
+
+import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
 
 /**
+ *
  * @author Christoffer Børrild
  */
-public class OrganizationNameAndSummaryChangedEvent {
+public class OrganizationCreatedEvent {
 
+    @TargetAggregateIdentifier
     private final OrganizationId organizationId;
     private final String name;
     private final String summary;
 
-    public OrganizationNameAndSummaryChangedEvent(OrganizationId organizationId, String name, String summary) {
+    public OrganizationCreatedEvent(OrganizationId organizationId, String name, String summary) {
         this.organizationId = organizationId;
         this.name = name;
         this.summary = summary;
