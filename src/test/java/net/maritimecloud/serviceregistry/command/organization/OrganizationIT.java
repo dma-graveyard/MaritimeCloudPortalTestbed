@@ -16,9 +16,13 @@ package net.maritimecloud.serviceregistry.command.organization;
 
 import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
 import java.util.UUID;
+import javax.annotation.Resource;
+import net.maritimecloud.serviceregistry.query.OrganizationListener;
+import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import org.axonframework.repository.AggregateNotFoundException;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
 import org.junit.BeforeClass;
 
 /**
@@ -27,6 +31,9 @@ import org.junit.BeforeClass;
  * @author Christoffer Børrild
  */
 public class OrganizationIT extends AbstractAxonCqrsIT {
+    
+    @Resource
+    protected OrganizationQueryRepository organizationQueryRepository;
 
     final String itemId = UUID.randomUUID().toString();
     final OrganizationId organizationId = new OrganizationId(itemId);
@@ -35,6 +42,11 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
     @BeforeClass
     public static void setUpClass() {
         subscribe(Organization.class);
+    }
+    
+    @Before
+    public void setUp() {
+        subscribeListener(new OrganizationListener(organizationQueryRepository));
     }
 
     @Test

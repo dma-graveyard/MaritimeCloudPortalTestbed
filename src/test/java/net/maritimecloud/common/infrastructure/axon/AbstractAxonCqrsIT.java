@@ -15,10 +15,7 @@
 package net.maritimecloud.common.infrastructure.axon;
 
 import java.io.File;
-import javax.annotation.Resource;
 import net.maritimecloud.portal.config.ApplicationTestConfig;
-import net.maritimecloud.serviceregistry.query.OrganizationListener;
-import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.commandhandling.SimpleCommandBus;
 import org.axonframework.commandhandling.annotation.AggregateAnnotationCommandHandler;
@@ -33,7 +30,6 @@ import org.axonframework.eventstore.EventStore;
 import org.axonframework.eventstore.fs.FileSystemEventStore;
 import org.axonframework.eventstore.fs.SimpleEventFileResolver;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -46,9 +42,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = ApplicationTestConfig.class)
 public abstract class AbstractAxonCqrsIT {
-
-    @Resource
-    protected OrganizationQueryRepository organizationQueryRepository;
 
     static protected EventStore eventStore;
     static protected EventBus eventBus;
@@ -85,15 +78,18 @@ public abstract class AbstractAxonCqrsIT {
         AggregateAnnotationCommandHandler.subscribe(aggregateType, eventSourcingRepository, commandBus);
     }
 
+    /**
+     *  Subclasses should call this method in order to setup event listeners
+     * @param eventListener The Listener type to subscribe
+     */
+    protected static void subscribeListener(Object eventListener){
+        AnnotationEventListenerAdapter.subscribe(eventListener, eventBus);
+    }
+
     @AfterClass
     public static void tearDownClass() {
         // TODO:
         // cleanup files
-    }
-
-    @Before
-    public void setUp() {
-        AnnotationEventListenerAdapter.subscribe(new OrganizationListener(organizationQueryRepository), eventBus);
     }
 
 }
