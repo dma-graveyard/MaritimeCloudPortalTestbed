@@ -12,7 +12,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.servicespecification;
+package net.maritimecloud.serviceregistry.command.servicespecification;
 
 import java.util.Objects;
 import net.maritimecloud.portal.domain.model.ValueObject;

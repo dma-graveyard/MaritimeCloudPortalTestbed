@@ -17,7 +17,7 @@ package net.maritimecloud.common.infrastructure.axon;
 import java.io.File;
 import javax.annotation.Resource;
 import net.maritimecloud.portal.config.ApplicationTestConfig;
-import net.maritimecloud.serviceregistry.organization.Organization;
+import net.maritimecloud.serviceregistry.command.organization.Organization;
 import net.maritimecloud.serviceregistry.query.OrganizationListener;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import org.axonframework.commandhandling.CommandBus;

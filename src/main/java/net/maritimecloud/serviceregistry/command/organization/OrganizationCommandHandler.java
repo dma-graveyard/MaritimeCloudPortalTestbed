@@ -12,9 +12,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.organization;
+package net.maritimecloud.serviceregistry.command.organization;
 
-import net.maritimecloud.serviceregistry.servicespecification.ServiceSpecification;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
 import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.repository.Repository;
 

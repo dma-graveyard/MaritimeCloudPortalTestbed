@@ -12,42 +12,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.organization;
-
-import net.maritimecloud.serviceregistry.servicespecification.ServiceSpecificationId;
-import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
-import org.axonframework.common.Assert;
+package net.maritimecloud.serviceregistry.command.organization;
 
 /**
- *
  * @author Christoffer Børrild
  */
-public class PrepareServiceSpecificationCommand {
+public class OrganizationNameAndSummaryChangedEvent {
 
-    @TargetAggregateIdentifier
     private final OrganizationId organizationId;
-    private final ServiceSpecificationId serviceSpecificationId;
     private final String name;
     private final String summary;
 
-    public PrepareServiceSpecificationCommand(OrganizationId organizationId, ServiceSpecificationId serviceSpecificationId, String name, String summary) {
-        Assert.notNull(organizationId, "The organizationId of the owning organization must be provided");
-        Assert.notNull(serviceSpecificationId, "The serviceSpecificationId must be provided");
-        Assert.notNull(name, "The provided name cannot be null");
-        Assert.notNull(summary, "The provided summary cannot be null");
-
+    public OrganizationNameAndSummaryChangedEvent(OrganizationId organizationId, String name, String summary) {
         this.organizationId = organizationId;
-        this.serviceSpecificationId = serviceSpecificationId;
         this.name = name;
         this.summary = summary;
     }
 
     public OrganizationId getOrganizationId() {
         return organizationId;
-    }
-    
-    public ServiceSpecificationId getServiceSpecificationId() {
-        return serviceSpecificationId;
     }
 
     public String getName() {
@@ -57,5 +40,5 @@ public class PrepareServiceSpecificationCommand {
     public String getSummary() {
         return summary;
     }
-    
+
 }

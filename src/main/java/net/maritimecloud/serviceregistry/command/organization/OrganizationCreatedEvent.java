@@ -12,27 +12,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.organization;
+package net.maritimecloud.serviceregistry.command.organization;
 
 import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
-import org.axonframework.common.Assert;
 
 /**
  *
  * @author Christoffer Børrild
  */
-public class CreateOrganizationCommand {
+public class OrganizationCreatedEvent {
 
     @TargetAggregateIdentifier
     private final OrganizationId organizationId;
     private final String name;
     private final String summary;
 
-    public CreateOrganizationCommand(OrganizationId organizationId, String name, String summary) {
-        Assert.notNull(organizationId, "The organizationId must be provided");
-        Assert.notNull(name, "The provided name cannot be null");
-        Assert.notNull(summary, "The provided summary cannot be null");
-        
+    public OrganizationCreatedEvent(OrganizationId organizationId, String name, String summary) {
         this.organizationId = organizationId;
         this.name = name;
         this.summary = summary;

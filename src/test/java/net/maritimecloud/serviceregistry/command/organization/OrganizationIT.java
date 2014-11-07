@@ -12,7 +12,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.organization;
+package net.maritimecloud.serviceregistry.command.organization;
 
 import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
 import java.util.UUID;

@@ -12,12 +12,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.organization;
+package net.maritimecloud.serviceregistry.command.organization;
 
 import net.maritimecloud.common.infrastructure.axon.RepositoryMock;
-import net.maritimecloud.serviceregistry.servicespecification.ServiceSpecification;
-import net.maritimecloud.serviceregistry.servicespecification.ServiceSpecificationCreatedEvent;
-import net.maritimecloud.serviceregistry.servicespecification.ServiceSpecificationId;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationCreatedEvent;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 import org.axonframework.repository.Repository;
 import org.axonframework.test.FixtureConfiguration;
 import org.axonframework.test.Fixtures;

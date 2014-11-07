@@ -12,9 +12,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.servicespecification;
+package net.maritimecloud.serviceregistry.command.servicespecification;
 
-import net.maritimecloud.serviceregistry.organization.OrganizationId;
+import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import org.axonframework.test.FixtureConfiguration;
 import org.axonframework.test.Fixtures;
 import org.junit.Before;
