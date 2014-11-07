@@ -19,6 +19,7 @@ import java.util.UUID;
 import org.axonframework.repository.AggregateNotFoundException;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
 
 /**
  * Integration test for Organization commands
@@ -30,6 +31,11 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
     final String itemId = UUID.randomUUID().toString();
     final OrganizationId organizationId = new OrganizationId(itemId);
     final OrganizationId organizationId2 = new OrganizationId(itemId + "2");
+    
+    @BeforeClass
+    public static void setUpClass() {
+        subscribe(Organization.class);
+    }
 
     @Test
     public void testCqrs() {

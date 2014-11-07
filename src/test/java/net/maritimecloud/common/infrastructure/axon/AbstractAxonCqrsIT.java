@@ -17,7 +17,6 @@ package net.maritimecloud.common.infrastructure.axon;
 import java.io.File;
 import javax.annotation.Resource;
 import net.maritimecloud.portal.config.ApplicationTestConfig;
-import net.maritimecloud.serviceregistry.command.organization.Organization;
 import net.maritimecloud.serviceregistry.query.OrganizationListener;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import org.axonframework.commandhandling.CommandBus;
@@ -28,6 +27,7 @@ import org.axonframework.commandhandling.gateway.DefaultCommandGateway;
 import org.axonframework.eventhandling.EventBus;
 import org.axonframework.eventhandling.SimpleEventBus;
 import org.axonframework.eventhandling.annotation.AnnotationEventListenerAdapter;
+import org.axonframework.eventsourcing.EventSourcedAggregateRoot;
 import org.axonframework.eventsourcing.EventSourcingRepository;
 import org.axonframework.eventstore.EventStore;
 import org.axonframework.eventstore.fs.FileSystemEventStore;
@@ -50,30 +50,39 @@ public abstract class AbstractAxonCqrsIT {
     @Resource
     protected OrganizationQueryRepository organizationQueryRepository;
 
+    static protected EventStore eventStore;
     static protected EventBus eventBus;
     static protected CommandGateway commandGateway;
+    static protected CommandBus commandBus;
 
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpSuperClass() {
         // let's start with the Command Bus
-        CommandBus commandBus = new SimpleCommandBus();
+        commandBus = new SimpleCommandBus();
 
         // the CommandGateway provides a friendlier API
         commandGateway = new DefaultCommandGateway(commandBus);
 
         // we'll store Events on the FileSystem, in the "events/" folder
         //EventStore eventStore = new FileSystemEventStore(new JacksonSerializer(), new SimpleEventFileResolver(new File("./events")));
-        EventStore eventStore = new FileSystemEventStore(new SimpleEventFileResolver(new File("./target/events")));
+        eventStore = new FileSystemEventStore(new SimpleEventFileResolver(new File("./target/events")));
 
         // a Simple Event Bus will do
         eventBus = new SimpleEventBus();
-
+    }
+    
+    /**
+     *  Subclasses should call this method in order to setup repositories and command handlers etc...
+     * @param <T>
+     * @param aggregateType The aggregate type to prepare for
+     */
+    protected static <T extends EventSourcedAggregateRoot> void subscribe(Class<T> aggregateType){
         // we need to configure the repository
-        EventSourcingRepository<Organization> repository = new EventSourcingRepository<>(Organization.class, eventStore);
-        repository.setEventBus(eventBus);
+        EventSourcingRepository<T> eventSourcingRepository = new EventSourcingRepository<>(aggregateType, eventStore);
+        eventSourcingRepository.setEventBus(eventBus);
 
-        // Axon needs to know that our Organization Aggregate can handle commands
-        AggregateAnnotationCommandHandler.subscribe(Organization.class, repository, commandBus);
+        // Axon needs to know that our aggregate can handle commands
+        AggregateAnnotationCommandHandler.subscribe(aggregateType, eventSourcingRepository, commandBus);
     }
 
     @AfterClass
