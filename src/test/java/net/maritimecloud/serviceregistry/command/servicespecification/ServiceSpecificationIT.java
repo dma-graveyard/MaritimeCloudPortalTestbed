@@ -18,10 +18,9 @@ import net.maritimecloud.serviceregistry.command.organization.*;
 import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
 import java.util.UUID;
 import javax.annotation.Resource;
-import net.maritimecloud.serviceregistry.query.OrganizationListener;
-import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
+import net.maritimecloud.serviceregistry.query.ServiceSpecificationListener;
+import net.maritimecloud.serviceregistry.query.ServiceSpecificationQueryRepository;
 import org.axonframework.eventsourcing.EventSourcingRepository;
-import org.axonframework.repository.AggregateNotFoundException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -35,12 +34,10 @@ import org.junit.BeforeClass;
 public class ServiceSpecificationIT extends AbstractAxonCqrsIT {
     
     @Resource
-    protected OrganizationQueryRepository organizationQueryRepository;
+    protected ServiceSpecificationQueryRepository serviceSpecificationQueryRepository;
     
-
     private final String itemId = UUID.randomUUID().toString();
     private final OrganizationId organizationId = new OrganizationId(itemId);
-    private final OrganizationId organizationId2 = new OrganizationId(itemId + "2");
     private final ServiceSpecificationId serviceSpecificationId1 = new ServiceSpecificationId(UUID.randomUUID().toString());
     private final ServiceSpecificationId serviceSpecificationId2 = new ServiceSpecificationId(UUID.randomUUID().toString());
     private final ServiceSpecificationId serviceSpecificationId3 = new ServiceSpecificationId(UUID.randomUUID().toString());
@@ -60,7 +57,7 @@ public class ServiceSpecificationIT extends AbstractAxonCqrsIT {
     
     @Before
     public void setUp() {
-        subscribeListener(new OrganizationListener(organizationQueryRepository));
+        subscribeListener(new ServiceSpecificationListener(serviceSpecificationQueryRepository));
     }
 
     @Test
@@ -68,15 +65,21 @@ public class ServiceSpecificationIT extends AbstractAxonCqrsIT {
 
         commandGateway.sendAndWait(CREATE_ORGANIZATION_COMMAND);
         commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId1, A_NAME, A_SUMMARY_));
+        assertEquals(1, serviceSpecificationQueryRepository.count());
+        assertEquals("a name", serviceSpecificationQueryRepository.findOne(serviceSpecificationId1.identifier()).getName());
+        
         commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId2, A_NAME, A_SUMMARY_));
         commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId3, A_NAME, A_SUMMARY_));
 
+        assertEquals(3, serviceSpecificationQueryRepository.count());
+        
         try {
             commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId1, A_NAME, A_SUMMARY_));
             fail("Should fail as item already exist");
         } catch (Exception e) {
         }
         
+        assertEquals(3, serviceSpecificationQueryRepository.count());
     }
 
 }

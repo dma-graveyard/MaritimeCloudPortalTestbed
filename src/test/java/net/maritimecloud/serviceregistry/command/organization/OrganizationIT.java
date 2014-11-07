@@ -18,7 +18,6 @@ import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
 import java.util.UUID;
 import javax.annotation.Resource;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
-import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 import net.maritimecloud.serviceregistry.query.OrganizationListener;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import org.axonframework.eventsourcing.EventSourcingRepository;
@@ -42,9 +41,6 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
     private final String itemId = UUID.randomUUID().toString();
     private final OrganizationId organizationId = new OrganizationId(itemId);
     private final OrganizationId organizationId2 = new OrganizationId(itemId + "2");
-    private final ServiceSpecificationId serviceSpecificationId1 = new ServiceSpecificationId(UUID.randomUUID().toString());
-    private final ServiceSpecificationId serviceSpecificationId2 = new ServiceSpecificationId(UUID.randomUUID().toString());
-    private final ServiceSpecificationId serviceSpecificationId3 = new ServiceSpecificationId(UUID.randomUUID().toString());
     private static final String A_NAME = "a name";
     private static final String A_SUMMARY_ = "a summary ...";
     private final CreateOrganizationCommand CREATE_ORGANIZATION_COMMAND = new CreateOrganizationCommand(organizationId, A_NAME, A_SUMMARY_);
