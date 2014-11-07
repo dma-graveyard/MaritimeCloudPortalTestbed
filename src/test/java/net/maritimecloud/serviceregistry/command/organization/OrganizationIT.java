@@ -17,8 +17,11 @@ package net.maritimecloud.serviceregistry.command.organization;
 import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
 import java.util.UUID;
 import javax.annotation.Resource;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 import net.maritimecloud.serviceregistry.query.OrganizationListener;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
+import org.axonframework.eventsourcing.EventSourcingRepository;
 import org.axonframework.repository.AggregateNotFoundException;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -34,14 +37,26 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
     
     @Resource
     protected OrganizationQueryRepository organizationQueryRepository;
+    
 
-    final String itemId = UUID.randomUUID().toString();
-    final OrganizationId organizationId = new OrganizationId(itemId);
-    final OrganizationId organizationId2 = new OrganizationId(itemId + "2");
+    private final String itemId = UUID.randomUUID().toString();
+    private final OrganizationId organizationId = new OrganizationId(itemId);
+    private final OrganizationId organizationId2 = new OrganizationId(itemId + "2");
+    private final ServiceSpecificationId serviceSpecificationId1 = new ServiceSpecificationId(UUID.randomUUID().toString());
+    private final ServiceSpecificationId serviceSpecificationId2 = new ServiceSpecificationId(UUID.randomUUID().toString());
+    private final ServiceSpecificationId serviceSpecificationId3 = new ServiceSpecificationId(UUID.randomUUID().toString());
+    private static final String A_NAME = "a name";
+    private static final String A_SUMMARY_ = "a summary ...";
+    private final CreateOrganizationCommand CREATE_ORGANIZATION_COMMAND = new CreateOrganizationCommand(organizationId, A_NAME, A_SUMMARY_);
     
     @BeforeClass
     public static void setUpClass() {
-        subscribe(Organization.class);
+        EventSourcingRepository<Organization> organizationRepository = subscribe(Organization.class);
+        EventSourcingRepository<ServiceSpecification> serviceSpecificationRepository = subscribe(ServiceSpecification.class);
+        OrganizationCommandHandler organizationCommandHandler = new OrganizationCommandHandler();
+        organizationCommandHandler.setRepository(organizationRepository);
+        organizationCommandHandler.setServiceSpecificationRepository(serviceSpecificationRepository);
+        subscribeHandler(organizationCommandHandler);
     }
     
     @Before
@@ -52,11 +67,11 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
     @Test
     public void testCqrs() {
 
-        commandGateway.sendAndWait(new CreateOrganizationCommand(organizationId, "a name", "a summary ..."));
+        commandGateway.sendAndWait(CREATE_ORGANIZATION_COMMAND);
         commandGateway.sendAndWait(new ChangeOrganizationNameAndSummaryCommand(organizationId, "a new name", "a new summary ..."));
 
         try {
-            commandGateway.sendAndWait(new CreateOrganizationCommand(organizationId, "a name", "a summary ..."));
+            commandGateway.sendAndWait(CREATE_ORGANIZATION_COMMAND);
             fail("Should fail as item already exist");
         } catch (Exception e) {
         }
@@ -64,13 +79,31 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
         assertEquals(1, organizationQueryRepository.count());
         assertEquals("a new name", organizationQueryRepository.findOne(organizationId.identifier()).getName());
 
-        commandGateway.send(new CreateOrganizationCommand(organizationId2, "a name", "a summary ..."));
+        commandGateway.send(new CreateOrganizationCommand(organizationId2, A_NAME, A_SUMMARY_));
         assertEquals(2, organizationQueryRepository.count());
     }
 
     @Test(expected = AggregateNotFoundException.class)
     public void cannotChangeNonExistingOrganization() {
-        commandGateway.sendAndWait(new ChangeOrganizationNameAndSummaryCommand(new OrganizationId("notCreated"), "a name", "a summary ..."));
+        commandGateway.sendAndWait(new ChangeOrganizationNameAndSummaryCommand(new OrganizationId("notCreated"), A_NAME, A_SUMMARY_));
+    }
+
+    @Test
+    public void testPrepareServiceSpecification() {
+
+        commandGateway.sendAndWait(CREATE_ORGANIZATION_COMMAND);
+        commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId1, A_NAME, A_SUMMARY_));
+        commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId2, A_NAME, A_SUMMARY_));
+        commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId3, A_NAME, A_SUMMARY_));
+
+        try {
+            commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId1, A_NAME, A_SUMMARY_));
+            fail("Should fail as item already exist");
+        } catch (Exception e) {
+        }
+        
+//        Next up is to: add a view that will let me verify that three instances was created!!!
+        // Also, consider if this is the right class for testing SS
     }
 
 }

@@ -16,9 +16,11 @@ package net.maritimecloud.common.infrastructure.axon;
 
 import java.io.File;
 import net.maritimecloud.portal.config.ApplicationTestConfig;
+import net.maritimecloud.serviceregistry.command.organization.OrganizationCommandHandler;
 import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.commandhandling.SimpleCommandBus;
 import org.axonframework.commandhandling.annotation.AggregateAnnotationCommandHandler;
+import org.axonframework.commandhandling.annotation.AnnotationCommandHandlerAdapter;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.commandhandling.gateway.DefaultCommandGateway;
 import org.axonframework.eventhandling.EventBus;
@@ -69,13 +71,22 @@ public abstract class AbstractAxonCqrsIT {
      * @param <T>
      * @param aggregateType The aggregate type to prepare for
      */
-    protected static <T extends EventSourcedAggregateRoot> void subscribe(Class<T> aggregateType){
+    protected static <T extends EventSourcedAggregateRoot> EventSourcingRepository<T> subscribe(Class<T> aggregateType){
         // we need to configure the repository
         EventSourcingRepository<T> eventSourcingRepository = new EventSourcingRepository<>(aggregateType, eventStore);
         eventSourcingRepository.setEventBus(eventBus);
 
         // Axon needs to know that our aggregate can handle commands
         AggregateAnnotationCommandHandler.subscribe(aggregateType, eventSourcingRepository, commandBus);
+        return eventSourcingRepository;
+    }
+
+    /**
+     *  Subclasses should call this method in order to setup command handlers (except aggregates)
+     * @param commandHandler The command handler to subscribe to the commandBus. Must be initialized with repositories etc!
+     */
+    protected static void subscribeHandler(Object commandHandler){
+        AnnotationCommandHandlerAdapter.subscribe(commandHandler, commandBus);
     }
 
     /**
