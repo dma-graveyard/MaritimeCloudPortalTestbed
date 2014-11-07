@@ -12,13 +12,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.command.organization;
+package net.maritimecloud.serviceregistry.command.servicespecification;
 
+import net.maritimecloud.serviceregistry.command.organization.*;
 import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
 import java.util.UUID;
 import javax.annotation.Resource;
-import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
-import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 import net.maritimecloud.serviceregistry.query.OrganizationListener;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import org.axonframework.eventsourcing.EventSourcingRepository;
@@ -33,7 +32,7 @@ import org.junit.BeforeClass;
  * (run with 'mvn failsafe:integration-test')
  * @author Christoffer Børrild
  */
-public class OrganizationIT extends AbstractAxonCqrsIT {
+public class ServiceSpecificationIT extends AbstractAxonCqrsIT {
     
     @Resource
     protected OrganizationQueryRepository organizationQueryRepository;
@@ -65,27 +64,19 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
     }
 
     @Test
-    public void testCqrs() {
+    public void testPrepareServiceSpecification() {
 
         commandGateway.sendAndWait(CREATE_ORGANIZATION_COMMAND);
-        commandGateway.sendAndWait(new ChangeOrganizationNameAndSummaryCommand(organizationId, "a new name", "a new summary ..."));
+        commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId1, A_NAME, A_SUMMARY_));
+        commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId2, A_NAME, A_SUMMARY_));
+        commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId3, A_NAME, A_SUMMARY_));
 
         try {
-            commandGateway.sendAndWait(CREATE_ORGANIZATION_COMMAND);
+            commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId1, A_NAME, A_SUMMARY_));
             fail("Should fail as item already exist");
         } catch (Exception e) {
         }
-
-        assertEquals(1, organizationQueryRepository.count());
-        assertEquals("a new name", organizationQueryRepository.findOne(organizationId.identifier()).getName());
-
-        commandGateway.send(new CreateOrganizationCommand(organizationId2, A_NAME, A_SUMMARY_));
-        assertEquals(2, organizationQueryRepository.count());
-    }
-
-    @Test(expected = AggregateNotFoundException.class)
-    public void cannotChangeNonExistingOrganization() {
-        commandGateway.sendAndWait(new ChangeOrganizationNameAndSummaryCommand(new OrganizationId("notCreated"), A_NAME, A_SUMMARY_));
+        
     }
 
 }
