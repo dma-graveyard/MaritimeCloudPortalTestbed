@@ -34,7 +34,7 @@ public class OrganizationTest {
 
     @Test
     public void createOrganization() throws Exception {
-        fixture.given()
+        fixture.givenNoPriorActivity()
                 .when(new CreateOrganizationCommand(new OrganizationId("an organization id"), "a name", "a summary ..."))
                 .expectEvents(new OrganizationCreatedEvent(new OrganizationId("an organization id"), "a name", "a summary ..."));
     }

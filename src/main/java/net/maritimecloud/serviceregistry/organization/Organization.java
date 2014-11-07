@@ -14,6 +14,8 @@
  */
 package net.maritimecloud.serviceregistry.organization;
 
+import net.maritimecloud.serviceregistry.servicespecification.ServiceSpecification;
+import net.maritimecloud.serviceregistry.servicespecification.ServiceSpecificationId;
 import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.eventsourcing.annotation.AbstractAnnotatedAggregateRoot;
 import org.axonframework.eventsourcing.annotation.AggregateIdentifier;
@@ -30,14 +32,14 @@ import org.axonframework.eventsourcing.annotation.EventSourcingHandler;
  * <p>
  * @author Christoffer Børrild
  */
-public class Organization extends AbstractAnnotatedAggregateRoot {
+public class Organization extends AbstractAnnotatedAggregateRoot<OrganizationId> {
 
     @AggregateIdentifier
     private OrganizationId organizationId;
     private String name;
     private String summary;
 
-    public Organization() {
+    protected Organization() {
     }
 
     @CommandHandler
@@ -46,24 +48,32 @@ public class Organization extends AbstractAnnotatedAggregateRoot {
     }
 
     @CommandHandler
-    public void markCompleted(ChangeOrganizationNameAndSummaryCommand command) {
+    public void handle(ChangeOrganizationNameAndSummaryCommand command) {
         apply(new OrganizationNameAndSummaryChangedEvent(command.getOrganizationId(), command.getName(), command.getSummary()));
     }
 
     @EventSourcingHandler
     public void on(OrganizationCreatedEvent event) {
         this.organizationId = event.getOrganizationId();
-        this.name = event.getName();
-        this.summary = event.getSummary();
     }
-
-    @EventSourcingHandler
-    public void on(OrganizationNameAndSummaryChangedEvent event) {
-        this.organizationId = event.getOrganizationId();
-        this.name = event.getName();
-        this.summary = event.getSummary();
+    
+    /**
+     * Factory for creating a ServiceSpecification in "prepare"/"draft" mode.
+     * 
+     * ( Even thought this factory makes the CommandHandler for this use case somewhat 
+     *   cumbersome to test it serves the DDD valid purpose of guarding the invariant 
+     *   that a ServiceSpecification cannot be created for a non-existing or deleted
+     *   Organization )
+     * 
+     * @param serviceSpecificationId
+     * @param name
+     * @param summary
+     * @return 
+     */
+    public ServiceSpecification prepareServiceSpecification(ServiceSpecificationId serviceSpecificationId, String name, String summary) {
+        return new ServiceSpecification(organizationId, serviceSpecificationId, name, summary);
     }
-
+    
 //    private OrganizationId organizationId;
 //    private String name;
 //    private String summary;

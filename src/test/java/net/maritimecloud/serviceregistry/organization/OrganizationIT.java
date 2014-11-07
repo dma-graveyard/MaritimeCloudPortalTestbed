@@ -14,6 +14,7 @@
  */
 package net.maritimecloud.serviceregistry.organization;
 
+import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
 import java.util.UUID;
 import org.axonframework.repository.AggregateNotFoundException;
 import org.junit.Test;
