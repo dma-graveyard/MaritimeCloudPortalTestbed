@@ -20,6 +20,7 @@ import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.eventsourcing.annotation.AbstractAnnotatedAggregateRoot;
 import org.axonframework.eventsourcing.annotation.AggregateIdentifier;
 import org.axonframework.eventsourcing.annotation.EventSourcingHandler;
+import org.springframework.stereotype.Component;
 
 /**
  * Responsibilities (in the ServiceRegistry context):
@@ -32,6 +33,7 @@ import org.axonframework.eventsourcing.annotation.EventSourcingHandler;
  * <p>
  * @author Christoffer Børrild
  */
+@Component
 public class Organization extends AbstractAnnotatedAggregateRoot<OrganizationId> {
 
     @AggregateIdentifier

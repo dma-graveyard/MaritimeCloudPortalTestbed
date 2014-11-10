@@ -14,20 +14,27 @@
  */
 package net.maritimecloud.serviceregistry.query;
 
+import javax.annotation.Resource;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationCreatedEvent;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationNameAndSummaryChangedEvent;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Christoffer Børrild
  */
+@Component
 public class ServiceSpecificationListener {
 
     private final static Logger logger = LoggerFactory.getLogger(ServiceSpecificationQueryRepository.class);
 
+    @Resource
     private ServiceSpecificationQueryRepository servicespecificationQueryRepository;
+
+    public ServiceSpecificationListener() {
+    }
 
     public ServiceSpecificationListener(ServiceSpecificationQueryRepository servicespecificationQueryRepository) {
         this.servicespecificationQueryRepository = servicespecificationQueryRepository;

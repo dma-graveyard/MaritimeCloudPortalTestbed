@@ -16,6 +16,7 @@ package net.maritimecloud.common.infrastructure.axon;
 
 import java.io.File;
 import net.maritimecloud.portal.config.ApplicationTestConfig;
+import net.maritimecloud.portal.config.JpaConfig;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationCommandHandler;
 import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.commandhandling.SimpleCommandBus;
@@ -42,7 +43,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author Christoffer Børrild
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ApplicationTestConfig.class)
+@SpringApplicationConfiguration(classes = JpaConfig.class)
 public abstract class AbstractAxonCqrsIT {
 
     static protected EventStore eventStore;

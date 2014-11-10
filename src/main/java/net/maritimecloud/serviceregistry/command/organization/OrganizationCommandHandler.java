@@ -14,9 +14,11 @@
  */
 package net.maritimecloud.serviceregistry.command.organization;
 
+import javax.annotation.Resource;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
 import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.repository.Repository;
+import org.springframework.stereotype.Component;
 
 /**
  * Responsibilities (in the ServiceRegistry context):
@@ -32,9 +34,12 @@ import org.axonframework.repository.Repository;
  * 
  * @author Christoffer Børrild
  */
+@Component
 public class OrganizationCommandHandler {
 
+    @Resource
     private Repository<Organization> repository;
+    @Resource
     private Repository<ServiceSpecification> serviceSpecificationRepository;
 
     public void setRepository(Repository<Organization> organizationRepository) {

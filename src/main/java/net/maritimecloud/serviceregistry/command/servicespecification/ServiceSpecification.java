@@ -19,11 +19,13 @@ import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.eventsourcing.annotation.AbstractAnnotatedAggregateRoot;
 import org.axonframework.eventsourcing.annotation.AggregateIdentifier;
 import org.axonframework.eventsourcing.annotation.EventSourcingHandler;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Christoffer Børrild
  */
+@Component
 public class ServiceSpecification extends AbstractAnnotatedAggregateRoot<ServiceSpecificationId> {
 
     @AggregateIdentifier

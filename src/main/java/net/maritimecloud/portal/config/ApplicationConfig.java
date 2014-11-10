@@ -17,7 +17,6 @@ import net.maritimecloud.portal.infrastructure.persistence.JpaUserRepository;
 import net.maritimecloud.portal.infrastructure.service.SHA512EncryptionService;
 import net.maritimecloud.portal.resource.LogService;
 import net.maritimecloud.portal.resource.SimpleCORSFilter;
-import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.apache.velocity.app.VelocityEngine;
@@ -26,24 +25,19 @@ import org.glassfish.jersey.servlet.ServletProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.embedded.ServletListenerRegistrationBean;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
-import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 
 @Configuration
-//@ComponentScan(basePackageClasses = {/* rest */ /* domain */ /* persistence */ User.class}) //todo: replace with marker interfaces
-@EnableAutoConfiguration
-@EnableJpaRepositories(basePackageClasses = OrganizationQueryRepository.class)
-@EntityScan(basePackageClasses = {OrganizationQueryRepository.class}) //todo: replace with marker interfaces
+@Import(value = {AxonConfig.class, JpaConfig.class})
 public class ApplicationConfig {
 
     private static final Logger LOG = LoggerFactory.getLogger(LogService.class);

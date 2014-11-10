@@ -14,29 +14,35 @@
  */
 package net.maritimecloud.serviceregistry.command.organization;
 
-import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
 import java.util.UUID;
 import javax.annotation.Resource;
-import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
-import net.maritimecloud.serviceregistry.query.OrganizationListener;
+import net.maritimecloud.portal.config.ApplicationTestConfig;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
-import org.axonframework.eventsourcing.EventSourcingRepository;
+import org.axonframework.commandhandling.CommandExecutionException;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.repository.AggregateNotFoundException;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
- * Integration test for Organization commands
- * (run with 'mvn failsafe:integration-test')
+ * Integration test for Organization commands (run with 'mvn failsafe:integration-test')
+ * <p>
  * @author Christoffer Børrild
  */
-public class OrganizationIT extends AbstractAxonCqrsIT {
-    
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = ApplicationTestConfig.class)
+public class OrganizationIT /*extends AbstractAxonCqrsIT*/ {
+
+    @Resource
+    protected CommandGateway commandGateway;
+
     @Resource
     protected OrganizationQueryRepository organizationQueryRepository;
-    
 
     private final String itemId = UUID.randomUUID().toString();
     private final OrganizationId organizationId = new OrganizationId(itemId);
@@ -44,20 +50,10 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
     private static final String A_NAME = "a name";
     private static final String A_SUMMARY_ = "a summary ...";
     private final CreateOrganizationCommand CREATE_ORGANIZATION_COMMAND = new CreateOrganizationCommand(organizationId, A_NAME, A_SUMMARY_);
-    
-    @BeforeClass
-    public static void setUpClass() {
-        EventSourcingRepository<Organization> organizationRepository = subscribe(Organization.class);
-        EventSourcingRepository<ServiceSpecification> serviceSpecificationRepository = subscribe(ServiceSpecification.class);
-        OrganizationCommandHandler organizationCommandHandler = new OrganizationCommandHandler();
-        organizationCommandHandler.setRepository(organizationRepository);
-        organizationCommandHandler.setServiceSpecificationRepository(serviceSpecificationRepository);
-        subscribeHandler(organizationCommandHandler);
-    }
-    
+
     @Before
     public void setUp() {
-        subscribeListener(new OrganizationListener(organizationQueryRepository));
+        organizationQueryRepository.deleteAll();
     }
 
     @Test
@@ -80,8 +76,12 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
     }
 
     @Test(expected = AggregateNotFoundException.class)
-    public void cannotChangeNonExistingOrganization() {
-        commandGateway.sendAndWait(new ChangeOrganizationNameAndSummaryCommand(new OrganizationId("notCreated"), A_NAME, A_SUMMARY_));
+    public void cannotChangeNonExistingOrganization() throws Throwable {
+        try {
+            commandGateway.sendAndWait(new ChangeOrganizationNameAndSummaryCommand(new OrganizationId("notCreated"), A_NAME, A_SUMMARY_));
+        } catch (CommandExecutionException e) {
+            throw e.getCause();
+        }
     }
 
 }

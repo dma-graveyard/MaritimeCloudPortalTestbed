@@ -14,25 +14,36 @@
  */
 package net.maritimecloud.serviceregistry.query;
 
+import javax.annotation.Resource;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationCreatedEvent;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationNameAndSummaryChangedEvent;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Christoffer Børrild
  */
+@Component
 public class OrganizationListener {
 
     private final static Logger logger = LoggerFactory.getLogger(OrganizationQueryRepository.class);
 
+    @Resource
     private OrganizationQueryRepository organizationQueryRepository;
+
+    public OrganizationListener() {
+    }
 
     public OrganizationListener(OrganizationQueryRepository organizationQueryRepository) {
         this.organizationQueryRepository = organizationQueryRepository;
     }
 
+    public void setOrganizationQueryRepository(OrganizationQueryRepository organizationQueryRepository) {
+        this.organizationQueryRepository = organizationQueryRepository;
+    }
+    
     @EventHandler
     public void on(OrganizationCreatedEvent event) {
         logger.debug("About to handle the OrganizationCreatedEvent: {}", event);

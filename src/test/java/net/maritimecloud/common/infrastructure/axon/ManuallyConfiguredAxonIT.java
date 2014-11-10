@@ -12,35 +12,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.command.servicespecification;
+package net.maritimecloud.common.infrastructure.axon;
 
+import net.maritimecloud.serviceregistry.command.servicespecification.*;
 import net.maritimecloud.serviceregistry.command.organization.*;
-import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
 import java.util.UUID;
 import javax.annotation.Resource;
-import net.maritimecloud.portal.config.ApplicationTestConfig;
 import net.maritimecloud.serviceregistry.query.ServiceSpecificationListener;
 import net.maritimecloud.serviceregistry.query.ServiceSpecificationQueryRepository;
-import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.axonframework.eventsourcing.EventSourcingRepository;
 import org.junit.Test;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
 /**
- * Integration test for Organization commands
+ * Integration test not using spring for wiring Axon components.
+ * Kept for reference in case we need to opt out of spring.
+ * 
  * (run with 'mvn failsafe:integration-test')
+ * 
  * @author Christoffer Børrild
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ApplicationTestConfig.class)
-public class ServiceSpecificationIT extends AbstractAxonCqrsIT {
+public class ManuallyConfiguredAxonIT extends AbstractAxonCqrsIT {
     
-    @Resource
-    protected CommandGateway commandGateway;
-
     @Resource
     protected ServiceSpecificationQueryRepository serviceSpecificationQueryRepository;
     
@@ -53,15 +48,25 @@ public class ServiceSpecificationIT extends AbstractAxonCqrsIT {
     private static final String A_SUMMARY_ = "a summary ...";
     private final CreateOrganizationCommand CREATE_ORGANIZATION_COMMAND = new CreateOrganizationCommand(organizationId, A_NAME, A_SUMMARY_);
     
+    @BeforeClass
+    public static void setUpClass() {
+        EventSourcingRepository<Organization> organizationRepository = subscribe(Organization.class);
+        EventSourcingRepository<ServiceSpecification> serviceSpecificationRepository = subscribe(ServiceSpecification.class);
+        OrganizationCommandHandler organizationCommandHandler = new OrganizationCommandHandler();
+        organizationCommandHandler.setRepository(organizationRepository);
+        organizationCommandHandler.setServiceSpecificationRepository(serviceSpecificationRepository);
+        subscribeHandler(organizationCommandHandler);
+    }
+    
     @Before
     public void setUp() {
-        serviceSpecificationQueryRepository.deleteAll();
         subscribeListener(new ServiceSpecificationListener(serviceSpecificationQueryRepository));
     }
 
     @Test
-    public void prepareServiceSpecification() {
+    public void testPrepareServiceSpecification() {
 
+        serviceSpecificationQueryRepository.deleteAll();
         commandGateway.sendAndWait(CREATE_ORGANIZATION_COMMAND);
         commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId1, A_NAME, A_SUMMARY_));
         assertEquals(1, serviceSpecificationQueryRepository.count());
@@ -80,24 +85,5 @@ public class ServiceSpecificationIT extends AbstractAxonCqrsIT {
         
         assertEquals(3, serviceSpecificationQueryRepository.count());
     }
-
-    @Test
-    public void changeNameAndSummary() {
-
-        commandGateway.sendAndWait(CREATE_ORGANIZATION_COMMAND);
-        commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId1, A_NAME, A_SUMMARY_));
-        assertEquals(1, serviceSpecificationQueryRepository.count());
-        assertEquals("a name", serviceSpecificationQueryRepository.findOne(serviceSpecificationId1.identifier()).getName());
-        
-        commandGateway.sendAndWait(new ChangeServiceSpecificationNameAndSummaryCommand(serviceSpecificationId1, A_NAME+" version 2", A_SUMMARY_+" version 2"));
-        assertEquals("a name version 2", serviceSpecificationQueryRepository.findOne(serviceSpecificationId1.identifier()).getName());
-        assertEquals("a summary ... version 2", serviceSpecificationQueryRepository.findOne(serviceSpecificationId1.identifier()).getSummary());
-        
-    }
     
-        // Next up: 
-        // Wire up main (see https://github.com/MagnusSmith/axon-orders/tree/master/web-core/src/main/java/com/example/config )
-        // Add REST interface
-        // introduce ServiceInstances
-
 }
