@@ -17,13 +17,11 @@ package net.maritimecloud.portal.config;
 import java.io.File;
 import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.commandhandling.SimpleCommandBus;
-import org.axonframework.commandhandling.annotation.AnnotationCommandHandlerBeanPostProcessor;
 import org.axonframework.commandhandling.gateway.CommandGatewayFactoryBean;
 import org.axonframework.commandhandling.annotation.AggregateAnnotationCommandHandler;
 import org.axonframework.contextsupport.spring.AnnotationDriven;
 import org.axonframework.eventhandling.EventBus;
 import org.axonframework.eventhandling.SimpleEventBus;
-import org.axonframework.eventhandling.annotation.AnnotationEventListenerBeanPostProcessor;
 import org.axonframework.eventsourcing.EventSourcingRepository;
 import org.axonframework.eventstore.EventStore;
 import org.axonframework.eventstore.fs.FileSystemEventStore;
@@ -33,6 +31,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import net.maritimecloud.serviceregistry.command.organization.Organization;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
 
 /**
@@ -88,6 +87,13 @@ public class AxonConfig {
         repository.setEventBus(eventBus());
         return repository;
     }
+
+    @Bean
+    public Repository<ServiceInstance> serviceInstanceRepository() {
+        EventSourcingRepository repository = new EventSourcingRepository<>(ServiceInstance.class, eventStore());
+        repository.setEventBus(eventBus());
+        return repository;
+    }
     
     // ------------------------------------------------------------------------
     // Currently Axon does not have spring support for discovering 
@@ -103,6 +109,11 @@ public class AxonConfig {
     @Bean
     public AggregateAnnotationCommandHandler<ServiceSpecification> serviceSpecificationAggregateCommandHandler() {
         return AggregateAnnotationCommandHandler.subscribe(ServiceSpecification.class, serviceSpecificationRepository(), commandBus());
+    }
+    
+    @Bean
+    public AggregateAnnotationCommandHandler<ServiceInstance> serviceInstanceAggregateCommandHandler() {
+        return AggregateAnnotationCommandHandler.subscribe(ServiceInstance.class, serviceInstanceRepository(), commandBus());
     }
 
 }

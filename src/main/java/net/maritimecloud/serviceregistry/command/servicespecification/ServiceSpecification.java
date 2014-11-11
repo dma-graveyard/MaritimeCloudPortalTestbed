@@ -49,7 +49,7 @@ public class ServiceSpecification extends AbstractAnnotatedAggregateRoot<Service
     @EventSourcingHandler
     public void on(ServiceSpecificationCreatedEvent event) {
         this.serviceSpecificationId = event.getServiceSpecificationId();
-        this.organizationId = event.getOrganizationId();
+        this.organizationId = event.getOwnerId();
     }
     
 }

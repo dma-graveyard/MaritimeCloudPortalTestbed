@@ -12,36 +12,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.command.servicespecification;
+package net.maritimecloud.serviceregistry.command.serviceinstance;
 
-import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
 
 /**
- *
  * @author Christoffer Børrild
  */
-public class ServiceSpecificationCreatedEvent {
+public class ServiceInstanceNameAndSummaryChangedEvent {
 
     @TargetAggregateIdentifier
-    private final ServiceSpecificationId serviceSpecificationId;
-    private final OrganizationId ownerId;
+    private final ServiceInstanceId serviceInstanceId;
     private final String name;
     private final String summary;
 
-    public ServiceSpecificationCreatedEvent(OrganizationId ownerId, ServiceSpecificationId serviceSpecificationId, String name, String summary) {
-        this.ownerId = ownerId;
-        this.serviceSpecificationId = serviceSpecificationId;
+    public ServiceInstanceNameAndSummaryChangedEvent(ServiceInstanceId serviceInstanceId, String name, String summary) {
+        this.serviceInstanceId = serviceInstanceId;
         this.name = name;
         this.summary = summary;
     }
 
-    public OrganizationId getOwnerId() {
-        return ownerId;
-    }
-
-    public ServiceSpecificationId getServiceSpecificationId() {
-        return serviceSpecificationId;
+    public ServiceInstanceId getServiceInstanceId() {
+        return serviceInstanceId;
     }
 
     public String getName() {

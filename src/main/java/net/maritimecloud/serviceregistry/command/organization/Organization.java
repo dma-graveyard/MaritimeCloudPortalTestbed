@@ -14,6 +14,9 @@
  */
 package net.maritimecloud.serviceregistry.command.organization;
 
+import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 import org.axonframework.commandhandling.annotation.CommandHandler;
@@ -74,6 +77,25 @@ public class Organization extends AbstractAnnotatedAggregateRoot<OrganizationId>
      */
     public ServiceSpecification prepareServiceSpecification(ServiceSpecificationId serviceSpecificationId, String name, String summary) {
         return new ServiceSpecification(organizationId, serviceSpecificationId, name, summary);
+    }
+
+    /**
+     * Factory for creating a ServiceInstance to be published by the Organization.
+     * 
+     * ( Even thought this factory makes the CommandHandler for this use case somewhat 
+     *   cumbersome to test it serves the DDD valid purpose of guarding the invariant 
+     *   that a ServiceInstance cannot be created for a non-existing or deleted
+     *   Organization )
+     * 
+     * @param specificationId
+     * @param serviceInstanceId
+     * @param name
+     * @param summary
+     * @param coverage 
+     * @return  
+     */
+    public ServiceInstance provideServiceInstance(ServiceSpecificationId specificationId, ServiceInstanceId serviceInstanceId, String name, String summary, Coverage coverage) {
+        return new ServiceInstance(organizationId, specificationId, serviceInstanceId, name, summary, coverage);
     }
     
 //    private OrganizationId organizationId;

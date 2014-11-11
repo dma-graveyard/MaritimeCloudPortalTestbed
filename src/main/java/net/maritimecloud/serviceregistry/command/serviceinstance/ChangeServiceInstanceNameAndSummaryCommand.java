@@ -12,36 +12,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.command.servicespecification;
+package net.maritimecloud.serviceregistry.command.serviceinstance;
 
-import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
+import org.axonframework.common.Assert;
 
 /**
  *
  * @author Christoffer Børrild
  */
-public class ServiceSpecificationCreatedEvent {
+public class ChangeServiceInstanceNameAndSummaryCommand {
 
     @TargetAggregateIdentifier
-    private final ServiceSpecificationId serviceSpecificationId;
-    private final OrganizationId ownerId;
+    private final ServiceInstanceId serviceInstanceId;
     private final String name;
     private final String summary;
 
-    public ServiceSpecificationCreatedEvent(OrganizationId ownerId, ServiceSpecificationId serviceSpecificationId, String name, String summary) {
-        this.ownerId = ownerId;
-        this.serviceSpecificationId = serviceSpecificationId;
+    public ChangeServiceInstanceNameAndSummaryCommand(ServiceInstanceId serviceInstanceId, String name, String summary) {
+        Assert.notNull(serviceInstanceId, "The serviceInstanceId must be provided");
+        Assert.notNull(name, "The provided name cannot be null");
+        Assert.notNull(summary, "The provided summary cannot be null");
+
+        this.serviceInstanceId = serviceInstanceId;
         this.name = name;
         this.summary = summary;
     }
 
-    public OrganizationId getOwnerId() {
-        return ownerId;
-    }
-
-    public ServiceSpecificationId getServiceSpecificationId() {
-        return serviceSpecificationId;
+    public ServiceInstanceId getServiceInstanceId() {
+        return serviceInstanceId;
     }
 
     public String getName() {

@@ -15,6 +15,7 @@
 package net.maritimecloud.serviceregistry.command.organization;
 
 import javax.annotation.Resource;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
 import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.repository.Repository;
@@ -22,16 +23,16 @@ import org.springframework.stereotype.Component;
 
 /**
  * Responsibilities (in the ServiceRegistry context):
- * 
  * <p>
- * Creates ServiceSpecifications and provides ServiceInstances
- * (Provides factories for ServiceSpecifications and ServiceInstances, this protects the invariant that )
+ * <p>
+ * Creates ServiceSpecifications and provides ServiceInstances (Provides factories for ServiceSpecifications and ServiceInstances, this
+ * protects the invariant that )
  * <p>
  * Makes sure that ServiceSpecifications and ServiceInstances has a unique identity within the owning organization
  * <p>
  * Maintains the lists of ServiceSpecifications and ServiceInstances held by an organization
  * <p>
- * 
+ * <p>
  * @author Christoffer Børrild
  */
 @Component
@@ -41,6 +42,8 @@ public class OrganizationCommandHandler {
     private Repository<Organization> repository;
     @Resource
     private Repository<ServiceSpecification> serviceSpecificationRepository;
+    @Resource
+    private Repository<ServiceInstance> serviceInstanceRepository;
 
     public void setRepository(Repository<Organization> organizationRepository) {
         this.repository = organizationRepository;
@@ -52,17 +55,46 @@ public class OrganizationCommandHandler {
 
     @CommandHandler
     public void handle(PrepareServiceSpecificationCommand command) {
-        
+
         Organization organization = repository.load(command.getOrganizationId());
-        
-        if(organization.isDeleted())
+
+        if (organization.isDeleted()) {
             throw new IllegalArgumentException("Organization exists no more. " + command.getOrganizationId());
-        
-        ServiceSpecification serviceSpecification = 
-                organization.prepareServiceSpecification(command.getServiceSpecificationId(), command.getName(), command.getSummary());
+        }
+
+        ServiceSpecification serviceSpecification
+                = organization.prepareServiceSpecification(command.getServiceSpecificationId(), command.getName(), command.getSummary());
 
         serviceSpecificationRepository.add(serviceSpecification);
-        
+
+    }
+
+    @CommandHandler
+    public void handle(ProvideServiceInstanceCommand command) {
+
+        Organization organization = repository.load(command.getProviderId());
+
+        if (organization.isDeleted()) {
+            throw new IllegalArgumentException("Organization exists no more. " + command.getProviderId());
+        }
+
+        ServiceSpecification serviceSpecification
+                = serviceSpecificationRepository.load(command.getSpecificationId());
+
+        if (serviceSpecification.isDeleted()) {
+            throw new IllegalArgumentException("Service specification exists no more. " + command.getProviderId());
+        }
+
+        ServiceInstance serviceInstance
+                = organization.provideServiceInstance(
+                        command.getSpecificationId(),
+                        command.getServiceInstanceId(),
+                        command.getName(),
+                        command.getSummary(),
+                        command.getCoverage());
+
+        serviceInstanceRepository.add(serviceInstance);
+
     }
 
 }
