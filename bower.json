@@ -8,12 +8,12 @@
   ],
   "dependencies": {
     "bootstrap": "latest",
-    "angular": "latest",
-    "angular-resource": "latest",
-    "angular-bootstrap": "latest",
-    "angular-ui-router": "latest",
-    "angular-busy": "~4.1.0",
-    "angular-leaflet-directive": "*",
+    "angular": "~1.2.26",
+    "angular-resource": "~1.2.26",
+    "angular-bootstrap": "0.11.2",
+    "angular-ui-router": "0.2.10",
+    "angular-busy": "4.1.0",
+    "angular-leaflet-directive": "0.7.8",
     "leaflet": "~0.7.3",
     "leaflet.draw": "*",
     "open-sans-fontface": "~1.1.0",
@@ -22,7 +22,7 @@
     "angular-sanitize": "~1.2.26"
   },
   "devDependencies": {
-    "angular-mocks": "latest",
+    "angular-mocks": "~1.2.26",
     "chai": "*",
     "mocha": "*"
   },
