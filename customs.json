@@ -28,6 +28,7 @@
     "popover": {},
     "ui-view": {
       "context": "div"
-    }
+    },
+    "collapse": {}
   }
 }
