@@ -325,7 +325,7 @@ function demoData() {
     www: 'WWW'
   };
 
-  var technicalServices = {
+  var serviceSpecifications = {
     imoMisRest: {
       id: 'imo-mis-rest',
       owner: organization.imo,
@@ -477,7 +477,7 @@ function demoData() {
 
     dmaImoMsinmMms: {
       provider: organization.dma,
-      specification: technicalServices.imoMsinmMms,
+      specification: serviceSpecifications.imoMsinmMms,
       key: {
         specificationId: "imo-msinm-mms",
         providerId: "dma",
@@ -494,7 +494,7 @@ function demoData() {
     },
     dmaImoMsinmWww: {
       provider: organization.dma,
-      specification: technicalServices.imoMsinmWww,
+      specification: serviceSpecifications.imoMsinmWww,
       key: {
         specificationId: "imo-msinm-www",
         providerId: "dma",
@@ -510,7 +510,7 @@ function demoData() {
     },
     dmiImoMisDkRest: {
       provider: organization.dmi,
-      specification: technicalServices.imoMisRest,
+      specification: serviceSpecifications.imoMisRest,
       key: {
         specificationId: "imo-mis-rest", // [TechnicalServiceId]
         providerId: "dmi", // [MaritimeId (=OrganizationId/UserId)]
@@ -524,7 +524,7 @@ function demoData() {
     },
     dmiImoMisDkWww: {
       provider: organization.dmi,
-      specification: technicalServices.imoMisWww,
+      specification: serviceSpecifications.imoMisWww,
       key: {
         specificationId: "imo-mis-www",
         providerId: "dmi",
@@ -537,7 +537,7 @@ function demoData() {
     },
     dmiImoMisGlWww: {
       provider: organization.dmi,
-      specification: technicalServices.imoMisWww,
+      specification: serviceSpecifications.imoMisWww,
       key: {
         specificationId: "imo-mis-www",
         providerId: "dmi",
@@ -550,7 +550,7 @@ function demoData() {
     },
     dmiImoMisFoRest: {
       provider: organization.dmi,
-      specification: technicalServices.imoMisRest,
+      specification: serviceSpecifications.imoMisRest,
       key: {
         specificationId: "imo-mis-rest",
         providerId: "dmi",
@@ -563,7 +563,7 @@ function demoData() {
     },
     dmiImoMisFoWww: {
       provider: organization.dmi,
-      specification: technicalServices.imoMisWww,
+      specification: serviceSpecifications.imoMisWww,
       key: {
         specificationId: "imo-mis-www",
         providerId: "dmi",
@@ -576,7 +576,7 @@ function demoData() {
     },
     mcaImoMsinmMms: {
       provider: organization.mca,
-      specification: technicalServices.imoMsinmMms,
+      specification: serviceSpecifications.imoMsinmMms,
       key: {
         specificationId: "imo-msinm-mms",
         providerId: "mca",
@@ -592,7 +592,7 @@ function demoData() {
     },
     mcaImoMsinmWww: {
       provider: organization.mca,
-      specification: technicalServices.imoMsinmWww,
+      specification: serviceSpecifications.imoMsinmWww,
       key: {
         specificationId: "imo-msinm-www",
         providerId: "mca",
@@ -608,7 +608,7 @@ function demoData() {
     },
     ncaImoMsinmMms: {
       provider: organization.nca,
-      specification: technicalServices.imoMsinmMms,
+      specification: serviceSpecifications.imoMsinmMms,
       key: {
         specificationId: "imo-msinm-mms",
         providerId: "nca",
@@ -624,7 +624,7 @@ function demoData() {
     },
     ncaImoMsinmWww: {
       provider: organization.nca,
-      specification: technicalServices.imoMsinmWww,
+      specification: serviceSpecifications.imoMsinmWww,
       key: {
         specificationId: "imo-msinm-www",
         providerId: "nca",
@@ -640,7 +640,7 @@ function demoData() {
     },
     fmhaImoMsinmMms: {
       provider: organization.fmha,
-      specification: technicalServices.imoMsinmMms,
+      specification: serviceSpecifications.imoMsinmMms,
       key: {
         specificationId: "imo-msinm-mms",
         providerId: "fmha",
@@ -656,7 +656,7 @@ function demoData() {
     },
     fmhaImoMsinmWww: {
       provider: organization.fmha,
-      specification: technicalServices.imoMsinmWww,
+      specification: serviceSpecifications.imoMsinmWww,
       key: {
         specificationId: "imo-msinm-www",
         providerId: "fmha",
@@ -672,7 +672,7 @@ function demoData() {
     },
     flhImoMsinmMms: {
       provider: organization.flh,
-      specification: technicalServices.imoMsinmMms,
+      specification: serviceSpecifications.imoMsinmMms,
       key: {
         specificationId: "imo-msinm-mms",
         providerId: "flh",
@@ -685,7 +685,7 @@ function demoData() {
     },
     rnnImoMsinmMms: {
       provider: organization.rnn,
-      specification: technicalServices.imoMsinmMms,
+      specification: serviceSpecifications.imoMsinmMms,
       key: {
         specificationId: "imo-msinm-mms",
         providerId: "rnn",
@@ -701,7 +701,7 @@ function demoData() {
     },
     rnnImoMsinmWww: {
       provider: organization.rnn,
-      specification: technicalServices.imoMsinmWww,
+      specification: serviceSpecifications.imoMsinmWww,
       key: {
         specificationId: "imo-msinm-www",
         providerId: "rnn",
@@ -717,7 +717,7 @@ function demoData() {
     },
     smaImoMsinmMms: {
       provider: organization.sma,
-      specification: technicalServices.imoMsinmMms,
+      specification: serviceSpecifications.imoMsinmMms,
       key: {
         specificationId: "imo-msinm-mms",
         providerId: "sma",
@@ -733,7 +733,7 @@ function demoData() {
     },
     smaImoMsinmWww: {
       provider: organization.sma,
-      specification: technicalServices.imoMsinmWww,
+      specification: serviceSpecifications.imoMsinmWww,
       key: {
         specificationId: "imo-msinm-www",
         providerId: "sma",
@@ -769,7 +769,7 @@ function demoData() {
   function createRandomServiceInstance(index) {
     var provider = randomOf(organization.demorg, organization.demorg),
         //transportType = randomOf(transportTypes),
-        specification = randomOf(technicalServices),
+        specification = randomOf(serviceSpecifications),
         instanceId = randomOf('dk', 'gl', 'uk', 'se', 'nl', 'no') + '-' + index,
         serviceInstance = randomOf(globalServiceInstances);
 
@@ -831,7 +831,7 @@ function demoData() {
     operationalServices: operationalServices,
     operationalServicesList: toList(operationalServices),
     transportTypes: transportTypes,
-    technicalServices: technicalServices,
+    serviceSpecifications: serviceSpecifications,
     serviceInstance: serviceInstances,
     serviceInstanceList: toList(serviceInstances)//.concat(createRandomServiceInstances(1000)),
   };

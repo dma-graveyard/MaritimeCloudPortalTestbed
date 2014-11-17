@@ -102,7 +102,7 @@ angular.module('mcp.search.services', [])
           if (filter.operationalService && service.specification.operationalService.id !== filter.operationalService.id)
             return false;
 
-          if (filter.technicalSpecification && service.specification.id !== filter.technicalSpecification.id)
+          if (filter.serviceSpecification && service.specification.id !== filter.serviceSpecification.id)
             return false;
 
           if (filter.transportType && service.specification.transportType !== filter.transportType)
@@ -283,7 +283,7 @@ angular.module('mcp.search.services', [])
 
       this.data = {
         operationalServices: OperationalServiceService.query(),
-        technicalSpecifications: null,
+        serviceSpecifications: null,
         organizations: OrganizationService.query(),
         transportTypes: {
           mms: 'MMS',
@@ -306,7 +306,7 @@ angular.module('mcp.search.services', [])
         location: null,
         operationalService: null,
         provider: null,
-        technicalSpecification: null,
+        serviceSpecification: null,
         transportType: null
       };
 
@@ -315,7 +315,7 @@ angular.module('mcp.search.services', [])
         delete this.filter.location;
         delete this.filter.operationalService;
         delete this.filter.provider;
-        delete this.filter.technicalSpecification;
+        delete this.filter.serviceSpecification;
         delete this.filter.transportType;
       };
 

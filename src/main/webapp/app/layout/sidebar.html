@@ -46,11 +46,11 @@
             </div>
 
             <div class="form-group" Xng-if="specifications">
-                <label for="specification">Technical Specification</label>
+                <label for="specification">Service Specification</label>
                 <select class='form-control input-sm' id='specification' 
                         ng-disabled="!specifications"
-                        ng-model="filter.technicalSpecification" ng-options="specification.name+' ('+specification.transportType+')' group by specification.owner.title for specification in specifications"
-                        popover="Filter by technical service specification" popover-trigger="mouseenter" popover-placement="right">
+                        ng-model="filter.serviceSpecification" ng-options="specification.name+' ('+specification.transportType+')' group by specification.owner.name for specification in specifications"
+                        popover="Filter by service specification" popover-trigger="mouseenter" popover-placement="right">
                     <option value="">All</option>
                 </select>
             </div>

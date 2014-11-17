@@ -308,7 +308,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         };
       }])
 
-    .factory('TechnicalServiceService', ['$resource',
+    .factory('ServiceSpecificationService', ['$resource',
       function ($resource) {
 //    return $resource('/rest/serviceInstance/:specificationname', {}, {
 //      query: {method: 'GET', params: {specificationname: ''}, isArray: true},
@@ -318,9 +318,9 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         return {
           query: function (request) {
             var array = [];
-            for (var key in data.technicalServices) {
-              if (data.technicalServices[key].operationalService.id === request) {
-                array.push(data.technicalServices[key]);
+            for (var key in data.serviceSpecifications) {
+              if (data.serviceSpecifications[key].operationalService.id === request) {
+                array.push(data.serviceSpecifications[key]);
               }
             }
             return array;

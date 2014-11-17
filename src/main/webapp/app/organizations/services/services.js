@@ -17,9 +17,9 @@ angular.module('mcp.organizations.services', [])
       }])
 
     .controller('EditServiceInstanceController', ['$scope', '$location', '$modal', '$stateParams', '$state',
-      'OperationalServiceService', 'TechnicalServiceService', 'ServiceInstanceService',
+      'OperationalServiceService', 'ServiceSpecificationService', 'ServiceInstanceService',
       function ($scope, $location, $modal, $stateParams, $state,
-          OperationalServiceService, TechnicalServiceService, ServiceInstanceService) {
+          OperationalServiceService, ServiceSpecificationService, ServiceInstanceService) {
 
         angular.extend($scope, {
           map: {},
@@ -90,7 +90,7 @@ angular.module('mcp.organizations.services', [])
         $scope.services = [$scope.service];
 
         $scope.$watch('selectedOperationalService', function (selectedOperationalService) {
-          $scope.specifications = selectedOperationalService ? TechnicalServiceService.query(selectedOperationalService.id) : [];
+          $scope.specifications = selectedOperationalService ? ServiceSpecificationService.query(selectedOperationalService.id) : [];
         });
 
         $scope.openCoverageEditor = function () {
