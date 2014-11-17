@@ -24,6 +24,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
@@ -63,7 +64,6 @@ public class OrganizationResource {
 //        commandRegistry.put(CreateOrganizationCommand.class.getCanonicalName(), CreateOrganizationCommand.class);
 //        commandRegistry.put(CreateOrganizationCommand.class.getSimpleName(), CreateOrganizationCommand.class);
 //    }
-
     @POST
     @Consumes(MediaType.APPLICATION_JSON + ";domain-model=*Command")
     @Produces(MediaType.APPLICATION_JSON)
@@ -93,6 +93,13 @@ public class OrganizationResource {
         }
 
         return organizationEntries;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{organizationId}")
+    public OrganizationEntry getOrganization(@PathParam("organizationId") String organizationId) {
+        return ApplicationServiceRegistry.organizationQueryRepository().findOne(organizationId);
     }
 
     @GET
@@ -189,8 +196,6 @@ public class OrganizationResource {
 //        //ApplicationServiceRegistry.commandGateway().sendAndWait(createOrganizationCommand);
 //        return createOrganizationCommand;
 //    }
-    
-    
 //    private Class resolveCommandClass(String contentType, String queryCommandName) {
 //        return resolveCommandClass(resolveCommandName(contentType, queryCommandName));
 //    }
