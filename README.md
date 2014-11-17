@@ -101,7 +101,7 @@ The webdriver-manager is a helper tool to easily get an instance of a Selenium S
 
     webdriver-manager update
 
-To start the selenium server instance see [end2end test] (#End2End test)
+To start the selenium server instance see [the end2end test section] (#end2end-test)
 
 See https://github.com/angular/protractor/blob/master/docs/tutorial.md for more on protractor and webdriver
 
