@@ -35,6 +35,8 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
   function($stateProvider, stateHelperProvider, $urlRouterProvider, USER_ROLES) {
     $urlRouterProvider.when("", "/");
     //$urlRouterProvider.when("/", "/landingpage");
+    
+    console.log('Version', mcpInfo.version);
 
     var publicArea = {
       name: 'public',

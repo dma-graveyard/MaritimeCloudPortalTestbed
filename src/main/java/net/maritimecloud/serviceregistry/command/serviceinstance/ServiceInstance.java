@@ -59,5 +59,5 @@ public class ServiceInstance extends AbstractAnnotatedAggregateRoot<ServiceInsta
     public void on(ServiceInstanceCreatedEvent event) {
         this.serviceInstanceId = event.getServiceInstanceId();
     }
-    
+
 }

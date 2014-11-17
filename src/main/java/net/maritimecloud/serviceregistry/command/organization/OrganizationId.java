@@ -14,19 +14,16 @@
  */
 package net.maritimecloud.serviceregistry.command.organization;
 
-import net.maritimecloud.portal.domain.model.ValueObject;
+import net.maritimecloud.serviceregistry.domain.DomainIdentifier;
 
 /**
  *
  * @author Christoffer Børrild
  */
-public class OrganizationId extends ValueObject {
-
-    private String identifier;
+public class OrganizationId extends DomainIdentifier<OrganizationId> {
 
     public OrganizationId(String anId) {
-        this();
-        this.setIdentifier(anId);
+        super(anId);
     }
 
     public OrganizationId(OrganizationId anOrganizationId) {
@@ -37,44 +34,4 @@ public class OrganizationId extends ValueObject {
         super();
     }
 
-    public String identifier() {
-        return this.identifier;
-    }
-
-    @Override
-    public boolean equals(Object anObject) {
-        boolean equalObjects = false;
-
-        if (anObject != null && this.getClass() == anObject.getClass()) {
-            OrganizationId typedObject = (OrganizationId) anObject;
-            equalObjects = this.identifier().equals(typedObject.identifier());
-        }
-
-        return equalObjects;
-    }
-
-    @Override
-    public int hashCode() {
-        int hashCodeValue =
-            + (2785 * 5)
-            + this.identifier().hashCode();
-
-        return hashCodeValue;
-    }
-
-    @Override
-    public String toString() {
-        return "OrganizationId [id=" + identifier + "]";
-    }
-
-    private void setIdentifier(String anIdentifier) {
-        this.assertArgumentNotEmpty(anIdentifier, "The organization identity is required.");
-        
-        //FIXME: add rule that check the general identity format rule dashes but no underscore (or viceversa?!?) etc...
-        
-        //this.assertArgumentLength(anId, 30, "The organization identity must be 30 characters or less.");
-        this.identifier = anIdentifier;
-    }    
-    
-    
 }

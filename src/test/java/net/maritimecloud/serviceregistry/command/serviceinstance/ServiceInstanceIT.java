@@ -14,7 +14,6 @@
  */
 package net.maritimecloud.serviceregistry.command.serviceinstance;
 
-import javax.transaction.Transactional;
 import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
 import net.maritimecloud.serviceregistry.command.organization.CreateOrganizationCommand;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
@@ -78,7 +77,6 @@ public class ServiceInstanceIT extends AbstractAxonCqrsIT {
     }
 
     @Test
-    @Transactional // FIXME: this smell - why do we need to add transactions here, but not elsewhere? Probably lacking some transaction control all toghether
     public void changeNameAndSummary() {
 
         // Given an organization with a Service Specification and a provided Service Instance
@@ -86,7 +84,6 @@ public class ServiceInstanceIT extends AbstractAxonCqrsIT {
         commandGateway().sendAndWait(prepareServiceSpecificationCommand);
         commandGateway().sendAndWait(provideServiceInstanceCommand);
         assertEquals(1, serviceInstanceQueryRepository.count());
-        entityManager.flush();
 
         // When the name and summary are changed 
         commandGateway().sendAndWait(

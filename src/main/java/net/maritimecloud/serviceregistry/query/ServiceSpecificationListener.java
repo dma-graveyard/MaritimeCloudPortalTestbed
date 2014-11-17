@@ -31,30 +31,31 @@ public class ServiceSpecificationListener {
     private final static Logger logger = LoggerFactory.getLogger(ServiceSpecificationQueryRepository.class);
 
     @Resource
-    private ServiceSpecificationQueryRepository servicespecificationQueryRepository;
+    private ServiceSpecificationQueryRepository serviceSpecificationQueryRepository;
 
     public ServiceSpecificationListener() {
     }
 
     public ServiceSpecificationListener(ServiceSpecificationQueryRepository servicespecificationQueryRepository) {
-        this.servicespecificationQueryRepository = servicespecificationQueryRepository;
+        this.serviceSpecificationQueryRepository = servicespecificationQueryRepository;
     }
 
     @EventHandler
     public void on(ServiceSpecificationCreatedEvent event) {
         logger.debug("About to handle the ServiceSpecificationCreatedEvent: {}", event);
-        ServiceSpecificationEntry servicespecificationEntry = new ServiceSpecificationEntry();
-        servicespecificationEntry.setServiceSpecificationIdentifier(event.getServiceSpecificationId().identifier());
-        servicespecificationEntry.setName(event.getName());
-        servicespecificationEntry.setSummary(event.getSummary());
-        servicespecificationQueryRepository.save(servicespecificationEntry);
+        ServiceSpecificationEntry entry = new ServiceSpecificationEntry();
+        entry.setServiceSpecificationIdentifier(event.getServiceSpecificationId().identifier());
+        entry.setOwnerIdentifier(event.getOwnerId().identifier());
+        entry.setName(event.getName());
+        entry.setSummary(event.getSummary());
+        serviceSpecificationQueryRepository.save(entry);
     }
 
     @EventHandler
     public void on(ServiceSpecificationNameAndSummaryChangedEvent event) {
-        ServiceSpecificationEntry servicespecificationEntry = servicespecificationQueryRepository.findOne(event.getServiceSpecificationId().identifier());
+        ServiceSpecificationEntry servicespecificationEntry = serviceSpecificationQueryRepository.findOne(event.getServiceSpecificationId().identifier());
         servicespecificationEntry.setName(event.getName());
         servicespecificationEntry.setSummary(event.getSummary());
-        servicespecificationQueryRepository.save(servicespecificationEntry);
+        serviceSpecificationQueryRepository.save(servicespecificationEntry);
     }
 }

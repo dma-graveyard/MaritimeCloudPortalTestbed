@@ -12,7 +12,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package net.maritimecloud.serviceregistry.query;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -22,5 +21,4 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  */
 public interface ServiceSpecificationQueryRepository extends PagingAndSortingRepository<ServiceSpecificationEntry, String> {
 
-    //OrganizationEntry findByNameIdentifier(String nameIdentifier);
 }

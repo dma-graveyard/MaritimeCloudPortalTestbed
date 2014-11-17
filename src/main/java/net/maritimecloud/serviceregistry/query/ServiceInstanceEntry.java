@@ -14,9 +14,8 @@
  */
 package net.maritimecloud.serviceregistry.query;
 
+import java.io.Serializable;
 import javax.persistence.Entity;
-import net.maritimecloud.serviceregistry.command.serviceinstance.*;
-import org.axonframework.eventsourcing.annotation.AbstractAnnotatedAggregateRoot;
 import org.springframework.data.annotation.Id;
 
 /**
@@ -24,7 +23,7 @@ import org.springframework.data.annotation.Id;
  * @author Christoffer Børrild
  */
 @Entity
-public class ServiceInstanceEntry extends AbstractAnnotatedAggregateRoot<ServiceInstanceId> {
+public class ServiceInstanceEntry implements Serializable {
 
     @Id
     @javax.persistence.Id
@@ -33,7 +32,7 @@ public class ServiceInstanceEntry extends AbstractAnnotatedAggregateRoot<Service
     private String specificationIdentifier;
     private String name;
     private String summary;
-    private String coverage; // FIXME: create complex versio of coverage instead of json-serialized one
+    private String coverage; // FIXME: create complex version of coverage instead of json-serialized one
 
     public String getServiceInstanceIdentifier() {
         return serviceInstanceIdentifier;
@@ -82,7 +81,6 @@ public class ServiceInstanceEntry extends AbstractAnnotatedAggregateRoot<Service
     public void setCoverage(String coverage) {
         this.coverage = coverage;
     }
-
 
     @Override
     public String toString() {

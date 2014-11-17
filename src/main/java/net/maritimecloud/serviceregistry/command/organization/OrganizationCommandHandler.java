@@ -56,17 +56,16 @@ public class OrganizationCommandHandler {
     @CommandHandler
     public void handle(PrepareServiceSpecificationCommand command) {
 
-        Organization organization = repository.load(command.getOrganizationId());
+        Organization organization = repository.load(command.getOwnerId());
 
         if (organization.isDeleted()) {
-            throw new IllegalArgumentException("Organization exists no more. " + command.getOrganizationId());
+            throw new IllegalArgumentException("Organization exists no more. " + command.getOwnerId());
         }
 
         ServiceSpecification serviceSpecification
                 = organization.prepareServiceSpecification(command.getServiceSpecificationId(), command.getName(), command.getSummary());
 
         serviceSpecificationRepository.add(serviceSpecification);
-
     }
 
     @CommandHandler

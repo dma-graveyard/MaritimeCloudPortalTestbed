@@ -14,6 +14,9 @@
  */
 package net.maritimecloud.serviceregistry.command.organization;
 
+import net.maritimecloud.serviceregistry.command.Command;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
 import org.axonframework.common.Assert;
 
@@ -21,18 +24,22 @@ import org.axonframework.common.Assert;
  *
  * @author Christoffer Børrild
  */
-public class CreateOrganizationCommand {
+public class CreateOrganizationCommand implements Command {
 
     @TargetAggregateIdentifier
     private final OrganizationId organizationId;
     private final String name;
     private final String summary;
 
-    public CreateOrganizationCommand(OrganizationId organizationId, String name, String summary) {
+    @JsonCreator
+    public CreateOrganizationCommand(
+            @JsonProperty("organizationId") OrganizationId organizationId,
+            @JsonProperty("name") String name,
+            @JsonProperty("summary") String summary) {
         Assert.notNull(organizationId, "The organizationId must be provided");
         Assert.notNull(name, "The provided name cannot be null");
         Assert.notNull(summary, "The provided summary cannot be null");
-        
+
         this.organizationId = organizationId;
         this.name = name;
         this.summary = summary;

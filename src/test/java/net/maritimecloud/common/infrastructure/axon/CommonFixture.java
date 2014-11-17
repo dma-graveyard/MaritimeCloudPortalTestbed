@@ -22,12 +22,15 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 
 /**
- * Helper class that provides useful instances of various test data.
+ * Helper class that provides useful constants and factories for instances of various test data.
  * <p>
  * @author Christoffer Børrild
  */
 public class CommonFixture {
-
+    
+    public static final String AN_ORG_ID = "AN_ORG_ID";
+    public static final String A_SPEC_ID = "A_SPEC_ID";
+    public static final String AN_INSTANCE_ID = "AN_INSTANCE_ID";
     public static final String A_NAME = "a name";
     public static final String A_SUMMARY = "a summary ...";
     public static final Coverage A_COVERAGE = new Coverage() {
@@ -48,7 +51,7 @@ public class CommonFixture {
     public static OrganizationId generateOrganizationId(String organizationIdentity) {
         return new OrganizationId(organizationIdentity);
     }
-    
+
     public static ServiceSpecificationId generateServiceSpecificationId() {
         return new ServiceSpecificationId(generateIdentity());
     }

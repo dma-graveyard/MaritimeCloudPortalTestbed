@@ -12,26 +12,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.command.servicespecification;
-
-import net.maritimecloud.serviceregistry.domain.DomainIdentifier;
+package net.maritimecloud.serviceregistry.command;
 
 /**
- *
+ * Resolves command names to a corresponding Class
+ * <p>
  * @author Christoffer Børrild
  */
-public class ServiceSpecificationId extends DomainIdentifier<ServiceSpecificationId> {
+public interface CommandClassResolver {
 
-    public ServiceSpecificationId(String anIdentifier) {
-        super(anIdentifier);
-    }
-
-    public ServiceSpecificationId(ServiceSpecificationId serviceSpecificationId) {
-        this(serviceSpecificationId.identifier());
-    }
-
-    protected ServiceSpecificationId() {
-        super();
-    }
+    Class resolve(String commandName);
 
 }

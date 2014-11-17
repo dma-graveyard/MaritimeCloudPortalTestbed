@@ -31,32 +31,32 @@ public class ServiceInstanceListener {
     private final static Logger logger = LoggerFactory.getLogger(ServiceInstanceQueryRepository.class);
 
     @Resource
-    private ServiceInstanceQueryRepository serviceinstanceQueryRepository;
+    private ServiceInstanceQueryRepository serviceInstanceQueryRepository;
 
     public ServiceInstanceListener() {
     }
 
     public ServiceInstanceListener(ServiceInstanceQueryRepository serviceinstanceQueryRepository) {
-        this.serviceinstanceQueryRepository = serviceinstanceQueryRepository;
+        this.serviceInstanceQueryRepository = serviceinstanceQueryRepository;
     }
 
     @EventHandler
     public void on(ServiceInstanceCreatedEvent event) {
         ServiceInstanceEntry entry = new ServiceInstanceEntry();
         entry.setServiceInstanceIdentifier(event.getServiceInstanceId().identifier());
+        entry.setProviderIdentifier(event.getProviderId().identifier());
+        entry.setSpecificationIdentifier(event.getSpecificationId().identifier());
         entry.setName(event.getName());
         entry.setSummary(event.getSummary());
         entry.setCoverage(event.getCoverage() == null ? "" : event.getCoverage().toString());
-        serviceinstanceQueryRepository.save(entry);
+        serviceInstanceQueryRepository.save(entry);
     }
 
     @EventHandler
     public void on(ServiceInstanceNameAndSummaryChangedEvent event) {
-        ServiceInstanceEntry serviceinstanceEntry = serviceinstanceQueryRepository.findOne(event.getServiceInstanceId().identifier());
-        System.out.println("serviceinstanceEntry before: "+serviceinstanceEntry);
+        ServiceInstanceEntry serviceinstanceEntry = serviceInstanceQueryRepository.findOne(event.getServiceInstanceId().identifier());
         serviceinstanceEntry.setName(event.getName());
         serviceinstanceEntry.setSummary(event.getSummary());
-        System.out.println("serviceinstanceEntry after: "+serviceinstanceEntry);
-        serviceinstanceQueryRepository.save(serviceinstanceEntry);
+        serviceInstanceQueryRepository.save(serviceinstanceEntry);
     }
 }

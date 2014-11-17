@@ -14,6 +14,9 @@
  */
 package net.maritimecloud.serviceregistry.command.organization;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import net.maritimecloud.serviceregistry.command.Command;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
@@ -24,7 +27,7 @@ import org.axonframework.common.Assert;
  *
  * @author Christoffer Børrild
  */
-public class ProvideServiceInstanceCommand {
+public class ProvideServiceInstanceCommand implements Command {
 
     @TargetAggregateIdentifier
     private final ServiceInstanceId serviceInstanceId;
@@ -34,7 +37,15 @@ public class ProvideServiceInstanceCommand {
     private final String summary;
     private final Coverage coverage;
 
-    public ProvideServiceInstanceCommand(OrganizationId providerId, ServiceSpecificationId specificationId, ServiceInstanceId serviceInstanceId, String name, String summary, Coverage coverage) {
+    @JsonCreator
+    public ProvideServiceInstanceCommand(
+            @JsonProperty("providerId") OrganizationId providerId,
+            @JsonProperty("specificationId") ServiceSpecificationId specificationId,
+            @JsonProperty("serviceInstanceId") ServiceInstanceId serviceInstanceId,
+            @JsonProperty("name") String name,
+            @JsonProperty("summary") String summary,
+            @JsonProperty("coverage") Coverage coverage
+    ) {
         Assert.notNull(providerId, "The organizationId of the providing organization must be supplied");
         Assert.notNull(specificationId, "The serviceSpecificationId must be provided");
         Assert.notNull(name, "The provided name cannot be null");
@@ -70,7 +81,5 @@ public class ProvideServiceInstanceCommand {
     public Coverage getCoverage() {
         return coverage;
     }
-    
-    
 
 }

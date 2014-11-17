@@ -17,6 +17,10 @@ package net.maritimecloud.portal.application;
 import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
 import net.maritimecloud.portal.infrastructure.mail.MailService;
 import net.maritimecloud.portal.resource.LogService;
+import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
+import net.maritimecloud.serviceregistry.query.ServiceInstanceQueryRepository;
+import net.maritimecloud.serviceregistry.query.ServiceSpecificationQueryRepository;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 
 /**
  * @author Christoffer Børrild
@@ -40,4 +44,23 @@ public class ApplicationServiceRegistry extends SpringContextBasedRegistry {
         return (MailService) get("mailService");
     }
 
+    // ------------------------------------------------------------------------------------------
+    // FIXME: should not live in a service registry - move to somewhere else!!!
+    // ------------------------------------------------------------------------------------------
+    
+    public static CommandGateway commandGateway () {
+        return (CommandGateway) get("commandGateway");
+    }
+
+    public static OrganizationQueryRepository organizationQueryRepository() {
+        return (OrganizationQueryRepository) get("organizationQueryRepository");
+    }
+
+    public static ServiceSpecificationQueryRepository serviceSpecificationQueryRepository() {
+        return (ServiceSpecificationQueryRepository) get("serviceSpecificationQueryRepository");
+    }
+
+    public static ServiceInstanceQueryRepository serviceInstanceQueryRepository() {
+        return (ServiceInstanceQueryRepository) get("serviceInstanceQueryRepository");
+    }
 }

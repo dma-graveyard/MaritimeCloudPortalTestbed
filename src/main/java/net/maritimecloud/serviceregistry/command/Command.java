@@ -12,26 +12,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.command.servicespecification;
-
-import net.maritimecloud.serviceregistry.domain.DomainIdentifier;
+package net.maritimecloud.serviceregistry.command;
 
 /**
- *
+ * Marker interface that makes it easier to identify CQRS Commands in the mist of classes.
+ * 
  * @author Christoffer Børrild
  */
-public class ServiceSpecificationId extends DomainIdentifier<ServiceSpecificationId> {
-
-    public ServiceSpecificationId(String anIdentifier) {
-        super(anIdentifier);
-    }
-
-    public ServiceSpecificationId(ServiceSpecificationId serviceSpecificationId) {
-        this(serviceSpecificationId.identifier());
-    }
-
-    protected ServiceSpecificationId() {
-        super();
-    }
-
+public interface Command {
+    
 }

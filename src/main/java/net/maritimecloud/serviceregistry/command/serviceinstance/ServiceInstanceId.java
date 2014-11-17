@@ -14,20 +14,16 @@
  */
 package net.maritimecloud.serviceregistry.command.serviceinstance;
 
-import java.util.Objects;
-import net.maritimecloud.portal.domain.model.ValueObject;
+import net.maritimecloud.serviceregistry.domain.DomainIdentifier;
 
 /**
  *
  * @author Christoffer Børrild
  */
-public class ServiceInstanceId extends ValueObject {
-
-    private String identifier;
+public class ServiceInstanceId extends DomainIdentifier<ServiceInstanceId> {
 
     public ServiceInstanceId(String anIdentifier) {
-        this();
-        this.setIdentifier(anIdentifier);
+        super(anIdentifier);
     }
 
     public ServiceInstanceId(ServiceInstanceId serviceInstanceId) {
@@ -37,41 +33,4 @@ public class ServiceInstanceId extends ValueObject {
     protected ServiceInstanceId() {
         super();
     }
-
-    public String identifier() {
-        return this.identifier;
-    }
-
-    private void setIdentifier(String anIdentifier) {
-        this.assertArgumentNotEmpty(anIdentifier, "The serviceInstance identity is required.");
-
-        //FIXME: add rule that check the general identity format rule dashes but no underscore (or viceversa?!?) etc...
-        //this.assertArgumentLength(anId, 30, "The identity must be 30 characters or less.");
-        this.identifier = anIdentifier;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 41 * hash + Objects.hashCode(this.identifier);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ServiceInstanceId other = (ServiceInstanceId) obj;
-        return Objects.equals(this.identifier, other.identifier);
-    }
-
-    @Override
-    public String toString() {
-        return "ServiceInstanceId [id=" + identifier + "]";
-    }
-
 }

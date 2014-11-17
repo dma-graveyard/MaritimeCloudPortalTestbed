@@ -14,6 +14,9 @@
  */
 package net.maritimecloud.serviceregistry.command.organization;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import net.maritimecloud.serviceregistry.command.Command;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
 import org.axonframework.common.Assert;
@@ -22,30 +25,35 @@ import org.axonframework.common.Assert;
  *
  * @author Christoffer Børrild
  */
-public class PrepareServiceSpecificationCommand {
+public class PrepareServiceSpecificationCommand implements Command {
 
     @TargetAggregateIdentifier
-    private final OrganizationId organizationId;
+    private final OrganizationId ownerId;
     private final ServiceSpecificationId serviceSpecificationId;
     private final String name;
     private final String summary;
 
-    public PrepareServiceSpecificationCommand(OrganizationId organizationId, ServiceSpecificationId serviceSpecificationId, String name, String summary) {
-        Assert.notNull(organizationId, "The organizationId of the owning organization must be provided");
+    @JsonCreator
+    public PrepareServiceSpecificationCommand(
+            @JsonProperty("ownerId") OrganizationId ownerId,
+            @JsonProperty("serviceSpecificationId") ServiceSpecificationId serviceSpecificationId,
+            @JsonProperty("name") String name,
+            @JsonProperty("summary") String summary) {
+        Assert.notNull(ownerId, "The organizationId of the owning organization must be provided");
         Assert.notNull(serviceSpecificationId, "The serviceSpecificationId must be provided");
         Assert.notNull(name, "The provided name cannot be null");
         Assert.notNull(summary, "The provided summary cannot be null");
 
-        this.organizationId = organizationId;
+        this.ownerId = ownerId;
         this.serviceSpecificationId = serviceSpecificationId;
         this.name = name;
         this.summary = summary;
     }
 
-    public OrganizationId getOrganizationId() {
-        return organizationId;
+    public OrganizationId getOwnerId() {
+        return ownerId;
     }
-    
+
     public ServiceSpecificationId getServiceSpecificationId() {
         return serviceSpecificationId;
     }
@@ -57,5 +65,5 @@ public class PrepareServiceSpecificationCommand {
     public String getSummary() {
         return summary;
     }
-    
+
 }
