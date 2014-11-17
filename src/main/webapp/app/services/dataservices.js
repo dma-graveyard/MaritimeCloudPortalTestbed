@@ -32,30 +32,30 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 
     .factory('OrganizationService', ['$resource',
       function ($resource) {
-//    return $resource('/rest/organizations/:organizationname', {}, {
-//      query: {method: 'GET', params: {organizationname: ''}, isArray: true},
+//    return $resource('/rest/organizations/:organizationId', {}, {
+//      query: {method: 'GET', params: {organizationId: ''}, isArray: true},
 //      signUp: {method: 'POST', params: {}, isArray: false}
 //    });
 
         console.log("TODO: using mocked organizations data");
         var organizations = data.organizationList;
         /**
-         * Helper function to find organization by name
-         * @param {type} organizationname
-         * @returns {_L16.Anonym$11|_L16.Anonym$8|_L16.Anonym$5}
+         * Helper function to find organization by id
+         * @param {type} organizationId
+         * @returns the organization or null
          */
-        var findOrganization = function (organizationname) {
+        var findOrganization = function (organizationId) {
           for (var i = 0; i < organizations.length; i++) {
-            if (organizationname === organizations[i].name)
+            if (organizationId === organizations[i].organizationId)
               return organizations[i];
           }
-          console.log("Error. Organizationname not found! ", organizationname);
+          console.log("Error. OrganizationId not found! ", organizationId);
           return null;
         };
         return {
           get: function (request) {
-            var organizationname = request.organizationname;
-            var result = findOrganization(organizationname);
+            var organizationId = request.organizationId;
+            var result = findOrganization(organizationId);
             if (result)
               return result;
           },
@@ -74,17 +74,17 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           //create: {method: 'POST', params: {}, isArray: false}
           create: function (newOrganizationRequest, success, failure) {
 
-            if (findOrganization(newOrganizationRequest.name)) {
-              console.log("An organization with that name already exists");
-              failure("An organization with that name already exists");
+            if (findOrganization(newOrganizationRequest.organizationId)) {
+              console.log("An organization with that id already exists");
+              failure("An organization with that id already exists");
               return;
             }
 
             var newOrganization =
                 {
+                  organizationId: newOrganizationRequest.organizationId,
                   name: newOrganizationRequest.name,
-                  title: newOrganizationRequest.title,
-                  description: newOrganizationRequest.description,
+                  summary: newOrganizationRequest.summary,
                   members: ["admin"],
                   teams: [
                     {
@@ -169,10 +169,10 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
               return result;
           },
           query: function (request) {
-            if (request && request.organizationname) {
+            if (request && request.organizationId) {
               var specs = [];
               specifications.forEach(function (specification) {
-                if (specification.ownerOrganization === request.organizationname)
+                if (specification.ownerOrganization === request.organizationId)
                   specs.push(specification);
               });
               return specs;
@@ -233,18 +233,18 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
          * Helper function to find Service Instance by name (to avoid duplicates)
          * @param {type} serviceInstanceName
          */
-        var findServiceInstance = function (organizationname, serviceInstanceName) {
+        var findServiceInstance = function (organizationId, serviceInstanceName) {
           for (var i = 0; i < serviceInstances.length; i++) {
             // FIXME: We should also check that the ID is unique within the organization!!! (defer this to the serverside implementation!)
-            if (organizationname === serviceInstances[i].provider.name && serviceInstanceName === serviceInstances[i].name)
+            if (organizationId === serviceInstances[i].provider.organizationId && serviceInstanceName === serviceInstances[i].name)
               return serviceInstances[i];
           }
           return null;
         };
 
-        var getServiceInstance = function (organizationname, serviceInstanceId) {
+        var getServiceInstance = function (organizationId, serviceInstanceId) {
           for (var i = 0; i < serviceInstances.length; i++) {
-            if (organizationname === serviceInstances[i].provider.name && serviceInstanceId === serviceInstances[i].id) {
+            if (organizationId === serviceInstances[i].provider.organizationId && serviceInstanceId === serviceInstances[i].id) {
               return serviceInstances[i];
            }
           }
@@ -253,9 +253,9 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         return {
           get: function (request) {
             console.log("request: ", request);
-            var organizationname = request.organizationname;
+            var organizationId = request.organizationId;
             var serviceInstanceId = request.serviceInstanceId;
-            var result = getServiceInstance(organizationname, serviceInstanceId);
+            var result = getServiceInstance(organizationId, serviceInstanceId);
             if (result) {
               result.$save = function (success, failure) {
                 success(result);
@@ -266,12 +266,12 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
               console.log("Error. Service Instance with id not found! ", serviceInstanceId);
           },
           query: function (request) {
-            if (request && request.organizationname) {
+            if (request && request.organizationId) {
               var specs = [];
               console.log('serviceInstances:', serviceInstances);
 
               serviceInstances.forEach(function (serviceInstance) {
-                if (serviceInstance.provider.name === request.organizationname)
+                if (serviceInstance.provider.organizationId === request.organizationId)
                   specs.push(serviceInstance);
               });
               return specs;
@@ -281,7 +281,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           //create: {method: 'POST', params: {}, isArray: false}
           create: function (newServiceInstance, success, failure) {
 
-            if (findServiceInstance(newServiceInstance.provider.name, newServiceInstance.name)) {
+            if (findServiceInstance(newServiceInstance.provider.organizationId, newServiceInstance.name)) {
               console.log("A service instance with that name already exists");
               failure("A service instance with that name already exists");
               return;

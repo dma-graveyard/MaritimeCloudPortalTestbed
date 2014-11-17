@@ -1,11 +1,11 @@
 <div class="org-header">
     <h1>
-        <span>{{organization.title}}</span>
-        <a class="edit-org" href="#/orgs/{{organization.name}}/settings" data-tooltip="Organization settings" data-tooltip-placement="right">
+        <span>{{organization.name}}</span>
+        <a class="edit-org" href="#/orgs/{{organization.organizationId}}/settings" data-tooltip="Organization settings" data-tooltip-placement="right">
             <span class="fa fa-gear"></span>
         </a>
     </h1>
-    <p class="org-description">{{organization.description}}</p>
+    <p class="org-description">{{organization.summary}}</p>
     <ul class="org-header-meta">
         <li class="meta-item">
             <span class="fa fa-globe"></span>
@@ -20,7 +20,7 @@
         <div>
             <h2> Provided Services</h2>
             <div ng-if="!serviceInstances.length">
-                Currently no service instances!
+                <i>This organization is not providing any services</i>
             </div> 
             <thumbnail-map ng-if="serviceInstances.length" class="border-rounded-corners" id="allServices" services="serviceInstances" on-click="openDetails()"></thumbnail-map>
 
@@ -28,7 +28,7 @@
                 <div ng-controller="ServiceInstanceDetailsController">
                     <h4>
                         <span>{{service.name}} - {{service.specification.transportType}}</span>
-                        <a ng-if="userHasWriteAccess()" class="edit-gear" href="#/orgs/{{organization.name}}/{{service.id}}/edit" data-tooltip="Service instance settings" data-tooltip-placement="right">
+                        <a ng-if="userHasWriteAccess()" class="edit-gear" href="#/orgs/{{organization.organizationId}}/{{service.id}}/edit" data-tooltip="Service instance settings" data-tooltip-placement="right">
                             <span class="fa fa-gear"></span>
                         </a>
                         <span class="pull-right text-right"><small>({{service.id}})</small></span>
@@ -60,12 +60,15 @@
             <div ng-if="serviceInstances.length > 20" class="container-fluid serviceInstanceListItem"> <br> ... and {{serviceInstances.length - 20}} more ...</div>
             <div ng-if="userHasWriteAccess()">
                 <br>
-                <a class="btn btn-minier btn-info" href="#/orgs/{{organization.name}}/createServiceInstance">+ Register a service</a>
+                <a class="btn btn-minier btn-info" href="#/orgs/{{organization.organizationId}}/createServiceInstance">+ Register a service</a>
             </div>
         </div>
 
         <div>
             <h2> Service Specifications</h2>
+            <div ng-if="!specifications.length">
+                <i>This organization has not defined any technical service specifications</i>
+            </div> 
             <ul ng-repeat="spec in specifications">
                 <li>
                     <h3>{{spec.title}}</h3>

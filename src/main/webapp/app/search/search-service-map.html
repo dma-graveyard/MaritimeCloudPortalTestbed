@@ -33,7 +33,7 @@
                     <dt>id</dt>              <dd>{{selectedService.id}}</dd>
                     <dt>specification</dt>   <dd>{{selectedService.specification.name}}</dd>
                     <dt>transport type</dt>  <dd>{{selectedService.specification.transportType}}</dd>
-                    <dt>provider</dt>        <dd>{{selectedService.provider.title}}</dd>
+                    <dt>provider</dt>        <dd class="truncated"><a ui-sref="restricted.organizationDetails({organizationId:selectedService.provider.organizationId})">{{selectedService.provider.name}}</a></dd>
                     <dt>provider website</dt><dd class="truncated"><a target="_blank" href="{{selectedService.provider.url}}">{{selectedService.provider.url}}</a></dd>
                     <dt>description</dt>     <dd>{{selectedService.description}}</dd>
                     <dt>Endpoints:</dt>

@@ -28,16 +28,16 @@
                 <li class="dropdown" ng-controller="OrganizationListController">
                     <a class="dropdown-toggle" href="#/orgs">
                         <i class="menu-icon fa fa-university"></i>
-                        <span class="menu-text"> {{currentOrganization.title}}</span>
+                        <span class="menu-text"> {{currentOrganization.name}}</span>
                         <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu" >
                         <li class="menu-item-lead"> Switch dashboard context: </li>
                         <li ng-repeat="organization in organizations | orderBy:orderProp">
                             
-                            <a href="#/orgs/{{organization.name}}">
+                            <a href="#/orgs/{{organization.organizationId}}">
                                 <span class="menu-item-check" ng-class="{'selected' : isCurrent(organization)}">&#x2713;</span>
-                                <i class="menu-icon fa fa-university"></i> {{organization.title}}
+                                <i class="menu-icon fa fa-university"></i> {{organization.name}}
                             </a>
                             <b class="arrow"></b>
                         </li>

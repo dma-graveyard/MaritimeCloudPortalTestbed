@@ -72,8 +72,8 @@
                     <ui-select ng-model="filter.provider" theme="bootstrap">
                         <ui-select-match placeholder="provider">{{$select.selected.title}}</ui-select-match>
                         <ui-select-choices repeat="provider in organizations | filter: $select.search ">
-                            <span ng-bind-html="provider.title | highlight: $select.search"></span>
-                            <small>(</small><small ng-bind-html="provider.name | highlight: $select.search"></small><small>)</small>
+                            <span ng-bind-html="provider.name | highlight: $select.search"></span>
+                            <small>(</small><small ng-bind-html="provider.organizationId | highlight: $select.search"></small><small>)</small>
                         </ui-select-choices>
                     </ui-select>
 
@@ -126,13 +126,13 @@
                 <accordion close-others="true">
                     <accordion-group is-open="isOpen.organizationSub">
                         <accordion-heading>
-                            <a ui-sref="restricted.organizationDetails({organizationname:currentOrganization.name})"><i class="fa fa-wifi"></i> Services
+                            <a ui-sref="restricted.organizationDetails({organizationId:currentOrganization.organizationId})"><i class="fa fa-wifi"></i> Services
                                 <i class="pull-right fa" ng-class="{'fa-angle-down': isOpen.organizationSub, 'fa-angle-right': !isOpen.organizationSub}"></i>
                             </a>
                         </accordion-heading>
                         <ul class="nav nav-list" ng-if="isAuthorized(userRoles.admin)">
-                            <!--<li><a href="#/orgs/{{currentOrganization.name}}"> <i class="fa fa-user" style=""></i> Show </a></li>-->
-                            <li><a ui-sref="restricted.serviceInstanceCreate({organizationname:currentOrganization.name})"> 
+                            <!--<li><a href="#/orgs/{{currentOrganization.organizationId}}"> <i class="fa fa-user" style=""></i> Show </a></li>-->
+                            <li><a ui-sref="restricted.serviceInstanceCreate({organizationId:currentOrganization.organizationId})"> 
                                     <i class="fa fa-plus" style=""></i> Add </a></li>
                         </ul>
                     </accordion-group>
@@ -141,28 +141,28 @@
 
             <!--FIXME: introduce specification stuff  -->
             <!--li ng-if="currentOrganization" class="hover" ng-controller="OrganizationMenuController" >
-                <a href="#/orgs/{{currentOrganization.name}}" class="dropdown-toggle">
+                <a href="#/orgs/{{currentOrganization.organizationId}}" class="dropdown-toggle">
                     <i class="menu-icon fa fa-cogs"></i>
                     <span class="menu-text"> Specifications </span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
                 <b class="arrow"></b>
                 <ul class="submenu" >
-                    <li class="hover"><a href="#/orgs/{{currentOrganization.name}}"> <i class="menu-icon fa fa-user" style=""></i> Show </a></li>
-                    <li class="hover"><a href="#/orgs/{{currentOrganization.name}}/createServiceInstance"> <i class="menu-icon fa fa-fire" style=""></i> Add </a></li>
+                    <li class="hover"><a href="#/orgs/{{currentOrganization.organizationId}}"> <i class="menu-icon fa fa-user" style=""></i> Show </a></li>
+                    <li class="hover"><a href="#/orgs/{{currentOrganization.organizationId}}/createServiceInstance"> <i class="menu-icon fa fa-fire" style=""></i> Add </a></li>
                 </ul>
             </li-->            
             <!--FIXME: introduce identity and certificate stuff  -->
             <!--li ng-if="currentOrganization" class="hover" ng-controller="OrganizationMenuController"  >
-                <a href="#/orgs/{{currentOrganization.name}}" class="dropdown-toggle">
+                <a href="#/orgs/{{currentOrganization.organizationId}}" class="dropdown-toggle">
                     <i class="menu-icon fa fa-certificate"></i>
                     <span class="menu-text"> Certificates </span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
                 <b class="arrow"></b>
                 <ul class="submenu" >
-                    <li class="hover"><a href="#/orgs/{{currentOrganization.name}}"> <i class="menu-icon fa fa-user" style=""></i> Show </a></li>
-                    <li class="hover"><a href="#/orgs/{{currentOrganization.name}}/createServiceInstance"> <i class="menu-icon fa fa-fire" style=""></i> Add </a></li>
+                    <li class="hover"><a href="#/orgs/{{currentOrganization.organizationId}}"> <i class="menu-icon fa fa-user" style=""></i> Show </a></li>
+                    <li class="hover"><a href="#/orgs/{{currentOrganization.organizationId}}/createServiceInstance"> <i class="menu-icon fa fa-fire" style=""></i> Add </a></li>
                 </ul>
             </li-->            
         </div>
@@ -210,15 +210,15 @@
              CURRENT ORGANIZATION MENU  
     
             <li ng-if="currentOrganization" class="hover" >
-                <a href="#/orgs/{{currentOrganization.name}}" class="dropdown-toggle">
+                <a href="#/orgs/{{currentOrganization.organizationId}}" class="dropdown-toggle">
                     <i class="menu-icon fa fa-wifi"></i>
                     <span class="menu-text"> Services </span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
                 <b class="arrow"></b>
                 <ul class="submenu" >
-                    <li class="hover"><a href="#/orgs/{{currentOrganization.name}}"> <i class="menu-icon fa fa-user" style=""></i> Show </a></li>
-                    <li class="hover"><a href="#/orgs/{{currentOrganization.name}}/createServiceInstance"> <i class="menu-icon fa fa-fire" style=""></i> Add </a></li>
+                    <li class="hover"><a href="#/orgs/{{currentOrganization.organizationId}}"> <i class="menu-icon fa fa-user" style=""></i> Show </a></li>
+                    <li class="hover"><a href="#/orgs/{{currentOrganization.organizationId}}/createServiceInstance"> <i class="menu-icon fa fa-fire" style=""></i> Add </a></li>
                 </ul>
             </li>            
     

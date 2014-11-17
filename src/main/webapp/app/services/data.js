@@ -7,9 +7,10 @@ function demoData() {
 
   var organization = {
     demorg: {
-      name: "demorg",
-      title: "Authority of Maritime Affairs of Demopia",
-      description: "The Demo Authority of Maritime Affairs is the government agency of Demopia that regulates maritime affairs. The field of responsibility is based on the shipping industry and its framework conditions, the ship and its crew. In addition, it is responsible for aids to navigation in the waters surrounding Demopia and ashore.",
+      organizationId: "demorg",
+      name: "Authority of Maritime Affairs of Demopia",
+      summary: "The Demo Authority of Maritime Affairs is the government agency of Demopia that regulates maritime affairs. The field of responsibility is based on the shipping industry and its framework conditions, the ship and its crew. In addition, it is responsible for aids to navigation in the waters surrounding Demopia and ashore.",
+      url: "http://demorg.dk",
       members: ["admin", "Haddock"],
       teams: [
         {
@@ -29,10 +30,10 @@ function demoData() {
       ]
     },
     dma: {
-      name: "dma",
-      title: "Danish Maritime Authority",
+      organizationId: "dma",
+      name: "Danish Maritime Authority",
       url: "http://dma.dk",
-      description: "The Danish Maritime Authority is a government agency of Denmark that regulates maritime affairs. The field of responsibility is based on the shipping industry and its framework conditions, the ship and its crew. In addition, it is responsible for aids to navigation in the waters surrounding Denmark and ashore.",
+      summary: "The Danish Maritime Authority is a government agency of Denmark that regulates maritime affairs. The field of responsibility is based on the shipping industry and its framework conditions, the ship and its crew. In addition, it is responsible for aids to navigation in the waters surrounding Denmark and ashore.",
       members: ["admin", "Haddock"],
       teams: [
         {
@@ -52,10 +53,10 @@ function demoData() {
       ]
     },
     dmi: {
-      name: "dmi",
-      title: "Danish Meteoroligical Institute",
+      organizationId: "dmi",
+      name: "Danish Meteoroligical Institute",
       url: "http://dmi.dk",
-      description: "DMI provides meteorological services in the Commonwealth of the Realm of Denmark, the Faroe Islands, Greenland, and surrounding waters and airspace. Meteorological services include forecasting and warnings and monitoring of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
+      summary: "DMI provides meteorological services in the Commonwealth of the Realm of Denmark, the Faroe Islands, Greenland, and surrounding waters and airspace. Meteorological services include forecasting and warnings and monitoring of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
       members: ["admin", "Tintin", "Haddock"],
       teams: [
         {
@@ -75,10 +76,10 @@ function demoData() {
       ]
     },
     dp: {
-      name: "dp",
-      title: "DanPilot",
+      organizationId: "dp",
+      name: "DanPilot",
       url: "http://danpilot.dk",
-      description: "DanPilot handles the public pilotage through Danish territorial waters from any destination in Denmark to all ports in the Baltic Sea. As the unique full-service provider in Denmark DanPilot offers pilotage to all Danish ports as well. DanPilot is obliged to deliver pilotage in Denmark and handles all transit pilotage.",
+      summary: "DanPilot handles the public pilotage through Danish territorial waters from any destination in Denmark to all ports in the Baltic Sea. As the unique full-service provider in Denmark DanPilot offers pilotage to all Danish ports as well. DanPilot is obliged to deliver pilotage in Denmark and handles all transit pilotage.",
       members: ["admin", "Haddock", "Tintin"],
       teams: [
         {
@@ -98,10 +99,10 @@ function demoData() {
       ]
     },
     imo: {
-      name: 'imo',
-      title: 'IMO - International Maritime Organization',
+      organizationId: 'imo',
+      name: 'IMO - International Maritime Organization',
       url: "http://www.imo.org",
-      description: 'the United Nations specialized agency with responsibility for the safety and security of shipping and the prevention of marine pollution by ships.',
+      summary: 'the United Nations specialized agency with responsibility for the safety and security of shipping and the prevention of marine pollution by ships.',
       members: ["Haddock"],
       teams: [
         {
@@ -115,10 +116,10 @@ function demoData() {
     },
     // Hardcoded Showcase November 2014
     mca: {
-      name: "mca",
-      title: "Maritime & Coastguard Agency (United Kingdom)",
+      organizationId: "mca",
+      name: "Maritime & Coastguard Agency (United Kingdom)",
       url: "https://www.gov.uk/government/organisations/maritime-and-coastguard-agency",
-      description: "The Maritime and Coastguard Agency (MCA) is a UK executive agency working to prevent the loss of lives at sea and is responsible for implementing British and International maritime law and safety policy.",
+      summary: "The Maritime and Coastguard Agency (MCA) is a UK executive agency working to prevent the loss of lives at sea and is responsible for implementing British and International maritime law and safety policy.",
       members: ["admin", "Haddock"],
       teams: [
         {
@@ -138,10 +139,10 @@ function demoData() {
       ]
     },
     nca: {
-      name: "nca",
-      title: "Norwegian Coastal Administration",
+      organizationId: "nca",
+      name: "Norwegian Coastal Administration",
       url: "http://www.kystverket.no",
-      description: "The Norwegian Coastal Administration is an agency of the Norwegian Ministry of Transport and Communications responsible for services related to maritime safety, maritime infrastructure, transport planning and efficiency, and emergency response to acute pollution.",
+      summary: "The Norwegian Coastal Administration is an agency of the Norwegian Ministry of Transport and Communications responsible for services related to maritime safety, maritime infrastructure, transport planning and efficiency, and emergency response to acute pollution.",
       members: ["admin", "Haddock"],
       teams: [
         {
@@ -161,10 +162,10 @@ function demoData() {
       ]
     },
     fmha: {
-      name: "fmha",
-      title: "Federal Maritime and Hydrographic Agency (Germany)",
+      organizationId: "fmha",
+      name: "Federal Maritime and Hydrographic Agency (Germany)",
       url: "http://www.bsh.de",
-      description: "As a partner to maritime shipping and a supporter of environmental conservation efforts and maritime uses, the Federal Maritime and Hydrographic Agency supports maritime shipping and the maritime industry, promote sustainable use of the oceans, ensure the continuity of measurements, provide competent information about the status of the Northand Baltic Seas.",
+      summary: "As a partner to maritime shipping and a supporter of environmental conservation efforts and maritime uses, the Federal Maritime and Hydrographic Agency supports maritime shipping and the maritime industry, promote sustainable use of the oceans, ensure the continuity of measurements, provide competent information about the status of the Northand Baltic Seas.",
       members: ["admin", "Tintin", "Haddock"],
       teams: [
         {
@@ -184,10 +185,10 @@ function demoData() {
       ]
     },
     flh: {
-      name: "flh",
-      title: "Flemish Hydrography",
+      organizationId: "flh",
+      name: "Flemish Hydrography",
       url: "http://www.vlaamsehydrografie.be",
-      description: "The Flemish Hydrography is responsible for measuring thestructure, gathering data for navigation and other marineactivities; offshore activities; research; environmental protection and tide, weather and climate forecasts. All the information is published or made available on our website.",
+      summary: "The Flemish Hydrography is responsible for measuring thestructure, gathering data for navigation and other marineactivities; offshore activities; research; environmental protection and tide, weather and climate forecasts. All the information is published or made available on our website.",
       members: ["admin", "Tintin", "Haddock"],
       teams: [
         {
@@ -207,10 +208,10 @@ function demoData() {
       ]
     },
     rnn: {
-      name: "rnn",
-      title: "Royal Netherlands Navy",
+      organizationId: "rnn",
+      name: "Royal Netherlands Navy",
       url: "http://www.defensie.nl/english/organisation/navy/contents/navy-units/hydrographic-service",
-      description: "The Hydrographic Service of the Royal Netherlands Navy informs mariners about shipping routes, the seabed and underwater hazards such as shipwrecks. To this end, the Hydrographic Service compiles nautical charts, carefully details the maritime borders of the Netherlands and carries out depth measurements. The Hydrographic Service thus contributes to the protection of Dutch interests at sea and to safe shipping routes",
+      summary: "The Hydrographic Service of the Royal Netherlands Navy informs mariners about shipping routes, the seabed and underwater hazards such as shipwrecks. To this end, the Hydrographic Service compiles nautical charts, carefully details the maritime borders of the Netherlands and carries out depth measurements. The Hydrographic Service thus contributes to the protection of Dutch interests at sea and to safe shipping routes",
       members: ["admin", "Tintin", "Haddock"],
       teams: [
         {
@@ -230,10 +231,10 @@ function demoData() {
       ]
     },
     sma: {
-      name: "sma",
-      title: "Swedish Maritime Administration",
+      organizationId: "sma",
+      name: "Swedish Maritime Administration",
       url: "http://www.sjofartsverket.se",
-      description: "The Swedish Maritime Administration (SMA) offers modern and safe shipping routes with 24 hour service. We take responsibility for the future of shipping. SMA is a governmental agency and enterprise within the transport sector and is responsible for maritime safety and availability. Our services include, for example: Pilotage,Fairway Service, Maritime Traffic Information, Icebreaking, Hydrograpy, Maritime and Aeronautical Search and Rescue & Seamen's Service Our activities focus primarily on merchant shipping, but also take the pleasure boating and fishing interests into account.",
+      summary: "The Swedish Maritime Administration (SMA) offers modern and safe shipping routes with 24 hour service. We take responsibility for the future of shipping. SMA is a governmental agency and enterprise within the transport sector and is responsible for maritime safety and availability. Our services include, for example: Pilotage,Fairway Service, Maritime Traffic Information, Icebreaking, Hydrograpy, Maritime and Aeronautical Search and Rescue & Seamen's Service Our activities focus primarily on merchant shipping, but also take the pleasure boating and fishing interests into account.",
       members: ["admin", "Tintin", "Haddock"],
       teams: [
         {

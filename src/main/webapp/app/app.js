@@ -122,20 +122,20 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
         },
         {
           name: 'organizationDetails',
-          url: "/orgs/{organizationname}",
+          url: "/orgs/{organizationId}",
           templateUrl: 'organizations/organization-detail.html',
           controller: 'OrganizationDetailsController',
         },
         {
           name: 'serviceInstanceCreate',
-          url: "/orgs/{organizationname}/createServiceInstance",
+          url: "/orgs/{organizationId}/createServiceInstance",
           templateUrl: 'organizations/services/instance-editor.html',
           controller: 'EditServiceInstanceController',
           data: {createState: true}
         },
         {
           name: 'serviceInstanceEdit',
-          url: "/orgs/{organizationname}/{serviceInstanceId}/edit",
+          url: "/orgs/{organizationId}/{serviceInstanceId}/edit",
           templateUrl: 'organizations/services/instance-editor.html',
           controller: 'EditServiceInstanceController',
           data: {editState: true}

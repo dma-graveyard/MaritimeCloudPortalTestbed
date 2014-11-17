@@ -11,7 +11,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
         $scope.currentOrganization = OrganizationContext.currentOrganization;
         $scope.OrganizationContext = OrganizationContext;
 
-        $scope.$watch('OrganizationContext.currentOrganization', function(newOrganizationName) {
+        $scope.$watch('OrganizationContext.currentOrganization', function() {
           $scope.currentOrganization = OrganizationContext.currentOrganization;
         });
 
@@ -22,15 +22,15 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
         
         $scope.organizations = OrganizationContext.list;
         $scope.currentOrganization = OrganizationContext.currentOrganization;
-        $scope.orderProp = 'description';
+        $scope.orderProp = 'name';
         $scope.$stateParams = $stateParams;
         
         $scope.isCurrent = function(organization) {
           return organization === $scope.currentOrganization;
         };
 
-        $scope.$watch('$stateParams.organizationname', function(newOrganizationName) {
-          OrganizationContext.setCurrentOrganization(newOrganizationName);
+        $scope.$watch('$stateParams.organizationId', function(newOrganizationId) {
+          OrganizationContext.setCurrentOrganization(newOrganizationId);
           $scope.currentOrganization = OrganizationContext.currentOrganization;
         });
 
@@ -38,11 +38,11 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
     .controller('OrganizationDetailsController', ['$scope', '$stateParams', 'OrganizationService', 'SpecificationService', 'ServiceInstanceService',
       function($scope, $stateParams, OrganizationService, SpecificationService, ServiceInstanceService) {
-        $scope.organization = OrganizationService.get({organizationname: $stateParams.organizationname}, function(organization) {
+        $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId}, function(organization) {
         });
-        $scope.specifications = SpecificationService.query({organizationname: $stateParams.organizationname}, function(specifications) {
+        $scope.specifications = SpecificationService.query({organizationId: $stateParams.organizationId}, function(specifications) {
         });
-        $scope.serviceInstances = ServiceInstanceService.query({organizationname: $stateParams.organizationname}, function(serviceInstances) {
+        $scope.serviceInstances = ServiceInstanceService.query({organizationId: $stateParams.organizationId}, function(serviceInstances) {
         });
         
         $scope.userHasWriteAccess = function(){
@@ -52,7 +52,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
     .controller('OrganizationCreateController', ['$scope', '$location', 'OrganizationService',
       function($scope, $location, OrganizationService) {
-        $scope.organization = {name: null, title: null};
+        $scope.organization = {organizationId: null, name: null};
         $scope.message = null;
         $scope.alertMessages = null;
         //$("#rPreferredLogin").focus();
@@ -65,7 +65,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
          * validator to be evaluated
          */
         $scope.formIsSubmitable = function() {
-          return ($scope.organization.name && $scope.organization.title);
+          return ($scope.organization.organizationId && $scope.organization.name);
         };
 
         $scope.submit = function() {
@@ -73,9 +73,9 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
           $scope.alertMessages = null;
 
           // validate input values
-          if ($scope.organization.name) {
-            if ($scope.organization.name === "test") {
-              $scope.alertMessages = ["Test? You have to be more visionary than that!"];
+          if ($scope.organization.organizationId) {
+            if ($scope.organization.organizationId === "test") {
+              $scope.alertMessages = ["Test!? Really? ...You have to be more visionary than that!"];
               return;
             }
           }
@@ -84,7 +84,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
           $scope.message = "Sending request to create organization...";
 
           OrganizationService.create($scope.organization, function(data) {
-            $location.path('/orgs/' + data.name).replace();
+            $location.path('/orgs/' + data.organizationId).replace();
             $scope.message = ["Organization created: " + data];
 
           }, function(error) {
@@ -110,7 +110,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
         this.setCurrentOrganization = function(target) {
           if (angular.isString(target)) {
-            this.currentOrganization = this.getOrganizationByName(target);
+            this.currentOrganization = this.getOrganizationById(target);
           } else {
             if (this.containsOrganization(target)) {
               this.currentOrganization = target;
@@ -118,9 +118,9 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
           }
         };
 
-        this.getOrganizationByName = function(name) {
+        this.getOrganizationById = function(organizationId) {
           for (var i = 0; i < this.list.length; i++) {
-            if (name === this.list[i].name) {
+            if (organizationId === this.list[i].organizationId) {
               return this.list[i];
             }
           }

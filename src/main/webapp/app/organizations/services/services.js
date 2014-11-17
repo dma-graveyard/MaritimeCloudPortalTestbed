@@ -36,10 +36,10 @@ angular.module('mcp.organizations.services', [])
           },
           service: {
             provider: {
-              name: $stateParams.organizationname
+              name: $stateParams.organizationId
             },
             key: {
-              providerId: $stateParams.organizationname
+              providerId: $stateParams.organizationId
             },
             id: null,
             name: null,
@@ -53,7 +53,7 @@ angular.module('mcp.organizations.services', [])
             $scope.service.specification = $scope.selectedSpecification;
             $scope.service.key = {
               specificationId: $scope.selectedSpecification.id,
-              providerId: $stateParams.organizationname,
+              providerId: $stateParams.organizationId,
               instanceId: $scope.service.id
             };
 
@@ -62,7 +62,7 @@ angular.module('mcp.organizations.services', [])
 
             if ($scope.isEditState()) {
               $scope.service.$save(function (result) {
-                $location.path('/orgs/' + $scope.service.provider.name).replace();
+                $location.path('/orgs/' + $scope.service.provider.organizationId).replace();
               }, function (error) {
                 $scope.message = null;
                 $scope.alertMessages = ["Error on the serverside :( ", error];
@@ -70,7 +70,7 @@ angular.module('mcp.organizations.services', [])
 
             } else {
               ServiceInstanceService.create($scope.service, function (result) {
-                $location.path('/orgs/' + $scope.service.provider.name).replace();
+                $location.path('/orgs/' + $scope.service.provider.organizationId).replace();
               }, function (error) {
                 $scope.message = null;
                 $scope.alertMessages = ["Error on the serverside :( ", error];
@@ -80,7 +80,7 @@ angular.module('mcp.organizations.services', [])
         });
 
         if ($scope.isEditState()) {
-          $scope.service = ServiceInstanceService.get({organizationname: $stateParams.organizationname, serviceInstanceId: $stateParams.serviceInstanceId});
+          $scope.service = ServiceInstanceService.get({organizationId: $stateParams.organizationId, serviceInstanceId: $stateParams.serviceInstanceId});
           // FIXME: should lookup value based on id $scope.service.specificationId
           $scope.selectedSpecification = $scope.service.specification;
           // FIXME: should lookup value based on id $scope.selectedSpecification.operationalServiceId
