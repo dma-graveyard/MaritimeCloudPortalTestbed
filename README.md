@@ -105,6 +105,11 @@ To start the selenium server instance use:
 
     webdriver-manager start
 
+or
+    ./node_modules/protractor/bin/webdriver-manager start
+
+depending on where you installed the webdriver.
+
 See https://github.com/angular/protractor/blob/master/docs/tutorial.md for more on protractor and webdriver
 
 ### Bower
