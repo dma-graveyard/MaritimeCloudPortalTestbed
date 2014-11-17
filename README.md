@@ -101,14 +101,7 @@ The webdriver-manager is a helper tool to easily get an instance of a Selenium S
 
     webdriver-manager update
 
-To start the selenium server instance use:
-
-    webdriver-manager start
-
-or
-    ./node_modules/protractor/bin/webdriver-manager start
-
-depending on where you installed the webdriver.
+To start the selenium server instance see [end2end test] (#End2End test)
 
 See https://github.com/angular/protractor/blob/master/docs/tutorial.md for more on protractor and webdriver
 
@@ -154,6 +147,12 @@ Protractor is used for "end-to-end" test of the client. To run the protractor te
 Start the selenium server
 
     webdriver-manager start
+
+or
+
+    ./node_modules/protractor/bin/webdriver-manager start
+
+depending on where you installed the webdriver.
 
 Use CTRL-C to stop it again when you'redone with testing. 
 
