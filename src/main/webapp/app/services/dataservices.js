@@ -111,115 +111,6 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         };
       }])
 
-    .factory('SpecificationService', ['$resource',
-      function ($resource) {
-//    return $resource('/rest/specifications/:specificationname', {}, {
-//      query: {method: 'GET', params: {specificationname: ''}, isArray: true},
-//      signUp: {method: 'POST', params: {}, isArray: false}
-//    });
-        console.log("TODO: using mocked specifications data");
-        var specifications = [
-          {
-            ownerOrganization: "dmi",
-            id: "wfss",
-            version: 1,
-            type: "weather",
-            title: "Weather Forecast Service Specification",
-            description: "Regione scribentur dissentiet eum ea, no atqui audiam ius, diam omittam efficiendi te usu.",
-            instances: ["dmi-wfss-dk", "dmi-wfss-fo", "dmi-wfss-gl"]
-          },
-          {
-            ownerOrganization: "dp",
-            id: "tpss",
-            version: 1,
-            type: "naval",
-            title: "Transit Pilotage Service Specification",
-            description: "Public pilotage through Danish territorial waters from any destination in Denmark to all ports in the Baltic Sea. As the unique full-service provider in Denmark DanPilot offers pilotage to all Danish ports as well.",
-            instances: ["dp-tpss-dtw"]
-          },
-          {
-            ownerOrganization: "dma",
-            id: "ntmss",
-            version: 1,
-            type: "naval",
-            title: "Notice To Mariners Service Specification",
-            description: "A notice to mariners advises mariners of important matters affecting navigational safety, including new hydrographic information, changes in channels and aids to navigation, and other important data.",
-            instances: ["dma-ntmss-dk"]
-          }
-        ];
-        /**
-         * Helper function to find specification by name
-         * @param {type} specificationname
-         * @returns {_L16.Anonym$11|_L16.Anonym$8|_L16.Anonym$5}
-         */
-        var findSpecification = function (specificationname) {
-          for (var i = 0; i < specifications.length; i++) {
-            if (specificationname === specifications[i].name)
-              return specifications[i];
-          }
-          console.log("Error. Specificationname not found! ", specificationname);
-          return null;
-        };
-        return {
-          get: function (request) {
-            console.log("specificationname: ", request.specificationname);
-            var specificationname = request.specificationname;
-            var result = findSpecification(specificationname);
-            if (result)
-              return result;
-          },
-          query: function (request) {
-            if (request && request.organizationId) {
-              var specs = [];
-              specifications.forEach(function (specification) {
-                if (specification.ownerOrganization === request.organizationId)
-                  specs.push(specification);
-              });
-              return specs;
-            }
-            return specifications;
-          },
-          //create: {method: 'POST', params: {}, isArray: false}
-          create: function (newSpecificationRequest, success, failure) {
-
-            if (findSpecification(newSpecificationRequest.name)) {
-              console.log("An specification with that name already exists");
-              failure("An specification with that name already exists");
-              return;
-            }
-
-            var newSpecification =
-                {
-                  name: newSpecificationRequest.name,
-                  title: newSpecificationRequest.title,
-                  description: newSpecificationRequest.description,
-                  members: ["admin"],
-                  teams: [
-                    {
-                      name: "Owners",
-                      description: "Special team of owners. Owners can do just about anything.",
-                      isOwner: true,
-                      members: ["admin"],
-                      accessLevel: "admin"
-                    },
-                    {
-                      name: "Members",
-                      description: "Members of the specification with read access",
-                      isAdmin: false,
-                      members: ["admin"],
-                      accessLevel: "read"
-                    }
-                  ]
-                };
-            specifications.push(newSpecification);
-            console.log("specifications: ", specifications);
-            success(newSpecification);
-            //return
-          }
-
-        };
-      }])
-
     .factory('ServiceInstanceService', ['$resource',
       function ($resource) {
 //    return $resource('/rest/serviceInstance/:specificationname', {}, {
@@ -246,7 +137,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           for (var i = 0; i < serviceInstances.length; i++) {
             if (organizationId === serviceInstances[i].provider.organizationId && serviceInstanceId === serviceInstances[i].id) {
               return serviceInstances[i];
-           }
+            }
           }
           return null;
         };
@@ -310,20 +201,42 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 
     .factory('ServiceSpecificationService', ['$resource',
       function ($resource) {
-//    return $resource('/rest/serviceInstance/:specificationname', {}, {
-//      query: {method: 'GET', params: {specificationname: ''}, isArray: true},
-//      signUp: {method: 'POST', params: {}, isArray: false}
-//    });
-        console.log("TODO: using mocked technical service data");
+        //    return $resource('/rest/api/specifications/:specificationname', {}, {
+        //      query: {method: 'GET', params: {specificationname: ''}, isArray: true},
+        //      signUp: {method: 'POST', params: {}, isArray: false}
+        //    });
+
+        // mimics GET /rest/api/specifications?serviceSpecificationId='some ssid'
+
+        console.log("TODO: using mocked service specification data");
         return {
-          query: function (request) {
-            var array = [];
-            for (var key in data.serviceSpecifications) {
-              if (data.serviceSpecifications[key].operationalService.id === request) {
-                array.push(data.serviceSpecifications[key]);
+          query: function (parameters) {
+
+            var matchingSpecifications = [];
+
+            if (parameters) {
+
+              for (var key in data.serviceSpecifications) {
+
+                if (
+                    // no filter?
+                    !parameters
+
+                    // filter by organizationId
+                    || parameters.organizationId && data.serviceSpecifications[key].ownerId === parameters.organizationId
+
+                    // filter by operational service
+                    // does this specification link to the desired operational service?
+                    || parameters.operationalServiceId && data.serviceSpecifications[key].operationalServices.indexOf(parameters.operationalServiceId) !== -1
+
+                    )
+                {
+                  matchingSpecifications.push(data.serviceSpecifications[key]);
+                }
               }
             }
-            return array;
+            console.log("matchingSpecifications", matchingSpecifications);
+            return matchingSpecifications;
           }
         };
       }])

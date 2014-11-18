@@ -49,7 +49,8 @@
                 <label for="specification">Service Specification</label>
                 <select class='form-control input-sm' id='specification' 
                         ng-disabled="!specifications"
-                        ng-model="filter.serviceSpecification" ng-options="specification.name+' ('+specification.transportType+')' group by specification.owner.name for specification in specifications"
+                        ng-model="filter.serviceSpecification" 
+                        ng-options="specification.name+' ('+specification.serviceType+')' group by specification.ownerName for specification in specifications"
                         popover="Filter by service specification" popover-trigger="mouseenter" popover-placement="right">
                     <option value="">All</option>
                 </select>
@@ -70,7 +71,7 @@
                 <div class="input-group" popover="Select a provider to filter by" popover-trigger="mouseenter" popover-placement="right">
 
                     <ui-select ng-model="filter.provider" theme="bootstrap">
-                        <ui-select-match placeholder="provider">{{$select.selected.title}}</ui-select-match>
+                        <ui-select-match placeholder="provider">{{$select.selected.name}}</ui-select-match>
                         <ui-select-choices repeat="provider in organizations | filter: $select.search ">
                             <span ng-bind-html="provider.name | highlight: $select.search"></span>
                             <small>(</small><small ng-bind-html="provider.organizationId | highlight: $select.search"></small><small>)</small>
@@ -87,10 +88,10 @@
             </div>
 
             <div class="form-group">
-                <label for="transportType">Transport type</label>
-                <select class='form-control input-sm' id='transportType' 
-                        ng-model="filter.transportType" ng-options="value for (key, value) in transportTypes"
-                        popover="Filter by transport type" popover-trigger="mouseenter" popover-placement="right">
+                <label for="serviceType">Service type</label>
+                <select class='form-control input-sm' id='serviceType' 
+                        ng-model="filter.serviceType" ng-options="value for (key, value) in serviceTypes"
+                        popover="Filter by service type" popover-trigger="mouseenter" popover-placement="right">
                     <option value="">All</option>
                 </select>
             </div>

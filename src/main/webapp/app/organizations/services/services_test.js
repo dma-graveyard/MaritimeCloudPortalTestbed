@@ -1,7 +1,7 @@
 describe('toLatLngObjects', function() {
 
   // Arrange
-  var scope, controller, $stateParams, SpecificationService;
+  var scope, controller, $stateParams;
 
   beforeEach(angular.mock.module("mcp.organizations.services"));
   beforeEach(angular.mock.module("mcp.dataservices"));
@@ -10,7 +10,6 @@ describe('toLatLngObjects', function() {
   beforeEach(angular.mock.inject(function($rootScope) {
     scope = $rootScope.$new();
     $stateParams = {};
-    SpecificationService = {};
     scope.service = {
       provider: {
         name: 'dmi'
@@ -41,8 +40,8 @@ describe('toLatLngObjects', function() {
     };
   }));
 
-  beforeEach(angular.mock.inject(function($controller, SpecificationService, leafletData) {
-    controller = $controller("ServiceInstanceDetailsController", {$scope: scope, $stateParams: $stateParams, SpecificationService: SpecificationService, leafletData: leafletData});
+  beforeEach(angular.mock.inject(function($controller) {
+    controller = $controller("ServiceInstanceDetailsController", {$scope: scope});
   }));
   
 });

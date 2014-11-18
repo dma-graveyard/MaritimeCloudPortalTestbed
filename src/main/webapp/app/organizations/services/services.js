@@ -10,10 +10,10 @@ angular.module('mcp.organizations.services', [])
 
     .controller('ServiceInstanceDetailsController', ['$scope',
       function ($scope) {
-          $scope.details = { isCollapsed: true };
-          $scope.toggleDetails = function () {
-            $scope.details.isCollapsed = !$scope.details.isCollapsed;
-          };
+        $scope.details = {isCollapsed: true};
+        $scope.toggleDetails = function () {
+          $scope.details.isCollapsed = !$scope.details.isCollapsed;
+        };
       }])
 
     .controller('EditServiceInstanceController', ['$scope', '$location', '$modal', '$stateParams', '$state',
@@ -90,7 +90,8 @@ angular.module('mcp.organizations.services', [])
         $scope.services = [$scope.service];
 
         $scope.$watch('selectedOperationalService', function (selectedOperationalService) {
-          $scope.specifications = selectedOperationalService ? ServiceSpecificationService.query(selectedOperationalService.id) : [];
+          $scope.specifications = selectedOperationalService ? ServiceSpecificationService.query(
+              {operationalServiceId: selectedOperationalService.id}) : [];
         });
 
         $scope.openCoverageEditor = function () {
@@ -170,4 +171,4 @@ angular.module('mcp.organizations.services', [])
         });
 
       }])
-;
+    ;

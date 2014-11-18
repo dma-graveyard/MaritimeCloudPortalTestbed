@@ -99,13 +99,13 @@ angular.module('mcp.search.services', [])
           if (filter.provider && service.provider.name !== filter.provider.name)
             return false;
 
-          if (filter.operationalService && service.specification.operationalService.id !== filter.operationalService.id)
+          if (filter.operationalService && service.specification.operationalServices.indexOf(filter.operationalService.id) === -1)
             return false;
 
-          if (filter.serviceSpecification && service.specification.id !== filter.serviceSpecification.id)
+          if (filter.serviceSpecification && service.specification.serviceSpecificationId !== filter.serviceSpecification.serviceSpecificationId)
             return false;
 
-          if (filter.transportType && service.specification.transportType !== filter.transportType)
+          if (filter.serviceType && service.specification.serviceType !== filter.serviceType)
             return false;
 
           return true;
@@ -161,7 +161,7 @@ angular.module('mcp.search.services', [])
           $scope.servicesLayer.addLayer(L.featureGroup(mapService.servicesToLayers(servicesAtLocation, featureGroupCallback)));
           fitToSelectedLayers();
         }
-        
+
         function featureGroupCallback(featureGroup) {
 
           // (called whenever servicesToLayers creates a layer)
@@ -175,13 +175,13 @@ angular.module('mcp.search.services', [])
           });
           $scope.servicesLayerMap[uniqueId(featureGroup.service)] = featureGroup;
         }
-        
+
         function serviceLayer(service) {
           return $scope.servicesLayerMap[uniqueId(service)];
         }
 
         function uniqueId(service) {
-          return service.key.providerId+'-'+service.id;
+          return service.key.providerId + '-' + service.id;
         }
 
         function clickEventHandler(e) {
@@ -279,13 +279,13 @@ angular.module('mcp.search.services', [])
 
     // Search Filter Object
     // that holds the various filters supplied by controls in eg. the sidebar and used to filter services
-    .service('searchServiceFilterModel', function (OperationalServiceService, SpecificationService, OrganizationService) {
+    .service('searchServiceFilterModel', function (OperationalServiceService, OrganizationService) {
 
       this.data = {
         operationalServices: OperationalServiceService.query(),
         serviceSpecifications: null,
         organizations: OrganizationService.query(),
-        transportTypes: {
+        serviceTypes: {
           mms: 'MMS',
           rest: 'REST',
           soap: 'SOAP',
@@ -307,7 +307,7 @@ angular.module('mcp.search.services', [])
         operationalService: null,
         provider: null,
         serviceSpecification: null,
-        transportType: null
+        serviceType: null
       };
 
       this.clean = function () {
@@ -316,7 +316,7 @@ angular.module('mcp.search.services', [])
         delete this.filter.operationalService;
         delete this.filter.provider;
         delete this.filter.serviceSpecification;
-        delete this.filter.transportType;
+        delete this.filter.serviceType;
       };
 
     });

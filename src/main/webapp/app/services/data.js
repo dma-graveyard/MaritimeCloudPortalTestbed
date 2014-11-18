@@ -310,7 +310,7 @@ function demoData() {
     }
   };
 
-  var transportTypes = {
+  var serviceTypes = {
     aisasm: 'AISASM',
     dgnss: 'DGNSS',
     mms: 'MMS',
@@ -327,76 +327,85 @@ function demoData() {
 
   var serviceSpecifications = {
     imoMisRest: {
-      id: 'imo-mis-rest',
-      owner: organization.imo,
-      operationalService: operationalServices.mis,
-      transportType: transportTypes.rest,
+      serviceSpecificationId: 'imo-mis-rest',
+      ownerId: organization.imo.organizationId,
+      ownerName: organization.imo.name,
+      operationalServices: [operationalServices.mis.id],
+      serviceType: serviceTypes.rest,
       name: 'METOC en route (rest)',
-      description: 'Meteorological services provided as a REST api'
+      summary: 'Meteorological services provided as a REST api'
     },
     imoMisWww: {
-      id: 'imo-mis-www',
-      owner: organization.imo,
-      operationalService: operationalServices.mis,
-      transportType: transportTypes.www,
+      serviceSpecificationId: 'imo-mis-www',
+      ownerId: organization.imo,
+      ownerName: organization.imo.name,
+      operationalServices: [operationalServices.mis.id],
+      serviceType: serviceTypes.www,
       name: 'METOC en route (www)',
-      description: 'Meteorological services provided on the internet'
+      summary: 'Meteorological services provided on the internet'
     },
     imoMsiSoap: {
-      id: 'imo-msi-soap',
-      owner: organization.imo,
-      operationalService: operationalServices.msi,
-      transportType: transportTypes.soap,
+      serviceSpecificationId: 'imo-msi-soap',
+      ownerId: organization.imo,
+      ownerName: organization.imo.name,
+      operationalServices: [operationalServices.msi.id],
+      serviceType: serviceTypes.soap,
       name: 'MSI (soap)',
-      description: 'Maritime Safety Information provided as a SOAP-service'
+      summary: 'Maritime Safety Information provided as a SOAP-service'
     },
     imoMsiMms: {
-      id: 'imo-msi-mms',
-      owner: organization.imo,
-      operationalService: operationalServices.msi,
-      transportType: transportTypes.mms,
+      serviceSpecificationId: 'imo-msi-mms',
+      ownerId: organization.imo,
+      ownerName: organization.imo.name,
+      operationalServices: [operationalServices.msi.id],
+      serviceType: serviceTypes.mms,
       name: 'MSI (mms)',
-      description: 'Maritime Safety Information provided over the MMS protocol'
+      summary: 'Maritime Safety Information provided over the MMS protocol'
     },
     imoMsinmMms: {
-      id: 'imo-msinm-mms',
-      owner: organization.imo,
-      operationalService: operationalServices.msinm,
-      transportType: transportTypes.mms,
+      serviceSpecificationId: 'imo-msinm-mms',
+      ownerId: organization.imo,
+      ownerName: organization.imo.name,
+      operationalServices: [operationalServices.msinm.id],
+      serviceType: serviceTypes.mms,
       name: 'MSI-NM (mms)',
-      description: 'Maritime Safety Information & Notices to Mariners provided over the MMS protocol'
+      summary: 'Maritime Safety Information & Notices to Mariners provided over the MMS protocol'
     },
     imoMsinmWww: {
-      id: 'imo-msinm-www',
-      owner: organization.imo,
-      operationalService: operationalServices.msinm,
-      transportType: transportTypes.www,
+      serviceSpecificationId: 'imo-msinm-www',
+      ownerId: organization.imo,
+      ownerName: organization.imo.name,
+      operationalServices: [operationalServices.msinm.id],
+      serviceType: serviceTypes.www,
       name: 'MSI-NM (www)',
-      description: 'Maritime Safety Information & Notices to Mariners provided as an internet website'
+      summary: 'Maritime Safety Information & Notices to Mariners provided as an internet website'
     },
     imoMsiNavtex: {
-      id: 'imo-msi-navtext',
-      owner: organization.imo,
-      operationalService: operationalServices.msi,
-      transportType: transportTypes.navtex,
+      serviceSpecificationId: 'imo-msi-navtext',
+      ownerId: organization.imo,
+      ownerName: organization.imo.name,
+      operationalServices: [operationalServices.msi.id],
+      serviceType: serviceTypes.navtex,
       name: 'MSI (navtext)',
-      description: 'Maritime Safety Information provided as a NAVTEX-service'
+      summary: 'Maritime Safety Information provided as a NAVTEX-service'
     },
     imoMsiVhf: {
-      id: 'imo-msi-vhf',
-      owner: organization.imo,
-      operationalService: operationalServices.msi,
-      transportType: transportTypes.vhf,
+      serviceSpecificationId: 'imo-msi-vhf',
+      ownerId: organization.imo,
+      ownerName: organization.imo.name,
+      operationalServices: [operationalServices.msi.id],
+      serviceType: serviceTypes.vhf,
       name: 'MSI (vhf)',
-      description: 'Maritime Safety Information broadcasted on VHF'
+      summary: 'Maritime Safety Information broadcasted on VHF'
     },
     imoMsiWww: {
-      id: 'imo-msi-www',
-      owner: organization.imo,
-      operationalService: operationalServices.msi,
-      transportType: transportTypes.www,
+      serviceSpecificationId: 'imo-msi-www',
+      ownerId: organization.imo,
+      ownerName: organization.imo.name,
+      operationalServices: [operationalServices.msi.id],
+      serviceType: serviceTypes.www,
       name: 'MSI (www)',
-      description: 'Maritime Safety Information provided on the internet'
+      summary: 'Maritime Safety Information provided on the internet'
     }
   };
 
@@ -768,7 +777,7 @@ function demoData() {
 
   function createRandomServiceInstance(index) {
     var provider = randomOf(organization.demorg, organization.demorg),
-        //transportType = randomOf(transportTypes),
+        //serviceType = randomOf(serviceTypes),
         specification = randomOf(serviceSpecifications),
         instanceId = randomOf('dk', 'gl', 'uk', 'se', 'nl', 'no') + '-' + index,
         serviceInstance = randomOf(globalServiceInstances);
@@ -830,7 +839,7 @@ function demoData() {
     organizationList: toList(organization),
     operationalServices: operationalServices,
     operationalServicesList: toList(operationalServices),
-    transportTypes: transportTypes,
+    serviceTypes: serviceTypes,
     serviceSpecifications: serviceSpecifications,
     serviceInstance: serviceInstances,
     serviceInstanceList: toList(serviceInstances)//.concat(createRandomServiceInstances(1000)),

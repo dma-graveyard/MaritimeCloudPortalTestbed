@@ -27,7 +27,7 @@
             <div  class="container-fluid serviceInstanceListItem" ng-repeat="service in serviceInstances|limitTo:20">
                 <div ng-controller="ServiceInstanceDetailsController">
                     <h4>
-                        <span>{{service.name}} - {{service.specification.transportType}}</span>
+                        <span>{{service.name}} - {{service.specification.serviceType}}</span>
                         <a ng-if="userHasWriteAccess()" class="edit-gear" href="#/orgs/{{organization.organizationId}}/{{service.id}}/edit" data-tooltip="Service instance settings" data-tooltip-placement="right">
                             <span class="fa fa-gear"></span>
                         </a>
@@ -71,8 +71,8 @@
             </div> 
             <ul ng-repeat="spec in specifications">
                 <li>
-                    <h3>{{spec.title}}</h3>
-                    <p>{{spec.description}}</p>
+                    <h3>{{spec.name}}</h3>
+                    <p>{{spec.summary}}</p>
                 </li>
             </ul>
         </div>
