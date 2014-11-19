@@ -35,34 +35,25 @@ angular.module('mcp.organizations.services', [])
             return $state.current.data.editState;
           },
           service: {
-            provider: {
-              name: $stateParams.organizationId
-            },
-            key: {
-              providerId: $stateParams.organizationId
-            },
-            id: null,
+            serviceInstanceId: null,
+            providerId: $stateParams.organizationId,
             name: null,
-            description: null,
+            summary: null,
             coverage: []
           },
           formIsSubmitable: function () {
-            return ($scope.service.id && $scope.service.name /*&& $scope.service.coverage*/);
+            return ($scope.service.serviceInstanceId && $scope.service.name /*&& $scope.service.coverage*/);
           },
           submit: function () {
-            $scope.service.specification = $scope.selectedSpecification;
-            $scope.service.key = {
-              specificationId: $scope.selectedSpecification.id,
-              providerId: $stateParams.organizationId,
-              instanceId: $scope.service.id
-            };
+            $scope.providerId = $stateParams.organizationId;
+            $scope.service.specificationId = $scope.selectedSpecification.serviceSpecificationId;
 
             $scope.alertMessages = null;
             $scope.message = "Sending request to register service instance...";
 
             if ($scope.isEditState()) {
               $scope.service.$save(function (result) {
-                $location.path('/orgs/' + $scope.service.provider.organizationId).replace();
+                $location.path('/orgs/' + $scope.service.providerId).replace();
               }, function (error) {
                 $scope.message = null;
                 $scope.alertMessages = ["Error on the serverside :( ", error];
@@ -70,7 +61,7 @@ angular.module('mcp.organizations.services', [])
 
             } else {
               ServiceInstanceService.create($scope.service, function (result) {
-                $location.path('/orgs/' + $scope.service.provider.organizationId).replace();
+                $location.path('/orgs/' + $scope.service.providerId).replace();
               }, function (error) {
                 $scope.message = null;
                 $scope.alertMessages = ["Error on the serverside :( ", error];
@@ -81,10 +72,11 @@ angular.module('mcp.organizations.services', [])
 
         if ($scope.isEditState()) {
           $scope.service = ServiceInstanceService.get({organizationId: $stateParams.organizationId, serviceInstanceId: $stateParams.serviceInstanceId});
-          // FIXME: should lookup value based on id $scope.service.specificationId
-          $scope.selectedSpecification = $scope.service.specification;
-          // FIXME: should lookup value based on id $scope.selectedSpecification.operationalServiceId
-          $scope.selectedOperationalService = $scope.service.specification.operationalService;
+// FIXME: should lookup value based on id $scope.service.specificationId
+          $scope.selectedSpecification = ServiceSpecificationService.get({serviceSpecificationId: $scope.service.specificationId});
+
+// FIXME: should lookup value based on id $scope.selectedSpecification.operationalServiceId
+//          $scope.selectedOperationalService = OperationalServiceService.query({operationalServiceId: $scope.selectedSpecification.operationalServices[0]});
         }
 
         $scope.services = [$scope.service];

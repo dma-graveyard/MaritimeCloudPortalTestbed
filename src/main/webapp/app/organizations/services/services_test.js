@@ -11,20 +11,11 @@ describe('toLatLngObjects', function() {
     scope = $rootScope.$new();
     $stateParams = {};
     scope.service = {
-      provider: {
-        name: 'dmi'
-      },
-      specification: {
-        id: 'imo-mis-rest',
-      },
-      key: {
-        specificationId: "imo-mis-rest",
-        providerId: "dmi",
-        instanceId: "dk"
-      },
-      id: "dk",
+      serviceInstanceId: "dk",
+      providerId: "dmi",
+      specificationId: "imo-mis-rest",
       name: "DMI METOC on route (Denmark)",
-      description: "Route based Meteorological Services for the waters surrounding Denmark including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
+      summary: "Route based Meteorological Services for the waters surrounding Denmark including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
       coverage: [
         {
           type: "polygon",

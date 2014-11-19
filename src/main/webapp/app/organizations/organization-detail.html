@@ -28,17 +28,17 @@
                 <div ng-controller="ServiceInstanceDetailsController">
                     <h4>
                         <span>{{service.name}} - {{service.specification.serviceType}}</span>
-                        <a ng-if="userHasWriteAccess()" class="edit-gear" href="#/orgs/{{organization.organizationId}}/{{service.id}}/edit" data-tooltip="Service instance settings" data-tooltip-placement="right">
+                        <a ng-if="userHasWriteAccess()" class="edit-gear" href="#/orgs/{{organization.organizationId}}/{{service.serviceInstanceId}}/edit" data-tooltip="Service instance settings" data-tooltip-placement="right">
                             <span class="fa fa-gear"></span>
                         </a>
-                        <span class="pull-right text-right"><small>({{service.id}})</small></span>
+                        <span class="pull-right text-right"><small>({{service.serviceInstanceId}})</small></span>
                     </h4>
                     <div class="row">
                         <div class="col-sm-7 col-lg-5" >
                             <thumbnail-map id="{{'tmap-' + $index}}" services="[service]" on-click="toggleDetails(); $digest()"></thumbnail-map>
                         </div>
                         <div class="col-sm-5 col-lg-7" >
-                            <p>{{service.description}}</p>
+                            <p>{{service.summary}}</p>
                         </div>
                     </div>
                     <div class="row">
@@ -46,11 +46,14 @@
                             <h5 ng-click="toggleDetails()">{{details.isCollapsed ? '(more...)' : 'Service details:'}} </h5>
                             <div collapse="details.isCollapsed">
                                 <dl class="dl-horizontal" >
-                                    <dt>Id</dt><dd>{{service.id}}</dd>
-                                    <dt>Specification</dt><dd>{{service.specification.name}}</dd>
+                                    <dt>Service Id</dt><dd>{{service.serviceInstanceId}}</dd>
                                     <dt>Endpoints:</dt>
                                     <dt ng-repeat-start="endpoint in service.endpoints"></dt>
                                     <dd ng-repeat-end class="truncated"><a target="_blank" href="{{endpoint.uri}}">{{endpoint.uri}}</a></dd>
+                                    <h5>Service specification:</h5>
+                                    <dt>Name</dt><dd>{{service.specificationName}}</dd>
+                                    <dt>Id</dt><dd>{{service.specificationId}}</dd>
+                                    <dt>Type</dt><dd>{{service.serviceType}}</dd>
                                 </dl>
                             </div>
                         </div>

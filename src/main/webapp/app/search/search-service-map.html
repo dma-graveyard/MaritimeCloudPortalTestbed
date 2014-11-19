@@ -17,7 +17,7 @@
                         ng-mouseover="highlightService(service)" 
                         ng-mouseleave="unhighlightService(service)"
                         > 
-                        {{service.name}} <span class="pull-right" style="font-size: smaller">({{service.id}})</span>
+                        {{service.name}} <span class="pull-right" style="font-size: smaller">({{service.serviceInstanceId}})</span>
                     </li>
                     <li ng-if="services.length > 10"> ... {{services.length - 10}} more ...</li>
                 </ul>
@@ -30,12 +30,12 @@
                 </div>
                 <hr>
                 <dl class="dl-horizontal">
-                    <dt>id</dt>              <dd>{{selectedService.id}}</dd>
+                    <dt>id</dt>              <dd>{{selectedService.serviceInstanceId}}</dd>
                     <dt>specification</dt>   <dd>{{selectedService.specification.name}}</dd>
-                    <dt>transport type</dt>  <dd>{{selectedService.specification.serviceType}}</dd>
+                    <dt>service type</dt>    <dd>{{selectedService.specification.serviceType}}</dd>
                     <dt>provider</dt>        <dd class="truncated"><a ui-sref="restricted.organizationDetails({organizationId:selectedService.provider.organizationId})">{{selectedService.provider.name}}</a></dd>
                     <dt>provider website</dt><dd class="truncated"><a target="_blank" href="{{selectedService.provider.url}}">{{selectedService.provider.url}}</a></dd>
-                    <dt>description</dt>     <dd>{{selectedService.description}}</dd>
+                    <dt>summary</dt>         <dd>{{selectedService.summary}}</dd>
                     <dt>Endpoints:</dt>
                     <dt ng-repeat-start="endpoint in selectedService.endpoints"></dt>
                     <dd ng-repeat-end class="truncated"><a target="_blank" href="{{endpoint.uri}}">{{endpoint.uri}}</a></dd>

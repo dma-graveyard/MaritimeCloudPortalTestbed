@@ -127,7 +127,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         var findServiceInstance = function (organizationId, serviceInstanceName) {
           for (var i = 0; i < serviceInstances.length; i++) {
             // FIXME: We should also check that the ID is unique within the organization!!! (defer this to the serverside implementation!)
-            if (organizationId === serviceInstances[i].provider.organizationId && serviceInstanceName === serviceInstances[i].name)
+            if (organizationId === serviceInstances[i].providerId && serviceInstanceName === serviceInstances[i].name)
               return serviceInstances[i];
           }
           return null;
@@ -135,7 +135,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 
         var getServiceInstance = function (organizationId, serviceInstanceId) {
           for (var i = 0; i < serviceInstances.length; i++) {
-            if (organizationId === serviceInstances[i].provider.organizationId && serviceInstanceId === serviceInstances[i].id) {
+            if (organizationId === serviceInstances[i].providerId && serviceInstanceId === serviceInstances[i].serviceInstanceId) {
               return serviceInstances[i];
             }
           }
@@ -158,21 +158,21 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           },
           query: function (request) {
             if (request && request.organizationId) {
-              var specs = [];
+              var instances = [];
               console.log('serviceInstances:', serviceInstances);
 
               serviceInstances.forEach(function (serviceInstance) {
-                if (serviceInstance.provider.organizationId === request.organizationId)
-                  specs.push(serviceInstance);
+                if (serviceInstance.providerId === request.organizationId)
+                  instances.push(serviceInstance);
               });
-              return specs;
+              return instances;
             }
             return serviceInstances;
           },
           //create: {method: 'POST', params: {}, isArray: false}
           create: function (newServiceInstance, success, failure) {
 
-            if (findServiceInstance(newServiceInstance.provider.organizationId, newServiceInstance.name)) {
+            if (findServiceInstance(newServiceInstance.providerId, newServiceInstance.name)) {
               console.log("A service instance with that name already exists");
               failure("A service instance with that name already exists");
               return;
@@ -201,8 +201,9 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 
     .factory('ServiceSpecificationService', ['$resource',
       function ($resource) {
-        //    return $resource('/rest/api/specifications/:specificationname', {}, {
-        //      query: {method: 'GET', params: {specificationname: ''}, isArray: true},
+        //    return $resource('/rest/api/specifications/:serviceSpecificationId', {}, {
+        //      get: {method: 'GET', params: {serviceSpecificationId: '@id'}, isArray: false},
+        //      query: {method: 'GET', params: {serviceSpecificationId: ''}, isArray: true},
         //      signUp: {method: 'POST', params: {}, isArray: false}
         //    });
 
@@ -210,6 +211,26 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 
         console.log("TODO: using mocked service specification data");
         return {
+          get: function (parameters) {
+            var serviceSpecificationId = parameters.serviceSpecificationId;
+            var result;
+
+            for (var key in data.serviceSpecifications) {
+              if (data.serviceSpecifications[key].serviceSpecificationId === serviceSpecificationId) {
+                result = data.serviceSpecifications[key];
+                break;
+              }
+            }
+
+            if (result) {
+              result.$save = function (success, failure) {
+                success(result);
+              };
+              return result;
+            }
+            else
+              console.log("Error. Service Specification with id not found! ", serviceSpecificationId);
+          },
           query: function (parameters) {
 
             var matchingSpecifications = [];

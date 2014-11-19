@@ -485,16 +485,11 @@ function demoData() {
      */
 
     dmaImoMsinmMms: {
-      provider: organization.dma,
-      specification: serviceSpecifications.imoMsinmMms,
-      key: {
-        specificationId: "imo-msinm-mms",
-        providerId: "dma",
-        instanceId: "imo-msinm-mms-1"
-      },
-      id: "imo-msinm-mms-1",
+      providerId: organization.dma.organizationId,
+      specificationId: serviceSpecifications.imoMsinmMms.serviceSpecificationId,
+      serviceInstanceId: "imo-msinm-mms-1",
       name: "DMA MSI-NM Danish waters (mms)",
-      description: "The Danish Maritime Authority issues navigational warnings for Danish waters. Navigational warnings are generally based on information reported to the Danish Maritime Administration by vessels, ports, military agencies, etc.",
+      summary: "The Danish Maritime Authority issues navigational warnings for Danish waters. Navigational warnings are generally based on information reported to the Danish Maritime Administration by vessels, ports, military agencies, etc.",
       coverage: area.eez_dk,
       endpoints: [
         {uri: "mms://999000301"},
@@ -502,255 +497,170 @@ function demoData() {
       ]
     },
     dmaImoMsinmWww: {
-      provider: organization.dma,
-      specification: serviceSpecifications.imoMsinmWww,
-      key: {
-        specificationId: "imo-msinm-www",
-        providerId: "dma",
-        instanceId: "imo-msinm-www-1"
-      },
-      id: "imo-msinm-www-1",
+      providerId: organization.dma.organizationId,
+      specificationId: serviceSpecifications.imoMsinmWww.serviceSpecificationId,
+      serviceInstanceId: "imo-msinm-www-1",
       name: "DMA MSI-NM Danish waters (www)",
-      description: "The Danish Maritime Authority issues navigational warnings for Danish waters. Navigational warnings are generally based on information reported to the Danish Maritime Administration by vessels, ports, military agencies, etc.",
+      summary: "The Danish Maritime Authority issues navigational warnings for Danish waters. Navigational warnings are generally based on information reported to the Danish Maritime Administration by vessels, ports, military agencies, etc.",
       coverage: area.eez_dk,
       endpoints: [
         {uri: "https://msinm-dk.e-navigation.net"},
       ]
     },
     dmiImoMisDkRest: {
-      provider: organization.dmi,
-      specification: serviceSpecifications.imoMisRest,
-      key: {
-        specificationId: "imo-mis-rest", // [TechnicalServiceId]
-        providerId: "dmi", // [MaritimeId (=OrganizationId/UserId)]
-        instanceId: "dk"   // [ServiceInstanceId]
-      },
-      id: "dk", // [TechnicalServiceId].[OrganizationId].[ServiceInstanceId]
-      // or id: "fo.imo-met-metocroute.dmi.dk", // [ServiceInstanceId].[TechnicalServiceId].[OrganizationId].[OrganizationType]
+      providerId: organization.dmi.organizationId,
+      specificationId: serviceSpecifications.imoMisRest.serviceSpecificationId,
+      serviceInstanceId: "dk", // [TechnicalServiceId].[OrganizationId].[ServiceInstanceId]
       name: "DMI METOC on route (Denmark)",
-      description: "Route based Meteorological Services for the waters surrounding Denmark including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
+      summary: "Route based Meteorological Services for the waters surrounding Denmark including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
       coverage: area.dk
     },
     dmiImoMisDkWww: {
-      provider: organization.dmi,
-      specification: serviceSpecifications.imoMisWww,
-      key: {
-        specificationId: "imo-mis-www",
-        providerId: "dmi",
-        instanceId: "dk2"
-      },
-      id: "dk2",
+      providerId: organization.dmi.organizationId,
+      specificationId: serviceSpecifications.imoMisWww.serviceSpecificationId,
+      
+      serviceInstanceId: "dk2",
       name: "DMI METOC on route (Denmark II)",
-      description: "Route based Meteorological Services for the waters surrounding Denmark including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
+      summary: "Route based Meteorological Services for the waters surrounding Denmark including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
       coverage: area.dk,
     },
     dmiImoMisGlWww: {
-      provider: organization.dmi,
-      specification: serviceSpecifications.imoMisWww,
-      key: {
-        specificationId: "imo-mis-www",
-        providerId: "dmi",
-        instanceId: "gl"
-      },
-      id: "gl",
+      providerId: organization.dmi.organizationId,
+      specificationId: serviceSpecifications.imoMisWww.serviceSpecificationId,
+      serviceInstanceId: "gl",
       name: "DMI METOC on route (Greenland)",
-      description: "Route based Meteorological Services for the waters surrounding Greenland including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
+      summary: "Route based Meteorological Services for the waters surrounding Greenland including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
       coverage: area.gl
     },
     dmiImoMisFoRest: {
-      provider: organization.dmi,
-      specification: serviceSpecifications.imoMisRest,
-      key: {
-        specificationId: "imo-mis-rest",
-        providerId: "dmi",
-        instanceId: "fo"
-      },
-      id: "fo",
+      providerId: organization.dmi.organizationId,
+      specificationId: serviceSpecifications.imoMisRest.serviceSpecificationId,
+      serviceInstanceId: "fo",
       name: "DMI METOC on route (Faroe Islands)",
-      description: "Route based Meteorological Services for the waters surrounding the Faroe Islands including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
+      summary: "Route based Meteorological Services for the waters surrounding the Faroe Islands including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
       coverage: area.fo
     },
     dmiImoMisFoWww: {
-      provider: organization.dmi,
-      specification: serviceSpecifications.imoMisWww,
-      key: {
-        specificationId: "imo-mis-www",
-        providerId: "dmi",
-        instanceId: "fo2"
-      },
-      id: "fo2",
+      providerId: organization.dmi.organizationId,
+      specificationId: serviceSpecifications.imoMisWww.serviceSpecificationId,
+      serviceInstanceId: "fo2",
       name: "DMI METOC on route (Faroe Islands II)",
-      description: "Route based Meteorological Services for the waters surrounding the Faroe Islands including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
+      summary: "Route based Meteorological Services for the waters surrounding the Faroe Islands including forecasting and warnings of weather, climate and related environmental conditions in the atmosphere, on land and at sea.",
       coverage: area.fo
     },
     mcaImoMsinmMms: {
-      provider: organization.mca,
-      specification: serviceSpecifications.imoMsinmMms,
-      key: {
-        specificationId: "imo-msinm-mms",
-        providerId: "mca",
-        instanceId: "imo-msinm-mms-uk"
-      },
-      id: "imo-msinm-mms-uk",
+      providerId: organization.mca.organizationId,
+      specificationId: serviceSpecifications.imoMsinmMms.serviceSpecificationId,
+      serviceInstanceId: "imo-msinm-mms-uk",
       name: "MCA MSI-NM United Kingdom North Sea (mms)",
-      description: "Her Majesty’s Coastguard is responsible in the UK for the broadcast of Maritime Safety Information (MSI) on NAVTEX, VHF and MF and for providing the Radio Medical Advice Link Call (MEDILINK) Service.",
+      summary: "Her Majesty’s Coastguard is responsible in the UK for the broadcast of Maritime Safety Information (MSI) on NAVTEX, VHF and MF and for providing the Radio Medical Advice Link Call (MEDILINK) Service.",
       coverage: area.eez_uk,
       endpoints: [
         {uri: "mms://999000307"},
       ]
     },
     mcaImoMsinmWww: {
-      provider: organization.mca,
-      specification: serviceSpecifications.imoMsinmWww,
-      key: {
-        specificationId: "imo-msinm-www",
-        providerId: "mca",
-        instanceId: "imo-msinm-www-uk"
-      },
-      id: "imo-msinm-www-uk",
+      providerId: organization.mca.organizationId,
+      specificationId: serviceSpecifications.imoMsinmWww.serviceSpecificationId,
+      serviceInstanceId: "imo-msinm-www-uk",
       name: "MCA MSI-NM United Kingdom North Sea (www)",
-      description: "Her Majesty’s Coastguard is responsible in the UK for the broadcast of Maritime Safety Information (MSI) on NAVTEX, VHF and MF and for providing the Radio Medical Advice Link Call (MEDILINK) Service.",
+      summary: "Her Majesty’s Coastguard is responsible in the UK for the broadcast of Maritime Safety Information (MSI) on NAVTEX, VHF and MF and for providing the Radio Medical Advice Link Call (MEDILINK) Service.",
       coverage: area.eez_uk,
       endpoints: [
         {uri: "https://msinm-uk.e-navigation.net"},
       ]
     },
     ncaImoMsinmMms: {
-      provider: organization.nca,
-      specification: serviceSpecifications.imoMsinmMms,
-      key: {
-        specificationId: "imo-msinm-mms",
-        providerId: "nca",
-        instanceId: "imo-msinm-mms-no"
-      },
-      id: "imo-msinm-mms-no",
+      providerId: organization.nca.organizationId,
+      specificationId: serviceSpecifications.imoMsinmMms.serviceSpecificationId,
+      serviceInstanceId: "imo-msinm-mms-no",
       name: "NCA MSI-NM Norwegian waters (mms)",
-      description: "The Norwegian Coastal Administration issues navigational warnings for Norwegian waters twice a day. Navigational warnings are generally based on information recieved from The Norwegian Mapping Authority (kartverket). Transmissions to mariners are provided by NCA.",
+      summary: "The Norwegian Coastal Administration issues navigational warnings for Norwegian waters twice a day. Navigational warnings are generally based on information recieved from The Norwegian Mapping Authority (kartverket). Transmissions to mariners are provided by NCA.",
       coverage: area.eez_no,
       endpoints: [
         {uri: "mms://999000305"},
       ]
     },
     ncaImoMsinmWww: {
-      provider: organization.nca,
-      specification: serviceSpecifications.imoMsinmWww,
-      key: {
-        specificationId: "imo-msinm-www",
-        providerId: "nca",
-        instanceId: "imo-msinm-www-no"
-      },
-      id: "imo-msinm-www-no",
+      providerId: organization.nca.organizationId,
+      specificationId: serviceSpecifications.imoMsinmWww.serviceSpecificationId,
+      serviceInstanceId: "imo-msinm-www-no",
       name: "NCA MSI-NM Norwegian waters (www)",
-      description: "The Norwegian Coastal Administration issues navigational warnings for Norwegian waters twice a day. Navigational warnings are generally based on information recieved from The Norwegian Mapping Authority (kartverket). Transmissions to mariners are provided by NCA.",
+      summary: "The Norwegian Coastal Administration issues navigational warnings for Norwegian waters twice a day. Navigational warnings are generally based on information recieved from The Norwegian Mapping Authority (kartverket). Transmissions to mariners are provided by NCA.",
       coverage: area.eez_no,
       endpoints: [
         {uri: "https://msinm-no.e-navigation.net"},
       ]
     },
     fmhaImoMsinmMms: {
-      provider: organization.fmha,
-      specification: serviceSpecifications.imoMsinmMms,
-      key: {
-        specificationId: "imo-msinm-mms",
-        providerId: "fmha",
-        instanceId: "imo-msinm-mms-fmha"
-      },
-      id: "imo-msinm-mms-fmha",
+      providerId: organization.fmha.organizationId,
+      specificationId: serviceSpecifications.imoMsinmMms.serviceSpecificationId,
+      serviceInstanceId: "imo-msinm-mms-fmha",
       name: "FMHA MSI-NM German waters (mms)",
-      description: "The Navigational Warnings and Information Service informs about important navigational occurrences and alterations in German waters and adjacent European waters.",
+      summary: "The Navigational Warnings and Information Service informs about important navigational occurrences and alterations in German waters and adjacent European waters.",
       coverage: area.eez_de,
       endpoints: [
         {uri: "mms://999000302"},
       ]
     },
     fmhaImoMsinmWww: {
-      provider: organization.fmha,
-      specification: serviceSpecifications.imoMsinmWww,
-      key: {
-        specificationId: "imo-msinm-www",
-        providerId: "fmha",
-        instanceId: "imo-msinm-www-fmha"
-      },
-      id: "imo-msinm-www-fmha",
+      providerId: organization.fmha.organizationId,
+      specificationId: serviceSpecifications.imoMsinmWww.serviceSpecificationId,
+      serviceInstanceId: "imo-msinm-www-fmha",
       name: "FMHA MSI-NM German waters (www)",
-      description: "The Navigational Warnings and Information Service informs about important navigational occurrences and alterations in German waters and adjacent European waters.",
+      summary: "The Navigational Warnings and Information Service informs about important navigational occurrences and alterations in German waters and adjacent European waters.",
       coverage: area.eez_de,
       endpoints: [
         {uri: "https://msinm-de.e-navigation.net"},
       ]
     },
     flhImoMsinmMms: {
-      provider: organization.flh,
-      specification: serviceSpecifications.imoMsinmMms,
-      key: {
-        specificationId: "imo-msinm-mms",
-        providerId: "flh",
-        instanceId: "imo-msinm-mms-flh"
-      },
-      id: "imo-msinm-mms-flh",
+      providerId: organization.flh.organizationId,
+      specificationId: serviceSpecifications.imoMsinmMms.serviceSpecificationId,
+      serviceInstanceId: "imo-msinm-mms-flh",
       name: "FLH MSI-NM Belgian waters (mms)",
-      description: "The publication features recent information of importance to the navigation sector, plus supplements and corrections to the nautical charts. The extremely varied type of information includes the dates and times of army shooting exercises, new buoys placed in the sea and recent wrecks and obstacles.",
+      summary: "The publication features recent information of importance to the navigation sector, plus supplements and corrections to the nautical charts. The extremely varied type of information includes the dates and times of army shooting exercises, new buoys placed in the sea and recent wrecks and obstacles.",
       coverage: area.eez_be      
     },
     rnnImoMsinmMms: {
-      provider: organization.rnn,
-      specification: serviceSpecifications.imoMsinmMms,
-      key: {
-        specificationId: "imo-msinm-mms",
-        providerId: "rnn",
-        instanceId: "imo-msinm-mms-rnn"
-      },
-      id: "imo-msinm-mms-rnn",
+      providerId: organization.rnn.organizationId,
+      specificationId: serviceSpecifications.imoMsinmMms.serviceSpecificationId,
+      serviceInstanceId: "imo-msinm-mms-rnn",
       name: "RNN MSI-NM Dutch waters (mms)",
-      description: "As a mariner, you need reliable data for safe navigation. Therefore, the Hydrographic Service publishes nautical charts and nautical publications. Since the situation at sea changes continuously, you are required to keep these products up to date. You can do so by using the Notices to Mariners (NtMs).",
+      summary: "As a mariner, you need reliable data for safe navigation. Therefore, the Hydrographic Service publishes nautical charts and nautical publications. Since the situation at sea changes continuously, you are required to keep these products up to date. You can do so by using the Notices to Mariners (NtMs).",
       coverage: area.eez_nl,
       endpoints: [
         {uri: "mms://999000304"},
       ]
     },
     rnnImoMsinmWww: {
-      provider: organization.rnn,
-      specification: serviceSpecifications.imoMsinmWww,
-      key: {
-        specificationId: "imo-msinm-www",
-        providerId: "rnn",
-        instanceId: "imo-msinm-www-rnn"
-      },
-      id: "imo-msinm-www-rnn",
+      providerId: organization.rnn.organizationId,
+      specificationId: serviceSpecifications.imoMsinmWww.serviceSpecificationId,
+      serviceInstanceId: "imo-msinm-www-rnn",
       name: "RNN MSI-NM Dutch waters (www)",
-      description: "As a mariner, you need reliable data for safe navigation. Therefore, the Hydrographic Service publishes nautical charts and nautical publications. Since the situation at sea changes continuously, you are required to keep these products up to date. You can do so by using the Notices to Mariners (NtMs).",
+      summary: "As a mariner, you need reliable data for safe navigation. Therefore, the Hydrographic Service publishes nautical charts and nautical publications. Since the situation at sea changes continuously, you are required to keep these products up to date. You can do so by using the Notices to Mariners (NtMs).",
       coverage: area.eez_nl,
       endpoints: [
         {uri: "https://msinm-nl.e-navigation.net"},
       ]
     },
     smaImoMsinmMms: {
-      provider: organization.sma,
-      specification: serviceSpecifications.imoMsinmMms,
-      key: {
-        specificationId: "imo-msinm-mms",
-        providerId: "sma",
-        instanceId: "imo-msinm-mms-1"
-      },
-      id: "imo-msinm-mms-1",
+      providerId: organization.sma.organizationId,
+      specificationId: serviceSpecifications.imoMsinmMms.serviceSpecificationId,
+      serviceInstanceId: "imo-msinm-mms-1",
       name: "SMA MSI-NM Swedish waters (mms)",
-      description: "The Swedish Maritime Administration issues navigational warnings for Swedish waters. Navigational warnings are generally based on information reported to the Swedish Maritime Administration by vessels, ports, military agencies, etc. Transmissions to mariners are provided by MSI SWEDEN.",
+      summary: "The Swedish Maritime Administration issues navigational warnings for Swedish waters. Navigational warnings are generally based on information reported to the Swedish Maritime Administration by vessels, ports, military agencies, etc. Transmissions to mariners are provided by MSI SWEDEN.",
       coverage: area.eez_se,
       endpoints: [
         {uri: "mms://999000306"},
       ]
     },
     smaImoMsinmWww: {
-      provider: organization.sma,
-      specification: serviceSpecifications.imoMsinmWww,
-      key: {
-        specificationId: "imo-msinm-www",
-        providerId: "sma",
-        instanceId: "imo-msinm-www-1"
-      },
-      id: "imo-msinm-www-1",
+      providerId: organization.sma.organizationId,
+      specificationId: serviceSpecifications.imoMsinmWww.serviceSpecificationId,
+      serviceInstanceId: "imo-msinm-www-1",
       name: "SMA MSI-NM Swedish waters (www)",
-      description: "The Swedish Maritime Administration issues navigational warnings for Swedish waters. Navigational warnings are generally based on information reported to the Swedish Maritime Administration by vessels, ports, military agencies, etc. Transmissions to mariners are provided by MSI SWEDEN.",
+      summary: "The Swedish Maritime Administration issues navigational warnings for Swedish waters. Navigational warnings are generally based on information reported to the Swedish Maritime Administration by vessels, ports, military agencies, etc. Transmissions to mariners are provided by MSI SWEDEN.",
       coverage: area.eez_se,
       endpoints: [
         {uri: "https://msinm-se.e-navigation.net"},
@@ -783,17 +693,11 @@ function demoData() {
         serviceInstance = randomOf(globalServiceInstances);
 
     return   {
-      provider: provider,
-      specification: specification,
-      key: {
-        specificationId: specification.id, // [TechnicalServiceId]
-        providerId: provider.id, // [MaritimeId (=OrganizationId/UserId)]
-        instanceId: instanceId   // [ServiceInstanceId]
-      },
-      id: instanceId, // [TechnicalServiceId].[OrganizationId].[ServiceInstanceId]
-      // or id: "fo.imo-met-metocroute.dmi.dk", // [ServiceInstanceId].[TechnicalServiceId].[OrganizationId].[OrganizationType]
+      providerId: provider.organizationId,
+      specificationId: specification.serviceSpecificationId,
+      serviceInstanceId: instanceId,
       name: serviceInstance.name + ' ' + index,
-      description: serviceInstance.description + index,
+      summary: serviceInstance.summary + index,
       coverage: createRandomCoverage(index)
     };
   }

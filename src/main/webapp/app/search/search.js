@@ -96,14 +96,9 @@ angular.module('mcp.search.services', [])
 
         function match(service, filter) {
 
-          if (filter.provider && service.provider.name !== filter.provider.name)
+          if (filter.provider && service.providerId !== filter.provider.organizationId)
             return false;
 
-          if (filter.operationalService && service.specification.operationalServices.indexOf(filter.operationalService.id) === -1)
-            return false;
-
-          if (filter.serviceSpecification && service.specification.serviceSpecificationId !== filter.serviceSpecification.serviceSpecificationId)
-            return false;
 
           if (filter.serviceType && service.specification.serviceType !== filter.serviceType)
             return false;
@@ -181,7 +176,7 @@ angular.module('mcp.search.services', [])
         }
 
         function uniqueId(service) {
-          return service.key.providerId + '-' + service.id;
+          return service.providerId + '-' + service.specificationId;
         }
 
         function clickEventHandler(e) {
