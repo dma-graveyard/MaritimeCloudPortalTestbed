@@ -15,9 +15,13 @@
 package net.maritimecloud.portal;
 
 //import net.maritimecloud.portal.config.ApplicationConfig;
+import javax.annotation.Resource;
 import net.maritimecloud.portal.config.ApplicationInMemoryDemoConfig;
+import org.axonframework.eventhandling.replay.ReplayingCluster;
+import org.springframework.beans.BeansException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -31,8 +35,14 @@ import org.springframework.context.annotation.Import;
 @Import(value = ApplicationInMemoryDemoConfig.class)
 public class Application /*extends SpringBootServletInitializer*/ {
 
+    @Resource
+    ReplayingCluster replayingCluster;
+
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(Application.class, args);
+
+        rebuild(applicationContext);
+
     }
 
 //    @Bean
@@ -45,4 +55,13 @@ public class Application /*extends SpringBootServletInitializer*/ {
 //    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 //        return application.sources(Application.class);
 //    }
+    public static void rebuild(ConfigurableApplicationContext applicationContext) throws BeansException {
+        System.out.println("\n\n Rebuilding view repositories from events ..." + applicationContext.getBean(ReplayingCluster.class));
+        ReplayingCluster replayingCluster = applicationContext.getBean(ReplayingCluster.class);
+        long start = System.currentTimeMillis();
+        replayingCluster.startReplay();
+        long stop = System.currentTimeMillis();
+        System.out.println("Completed in " + (stop - start) + " milliseconds!");
+
+    }
 }

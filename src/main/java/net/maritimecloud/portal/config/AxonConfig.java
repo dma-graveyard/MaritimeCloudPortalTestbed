@@ -15,6 +15,7 @@
 package net.maritimecloud.portal.config;
 
 import java.io.File;
+import net.maritimecloud.portal.domain.infrastructure.axon.ReplayableFileSystemEventStore;
 import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.commandhandling.SimpleCommandBus;
 import org.axonframework.commandhandling.gateway.CommandGatewayFactoryBean;
@@ -24,8 +25,6 @@ import org.axonframework.eventhandling.EventBus;
 import org.axonframework.eventhandling.SimpleEventBus;
 import org.axonframework.eventsourcing.EventSourcingRepository;
 import org.axonframework.eventstore.EventStore;
-import org.axonframework.eventstore.fs.FileSystemEventStore;
-import org.axonframework.eventstore.fs.SimpleEventFileResolver;
 import org.axonframework.repository.Repository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -33,6 +32,14 @@ import org.springframework.context.annotation.Configuration;
 import net.maritimecloud.serviceregistry.command.organization.Organization;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
+import org.axonframework.eventhandling.ClusteringEventBus;
+import org.axonframework.eventhandling.DefaultClusterSelector;
+import org.axonframework.eventhandling.SimpleCluster;
+import org.axonframework.eventhandling.replay.BackloggingIncomingMessageHandler;
+import org.axonframework.eventhandling.replay.ReplayingCluster;
+import org.axonframework.eventstore.management.EventStoreManagement;
+import org.axonframework.unitofwork.SpringTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * @author Christoffer Børrild
@@ -49,12 +56,34 @@ public class AxonConfig {
 
     @Bean
     public EventBus eventBus() {
-        return new SimpleEventBus();
+//        return new SimpleEventBus();
+        return new ClusteringEventBus(new DefaultClusterSelector(simpleCluster()));
     }
 
     @Bean
     public EventStore eventStore() {
-        return new FileSystemEventStore(new SimpleEventFileResolver(new File("./target/events")));
+//        return new FileSystemEventStore(new SimpleEventFileResolver(new File("./target/events")));
+        return new ReplayableFileSystemEventStore(new File("./target/events"));
+    }
+
+    @Bean
+    public SimpleCluster simpleCluster() {
+        return new SimpleCluster("defaultCluster");
+    }
+
+    @Bean
+    public SpringTransactionManager springTransactionManager(PlatformTransactionManager platformTransactionManager) {
+        return new SpringTransactionManager(platformTransactionManager);
+    }
+
+    @Bean
+    public ReplayingCluster replayingCluster(PlatformTransactionManager platformTransactionManager) {
+        return new ReplayingCluster(simpleCluster(), (EventStoreManagement) eventStore(), springTransactionManager(platformTransactionManager), 10, backloggingIncomingMessageHandler());
+    }
+
+    @Bean
+    public BackloggingIncomingMessageHandler backloggingIncomingMessageHandler() {
+        return new BackloggingIncomingMessageHandler();
     }
 
     @Bean
@@ -73,7 +102,6 @@ public class AxonConfig {
 //    AnnotationEventListenerBeanPostProcessor annotationEventListenerBeanPostProcessor() {
 //        return new AnnotationEventListenerBeanPostProcessor();
 //    }
-
     @Bean
     public Repository<Organization> organizationRepository() {
         EventSourcingRepository repository = new EventSourcingRepository<>(Organization.class, eventStore());
@@ -94,23 +122,22 @@ public class AxonConfig {
         repository.setEventBus(eventBus());
         return repository;
     }
-    
+
     // ------------------------------------------------------------------------
     // Currently Axon does not have spring support for discovering 
     // command handlers on Aggregates, so we have to subscribe them 
     // manually:
     // ------------------------------------------------------------------------ 
-    
     @Bean
     public AggregateAnnotationCommandHandler<Organization> organizationAggregateCommandHandler() {
         return AggregateAnnotationCommandHandler.subscribe(Organization.class, organizationRepository(), commandBus());
     }
-    
+
     @Bean
     public AggregateAnnotationCommandHandler<ServiceSpecification> serviceSpecificationAggregateCommandHandler() {
         return AggregateAnnotationCommandHandler.subscribe(ServiceSpecification.class, serviceSpecificationRepository(), commandBus());
     }
-    
+
     @Bean
     public AggregateAnnotationCommandHandler<ServiceInstance> serviceInstanceAggregateCommandHandler() {
         return AggregateAnnotationCommandHandler.subscribe(ServiceInstance.class, serviceInstanceRepository(), commandBus());
