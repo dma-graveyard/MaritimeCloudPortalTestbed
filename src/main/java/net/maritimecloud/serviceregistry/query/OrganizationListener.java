@@ -48,7 +48,7 @@ public class OrganizationListener {
     public void on(OrganizationCreatedEvent event) {
         logger.debug("About to handle the OrganizationCreatedEvent: {}", event);
         OrganizationEntry organizationEntry = new OrganizationEntry();
-        organizationEntry.setOrganizationIdentifier(event.getOrganizationId().identifier());
+        organizationEntry.setOrganizationId(event.getOrganizationId().identifier());
         organizationEntry.setName(event.getName());
         organizationEntry.setSummary(event.getSummary());
         organizationQueryRepository.save(organizationEntry);

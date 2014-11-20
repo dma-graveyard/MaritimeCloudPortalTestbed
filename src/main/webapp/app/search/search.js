@@ -102,6 +102,12 @@ angular.module('mcp.search.services', [])
 
           if (filter.serviceType && service.specification.serviceType !== filter.serviceType)
             return false;
+          
+          // Should match if specificationId is in set of specificationIds (...as prepared as stated above)
+          
+          
+          if (filter.serviceSpecification && service.specificationId !== filter.serviceSpecification.serviceSpecificationId)
+            return false;
 
           return true;
         }
@@ -275,7 +281,6 @@ angular.module('mcp.search.services', [])
     // Search Filter Object
     // that holds the various filters supplied by controls in eg. the sidebar and used to filter services
     .service('searchServiceFilterModel', function (OperationalServiceService, OrganizationService) {
-
       this.data = {
         operationalServices: OperationalServiceService.query(),
         serviceSpecifications: null,

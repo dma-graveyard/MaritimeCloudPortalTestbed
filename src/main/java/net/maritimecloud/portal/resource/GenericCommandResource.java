@@ -49,6 +49,8 @@ import org.slf4j.LoggerFactory;
 public class GenericCommandResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(GenericCommandResource.class);
+    
+    public static final String APPLICATION_JSON_CQRS_COMMAND = MediaType.APPLICATION_JSON + ";domain-model=*Command";
 
     private static final CommandRegistry postCommandsRegistry = new CommandRegistry(
             CreateOrganizationCommand.class,
@@ -64,22 +66,22 @@ public class GenericCommandResource {
     private static final CommandRegistry patchCommandsRegistry = new CommandRegistry();
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON + ";domain-model=*Command")
+    @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
-    public void mappedGetCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
+    public void mappedPostCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
         LOG.info("POST command: " + commandJSON);
         sendAndWait(contentType, queryCommandName, postCommandsRegistry, commandJSON);
     }
 
     @PUT
-    @Consumes(MediaType.APPLICATION_JSON + ";domain-model=*Command")
+    @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
     public void mappedPutCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
         LOG.info("PUT command: " + commandJSON);
         sendAndWait(contentType, queryCommandName, putCommandsRegistry, commandJSON);
     }
 
-    private void sendAndWait(String contentType, String queryCommandName, CommandRegistry commandRegistry, String commandJSON) throws WebApplicationException {
+    public static void sendAndWait(String contentType, String queryCommandName, CommandRegistry commandRegistry, String commandJSON) throws WebApplicationException {
         try {
             Class commandClass = commandRegistry.resolve(resolveCommandName(contentType, queryCommandName));
             Object command = readCommand(commandJSON, commandClass);

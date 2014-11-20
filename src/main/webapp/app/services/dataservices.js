@@ -5,6 +5,16 @@
 // ----------------------------------------------------------------------------
 var data = demoData();
 
+
+// ----------------------------------------------------------------------------
+// Remote API Commands
+// ----------------------------------------------------------------------------
+function CreateOrganizationCommand(organizationId, name, summary) {
+  this.organizationId = {identifier: organizationId};
+  this.name = name;
+  this.summary = summary;
+}
+
 // --------------------------------------------------
 /* Services */
 // --------------------------------------------------
@@ -30,12 +40,23 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         });
       }])
 
-    .factory('OrganizationService', ['$resource',
+    .factory('OrganizationService', ['$resource', 'serviceBaseUrl',
+      function ($resource, serviceBaseUrl) {
+        
+        var resource = $resource(serviceBaseUrl + '/rest/api/organization/:organizationId', {}, {
+          post: {method: 'POST'},
+        });
+        
+        resource.create = function(organization, succes, error){
+          return this.post(new CreateOrganizationCommand(organization.organizationId, organization.name, organization.summary), succes, error);
+        };
+        
+        return resource;
+      }])
+
+//FIXME clean up this old service once done with integrating to server
+    .factory('OrganizationServiceOLD', ['$resource',
       function ($resource) {
-//    return $resource('/rest/organizations/:organizationId', {}, {
-//      query: {method: 'GET', params: {organizationId: ''}, isArray: true},
-//      signUp: {method: 'POST', params: {}, isArray: false}
-//    });
 
         console.log("TODO: using mocked organizations data");
         var organizations = data.organizationList;

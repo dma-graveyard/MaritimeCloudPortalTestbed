@@ -17,7 +17,6 @@ package net.maritimecloud.serviceregistry.query;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Lob;
 import org.springframework.data.annotation.Id;
 
 /**
@@ -28,17 +27,17 @@ public class OrganizationEntry implements Serializable {
 
     @Id
     @javax.persistence.Id
-    private String organizationIdentifier;
+    private String organizationId;
     private String name;
-    @Column( length = 1000 )
+    @Column(length = 1000)
     private String summary;
 
-    public String getOrganizationIdentifier() {
-        return organizationIdentifier;
+    public String getOrganizationId() {
+        return organizationId;
     }
 
-    public void setOrganizationIdentifier(String organizationIdentifier) {
-        this.organizationIdentifier = organizationIdentifier;
+    public void setOrganizationId(String organizationId) {
+        this.organizationId = organizationId;
     }
 
     public String getName() {
@@ -59,7 +58,7 @@ public class OrganizationEntry implements Serializable {
 
     @Override
     public String toString() {
-        return "OrganizationEntry{" + "organizationIdentifier=" + organizationIdentifier + ", name=" + name + ", summary=" + summary + '}';
+        return "OrganizationEntry{" + "organizationIdentifier=" + organizationId + ", name=" + name + ", summary=" + summary + '}';
     }
 
 }

@@ -31,6 +31,35 @@ mcpApp.value('cgBusyDefaults',{
     minDuration: 0
 });
 
+// CQRS REST "command-enabler"
+// wrap http-handler in order to intercept non-get methods and add command-name to content-type  
+// (shamelessly snatched from "https://github.com/aliostad/m-r/blob/master/SimpleCQRS.Api/Scripts/inventory-item.js")
+mcpApp.config(function ($provide) {
+  $provide.decorator('$http', function ($delegate) {
+
+    var customHttp = function (config) {
+
+      if (config && (config.method === "PUT" || config.method === "POST" || config.method === "DELETE")
+          && config.data && typeof config.data === "object") {
+
+        config.headers = config.headers || {};
+
+        config.headers["Content-Type"] = "application/json;domain-model=" + config.data.constructor.name;
+        if (config.method === "PUT" && config.$scope && config.$scope[constants.concurrencyVersionName]) {
+          config.headers["If-Match"] = config.$scope[constants.concurrencyVersionName];
+        }
+
+      }
+
+      return $delegate(config);
+    };
+
+    angular.extend(customHttp, $delegate);
+    return customHttp;
+  });
+});
+
+
 mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'USER_ROLES',
   function($stateProvider, stateHelperProvider, $urlRouterProvider, USER_ROLES) {
     $urlRouterProvider.when("", "/");

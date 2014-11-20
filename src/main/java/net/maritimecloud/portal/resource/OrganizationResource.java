@@ -14,24 +14,31 @@
  */
 package net.maritimecloud.portal.resource;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import javax.annotation.Resource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
-import static net.maritimecloud.serviceregistry.command.RestCommandUtil.readCommand;
-import static net.maritimecloud.serviceregistry.command.RestCommandUtil.resolveCommandClass;
+import static net.maritimecloud.portal.resource.GenericCommandResource.APPLICATION_JSON_CQRS_COMMAND;
+import static net.maritimecloud.portal.resource.GenericCommandResource.sendAndWait;
+import net.maritimecloud.serviceregistry.command.CommandRegistry;
+import net.maritimecloud.serviceregistry.command.organization.ChangeOrganizationNameAndSummaryCommand;
+import net.maritimecloud.serviceregistry.command.organization.CreateOrganizationCommand;
+import net.maritimecloud.serviceregistry.command.organization.PrepareServiceSpecificationCommand;
+import net.maritimecloud.serviceregistry.command.organization.ProvideServiceInstanceCommand;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceNameAndSummaryCommand;
+import net.maritimecloud.serviceregistry.command.servicespecification.ChangeServiceSpecificationNameAndSummaryCommand;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import net.maritimecloud.serviceregistry.query.ServiceInstanceEntry;
@@ -54,34 +61,56 @@ public class OrganizationResource {
 
     @Resource
     protected CommandGateway commandGateway;
+    
+    // -------------------------------------------------------
+    // Commands
+    // -------------------------------------------------------
+    
+    private static final CommandRegistry postCommandsRegistry = new CommandRegistry(
+            CreateOrganizationCommand.class,
+            PrepareServiceSpecificationCommand.class,
+            ProvideServiceInstanceCommand.class
+    );
+    private static final CommandRegistry putCommandsRegistry = new CommandRegistry(
+            ChangeOrganizationNameAndSummaryCommand.class,
+            ChangeServiceSpecificationNameAndSummaryCommand.class,
+            ChangeServiceInstanceNameAndSummaryCommand.class
+    );
+    private static final CommandRegistry deleteCommandsRegistry = new CommandRegistry();
+    private static final CommandRegistry patchCommandsRegistry = new CommandRegistry();
 
-//    public static final Map<String, Class> commandRegistry = new HashMap<>();
-//
-//    static {
-//        commandRegistry.put(CreateOrganizationCommand.class.getCanonicalName(), CreateOrganizationCommand.class);
-//        commandRegistry.put(CreateOrganizationCommand.class.getSimpleName(), CreateOrganizationCommand.class);
-//
-//        commandRegistry.put(CreateOrganizationCommand.class.getCanonicalName(), CreateOrganizationCommand.class);
-//        commandRegistry.put(CreateOrganizationCommand.class.getSimpleName(), CreateOrganizationCommand.class);
-//    }
     @POST
-    @Consumes(MediaType.APPLICATION_JSON + ";domain-model=*Command")
+    @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
-    public void mappedCommand(
-            @HeaderParam("Content-type") String contentType,
-            @QueryParam("command") @DefaultValue("") String queryCommandName,
-            String commandJSON) {
+    public void mappedPostCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
+        LOG.info("POST command: " + commandJSON);
         try {
-            Object command = readCommand(commandJSON, resolveCommandClass(contentType, queryCommandName));
-            ApplicationServiceRegistry.commandGateway().sendAndWait(command);
-        } catch (IOException ex) {
-            throw new WebApplicationException("Error occured when reading command!");
+            Thread.sleep(4000);
+        } catch (InterruptedException ex) {
+            java.util.logging.Logger.getLogger(OrganizationResource.class.getName()).log(Level.SEVERE, null, ex);
         }
+        GenericCommandResource.sendAndWait(contentType, queryCommandName, postCommandsRegistry, commandJSON);
+        
     }
+    
+    @PUT
+    @Consumes(APPLICATION_JSON_CQRS_COMMAND)
+    @Produces(MediaType.APPLICATION_JSON)
+    public void mappedPutCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
+        LOG.info("PUT command: " + commandJSON);
+        sendAndWait(contentType, queryCommandName, putCommandsRegistry, commandJSON);
+    }
+    
+    // -------------------------------------------------------
+    // Queries
+    // -------------------------------------------------------
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<OrganizationEntry> getOrganizations(@QueryParam("namePattern") @DefaultValue("") String usernamePattern) {
+    public List<OrganizationEntry> getOrganizations(
+            @QueryParam("member") @DefaultValue("") String memberUID,
+            @QueryParam("namePattern") @DefaultValue("") String organizationNamePattern
+    ) {
 
         LOG.info("getOrganizations");
 
@@ -89,7 +118,12 @@ public class OrganizationResource {
         List<OrganizationEntry> organizationEntries = new ArrayList<>();
 
         for (OrganizationEntry organizationEntry : all) {
-            organizationEntries.add(organizationEntry);
+
+            // TODO: create a mapping between organizations and members
+            if (memberUID.isEmpty() || organizationEntry.getSummary().contains(memberUID)) {
+                organizationEntries.add(organizationEntry);
+            }
+
         }
 
         return organizationEntries;
@@ -131,94 +165,5 @@ public class OrganizationResource {
 
         return serviceInstanceEntries;
     }
-
-//    @POST
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Consumes(MediaType.APPLICATION_JSON+";domain-model=CreateInventoryItemCommand")
-//    public void createOrganization(
-//            @QueryParam("namePattern") @DefaultValue("") String usernamePattern,
-//            @Context  HttpServletRequest request
-//    ) {
-//
-//        CreateOrganizationCommand createOrganizationCommand
-//                = new CreateOrganizationCommand(new OrganizationId("OrganizationId_" + usernamePattern), "A_NAME", "A_SUMMARY");
-//
-//        LOG.info("create organization: " + createOrganizationCommand);
-//        LOG.info("create organization: " + request);
-//        LOG.info("create organization: " + request.getContentType());
-//
-//        ApplicationServiceRegistry.commandGateway().sendAndWait(createOrganizationCommand);
-//
-//        //return "OK";
-//    }
-//    @POST
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Consumes(MediaType.APPLICATION_JSON+";domain-model=CreateInventoryItemCommand")
-//    public void createOrganization(
-//            JsonCommandMessage command,
-//            @QueryParam("namePattern") @DefaultValue("") String usernamePattern,
-//            @Context  HttpServletRequest request
-//    ) {
-//        LOG.info("command: " + command);
-//        LOG.info("command: " + command.getClass().getCanonicalName());
-//        LOG.info("create organization II: " + request.getContentType());
-//        
-//        // write a generic "command parser" that will create a command based on a name (domain-model)
-//        // and the list of coresponding constructors variables
-//        
-//    }
-//    @POST
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Consumes(MediaType.APPLICATION_JSON+";domain-model=CreateInventoryItemCommand")
-//    public void createOrganization(
-//            String command,
-//            @QueryParam("namePattern") @DefaultValue("") String usernamePattern,
-//            @Context  HttpServletRequest request
-//    ) {
-//        LOG.info("command: " + command);
-//        LOG.info("command: " + command.getClass().getCanonicalName());
-// //       LOG.info("create organization II: " + request.getContentType());
-//        
-//        // write a generic "command parser" that will create a command based on a name (domain-model)
-//        // and the list of coresponding constructors variables
-//        
-//    }
-//    @GET
-//    @Path("cmd")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public CreateOrganizationCommand createOrganization(@QueryParam("namePattern") @DefaultValue("") String usernamePattern) {
-//
-//        CreateOrganizationCommand createOrganizationCommand 
-//                = new CreateOrganizationCommand(new OrganizationId("OrganizationId_"+usernamePattern), "A_NAME", "A_SUMMARY");
-//        
-//        LOG.info("create organization: "+usernamePattern/*createOrganizationCommand*/);
-//        
-//        //ApplicationServiceRegistry.commandGateway().sendAndWait(createOrganizationCommand);
-//        return createOrganizationCommand;
-//    }
-//    private Class resolveCommandClass(String contentType, String queryCommandName) {
-//        return resolveCommandClass(resolveCommandName(contentType, queryCommandName));
-//    }
-//
-//    private Class resolveCommandClass(String commandName) {
-//        Class commandClass = commandRegistry.get(commandName);
-//        Assert.notNull(commandName, "Unable to resolve name to a command-class: " + commandName);
-//        return commandClass;
-//    }
-//
-//    private String resolveCommandName(String contentType, String queryCommandName) {
-//
-//        String domainModel = contentType.replaceFirst(MediaType.APPLICATION_JSON + ";domain-model=", "");
-//        LOG.debug("domain model = " + domainModel);
-//
-//        String commandName = queryCommandName.isEmpty() ? domainModel : queryCommandName;
-//        LOG.debug("command name: " + commandName);
-//
-//        return commandName;
-//    }
-//
-//    private Object readCommand(String fromJSON, Class toTargetClass) throws IOException {
-//        ObjectMapper mapper = new ObjectMapper();
-//        return mapper.readValue(fromJSON, toTargetClass);
-//    }
+    
 }
