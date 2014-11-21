@@ -12,17 +12,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.portal.domain.infrastructure.shiro.axon;
+package net.maritimecloud.portal.domain.infrastructure.axon;
 
-import net.maritimecloud.portal.domain.infrastructure.axon.ReplayableFileSystemEventStore;
 import java.io.File;
-import java.io.IOException;
 import org.axonframework.domain.DomainEventMessage;
-import org.axonframework.eventstore.EventVisitor;
-import org.axonframework.eventstore.fs.SimpleEventFileResolver;
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -30,28 +24,16 @@ import static org.junit.Assert.*;
  */
 public class ReplayableFileSystemEventStoreTest {
 
-    public ReplayableFileSystemEventStoreTest() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-//    @Test
-//    public void test1SomeMethod() throws IOException {
-//        
-//        File baseDir = new File("./target/events");
-//        System.out.println(""+baseDir.getAbsolutePath());
-//        SimpleEventFileResolver simpleEventFileResolver = new SimpleEventFileResolver(baseDir);
-//        assertTrue("expected true ", simpleEventFileResolver.eventFileExists("Organization", "OrganizationId [id=ælkjælkjælkjælkj]"));
-//    }
-
     @Test
     public void testReplay() {
         File baseDir = new File("./target/events");
-        
+
+        if (!baseDir.exists()) {
+            return;
+        }
+
         ReplayableFileSystemEventStore store = new ReplayableFileSystemEventStore(baseDir);
-        
+
         store.visitEvents((DomainEventMessage domainEvent) -> {
             System.out.println(domainEvent.getTimestamp() + ", Type: " + domainEvent.getPayloadType() + " ID:" + domainEvent.getAggregateIdentifier() + ", Seq:" + domainEvent.getSequenceNumber());
         });
