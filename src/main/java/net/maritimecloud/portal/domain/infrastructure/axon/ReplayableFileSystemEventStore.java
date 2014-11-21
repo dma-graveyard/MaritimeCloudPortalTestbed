@@ -29,6 +29,8 @@ import org.axonframework.eventstore.fs.SimpleEventFileResolver;
 import org.axonframework.eventstore.management.Criteria;
 import org.axonframework.eventstore.management.CriteriaBuilder;
 import org.axonframework.eventstore.management.EventStoreManagement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *  Simpleminded extension of FileSystemEventStore that supports EventStoreManagement in the simplest variant (no CriteriaBuilder support!)
@@ -36,6 +38,7 @@ import org.axonframework.eventstore.management.EventStoreManagement;
  * @author Christoffer Børrild
  */
 public class ReplayableFileSystemEventStore extends FileSystemEventStore implements EventStoreManagement {
+    private final static Logger LOG = LoggerFactory.getLogger(ReplayableFileSystemEventStore.class);
 
     private final File baseDir;
 
@@ -59,16 +62,18 @@ public class ReplayableFileSystemEventStore extends FileSystemEventStore impleme
 
         // for each type scan for aggregates
         types.stream().forEach((type) -> {
-            List<File> aggregateIndentifiers = scanForAggregates(type);
+            List<File> aggregateFiles = scanForAggregates(type);
+            LOG.info("indexing {} aggregates of type '{}'", aggregateFiles.size(), type.getName());
 
             // for each aggregate register event messages in a big sorted set ordered by timestamp
-            aggregateIndentifiers.stream().forEach((aggregateIndentifier) -> {
-                readAndRegisterAggregateEvents(aggregateIndentifier);
+            aggregateFiles.stream().forEach((aggregateFile) -> {
+                readAndRegisterAggregateEvents(aggregateFile);
             });
         });
 
         // finally, call visitor for each message in sequence 
         replayEvents(visitor);
+        LOG.info("Replayed {} events from {} aggregates.", domainEventMessagesCache.size(), types.size());
 
         resetEventCache();
     }
@@ -136,8 +141,6 @@ public class ReplayableFileSystemEventStore extends FileSystemEventStore impleme
         domainEventMessagesCache.stream().forEach((domainEventMessage) -> {
             visitor.doWithEvent(domainEventMessage);
         });
-        
-        System.out.println("Replayed "+domainEventMessagesCache.size()+" events.");
     }
 
 }

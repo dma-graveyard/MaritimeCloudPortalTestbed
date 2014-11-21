@@ -18,6 +18,8 @@ package net.maritimecloud.portal;
 import javax.annotation.Resource;
 import net.maritimecloud.portal.config.ApplicationInMemoryDemoConfig;
 import org.axonframework.eventhandling.replay.ReplayingCluster;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -35,6 +37,8 @@ import org.springframework.context.annotation.Import;
 @Import(value = ApplicationInMemoryDemoConfig.class)
 public class Application /*extends SpringBootServletInitializer*/ {
 
+    private final static Logger LOG = LoggerFactory.getLogger(Application.class);
+
     @Resource
     ReplayingCluster replayingCluster;
 
@@ -43,6 +47,19 @@ public class Application /*extends SpringBootServletInitializer*/ {
 
         rebuild(applicationContext);
 
+    }
+
+    public static void rebuild(ConfigurableApplicationContext applicationContext) throws BeansException {
+        
+        LOG.info("Rebuilding view repositories from events ...");
+        
+        ReplayingCluster replayingCluster = applicationContext.getBean(ReplayingCluster.class);
+        
+        long start = System.currentTimeMillis();
+        replayingCluster.startReplay();
+        long stop = System.currentTimeMillis();
+        
+        LOG.info("Completed in {} milliseconds!", stop - start);
     }
 
 //    @Bean
@@ -55,13 +72,4 @@ public class Application /*extends SpringBootServletInitializer*/ {
 //    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 //        return application.sources(Application.class);
 //    }
-    public static void rebuild(ConfigurableApplicationContext applicationContext) throws BeansException {
-        System.out.println("\n\n Rebuilding view repositories from events ..." + applicationContext.getBean(ReplayingCluster.class));
-        ReplayingCluster replayingCluster = applicationContext.getBean(ReplayingCluster.class);
-        long start = System.currentTimeMillis();
-        replayingCluster.startReplay();
-        long stop = System.currentTimeMillis();
-        System.out.println("Completed in " + (stop - start) + " milliseconds!");
-
-    }
 }
