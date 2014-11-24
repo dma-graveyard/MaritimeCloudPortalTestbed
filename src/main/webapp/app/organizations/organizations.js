@@ -41,14 +41,8 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
     .controller('OrganizationDetailsController', ['$scope', '$stateParams', 'OrganizationService', 'ServiceSpecificationService', 'ServiceInstanceService',
       function ($scope, $stateParams, OrganizationService, ServiceSpecificationService, ServiceInstanceService) {
-        console.log("XXXXX XXXXXXX organization XXXXXXX XXXXXXXX", $stateParams.organizationId);
-        $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId}, function (organization) {
-          console.log("organization", organization);
-        },
-            function (error) {
-              console.log("organization error", error);
-            }
-        );
+        
+        $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId});
         $scope.specifications = ServiceSpecificationService.query({organizationId: $stateParams.organizationId}, function (specifications) {
         });
         $scope.serviceInstances = ServiceInstanceService.query({organizationId: $stateParams.organizationId}, function (serviceInstances) {

@@ -15,6 +15,15 @@ function CreateOrganizationCommand(organizationId, name, summary) {
   this.summary = summary;
 }
 
+function ProvideServiceInstanceCommand(providerId, specificationId, serviceInstanceId, name, summary, coverage) {
+  this.providerId = {identifier: providerId};
+  this.specificationId = {identifier: specificationId};
+  this.serviceInstanceId = {identifier: serviceInstanceId};
+  this.name = name;
+  this.summary = summary;
+  this.coverage = coverage;
+}
+
 // --------------------------------------------------
 /* Services */
 // --------------------------------------------------
@@ -132,79 +141,94 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         };
       }])
 
-    .factory('ServiceInstanceService', ['$resource',
-      function ($resource) {
-//    return $resource('/rest/serviceInstance/:specificationname', {}, {
-//      query: {method: 'GET', params: {specificationname: ''}, isArray: true},
-//      signUp: {method: 'POST', params: {}, isArray: false}
-//    });
-        console.log("TODO: using mocked service instance data");
-        var serviceInstances = data.serviceInstanceList;
-
-        /**
-         * Helper function to find Service Instance by name (to avoid duplicates)
-         * @param {type} serviceInstanceName
-         */
-        var findServiceInstance = function (organizationId, serviceInstanceName) {
-          for (var i = 0; i < serviceInstances.length; i++) {
-            // FIXME: We should also check that the ID is unique within the organization!!! (defer this to the serverside implementation!)
-            if (organizationId === serviceInstances[i].providerId && serviceInstanceName === serviceInstances[i].name)
-              return serviceInstances[i];
-          }
-          return null;
+    .factory('ServiceInstanceService', ['$resource', 'serviceBaseUrl',
+      function ($resource, serviceBaseUrl) {
+        
+        var resource = $resource(serviceBaseUrl + '/rest/api/organization/:organizationId/service-instance/:serviceInstanceId', {}, {
+          post: {method: 'POST', params:{organizationId: '@providerId'}},
+        });
+        
+        resource.create = function(serviceInstance, succes, error){
+          return this.post(new ProvideServiceInstanceCommand(serviceInstance.providerId, serviceInstance.specificationId, serviceInstance.serviceInstanceId, serviceInstance.name, serviceInstance.summary, serviceInstance.coverage), succes, error);
         };
-
-        var getServiceInstance = function (organizationId, serviceInstanceId) {
-          for (var i = 0; i < serviceInstances.length; i++) {
-            if (organizationId === serviceInstances[i].providerId && serviceInstanceId === serviceInstances[i].serviceInstanceId) {
-              return serviceInstances[i];
-            }
-          }
-          return null;
-        };
-        return {
-          get: function (request) {
-            console.log("request: ", request);
-            var organizationId = request.organizationId;
-            var serviceInstanceId = request.serviceInstanceId;
-            var result = getServiceInstance(organizationId, serviceInstanceId);
-            if (result) {
-              result.$save = function (success, failure) {
-                success(result);
-              };
-              return result;
-            }
-            else
-              console.log("Error. Service Instance with id not found! ", serviceInstanceId);
-          },
-          query: function (request) {
-            if (request && request.organizationId) {
-              var instances = [];
-              console.log('serviceInstances:', serviceInstances);
-
-              serviceInstances.forEach(function (serviceInstance) {
-                if (serviceInstance.providerId === request.organizationId)
-                  instances.push(serviceInstance);
-              });
-              return instances;
-            }
-            return serviceInstances;
-          },
-          //create: {method: 'POST', params: {}, isArray: false}
-          create: function (newServiceInstance, success, failure) {
-
-            if (findServiceInstance(newServiceInstance.providerId, newServiceInstance.name)) {
-              console.log("A service instance with that name already exists");
-              failure("A service instance with that name already exists");
-              return;
-            }
-
-            serviceInstances.push(newServiceInstance);
-            success(newServiceInstance);
-          }
-
-        };
+        
+        return resource;
       }])
+
+
+//    .factory('ServiceInstanceServiceOLD', ['$resource',
+//      function ($resource) {
+////    return $resource('/rest/serviceInstance/:specificationname', {}, {
+////      query: {method: 'GET', params: {specificationname: ''}, isArray: true},
+////      signUp: {method: 'POST', params: {}, isArray: false}
+////    });
+//        console.log("TODO: using mocked service instance data");
+//        var serviceInstances = data.serviceInstanceList;
+//
+//        /**
+//         * Helper function to find Service Instance by name (to avoid duplicates)
+//         * @param {type} serviceInstanceName
+//         */
+//        var findServiceInstance = function (organizationId, serviceInstanceName) {
+//          for (var i = 0; i < serviceInstances.length; i++) {
+//            // FIXME: We should also check that the ID is unique within the organization!!! (defer this to the serverside implementation!)
+//            if (organizationId === serviceInstances[i].providerId && serviceInstanceName === serviceInstances[i].name)
+//              return serviceInstances[i];
+//          }
+//          return null;
+//        };
+//
+//        var getServiceInstance = function (organizationId, serviceInstanceId) {
+//          for (var i = 0; i < serviceInstances.length; i++) {
+//            if (organizationId === serviceInstances[i].providerId && serviceInstanceId === serviceInstances[i].serviceInstanceId) {
+//              return serviceInstances[i];
+//            }
+//          }
+//          return null;
+//        };
+//        return {
+//          get: function (request) {
+//            console.log("request: ", request);
+//            var organizationId = request.organizationId;
+//            var serviceInstanceId = request.serviceInstanceId;
+//            var result = getServiceInstance(organizationId, serviceInstanceId);
+//            if (result) {
+//              result.$save = function (success, failure) {
+//                success(result);
+//              };
+//              return result;
+//            }
+//            else
+//              console.log("Error. Service Instance with id not found! ", serviceInstanceId);
+//          },
+//          query: function (request) {
+//            if (request && request.organizationId) {
+//              var instances = [];
+//              console.log('serviceInstances:', serviceInstances);
+//
+//              serviceInstances.forEach(function (serviceInstance) {
+//                if (serviceInstance.providerId === request.organizationId)
+//                  instances.push(serviceInstance);
+//              });
+//              return instances;
+//            }
+//            return serviceInstances;
+//          },
+//          //create: {method: 'POST', params: {}, isArray: false}
+//          create: function (newServiceInstance, success, failure) {
+//
+//            if (findServiceInstance(newServiceInstance.providerId, newServiceInstance.name)) {
+//              console.log("A service instance with that name already exists");
+//              failure("A service instance with that name already exists");
+//              return;
+//            }
+//
+//            serviceInstances.push(newServiceInstance);
+//            success(newServiceInstance);
+//          }
+//
+//        };
+//      }])
 
     .factory('OperationalServiceService', ['$resource',
       function ($resource) {

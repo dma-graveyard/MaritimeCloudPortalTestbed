@@ -54,8 +54,15 @@ public class ReplayableFileSystemEventStore extends FileSystemEventStore impleme
 
     @Override
     public void visitEvents(EventVisitor visitor) {
+        
+        if(!baseDir.exists()){
+            // skipping since no file store
+            LOG.info("No event store found at {}", baseDir.getAbsoluteFile());
+            return;            
+        }
 
         resetEventCache();
+        
 
         // scan event store for types
         List<File> types = scanForTypes();

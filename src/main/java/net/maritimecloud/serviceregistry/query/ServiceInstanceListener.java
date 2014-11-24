@@ -43,12 +43,12 @@ public class ServiceInstanceListener {
     @EventHandler
     public void on(ServiceInstanceCreatedEvent event) {
         ServiceInstanceEntry entry = new ServiceInstanceEntry();
-        entry.setServiceInstanceIdentifier(event.getServiceInstanceId().identifier());
-        entry.setProviderIdentifier(event.getProviderId().identifier());
-        entry.setSpecificationIdentifier(event.getSpecificationId().identifier());
+        entry.setServiceInstanceId(event.getServiceInstanceId().identifier());
+        entry.setProviderId(event.getProviderId().identifier());
+        entry.setSpecificationId(event.getSpecificationId().identifier());
         entry.setName(event.getName());
         entry.setSummary(event.getSummary());
-        entry.setCoverage(event.getCoverage() == null ? "" : event.getCoverage().toString());
+        entry.setCoverage(event.getCoverage());
         serviceInstanceQueryRepository.save(entry);
     }
 

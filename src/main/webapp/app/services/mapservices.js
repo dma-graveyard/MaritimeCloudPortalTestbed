@@ -261,6 +261,8 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
         if (featureGroupCallback) {
           featureGroupCallback(featureGroup);
         }
+        if(!service.coverage)
+          service.coverage = [];
         service.coverage.forEach(function (shape) {
           featureGroup.addLayer(shapeToLayer(shape));
         });

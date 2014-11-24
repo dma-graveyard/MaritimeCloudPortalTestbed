@@ -90,7 +90,6 @@ public class OrganizationResource {
             java.util.logging.Logger.getLogger(OrganizationResource.class.getName()).log(Level.SEVERE, null, ex);
         }
         GenericCommandResource.sendAndWait(contentType, queryCommandName, postCommandsRegistry, commandJSON);
-        
     }
     
     @PUT
@@ -99,6 +98,20 @@ public class OrganizationResource {
     public void mappedPutCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
         LOG.info("PUT command: " + commandJSON);
         sendAndWait(contentType, queryCommandName, putCommandsRegistry, commandJSON);
+    }
+    
+    @POST
+    @Consumes(APPLICATION_JSON_CQRS_COMMAND)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{organizationId}/service-instance")
+    public void serviceInstancePostCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
+        LOG.info("POST command: " + commandJSON);
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException ex) {
+            java.util.logging.Logger.getLogger(OrganizationResource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        GenericCommandResource.sendAndWait(contentType, queryCommandName, postCommandsRegistry, commandJSON);
     }
     
     // -------------------------------------------------------
@@ -151,19 +164,28 @@ public class OrganizationResource {
         return serviceSpecificationEntries;
     }
 
+    // SERVICE INSTANCE ------------------------------------------------
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("instance")
-    public List<ServiceInstanceEntry> getInstances(@QueryParam("namePattern") @DefaultValue("") String usernamePattern) {
+    @Path("{organizationId}/service-instance")
+    public List<ServiceInstanceEntry> getInstances(
+            @PathParam("organizationId") String organizationId,
+            @QueryParam("namePattern") @DefaultValue("") String usernamePattern
+    ) {
 
-        Iterable<ServiceInstanceEntry> all = ApplicationServiceRegistry.serviceInstanceQueryRepository().findAll();
-        List<ServiceInstanceEntry> serviceInstanceEntries = new ArrayList<>();
+        return ApplicationServiceRegistry.serviceInstanceQueryRepository().findByProviderId(organizationId);
+    }
 
-        for (ServiceInstanceEntry entry : all) {
-            serviceInstanceEntries.add(entry);
-        }
-
-        return serviceInstanceEntries;
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{organizationId}/service-instance/{serviceInstanceId}")
+    public ServiceInstanceEntry getInstances(
+            @PathParam("organizationId") String organizationId,
+            @PathParam("serviceInstanceId") String serviceInstanceId,
+            @QueryParam("namePattern") @DefaultValue("") String usernamePattern
+    ) {
+        return ApplicationServiceRegistry.serviceInstanceQueryRepository().findOne(serviceInstanceId);
     }
     
 }

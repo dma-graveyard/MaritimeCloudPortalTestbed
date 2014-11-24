@@ -25,8 +25,10 @@ angular.module('mcp.organizations.services', [])
           map: {},
           message: null,
           alertMessages: null,
-          selectedOperationalService: null,
-          selectedSpecification: null,
+          selection: {
+            operationalService: null,
+            specification: null
+          },
           operationalServices: OperationalServiceService.query(),
           isCreateState: function () {
             return $state.current.data.createState;
@@ -41,12 +43,15 @@ angular.module('mcp.organizations.services', [])
             summary: null,
             coverage: []
           },
+          selectOperationalService: function (selectedOperationalService) {
+            $scope.specifications = selectedOperationalService ? ServiceSpecificationService.query(
+                {operationalServiceId: selectedOperationalService.id}) : [];
+          },
           formIsSubmitable: function () {
             return ($scope.service.serviceInstanceId && $scope.service.name /*&& $scope.service.coverage*/);
           },
           submit: function () {
             $scope.providerId = $stateParams.organizationId;
-            $scope.service.specificationId = $scope.selectedSpecification.serviceSpecificationId;
 
             $scope.alertMessages = null;
             $scope.message = "Sending request to register service instance...";
@@ -58,8 +63,8 @@ angular.module('mcp.organizations.services', [])
                 $scope.message = null;
                 $scope.alertMessages = ["Error on the serverside :( ", error];
               });
-
             } else {
+              $scope.service.specificationId = $scope.selection.specification.serviceSpecificationId;
               ServiceInstanceService.create($scope.service, function (result) {
                 $location.path('/orgs/' + $scope.service.providerId).replace();
               }, function (error) {
@@ -71,8 +76,14 @@ angular.module('mcp.organizations.services', [])
         });
 
         if ($scope.isEditState()) {
-          $scope.service = ServiceInstanceService.get({organizationId: $stateParams.organizationId, serviceInstanceId: $stateParams.serviceInstanceId});
-// FIXME: should lookup value based on id $scope.service.specificationId
+          $scope.service = ServiceInstanceService.get({organizationId: $stateParams.organizationId, serviceInstanceId: $stateParams.serviceInstanceId},
+          function (data) {
+
+            // we need to rebuild the map once the request has returned the service details
+            $scope.map.rebuild();
+
+          });
+
           $scope.selectedSpecification = ServiceSpecificationService.get({serviceSpecificationId: $scope.service.specificationId});
 
 // FIXME: should lookup value based on id $scope.selectedSpecification.operationalServiceId
@@ -80,11 +91,6 @@ angular.module('mcp.organizations.services', [])
         }
 
         $scope.services = [$scope.service];
-
-        $scope.$watch('selectedOperationalService', function (selectedOperationalService) {
-          $scope.specifications = selectedOperationalService ? ServiceSpecificationService.query(
-              {operationalServiceId: selectedOperationalService.id}) : [];
-        });
 
         $scope.openCoverageEditor = function () {
           $modal.open({

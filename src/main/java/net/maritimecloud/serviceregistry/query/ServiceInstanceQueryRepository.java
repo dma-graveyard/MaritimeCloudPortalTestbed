@@ -15,11 +15,14 @@
 
 package net.maritimecloud.serviceregistry.query;
 
+import java.util.List;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**
  * @author Christoffer Børrild
  */
 public interface ServiceInstanceQueryRepository extends PagingAndSortingRepository<ServiceInstanceEntry, String> {
-    // ... findByBoundingBox(...)
+    
+    List<ServiceInstanceEntry> findByProviderId(String providerId);
+    
 }

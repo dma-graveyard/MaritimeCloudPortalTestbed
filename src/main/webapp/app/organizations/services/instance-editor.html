@@ -15,19 +15,23 @@
     <div ng-show="message" class="alert alert-info">{{message}}</div>
     <!--FORM-->
     <form role="form" name="form">
-        <div ng-if="!isEditState()" class="form-group">
-            <label for="operationalService">Operational Service</label>
-            <select required class='form-control' id='operationalService' ng-model="selectedOperationalService" ng-options="operationalService.name for operationalService in operationalServices" mcp-focus-me></select>
-            <p class="help-block">Select the operational service (the service category) that the provisioned service belong to.</p>
-        </div>
-        <div ng-if="!isEditState()" class="form-group">
-            <label for="specification">Service Specification</label>
-            <select required class='form-control' id='specification' ng-model="selectedSpecification" 
-                    ng-options="specification.name+' ('+specification.serviceType+')' group by specification.ownerName for specification in specifications"></select>
-            <p class="help-block">Select the technical service specification that describes the interface of the provisioned service.</p>
+        <div ng-if="!isEditState()">
+            <div class="form-group">
+                <label for="operationalService">Operational Service</label>
+                <select required class='form-control' id='operationalService'  mcp-focus-me
+                        ng-change="selectOperationalService(selection.operationalService)"
+                        ng-model="selection.operationalService" ng-options="operationalService.name for operationalService in operationalServices"></select>
+                <p class="help-block">Select the operational service (the service category) that the provisioned service belong to.</p>
+            </div>
+            <div class="form-group">
+                <label for="specification">Service Specification</label>
+                <select required class='form-control' id='specification' ng-model="selection.specification" 
+                        ng-options="specification.name+' ('+specification.serviceType+')' group by specification.ownerName for specification in specifications"></select>
+                <p class="help-block">Select the technical service specification that describes the interface of the provisioned service.</p>
+            </div>
         </div>
         <div  ng-if="isEditState()" class="form-group">
-            <label>Service Specification:</label> {{selectedSpecification.name+' ('+selectedSpecification.serviceType+')'}}
+            <label>Service Specification:</label> {{selection.specification.name + ' (' + selection.specification.serviceType + ')'}}
         </div>
         <div class="form-group" ng-if="isCreateState()">
             <label for="serviceId">Id</label>

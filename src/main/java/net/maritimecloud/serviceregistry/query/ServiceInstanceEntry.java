@@ -14,8 +14,13 @@
  */
 package net.maritimecloud.serviceregistry.query;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import net.maritimecloud.portal.domain.infrastructure.jackson.CoverageSerializer;
+import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import org.springframework.data.annotation.Id;
 
 /**
@@ -27,35 +32,38 @@ public class ServiceInstanceEntry implements Serializable {
 
     @Id
     @javax.persistence.Id
-    private String serviceInstanceIdentifier;
-    private String providerIdentifier;
-    private String specificationIdentifier;
+    private String serviceInstanceId;
+    private String providerId;
+    private String specificationId;
     private String name;
+    @Column(length = 1000)
     private String summary;
-    private String coverage; // FIXME: create complex version of coverage instead of json-serialized one
+    @JsonSerialize(using = CoverageSerializer.class)
+    @Embedded
+    private Coverage coverage; // FIXME: create complex version of coverage instead of json-serialized one
 
-    public String getServiceInstanceIdentifier() {
-        return serviceInstanceIdentifier;
+    public String getServiceInstanceId() {
+        return serviceInstanceId;
     }
 
-    public void setServiceInstanceIdentifier(String serviceInstanceIdentifier) {
-        this.serviceInstanceIdentifier = serviceInstanceIdentifier;
+    public void setServiceInstanceId(String serviceInstanceId) {
+        this.serviceInstanceId = serviceInstanceId;
     }
 
-    public String getProviderIdentifier() {
-        return providerIdentifier;
+    public String getProviderId() {
+        return providerId;
     }
 
-    public void setProviderIdentifier(String providerIdentifier) {
-        this.providerIdentifier = providerIdentifier;
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
     }
 
-    public String getSpecificationIdentifier() {
-        return specificationIdentifier;
+    public String getSpecificationId() {
+        return specificationId;
     }
 
-    public void setSpecificationIdentifier(String specificationIdentifier) {
-        this.specificationIdentifier = specificationIdentifier;
+    public void setSpecificationId(String specificationId) {
+        this.specificationId = specificationId;
     }
 
     public String getName() {
@@ -74,20 +82,22 @@ public class ServiceInstanceEntry implements Serializable {
         this.summary = summary;
     }
 
-    public String getCoverage() {
+    @JsonSerialize(using = CoverageSerializer.class)
+    public Coverage getCoverage() {
         return coverage;
     }
 
-    public void setCoverage(String coverage) {
+    @JsonSerialize(using = CoverageSerializer.class)
+    public void setCoverage(Coverage coverage) {
         this.coverage = coverage;
     }
 
     @Override
     public String toString() {
         return "ServiceInstanceEntry{"
-                + "serviceInstanceId=" + serviceInstanceIdentifier
-                + ", providerId=" + providerIdentifier
-                + ", specificationId=" + specificationIdentifier
+                + "serviceInstanceId=" + serviceInstanceId
+                + ", providerId=" + providerId
+                + ", specificationId=" + specificationId
                 + ", name=" + name
                 + ", summary=" + summary
                 + ", coverage=" + coverage

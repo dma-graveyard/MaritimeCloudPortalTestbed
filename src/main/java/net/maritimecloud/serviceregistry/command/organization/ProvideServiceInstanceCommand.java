@@ -16,6 +16,10 @@ package net.maritimecloud.serviceregistry.command.organization;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import net.maritimecloud.portal.domain.infrastructure.jackson.CoverageDeserializer;
+import net.maritimecloud.portal.domain.infrastructure.jackson.CoverageSerializer;
 import net.maritimecloud.serviceregistry.command.Command;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
@@ -44,7 +48,7 @@ public class ProvideServiceInstanceCommand implements Command {
             @JsonProperty("serviceInstanceId") ServiceInstanceId serviceInstanceId,
             @JsonProperty("name") String name,
             @JsonProperty("summary") String summary,
-            @JsonProperty("coverage") Coverage coverage
+            @JsonProperty("coverage") @JsonSerialize(using = CoverageSerializer.class) @JsonDeserialize(using = CoverageDeserializer.class) Coverage coverage
     ) {
         Assert.notNull(providerId, "The organizationId of the providing organization must be supplied");
         Assert.notNull(specificationId, "The serviceSpecificationId must be provided");

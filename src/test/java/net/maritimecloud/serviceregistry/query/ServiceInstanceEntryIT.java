@@ -31,7 +31,7 @@ public class ServiceInstanceEntryIT extends AbstractAxonCqrsIT {
         
         ServiceInstanceEntry entry = new ServiceInstanceEntry();
         
-        entry.setServiceInstanceIdentifier(AN_INSTANCE_ID);
+        entry.setServiceInstanceId(AN_INSTANCE_ID);
         entry.setName(A_NAME);
         entry.setSummary(A_SUMMARY);
         serviceInstanceQueryRepository.save(entry);
