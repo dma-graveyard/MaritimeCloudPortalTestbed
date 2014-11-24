@@ -51,6 +51,7 @@ public class UserResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response createUser(UserDTO aUser, @Context UriInfo uriInfo) {
         LOG.warn("Called createUser with user " + aUser);
         User newUser = identityApplicationService().registerUser(aUser.getUsername(), aUser.getPassword(), aUser.getEmailAddress());

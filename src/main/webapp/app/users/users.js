@@ -91,6 +91,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
         $scope.sendRequest = function() {
           $scope.alert = null;
           $scope.message = "Sending request for access.";
+          delete $scope.user.repeatedPassword;
           $scope.signUpPromise = UserService.signUp($scope.user, function(data) {
             $scope.message = null;
             $state.transitionTo("public.joinConfirmation");
