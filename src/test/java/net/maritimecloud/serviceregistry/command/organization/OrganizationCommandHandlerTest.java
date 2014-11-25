@@ -14,6 +14,7 @@
  */
 package net.maritimecloud.serviceregistry.command.organization;
 
+import net.maritimecloud.common.infrastructure.axon.CommonFixture;
 import net.maritimecloud.common.infrastructure.axon.RepositoryMock;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationCreatedEvent;
@@ -29,7 +30,7 @@ import org.mockito.Mockito;
  *
  * @author Christoffer Børrild
  */
-public class OrganizationCommandHandlerTest {
+public class OrganizationCommandHandlerTest extends CommonFixture {
 
     private FixtureConfiguration fixture;
     private Repository<Organization> organizationRepository;
@@ -56,7 +57,7 @@ public class OrganizationCommandHandlerTest {
                 .thenReturn(new ServiceSpecification(anOrganizationId, serviceSpecificationId, "a name", "a summary ..."));
         Mockito.when(anOrganization.getIdentifier()).thenReturn(anOrganizationId);
 
-        fixture.given(new OrganizationCreatedEvent(anOrganizationId, "a name", "a summary ..."))
+        fixture.given(new OrganizationCreatedEvent(anOrganizationId, "a name", "a summary ...", A_URL))
                 .when(new PrepareServiceSpecificationCommand(anOrganizationId, serviceSpecificationId, "a name", "a summary ..."))
                 .expectEvents(new ServiceSpecificationCreatedEvent(anOrganizationId, new ServiceSpecificationId("a ServiceSpecification id"), "a name", "a summary ..."));
     }
@@ -65,7 +66,7 @@ public class OrganizationCommandHandlerTest {
     public void prepareServiceSpecificationOnDeletedOrganization() {
         Mockito.when(anOrganization.isDeleted()).thenReturn(true);
 
-        fixture.given(new OrganizationCreatedEvent(anOrganizationId, "a name", "a summary ..."))
+        fixture.given(new OrganizationCreatedEvent(anOrganizationId, "a name", "a summary ...", A_URL))
                 .when(new PrepareServiceSpecificationCommand(anOrganizationId, serviceSpecificationId, "a name", "a summary ..."))
                 .expectException(IllegalArgumentException.class);
     }

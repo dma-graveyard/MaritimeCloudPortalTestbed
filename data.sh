@@ -2,7 +2,7 @@
     curl http://localhost:8080/rest/api/command
 
     # Create an Organization
-    curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=CreateOrganizationCommand" -d '{"organizationId":{"identifier":"AN_ORG_ID"},"name":"A_NAME","summary":"A_SUMMARY"}' -X POST
+    curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=CreateOrganizationCommand" -d '{"organizationId":{"identifier":"AN_ORG_ID"},"name":"A_NAME","summary":"A_SUMMARY","url":"http://a-url.com"}' -X POST
 
     # Rename organization and change summary 
     curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=ChangeOrganizationNameAndSummaryCommand" -d '{"organizationId":{"identifier":"AN_ORG_ID"},"name":"ANOTHER_NAME","summary":"ANOTHER_SUMMARY"}' -X PUT
@@ -22,7 +22,7 @@
 
 
     # dma with admin and Tintin in comment
-    curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=CreateOrganizationCommand" -d '{"organizationId":{"identifier":"dma"},"name":"Danish Maritime Authority","summary":"The Danish Maritime Authority is a government agency of Denmark that regulates maritime affairs. The field of responsibility is based on the shipping industry and its framework conditions, the ship and its crew. In addition, it is responsible for aids to navigation in the waters surrounding Denmark and ashore. admin. Tintin"}' -X POST
+    curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=CreateOrganizationCommand" -d '{"organizationId":{"identifier":"dma"},"name":"Danish Maritime Authority","summary":"The Danish Maritime Authority is a government agency of Denmark that regulates maritime affairs. The field of responsibility is based on the shipping industry and its framework conditions, the ship and its crew. In addition, it is responsible for aids to navigation in the waters surrounding Denmark and ashore. admin. Tintin","url":"http://dma.dk"}' -X POST
 
     # dma: Prepare a service specification 'imo-mis-rest'
     curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=PrepareServiceSpecificationCommand" -d '{"ownerId":{"identifier":"dma"}, "serviceSpecificationId":{"identifier":"imo-mis-rest"}, "name":"IMO MIS REST","summary":"A_SUMMARY"}' -X POST

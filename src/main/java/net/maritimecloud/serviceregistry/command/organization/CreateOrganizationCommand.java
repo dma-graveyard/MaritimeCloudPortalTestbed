@@ -30,12 +30,15 @@ public class CreateOrganizationCommand implements Command {
     private final OrganizationId organizationId;
     private final String name;
     private final String summary;
+    private final String url;
 
     @JsonCreator
     public CreateOrganizationCommand(
             @JsonProperty("organizationId") OrganizationId organizationId,
             @JsonProperty("name") String name,
-            @JsonProperty("summary") String summary) {
+            @JsonProperty("summary") String summary,
+            @JsonProperty("url") String url
+    ) {
         Assert.notNull(organizationId, "The organizationId must be provided");
         Assert.notNull(name, "The provided name cannot be null");
         Assert.notNull(summary, "The provided summary cannot be null");
@@ -43,6 +46,7 @@ public class CreateOrganizationCommand implements Command {
         this.organizationId = organizationId;
         this.name = name;
         this.summary = summary;
+        this.url = url;
     }
 
     public OrganizationId getOrganizationId() {
@@ -55,6 +59,10 @@ public class CreateOrganizationCommand implements Command {
 
     public String getSummary() {
         return summary;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
 }

@@ -64,7 +64,7 @@ public class GenericCommandResourceTest extends CommonFixture {
     @Test
     public void serialize() throws JsonProcessingException, IOException {
         CreateOrganizationCommand createOrganizationCommand
-                = new CreateOrganizationCommand(new OrganizationId(AN_ORG_ID), A_NAME, A_SUMMARY);
+                = new CreateOrganizationCommand(new OrganizationId(AN_ORG_ID), A_NAME, A_SUMMARY, A_URL);
         String commandAsJSON = mapper.writeValueAsString(createOrganizationCommand);
         System.out.println(commandAsJSON);
     }
@@ -76,12 +76,15 @@ public class GenericCommandResourceTest extends CommonFixture {
                         new CreateOrganizationCommand(
                                 new OrganizationId(AN_ORG_ID),
                                 A_NAME,
-                                A_SUMMARY)
+                                A_SUMMARY,
+                                A_URL
+                        )
                 );
 
         assertEquals(AN_ORG_ID, command.getOrganizationId().identifier());
         assertEquals(A_NAME, command.getName());
         assertEquals(A_SUMMARY, command.getSummary());
+        assertEquals(A_URL, command.getUrl());
     }
 
     @Test

@@ -51,6 +51,7 @@ public class OrganizationListener {
         organizationEntry.setOrganizationId(event.getOrganizationId().identifier());
         organizationEntry.setName(event.getName());
         organizationEntry.setSummary(event.getSummary());
+        organizationEntry.setUrl(event.getUrl());
         organizationQueryRepository.save(organizationEntry);
     }
 

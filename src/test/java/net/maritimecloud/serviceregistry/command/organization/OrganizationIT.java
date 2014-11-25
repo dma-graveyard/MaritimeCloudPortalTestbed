@@ -59,7 +59,7 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
         assertEquals(ANOTHER_NAME, entry.getName());
         assertEquals(ANOTHER_SUMMARY, entry.getSummary());
 
-        commandGateway().send(new CreateOrganizationCommand(organizationId2, A_NAME, A_SUMMARY));
+        commandGateway().send(new CreateOrganizationCommand(organizationId2, A_NAME, A_SUMMARY, A_URL));
         assertEquals(2, organizationQueryRepository.count());
     }
 

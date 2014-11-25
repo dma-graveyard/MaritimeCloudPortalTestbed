@@ -31,6 +31,8 @@ public class OrganizationEntry implements Serializable {
     private String name;
     @Column(length = 1000)
     private String summary;
+    @Column(length = 300)
+    private String url;
 
     public String getOrganizationId() {
         return organizationId;
@@ -58,7 +60,15 @@ public class OrganizationEntry implements Serializable {
 
     @Override
     public String toString() {
-        return "OrganizationEntry{" + "organizationIdentifier=" + organizationId + ", name=" + name + ", summary=" + summary + '}';
+        return "OrganizationEntry{" + "organizationId=" + organizationId + ", name=" + name + ", summary=" + summary + ", url=" + url + '}';
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+    
 }

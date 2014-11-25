@@ -9,10 +9,11 @@ var data = demoData();
 // ----------------------------------------------------------------------------
 // Remote API Commands
 // ----------------------------------------------------------------------------
-function CreateOrganizationCommand(organizationId, name, summary) {
+function CreateOrganizationCommand(organizationId, name, summary, url) {
   this.organizationId = {identifier: organizationId};
   this.name = name;
   this.summary = summary;
+  this.url = url;
 }
 
 function ProvideServiceInstanceCommand(providerId, specificationId, serviceInstanceId, name, summary, coverage) {
@@ -68,7 +69,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         });
         
         resource.create = function(organization, succes, error){
-          return this.post(new CreateOrganizationCommand(organization.organizationId, organization.name, organization.summary), succes, error);
+          return this.post(new CreateOrganizationCommand(organization.organizationId, organization.name, organization.summary, organization.url), succes, error);
         };
         
         return resource;

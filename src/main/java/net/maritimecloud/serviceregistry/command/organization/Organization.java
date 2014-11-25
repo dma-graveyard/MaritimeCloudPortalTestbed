@@ -49,7 +49,7 @@ public class Organization extends AbstractAnnotatedAggregateRoot<OrganizationId>
 
     @CommandHandler
     public Organization(CreateOrganizationCommand command) {
-        apply(new OrganizationCreatedEvent(command.getOrganizationId(), command.getName(), command.getSummary()));
+        apply(new OrganizationCreatedEvent(command.getOrganizationId(), command.getName(), command.getSummary(), command.getUrl()));
     }
 
     @CommandHandler

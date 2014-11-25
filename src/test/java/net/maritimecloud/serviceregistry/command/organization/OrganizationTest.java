@@ -14,6 +14,7 @@
  */
 package net.maritimecloud.serviceregistry.command.organization;
 
+import net.maritimecloud.common.infrastructure.axon.CommonFixture;
 import org.axonframework.test.FixtureConfiguration;
 import org.axonframework.test.Fixtures;
 import org.junit.Before;
@@ -23,7 +24,7 @@ import org.junit.Test;
  *
  * @author Christoffer Børrild
  */
-public class OrganizationTest {
+public class OrganizationTest extends CommonFixture {
 
     private FixtureConfiguration<Organization> fixture;
 
@@ -35,13 +36,13 @@ public class OrganizationTest {
     @Test
     public void createOrganization() throws Exception {
         fixture.givenNoPriorActivity()
-                .when(new CreateOrganizationCommand(new OrganizationId("an organization id"), "a name", "a summary ..."))
-                .expectEvents(new OrganizationCreatedEvent(new OrganizationId("an organization id"), "a name", "a summary ..."));
+                .when(new CreateOrganizationCommand(new OrganizationId("an organization id"), "a name", "a summary ...", A_URL))
+                .expectEvents(new OrganizationCreatedEvent(new OrganizationId("an organization id"), "a name", "a summary ...", A_URL));
     }
 
     @Test
     public void changeOrganizationNameAndSummary() throws Exception {
-        fixture.given(new OrganizationCreatedEvent(new OrganizationId("an organization id"), "a name", "a summary ..."))
+        fixture.given(new OrganizationCreatedEvent(new OrganizationId("an organization id"), "a name", "a summary ...", A_URL))
                 .when(new ChangeOrganizationNameAndSummaryCommand(new OrganizationId("an organization id"), "a new name", "a new summary ..."))
                 .expectEvents(new OrganizationNameAndSummaryChangedEvent(new OrganizationId("an organization id"), "a new name", "a new summary ..."));
     }

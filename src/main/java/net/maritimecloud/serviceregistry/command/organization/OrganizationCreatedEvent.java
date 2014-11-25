@@ -26,11 +26,13 @@ public class OrganizationCreatedEvent {
     private final OrganizationId organizationId;
     private final String name;
     private final String summary;
+    private final String url;
 
-    public OrganizationCreatedEvent(OrganizationId organizationId, String name, String summary) {
+    public OrganizationCreatedEvent(OrganizationId organizationId, String name, String summary, String url) {
         this.organizationId = organizationId;
         this.name = name;
         this.summary = summary;
+        this.url = url;
     }
 
     public OrganizationId getOrganizationId() {
@@ -43,6 +45,10 @@ public class OrganizationCreatedEvent {
 
     public String getSummary() {
         return summary;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
 }

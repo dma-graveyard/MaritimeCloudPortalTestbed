@@ -37,6 +37,8 @@ public class CommonFixture {
     public static final String ANOTHER_NAME = "another name";
     public static final String ANOTHER_SUMMARY = "another summary ...";
     public static final Coverage ANOTHER_COVERAGE = new Coverage("[{\"type\":\"rectangle\",\"topLeftLatitude\":56.05976947910657,\"topLeftLongitude\":9.38232421875,\"buttomRightLatitude\":55.429013452407396,\"buttomRightLongitude\":11.1181640625},{\"type\":\"circle\",\"center-latitude\":55.29162848682989,\"center-longitude\":11.074218749999998,\"radius\":49552.58124628375}]");
+    public static final String A_URL = "http://a-url.com";
+    public static final String ANOTHER_URL = "http://another-url.com";
 
     public static String generateIdentity() {
         return UUID.randomUUID().toString();
@@ -59,7 +61,7 @@ public class CommonFixture {
     }
 
     public static CreateOrganizationCommand generateCreateOrganizationCommand(String organizationIdentity) {
-        return new CreateOrganizationCommand(generateOrganizationId(organizationIdentity), A_NAME, A_SUMMARY);
+        return new CreateOrganizationCommand(generateOrganizationId(organizationIdentity), A_NAME, A_SUMMARY, A_URL);
     }
 
 }

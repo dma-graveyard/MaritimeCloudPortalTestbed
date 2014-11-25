@@ -42,7 +42,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = JpaConfig.class)
-public abstract class AbstractManuallyComnfiguredAxonCqrsIT {
+public abstract class AbstractManuallyComnfiguredAxonCqrsIT extends CommonFixture {
 
     static protected EventStore eventStore;
     static protected EventBus eventBus;

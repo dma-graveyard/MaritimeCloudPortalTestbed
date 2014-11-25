@@ -19,6 +19,7 @@ import net.maritimecloud.serviceregistry.command.organization.*;
 import java.util.UUID;
 import javax.annotation.Resource;
 import net.maritimecloud.common.infrastructure.axon.AbstractManuallyComnfiguredAxonCqrsIT;
+import net.maritimecloud.common.infrastructure.axon.CommonFixture;
 import net.maritimecloud.serviceregistry.query.ServiceSpecificationListener;
 import net.maritimecloud.serviceregistry.query.ServiceSpecificationQueryRepository;
 import org.axonframework.eventsourcing.EventSourcingRepository;
@@ -44,9 +45,7 @@ public class ManuallyConfiguredAxonIT extends AbstractManuallyComnfiguredAxonCqr
     private final ServiceSpecificationId serviceSpecificationId1 = new ServiceSpecificationId(UUID.randomUUID().toString());
     private final ServiceSpecificationId serviceSpecificationId2 = new ServiceSpecificationId(UUID.randomUUID().toString());
     private final ServiceSpecificationId serviceSpecificationId3 = new ServiceSpecificationId(UUID.randomUUID().toString());
-    private static final String A_NAME = "a name";
-    private static final String A_SUMMARY_ = "a summary ...";
-    private final CreateOrganizationCommand CREATE_ORGANIZATION_COMMAND = new CreateOrganizationCommand(organizationId, A_NAME, A_SUMMARY_);
+    private final CreateOrganizationCommand CREATE_ORGANIZATION_COMMAND = new CreateOrganizationCommand(organizationId, A_NAME, A_SUMMARY, A_URL);
 
     @BeforeClass
     public static void setUpClass() {
@@ -68,17 +67,17 @@ public class ManuallyConfiguredAxonIT extends AbstractManuallyComnfiguredAxonCqr
 
         serviceSpecificationQueryRepository.deleteAll();
         commandGateway.sendAndWait(CREATE_ORGANIZATION_COMMAND);
-        commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId1, A_NAME, A_SUMMARY_));
+        commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId1, A_NAME, A_SUMMARY));
         assertEquals(1, serviceSpecificationQueryRepository.count());
         assertEquals("a name", serviceSpecificationQueryRepository.findOne(serviceSpecificationId1.identifier()).getName());
 
-        commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId2, A_NAME, A_SUMMARY_));
-        commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId3, A_NAME, A_SUMMARY_));
+        commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId2, A_NAME, A_SUMMARY));
+        commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId3, A_NAME, A_SUMMARY));
 
         assertEquals(3, serviceSpecificationQueryRepository.count());
 
         try {
-            commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId1, A_NAME, A_SUMMARY_));
+            commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId1, A_NAME, A_SUMMARY));
             fail("Should fail as item already exist");
         } catch (Exception e) {
         }
