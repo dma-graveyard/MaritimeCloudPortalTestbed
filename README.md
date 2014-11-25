@@ -326,6 +326,17 @@ Examples:
     # List all specifications
     curl http://localhost:8080/rest/api/organization/specification
 
-    # List all instances
-    curl http://localhost:8080/rest/api/organization/instance
+    # List all service instances of the current organization
+    curl http://localhost:8080/rest/api/organization/dma/service-instance
 
+    # List all service instances
+    curl http://localhost:8080/rest/api/almanac/service-instance
+
+### The Almanac (the public query api)
+    
+    # List organizations 
+    curl http://localhost:8080/rest/api/almanac/organization
+
+    # Details of the selected organization (=dma) 
+    curl http://localhost:8080/rest/api/almanac/organization/dma
+ 

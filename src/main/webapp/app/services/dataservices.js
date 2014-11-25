@@ -152,6 +152,21 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 //        };
 //      }])
 
+    .factory('AlmanacOrganizationService', ['$resource', 'serviceBaseUrl',
+      function ($resource, serviceBaseUrl) {
+        return $resource(serviceBaseUrl + '/rest/api/almanac/organization/:organizationId');
+      }])
+
+    .factory('AlmanacServiceSpecificationService', ['$resource', 'serviceBaseUrl',
+      function ($resource, serviceBaseUrl) {
+        return $resource(serviceBaseUrl + '/rest/api/almanac/service-specification/:serviceSpecificationId');
+      }])
+
+    .factory('AlmanacServiceInstanceService', ['$resource', 'serviceBaseUrl',
+      function ($resource, serviceBaseUrl) {
+        return $resource(serviceBaseUrl + '/rest/api/almanac/service-instance/:serviceInstanceId', {}, {});
+      }])
+
     .factory('ServiceInstanceService', ['$resource', 'serviceBaseUrl',
       function ($resource, serviceBaseUrl) {
         

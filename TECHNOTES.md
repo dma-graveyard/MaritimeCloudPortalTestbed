@@ -1,9 +1,11 @@
 Technical notes
 ===============
 
-# Command Query Responsibility Segregation (CQRS)
+# HowTo
 
-## Extending CQRS with a new Command
+## Command Query Responsibility Segregation (CQRS)
+
+### Extending CQRS with a new Command
 
 1. Create a Command value object class with JSON support and getters
 2. Add a @CommandHandler to the domain object or a handler object:
@@ -64,3 +66,39 @@ Technical notes
     }
 
  
+## REST Services
+
+### Adding aonther REST service Resource
+
+1. Create the Resource class, eg.
+
+    @Path("/api/almanac/service-instance")
+    public class ServiceInstanceResource {
+
+        @GET
+        @Produces(MediaType.APPLICATION_JSON)
+        public Iterable<ServiceInstanceEntry> getInstances(
+                @QueryParam("operationalServiceId") @DefaultValue("") String operationalServiceId,
+                @QueryParam("serviceSpecificationId") @DefaultValue("") String serviceSpecificationId,
+                @QueryParam("providerId") @DefaultValue("") String providerId,
+                @QueryParam("serviceType") @DefaultValue("") String serviceType,
+                @QueryParam("anyTextPattern") @DefaultValue("") String anyTextPattern
+        ) {
+            return ApplicationServiceRegistry.serviceInstanceQueryRepository().findAll();
+        }
+
+    }
+
+2. Register the class with Jersey in JerseyConfig (src/main/java/net/maritimecloud/portal/JerseyConfig.java)
+
+    public class JerseyConfig extends ResourceConfig {
+
+        public JerseyConfig() {
+            ...
+            register(ServiceInstanceResource.class);
+            ...
+        }
+    }
+
+
+

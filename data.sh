@@ -13,11 +13,11 @@
     # Rename service specification and change summary 
     curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=ChangeServiceSpecificationNameAndSummaryCommand" -d '{"serviceSpecificationId":{"identifier":"A_SPEC_ID"},"name":"ANOTHER_NAME","summary":"ANOTHER_SUMMARY"}' -X PUT
 
-    # Provide a service instance (with no coverage!!!)
-    curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=ProvideServiceInstanceCommand" -d '{"providerId":{"identifier":"AN_ORG_ID"},"specificationId":{"identifier":"A_SPEC_ID"},"serviceInstanceId":{"identifier":"AN_INSTANCE_ID"},"name":"A_NAME","summary":"A_SUMMARY","coverage":null}' -X POST
-
-    # Rename service instance and change summary 
-    curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=ChangeServiceInstanceNameAndSummaryCommand" -d '{"serviceInstanceId":{"identifier":"AN_INSTANCE_ID"},"name":"ANOTHER_NAME","summary":"ANOTHER_SUMMARY"}' -X PUT
+#    # Provide a service instance (with no coverage!!!)
+#    curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=ProvideServiceInstanceCommand" -d '{"providerId":{"identifier":"AN_ORG_ID"},"specificationId":{"identifier":"A_SPEC_ID"},"serviceInstanceId":{"identifier":"AN_INSTANCE_ID"},"name":"A_NAME","summary":"A_SUMMARY","coverage":null}' -X POST
+#
+#    # Rename service instance and change summary 
+#    curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=ChangeServiceInstanceNameAndSummaryCommand" -d '{"serviceInstanceId":{"identifier":"AN_INSTANCE_ID"},"name":"ANOTHER_NAME","summary":"ANOTHER_SUMMARY"}' -X PUT
 
 
 

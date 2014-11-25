@@ -2,12 +2,23 @@
 
 angular.module('mcp.search.services', [])
 
-    .controller('SearchServiceMapController', ['$scope', '$filter', 'mapService', 'leafletData', 'ServiceInstanceService', 'searchServiceFilterModel',
-      function ($scope, $filter, mapService, leafletData, ServiceInstanceService, searchServiceFilterModel) {
+    .controller('SearchServiceMapDetailsController', ['$scope', 'AlmanacServiceSpecificationService', 'AlmanacOrganizationService',
+      function ($scope, AlmanacServiceSpecificationService, AlmanacOrganizationService) {
+        $scope.selectedService.specification = AlmanacServiceSpecificationService.get({serviceSpecificationId: $scope.selectedService.specificationId});
+        $scope.selectedService.provider = AlmanacOrganizationService.get({organizationId: $scope.selectedService.providerId});
+      }
+    ])
+
+    .controller('SearchServiceMapController', ['$scope', '$filter', 'mapService', 'leafletData', 'AlmanacServiceInstanceService', 'searchServiceFilterModel',
+      function ($scope, $filter, mapService, leafletData, AlmanacServiceInstanceService, searchServiceFilterModel) {
 
         var SEARCHMAP_ID = 'searchmap';
 
-        $scope.allServices = ServiceInstanceService.query();
+        // FIXME: only fetch a limited set of services, perhaps grouped by some criteria
+        $scope.allServices = AlmanacServiceInstanceService.query(function (serviceInstances) {
+          filterAndShowServices();
+        });
+
         $scope.filter = searchServiceFilterModel.filter;
         $scope.data = searchServiceFilterModel.data;
 

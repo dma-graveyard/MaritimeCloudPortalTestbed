@@ -22,7 +22,7 @@
                     <li ng-if="services.length > 10"> ... {{services.length - 10}} more ...</li>
                 </ul>
             </div>
-            <div ng-if="selectedService" class="map-info-box-description">
+            <div ng-if="selectedService" class="map-info-box-description" ng-controller="SearchServiceMapDetailsController">
                 <!--SUMMARY INFO-->
                 <hr class="soften">
                 <div style="text-align: center;">
@@ -31,10 +31,10 @@
                 <hr>
                 <dl class="dl-horizontal">
                     <dt>id</dt>              <dd>{{selectedService.serviceInstanceId}}</dd>
-                    <dt>specification</dt>   <dd>{{selectedService.specification.name}}</dd>
-                    <dt>service type</dt>    <dd>{{selectedService.specification.serviceType}}</dd>
-                    <dt>provider</dt>        <dd class="truncated"><a ui-sref="restricted.organizationDetails({organizationId:selectedService.provider.organizationId})">{{selectedService.provider.name}}</a></dd>
-                    <dt>provider website</dt><dd class="truncated"><a target="_blank" href="{{selectedService.provider.url}}">{{selectedService.provider.url}}</a></dd>
+                    <dt>specification</dt>   <dd>{{!selectedService.specification.$resolved ? 'loading...' : selectedService.specification.name}}</dd>
+                    <dt>service type</dt>    <dd>{{!selectedService.specification.$resolved ? 'loading...' : selectedService.specification.serviceType}}</dd>
+                    <dt>provider</dt>        <dd class="truncated"><a ui-sref="restricted.organizationDetails({organizationId:selectedService.provider.organizationId})">{{!selectedService.provider.$resolved ? 'loading...' : selectedService.provider.name }}</a></dd>
+                    <dt>provider website</dt><dd class="truncated"><a target="_blank" href="{{selectedService.provider.url}}">{{!selectedService.provider.$resolved ? 'loading...' :selectedService.provider.url}}</a></dd>
                     <dt>summary</dt>         <dd>{{selectedService.summary}}</dd>
                     <dt>Endpoints:</dt>
                     <dt ng-repeat-start="endpoint in selectedService.endpoints"></dt>
