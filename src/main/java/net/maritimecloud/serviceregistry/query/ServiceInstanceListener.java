@@ -15,7 +15,9 @@
 package net.maritimecloud.serviceregistry.query;
 
 import javax.annotation.Resource;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceCoverageChangedEvent;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceCreatedEvent;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceNameAndSummaryChangedEvent;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.slf4j.Logger;
@@ -49,14 +51,29 @@ public class ServiceInstanceListener {
         entry.setName(event.getName());
         entry.setSummary(event.getSummary());
         entry.setCoverage(event.getCoverage());
-        serviceInstanceQueryRepository.save(entry);
+        save(entry);
     }
 
     @EventHandler
     public void on(ServiceInstanceNameAndSummaryChangedEvent event) {
-        ServiceInstanceEntry serviceinstanceEntry = serviceInstanceQueryRepository.findOne(event.getServiceInstanceId().identifier());
-        serviceinstanceEntry.setName(event.getName());
-        serviceinstanceEntry.setSummary(event.getSummary());
-        serviceInstanceQueryRepository.save(serviceinstanceEntry);
+        ServiceInstanceEntry instance = getInstanceWith(event.getServiceInstanceId());
+        instance.setName(event.getName());
+        instance.setSummary(event.getSummary());
+        save(instance);
+    }
+
+    @EventHandler
+    public void on(ServiceInstanceCoverageChangedEvent event) {
+        ServiceInstanceEntry instance = getInstanceWith(event.getServiceInstanceId());
+        instance.setCoverage(event.getCoverage());
+        save(instance);
+    }
+
+    private void save(ServiceInstanceEntry entry) {
+        serviceInstanceQueryRepository.save(entry);
+    }
+
+    private ServiceInstanceEntry getInstanceWith(ServiceInstanceId id) {
+        return serviceInstanceQueryRepository.findOne(id.identifier());
     }
 }

@@ -57,7 +57,9 @@ angular.module('mcp.organizations.services', [])
             $scope.message = "Sending request to register service instance...";
 
             if ($scope.isEditState()) {
-              $scope.service.$save(function (result) {
+              // TODO: skipping response! ...condsider to nest in response of next request
+              ServiceInstanceService.changeCoverage($scope.service);
+              ServiceInstanceService.changeNameAndSummary($scope.service, function () {
                 $location.path('/orgs/' + $scope.service.providerId).replace();
               }, function (error) {
                 $scope.message = null;

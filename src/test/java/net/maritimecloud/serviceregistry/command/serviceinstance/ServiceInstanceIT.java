@@ -98,6 +98,26 @@ public class ServiceInstanceIT extends AbstractAxonCqrsIT {
         assertEquals(ANOTHER_SUMMARY, instance.getSummary());
     }
 
+    @Test
+    public void changeCoverage() {
+
+        // Given an organization with a Service Specification and a provided Service Instance
+        commandGateway().sendAndWait(createOrganizationCommand);
+        commandGateway().sendAndWait(prepareServiceSpecificationCommand);
+        commandGateway().sendAndWait(provideServiceInstanceCommand);
+        assertEquals(1, serviceInstanceQueryRepository.count());
+
+        // When the name and summary are changed 
+        commandGateway().sendAndWait(
+                new ChangeServiceInstanceCoverageCommand(
+                        provideServiceInstanceCommand.getServiceInstanceId(),
+                        ANOTHER_COVERAGE));
+
+        // Then the service instance is visible in views 
+        final ServiceInstanceEntry instance = serviceInstanceQueryRepository.findOne(provideServiceInstanceCommand.getServiceInstanceId().identifier());
+        assertEquals(ANOTHER_COVERAGE, instance.getCoverage());
+    }
+
     private ProvideServiceInstanceCommand generateProvideServiceInstanceCommand() {
         return new ProvideServiceInstanceCommand(
                 organizationId,

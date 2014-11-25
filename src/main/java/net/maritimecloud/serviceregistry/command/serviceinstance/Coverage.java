@@ -14,6 +14,7 @@
  */
 package net.maritimecloud.serviceregistry.command.serviceinstance;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import net.maritimecloud.portal.domain.model.ValueObject;
@@ -49,8 +50,26 @@ public class Coverage extends ValueObject {
 
     @Override
     public String toString() {
-        return serializedJsonValue.toString();
+        return serializedJsonValue;
     }
-    
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + Objects.hashCode(this.serializedJsonValue);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Coverage other = (Coverage) obj;
+        return Objects.equals(this.serializedJsonValue, other.serializedJsonValue);
+    }
     
 }

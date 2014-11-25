@@ -24,6 +24,17 @@ function ProvideServiceInstanceCommand(providerId, specificationId, serviceInsta
   this.coverage = coverage;
 }
 
+function ChangeServiceInstanceNameAndSummaryCommand(serviceInstanceId, name, summary) {
+  this.serviceInstanceId = {identifier: serviceInstanceId};
+  this.name = name;
+  this.summary = summary;
+}
+
+function ChangeServiceInstanceCoverageCommand(serviceInstanceId, coverage) {
+  this.serviceInstanceId = {identifier: serviceInstanceId};
+  this.coverage = coverage;
+}
+
 // --------------------------------------------------
 /* Services */
 // --------------------------------------------------
@@ -63,94 +74,109 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         return resource;
       }])
 
-//FIXME clean up this old service once done with integrating to server
-    .factory('OrganizationServiceOLD', ['$resource',
-      function ($resource) {
-
-        console.log("TODO: using mocked organizations data");
-        var organizations = data.organizationList;
-        /**
-         * Helper function to find organization by id
-         * @param {type} organizationId
-         * @returns the organization or null
-         */
-        var findOrganization = function (organizationId) {
-          for (var i = 0; i < organizations.length; i++) {
-            if (organizationId === organizations[i].organizationId)
-              return organizations[i];
-          }
-          console.log("Error. OrganizationId not found! ", organizationId);
-          return null;
-        };
-        return {
-          get: function (request) {
-            var organizationId = request.organizationId;
-            var result = findOrganization(organizationId);
-            if (result)
-              return result;
-          },
-          query: function (user) {
-            if (user && user.name) {
-              var organizationsOfMember = [];
-              organizations.forEach(function (organization) {
-
-                if (arrayIndexOf(user.name, organization.members))
-                  organizationsOfMember.push(organization);
-              });
-              return organizationsOfMember;
-            }
-            return organizations;
-          },
-          //create: {method: 'POST', params: {}, isArray: false}
-          create: function (newOrganizationRequest, success, failure) {
-
-            if (findOrganization(newOrganizationRequest.organizationId)) {
-              console.log("An organization with that id already exists");
-              failure("An organization with that id already exists");
-              return;
-            }
-
-            var newOrganization =
-                {
-                  organizationId: newOrganizationRequest.organizationId,
-                  name: newOrganizationRequest.name,
-                  summary: newOrganizationRequest.summary,
-                  members: ["admin"],
-                  teams: [
-                    {
-                      name: "Owners",
-                      description: "Special team of owners. Owners can do just about anything.",
-                      isOwner: true,
-                      members: ["admin"],
-                      accessLevel: "admin"
-                    },
-                    {
-                      name: "Members",
-                      description: "Members of the organization with read access",
-                      isAdmin: false,
-                      members: ["admin"],
-                      accessLevel: "read"
-                    }
-                  ]
-                };
-            organizations.push(newOrganization);
-            console.log("organizations: ", organizations);
-            success(newOrganization);
-            //return
-          }
-        };
-      }])
+////FIXME clean up this old service once done with integrating to server
+//    .factory('OrganizationServiceOLD', ['$resource',
+//      function ($resource) {
+//
+//        console.log("TODO: using mocked organizations data");
+//        var organizations = data.organizationList;
+//        /**
+//         * Helper function to find organization by id
+//         * @param {type} organizationId
+//         * @returns the organization or null
+//         */
+//        var findOrganization = function (organizationId) {
+//          for (var i = 0; i < organizations.length; i++) {
+//            if (organizationId === organizations[i].organizationId)
+//              return organizations[i];
+//          }
+//          console.log("Error. OrganizationId not found! ", organizationId);
+//          return null;
+//        };
+//        return {
+//          get: function (request) {
+//            var organizationId = request.organizationId;
+//            var result = findOrganization(organizationId);
+//            if (result)
+//              return result;
+//          },
+//          query: function (user) {
+//            if (user && user.name) {
+//              var organizationsOfMember = [];
+//              organizations.forEach(function (organization) {
+//
+//                if (arrayIndexOf(user.name, organization.members))
+//                  organizationsOfMember.push(organization);
+//              });
+//              return organizationsOfMember;
+//            }
+//            return organizations;
+//          },
+//          //create: {method: 'POST', params: {}, isArray: false}
+//          create: function (newOrganizationRequest, success, failure) {
+//
+//            if (findOrganization(newOrganizationRequest.organizationId)) {
+//              console.log("An organization with that id already exists");
+//              failure("An organization with that id already exists");
+//              return;
+//            }
+//
+//            var newOrganization =
+//                {
+//                  organizationId: newOrganizationRequest.organizationId,
+//                  name: newOrganizationRequest.name,
+//                  summary: newOrganizationRequest.summary,
+//                  members: ["admin"],
+//                  teams: [
+//                    {
+//                      name: "Owners",
+//                      description: "Special team of owners. Owners can do just about anything.",
+//                      isOwner: true,
+//                      members: ["admin"],
+//                      accessLevel: "admin"
+//                    },
+//                    {
+//                      name: "Members",
+//                      description: "Members of the organization with read access",
+//                      isAdmin: false,
+//                      members: ["admin"],
+//                      accessLevel: "read"
+//                    }
+//                  ]
+//                };
+//            organizations.push(newOrganization);
+//            console.log("organizations: ", organizations);
+//            success(newOrganization);
+//            //return
+//          }
+//        };
+//      }])
 
     .factory('ServiceInstanceService', ['$resource', 'serviceBaseUrl',
       function ($resource, serviceBaseUrl) {
         
-        var resource = $resource(serviceBaseUrl + '/rest/api/organization/:organizationId/service-instance/:serviceInstanceId', {}, {
+        var resource = $resource(serviceBaseUrl + '/rest/api/organization/:organizationId/service-instance/:serviceInstanceId', {}, 
+        {
           post: {method: 'POST', params:{organizationId: '@providerId'}},
+          put: {method: 'PUT', params:{serviceInstanceId: '@serviceInstanceId.identifier'}},
         });
         
         resource.create = function(serviceInstance, succes, error){
           return this.post(new ProvideServiceInstanceCommand(serviceInstance.providerId, serviceInstance.specificationId, serviceInstance.serviceInstanceId, serviceInstance.name, serviceInstance.summary, serviceInstance.coverage), succes, error);
         };
+        
+        resource.changeNameAndSummary = function(serviceInstance, succes, error){
+          return this.put({organizationId: serviceInstance.providerId}, new ChangeServiceInstanceNameAndSummaryCommand(serviceInstance.serviceInstanceId, serviceInstance.name, serviceInstance.summary), succes, error);
+        };
+        
+        
+        resource.changeCoverage = function(serviceInstance, succes, error){
+          return this.put({organizationId: serviceInstance.providerId}, new ChangeServiceInstanceCoverageCommand(serviceInstance.serviceInstanceId, serviceInstance.coverage), succes, error);
+        };
+        
+//        resource.changeNameAndSummary = function(serviceInstance, succes, error){
+//          return this.post(new ChangeServiceInstanceNameAndSummaryCommand(serviceInstance.serviceInstanceId, serviceInstance.name, serviceInstance.summary, serviceInstance.coverage), succes, error);
+//        };
         
         return resource;
       }])

@@ -26,6 +26,7 @@ import net.maritimecloud.serviceregistry.command.organization.CreateOrganization
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.organization.PrepareServiceSpecificationCommand;
 import net.maritimecloud.serviceregistry.command.organization.ProvideServiceInstanceCommand;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceCoverageCommand;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceNameAndSummaryCommand;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
@@ -178,6 +179,21 @@ public class GenericCommandResourceTest extends CommonFixture {
         assertEquals(AN_INSTANCE_ID, command.getServiceInstanceId().identifier());
         assertEquals(A_NAME, command.getName());
         assertEquals(A_SUMMARY, command.getSummary());
+    }
+
+    @Test
+    public void jsonChangeServiceInstanceCoverageCommand() throws Exception {
+
+        ChangeServiceInstanceCoverageCommand command
+                = serializeAndDeserializeCommand(
+                        new ChangeServiceInstanceCoverageCommand(
+                                new ServiceInstanceId(AN_INSTANCE_ID),
+                                A_COVERAGE
+                        )
+                );
+
+        assertEquals(AN_INSTANCE_ID, command.getServiceInstanceId().identifier());
+        assertEquals(A_COVERAGE, command.getCoverage());
     }
 
     private <T extends Command> T serializeAndDeserializeCommand(T command)

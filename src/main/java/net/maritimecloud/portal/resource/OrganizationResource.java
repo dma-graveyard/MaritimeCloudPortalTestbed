@@ -16,7 +16,6 @@ package net.maritimecloud.portal.resource;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import javax.annotation.Resource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -37,6 +36,7 @@ import net.maritimecloud.serviceregistry.command.organization.ChangeOrganization
 import net.maritimecloud.serviceregistry.command.organization.CreateOrganizationCommand;
 import net.maritimecloud.serviceregistry.command.organization.PrepareServiceSpecificationCommand;
 import net.maritimecloud.serviceregistry.command.organization.ProvideServiceInstanceCommand;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceCoverageCommand;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceNameAndSummaryCommand;
 import net.maritimecloud.serviceregistry.command.servicespecification.ChangeServiceSpecificationNameAndSummaryCommand;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
@@ -61,11 +61,10 @@ public class OrganizationResource {
 
     @Resource
     protected CommandGateway commandGateway;
-    
+
     // -------------------------------------------------------
     // Commands
     // -------------------------------------------------------
-    
     private static final CommandRegistry postCommandsRegistry = new CommandRegistry(
             CreateOrganizationCommand.class,
             PrepareServiceSpecificationCommand.class,
@@ -74,7 +73,8 @@ public class OrganizationResource {
     private static final CommandRegistry putCommandsRegistry = new CommandRegistry(
             ChangeOrganizationNameAndSummaryCommand.class,
             ChangeServiceSpecificationNameAndSummaryCommand.class,
-            ChangeServiceInstanceNameAndSummaryCommand.class
+            ChangeServiceInstanceNameAndSummaryCommand.class,
+            ChangeServiceInstanceCoverageCommand.class
     );
     private static final CommandRegistry deleteCommandsRegistry = new CommandRegistry();
     private static final CommandRegistry patchCommandsRegistry = new CommandRegistry();
@@ -84,14 +84,10 @@ public class OrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public void mappedPostCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
         LOG.info("POST command: " + commandJSON);
-        try {
-            Thread.sleep(4000);
-        } catch (InterruptedException ex) {
-            java.util.logging.Logger.getLogger(OrganizationResource.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        simulateLack();
         GenericCommandResource.sendAndWait(contentType, queryCommandName, postCommandsRegistry, commandJSON);
     }
-    
+
     @PUT
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
@@ -99,25 +95,38 @@ public class OrganizationResource {
         LOG.info("PUT command: " + commandJSON);
         sendAndWait(contentType, queryCommandName, putCommandsRegistry, commandJSON);
     }
-    
+
     @POST
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{organizationId}/service-instance")
     public void serviceInstancePostCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
         LOG.info("POST command: " + commandJSON);
-        try {
-            Thread.sleep(4000);
-        } catch (InterruptedException ex) {
-            java.util.logging.Logger.getLogger(OrganizationResource.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        simulateLack();
         GenericCommandResource.sendAndWait(contentType, queryCommandName, postCommandsRegistry, commandJSON);
     }
-    
+
+    @PUT
+    @Consumes(APPLICATION_JSON_CQRS_COMMAND)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{organizationId}/service-instance/{serviceInstanceId}")
+    public void serviceInstancePutCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
+        LOG.info("Service Instance PUT command: " + commandJSON);
+        simulateLack();
+        GenericCommandResource.sendAndWait(contentType, queryCommandName, putCommandsRegistry, commandJSON);
+    }
+
+    private void simulateLack() {
+//        try {
+//            Thread.sleep(10);
+//        } catch (InterruptedException ex) {
+//            java.util.logging.Logger.getLogger(OrganizationResource.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+    }
+
     // -------------------------------------------------------
     // Queries
     // -------------------------------------------------------
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<OrganizationEntry> getOrganizations(
@@ -165,7 +174,6 @@ public class OrganizationResource {
     }
 
     // SERVICE INSTANCE ------------------------------------------------
-    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{organizationId}/service-instance")
@@ -187,5 +195,5 @@ public class OrganizationResource {
     ) {
         return ApplicationServiceRegistry.serviceInstanceQueryRepository().findOne(serviceInstanceId);
     }
-    
+
 }
