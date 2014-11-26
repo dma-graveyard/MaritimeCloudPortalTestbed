@@ -17,6 +17,8 @@ package net.maritimecloud.serviceregistry.query;
 import javax.annotation.Resource;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceCoverageChangedEvent;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceCreatedEvent;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceEndpointAddedEvent;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceEndpointRemovedEvent;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceNameAndSummaryChangedEvent;
 import org.axonframework.eventhandling.annotation.EventHandler;
@@ -66,6 +68,20 @@ public class ServiceInstanceListener {
     public void on(ServiceInstanceCoverageChangedEvent event) {
         ServiceInstanceEntry instance = getInstanceWith(event.getServiceInstanceId());
         instance.setCoverage(event.getCoverage());
+        save(instance);
+    }
+
+    @EventHandler
+    public void on(ServiceInstanceEndpointAddedEvent event) {
+        ServiceInstanceEntry instance = getInstanceWith(event.getServiceInstanceId());
+        instance.addEndpoint(event.getServiceEndpoint());
+        save(instance);
+    }
+
+    @EventHandler
+    public void on(ServiceInstanceEndpointRemovedEvent event) {
+        ServiceInstanceEntry instance = getInstanceWith(event.getServiceInstanceId());
+        instance.removeEndpoint(event.getServiceEndpoint());
         save(instance);
     }
 

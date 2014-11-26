@@ -36,8 +36,10 @@ import net.maritimecloud.serviceregistry.command.organization.ChangeOrganization
 import net.maritimecloud.serviceregistry.command.organization.CreateOrganizationCommand;
 import net.maritimecloud.serviceregistry.command.organization.PrepareServiceSpecificationCommand;
 import net.maritimecloud.serviceregistry.command.organization.ProvideServiceInstanceCommand;
+import net.maritimecloud.serviceregistry.command.serviceinstance.AddServiceInstanceEndpointCommand;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceCoverageCommand;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceNameAndSummaryCommand;
+import net.maritimecloud.serviceregistry.command.serviceinstance.RemoveServiceInstanceEndpointCommand;
 import net.maritimecloud.serviceregistry.command.servicespecification.ChangeServiceSpecificationNameAndSummaryCommand;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
@@ -74,9 +76,13 @@ public class OrganizationResource {
             ChangeOrganizationNameAndSummaryCommand.class,
             ChangeServiceSpecificationNameAndSummaryCommand.class,
             ChangeServiceInstanceNameAndSummaryCommand.class,
-            ChangeServiceInstanceCoverageCommand.class
+            ChangeServiceInstanceCoverageCommand.class,
+            AddServiceInstanceEndpointCommand.class,
+            RemoveServiceInstanceEndpointCommand.class
     );
-    private static final CommandRegistry deleteCommandsRegistry = new CommandRegistry();
+    private static final CommandRegistry deleteCommandsRegistry = new CommandRegistry(
+            RemoveServiceInstanceEndpointCommand.class
+    );
     private static final CommandRegistry patchCommandsRegistry = new CommandRegistry();
 
     @POST

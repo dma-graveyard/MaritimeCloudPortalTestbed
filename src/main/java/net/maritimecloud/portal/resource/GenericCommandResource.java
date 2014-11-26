@@ -36,7 +36,9 @@ import net.maritimecloud.serviceregistry.command.organization.ChangeOrganization
 import net.maritimecloud.serviceregistry.command.organization.CreateOrganizationCommand;
 import net.maritimecloud.serviceregistry.command.organization.PrepareServiceSpecificationCommand;
 import net.maritimecloud.serviceregistry.command.organization.ProvideServiceInstanceCommand;
+import net.maritimecloud.serviceregistry.command.serviceinstance.AddServiceInstanceEndpointCommand;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceNameAndSummaryCommand;
+import net.maritimecloud.serviceregistry.command.serviceinstance.RemoveServiceInstanceEndpointCommand;
 import net.maritimecloud.serviceregistry.command.servicespecification.ChangeServiceSpecificationNameAndSummaryCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +57,8 @@ public class GenericCommandResource {
     private static final CommandRegistry postCommandsRegistry = new CommandRegistry(
             CreateOrganizationCommand.class,
             PrepareServiceSpecificationCommand.class,
+            AddServiceInstanceEndpointCommand.class,
+            RemoveServiceInstanceEndpointCommand.class,
             ProvideServiceInstanceCommand.class
     );
     private static final CommandRegistry putCommandsRegistry = new CommandRegistry(

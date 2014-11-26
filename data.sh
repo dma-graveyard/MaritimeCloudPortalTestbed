@@ -32,3 +32,12 @@
 
     # Change coverage to a circle:
     curl http://localhost:8080/rest/api/organization/dma/service-instance/dma-AN_INSTANCE_ID -H "Content-Type: application/json;domain-model=ChangeServiceInstanceCoverageCommand" -d '{"serviceInstanceId":{"identifier":"dma-AN_INSTANCE_ID"},"coverage":[{"type":"circle","center-latitude":55.8444821875883,"center-longitude":11.788330078125,"radius":87521.03421291267}]}' -X PUT
+
+    # Add an Endpoint:
+    curl http://localhost:8080/rest/api/organization/dma/service-instance/dma-AN_INSTANCE_ID -H "Content-Type: application/json;domain-model=AddServiceInstanceEndpointCommand" -d '{"serviceInstanceId":{"identifier":"dma-AN_INSTANCE_ID"},"serviceEndpoint":{"uri":"http://a-uri.org"}}' -X PUT
+
+    # Add another Endpoint:
+    curl http://localhost:8080/rest/api/organization/dma/service-instance/dma-AN_INSTANCE_ID -H "Content-Type: application/json;domain-model=AddServiceInstanceEndpointCommand" -d '{"serviceInstanceId":{"identifier":"dma-AN_INSTANCE_ID"},"serviceEndpoint":{"uri":"http://another-uri.org"}}' -X PUT
+
+    # Remove an Endpoint:
+    curl http://localhost:8080/rest/api/organization/dma/service-instance/dma-AN_INSTANCE_ID -H "Content-Type: application/json;domain-model=RemoveServiceInstanceEndpointCommand" -d '{"serviceInstanceId":{"identifier":"dma-AN_INSTANCE_ID"},"serviceEndpoint":{"uri":"http://a-uri.org"}}' -X PUT

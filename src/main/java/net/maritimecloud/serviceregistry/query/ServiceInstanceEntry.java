@@ -16,12 +16,17 @@ package net.maritimecloud.serviceregistry.query;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
 import net.maritimecloud.portal.domain.infrastructure.jackson.CoverageSerializer;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
-import org.springframework.data.annotation.Id;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceEndpoint;
 
 /**
  *
@@ -31,7 +36,7 @@ import org.springframework.data.annotation.Id;
 public class ServiceInstanceEntry implements Serializable {
 
     @Id
-    @javax.persistence.Id
+    @Column(length = 256)
     private String serviceInstanceId;
     private String providerId;
     private String specificationId;
@@ -41,6 +46,11 @@ public class ServiceInstanceEntry implements Serializable {
     @JsonSerialize(using = CoverageSerializer.class)
     @Embedded
     private Coverage coverage; // FIXME: create complex version of coverage instead of json-serialized one
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<ServiceEndpoint> endpoints = new ArrayList<>();
+
+    public ServiceInstanceEntry() {
+    }
 
     public String getServiceInstanceId() {
         return serviceInstanceId;
@@ -92,6 +102,10 @@ public class ServiceInstanceEntry implements Serializable {
         this.coverage = coverage;
     }
 
+    public List<ServiceEndpoint> getEndpoints() {
+        return endpoints;
+    }
+
     @Override
     public String toString() {
         return "ServiceInstanceEntry{"
@@ -101,7 +115,16 @@ public class ServiceInstanceEntry implements Serializable {
                 + ", name=" + name
                 + ", summary=" + summary
                 + ", coverage=" + coverage
+                + ", endpoints=" + endpoints
                 + '}';
+    }
+
+    void addEndpoint(ServiceEndpoint serviceEndpoint) {
+        getEndpoints().add(serviceEndpoint);
+    }
+
+    void removeEndpoint(ServiceEndpoint serviceEndpoint) {
+        getEndpoints().remove(serviceEndpoint);
     }
 
 }

@@ -60,6 +60,16 @@ public class ServiceInstance extends AbstractAnnotatedAggregateRoot<ServiceInsta
         apply(new ServiceInstanceCoverageChangedEvent(command.getServiceInstanceId(), command.getCoverage()));
     }
 
+    @CommandHandler
+    public void handle(AddServiceInstanceEndpointCommand command) {
+        apply(new ServiceInstanceEndpointAddedEvent(command.getServiceInstanceId(), command.getServiceEndpoint()));
+    }
+
+    @CommandHandler
+    public void handle(RemoveServiceInstanceEndpointCommand command) {
+        apply(new ServiceInstanceEndpointRemovedEvent(command.getServiceInstanceId(), command.getServiceEndpoint()));
+    }
+
     @EventSourcingHandler
     public void on(ServiceInstanceCreatedEvent event) {
         this.serviceInstanceId = event.getServiceInstanceId();
