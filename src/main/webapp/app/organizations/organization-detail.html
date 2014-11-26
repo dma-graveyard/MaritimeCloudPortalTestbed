@@ -45,15 +45,15 @@
                         <div class="col-sm-12 col-lg-12">
                             <h5 ng-click="toggleDetails()">{{details.isCollapsed ? '(more...)' : 'Service details:'}} </h5>
                             <div collapse="details.isCollapsed">
-                                <dl class="dl-horizontal" >
+                                <dl class="dl-horizontal">
                                     <dt>Service Id</dt><dd>{{service.serviceInstanceId}}</dd>
                                     <dt>Endpoints:</dt>
                                     <dt ng-repeat-start="endpoint in service.endpoints"></dt>
                                     <dd ng-repeat-end class="truncated"><a target="_blank" href="{{endpoint.uri}}">{{endpoint.uri}}</a></dd>
                                     <h5>Service specification:</h5>
-                                    <dt>Name</dt><dd>{{service.specificationName}}</dd>
+                                    <dt>Name</dt><dd>{{service.specification.name}}</dd>
                                     <dt>Id</dt><dd>{{service.specificationId}}</dd>
-                                    <dt>Type</dt><dd>{{service.serviceType}}</dd>
+                                    <dt>Type</dt><dd>{{service.specification.serviceType}}</dd>
                                 </dl>
                             </div>
                         </div>

@@ -8,13 +8,16 @@ var fitToPaths = function fitToPaths(mapId, leafletData, mapService) {
 
 angular.module('mcp.organizations.services', [])
 
-    .controller('ServiceInstanceDetailsController', ['$scope',
-      function ($scope) {
+    .controller('ServiceInstanceDetailsController', ['$scope', 'AlmanacServiceSpecificationService', 'AlmanacOrganizationService',
+      function ($scope, AlmanacServiceSpecificationService, AlmanacOrganizationService) {
         $scope.details = {isCollapsed: true};
         $scope.toggleDetails = function () {
           $scope.details.isCollapsed = !$scope.details.isCollapsed;
         };
-      }])
+        $scope.service.specification = AlmanacServiceSpecificationService.get({serviceSpecificationId: $scope.service.specificationId});
+        $scope.service.provider = AlmanacOrganizationService.get({organizationId: $scope.service.providerId});
+      }
+    ])
 
     .controller('EditServiceInstanceController', ['$scope', '$location', '$modal', '$stateParams', '$state',
       'OperationalServiceService', 'ServiceSpecificationService', 'ServiceInstanceService',
