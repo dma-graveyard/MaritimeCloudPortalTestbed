@@ -18,8 +18,10 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import java.util.UUID;
 import net.maritimecloud.serviceregistry.command.organization.CreateOrganizationCommand;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
+import net.maritimecloud.serviceregistry.command.organization.PrepareServiceSpecificationCommand;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceType;
 
 /**
  * Helper class that provides useful constants and factories for instances of various test data.
@@ -27,10 +29,11 @@ import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpe
  * @author Christoffer Børrild
  */
 public class CommonFixture {
-    
+
     public static final String AN_ORG_ID = "AN_ORG_ID";
     public static final String A_SPEC_ID = "A_SPEC_ID";
     public static final String AN_INSTANCE_ID = "AN_INSTANCE_ID";
+    public static final ServiceType A_SERVICE_TYPE = ServiceType.AISASM;
     public static final String A_NAME = "a name";
     public static final String A_SUMMARY = "a summary ...";
     public static final Coverage A_COVERAGE = new Coverage("[{\"type\":\"polygon\",\"points\":[[12.557373046874998,56.29215668507645],[11.656494140625,56.022948079627454],[12.381591796875,55.41030721005218],[13.568115234375,55.61558902526749],[13.90869140625,56.072035471800866],[13.0517578125,55.83214387781303],[13.128662109375,56.17613891766981],[12.513427734375,55.99838095535963]]},{\"type\":\"rectangle\",\"topLeftLatitude\":56.05976947910657,\"topLeftLongitude\":9.38232421875,\"buttomRightLatitude\":55.429013452407396,\"buttomRightLongitude\":11.1181640625},{\"type\":\"circle\",\"center-latitude\":55.29162848682989,\"center-longitude\":11.074218749999998,\"radius\":49552.58124628375}]");
@@ -45,7 +48,7 @@ public class CommonFixture {
     }
 
     public static OrganizationId generateOrganizationId() {
-        return new OrganizationId(generateIdentity());
+        return generateOrganizationId(generateIdentity());
     }
 
     public static OrganizationId generateOrganizationId(String organizationIdentity) {
@@ -53,7 +56,11 @@ public class CommonFixture {
     }
 
     public static ServiceSpecificationId generateServiceSpecificationId() {
-        return new ServiceSpecificationId(generateIdentity());
+        return generateServiceSpecificationId(generateIdentity());
+    }
+
+    public static ServiceSpecificationId generateServiceSpecificationId(String serviceSpecificationId) {
+        return new ServiceSpecificationId(serviceSpecificationId);
     }
 
     public static ServiceInstanceId generateServiceInstanceId() {
@@ -62,6 +69,13 @@ public class CommonFixture {
 
     public static CreateOrganizationCommand generateCreateOrganizationCommand(String organizationIdentity) {
         return new CreateOrganizationCommand(generateOrganizationId(organizationIdentity), A_NAME, A_SUMMARY, A_URL);
+    }
+
+    public static PrepareServiceSpecificationCommand aPrepareServiceSpecificationCommand(
+            OrganizationId organizationId, 
+            ServiceSpecificationId serviceSpecificationId
+    ) {
+        return new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY);
     }
 
 }

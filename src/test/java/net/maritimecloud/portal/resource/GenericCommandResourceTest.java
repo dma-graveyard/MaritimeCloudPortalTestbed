@@ -32,6 +32,7 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ChangeServiceSpecificationNameAndSummaryCommand;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceType;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -106,16 +107,17 @@ public class GenericCommandResourceTest extends CommonFixture {
     public void jsonPrepareServiceSpecificationCommand() throws Exception {
 
         PrepareServiceSpecificationCommand command
-                = serializeAndDeserializeCommand(
-                        new PrepareServiceSpecificationCommand(
+                = serializeAndDeserializeCommand(new PrepareServiceSpecificationCommand(
                                 new OrganizationId(AN_ORG_ID),
                                 new ServiceSpecificationId(A_SPEC_ID),
+                                A_SERVICE_TYPE,
                                 A_NAME,
                                 A_SUMMARY)
                 );
 
         assertEquals(AN_ORG_ID, command.getOwnerId().identifier());
         assertEquals(A_SPEC_ID, command.getServiceSpecificationId().identifier());
+        assertEquals(A_SERVICE_TYPE, command.getServiceType());
         assertEquals(A_NAME, command.getName());
         assertEquals(A_SUMMARY, command.getSummary());
     }

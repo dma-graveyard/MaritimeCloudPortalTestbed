@@ -38,7 +38,7 @@ public class ServiceSpecificationTest {
     public void changeServiceSpecificationNameAndSummary() {
         OrganizationId organizationId = new OrganizationId("an organization id");
 
-        fixture.given(new ServiceSpecificationCreatedEvent(organizationId, new ServiceSpecificationId("a ServiceSpecification id"), "a name", "a summary ..."))
+        fixture.given(new ServiceSpecificationCreatedEvent(organizationId, new ServiceSpecificationId("a ServiceSpecification id"), ServiceType.AISASM, "a name", "a summary ..."))
                 .when(new ChangeServiceSpecificationNameAndSummaryCommand(new ServiceSpecificationId("a ServiceSpecification id"), "a new name", "a new summary ..."))
                 .expectEvents(new ServiceSpecificationNameAndSummaryChangedEvent(new ServiceSpecificationId("a ServiceSpecification id"), "a new name", "a new summary ..."));
     }

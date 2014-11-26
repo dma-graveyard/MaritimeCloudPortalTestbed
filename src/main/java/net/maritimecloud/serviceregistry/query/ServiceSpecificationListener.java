@@ -46,6 +46,7 @@ public class ServiceSpecificationListener {
         ServiceSpecificationEntry entry = new ServiceSpecificationEntry();
         entry.setServiceSpecificationIdentifier(event.getServiceSpecificationId().identifier());
         entry.setOwnerIdentifier(event.getOwnerId().identifier());
+        entry.setServiceType(event.getServiceType());
         entry.setName(event.getName());
         entry.setSummary(event.getSummary());
         serviceSpecificationQueryRepository.save(entry);

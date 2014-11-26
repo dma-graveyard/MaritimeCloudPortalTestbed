@@ -19,6 +19,7 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceType;
 import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.eventsourcing.annotation.AbstractAnnotatedAggregateRoot;
 import org.axonframework.eventsourcing.annotation.AggregateIdentifier;
@@ -69,14 +70,9 @@ public class Organization extends AbstractAnnotatedAggregateRoot<OrganizationId>
      *   cumbersome to test it serves the DDD valid purpose of guarding the invariant 
      *   that a ServiceSpecification cannot be created for a non-existing or deleted
      *   Organization )
-     * 
-     * @param serviceSpecificationId
-     * @param name
-     * @param summary
-     * @return 
      */
-    public ServiceSpecification prepareServiceSpecification(ServiceSpecificationId serviceSpecificationId, String name, String summary) {
-        return new ServiceSpecification(organizationId, serviceSpecificationId, name, summary);
+    public ServiceSpecification prepareServiceSpecification(ServiceSpecificationId serviceSpecificationId, ServiceType serviceType, String name, String summary) {
+        return new ServiceSpecification(organizationId, serviceSpecificationId, serviceType, name, summary);
     }
 
     /**
@@ -86,13 +82,6 @@ public class Organization extends AbstractAnnotatedAggregateRoot<OrganizationId>
      *   cumbersome to test it serves the DDD valid purpose of guarding the invariant 
      *   that a ServiceInstance cannot be created for a non-existing or deleted
      *   Organization )
-     * 
-     * @param specificationId
-     * @param serviceInstanceId
-     * @param name
-     * @param summary
-     * @param coverage 
-     * @return  
      */
     public ServiceInstance provideServiceInstance(ServiceSpecificationId specificationId, ServiceInstanceId serviceInstanceId, String name, String summary, Coverage coverage) {
         return new ServiceInstance(organizationId, specificationId, serviceInstanceId, name, summary, coverage);

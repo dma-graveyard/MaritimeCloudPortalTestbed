@@ -48,8 +48,7 @@ public class ServiceInstanceIT extends AbstractAxonCqrsIT {
         organizationId = createOrganizationCommand.getOrganizationId();
         // prepare a service specification
         serviceSpecificationId = generateServiceSpecificationId();
-        prepareServiceSpecificationCommand
-                = new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId, A_NAME, A_SUMMARY);
+        prepareServiceSpecificationCommand = aPrepareServiceSpecificationCommand(organizationId, serviceSpecificationId);
         // Prepare a service instance 
         provideServiceInstanceCommand = generateProvideServiceInstanceCommand();
     }

@@ -31,14 +31,21 @@ public class ServiceSpecification extends AbstractAnnotatedAggregateRoot<Service
     @AggregateIdentifier
     private ServiceSpecificationId serviceSpecificationId;
     private OrganizationId organizationId;
+    private ServiceType serviceType;
     private String name;
     private String summary;
 
     protected ServiceSpecification() {
     }
 
-    public ServiceSpecification(OrganizationId organizationId, ServiceSpecificationId serviceSpecificationId, String name, String summary) {
-        apply(new ServiceSpecificationCreatedEvent(organizationId, serviceSpecificationId, name, summary));
+    public ServiceSpecification(
+            OrganizationId organizationId,
+            ServiceSpecificationId serviceSpecificationId,
+            ServiceType serviceType,
+            String name,
+            String summary
+    ) {
+        apply(new ServiceSpecificationCreatedEvent(organizationId, serviceSpecificationId, serviceType, name, summary));
     }
 
     @CommandHandler
@@ -51,5 +58,5 @@ public class ServiceSpecification extends AbstractAnnotatedAggregateRoot<Service
         this.serviceSpecificationId = event.getServiceSpecificationId();
         this.organizationId = event.getOwnerId();
     }
-    
+
 }

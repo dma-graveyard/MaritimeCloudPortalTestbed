@@ -8,7 +8,7 @@
     curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=ChangeOrganizationNameAndSummaryCommand" -d '{"organizationId":{"identifier":"AN_ORG_ID"},"name":"ANOTHER_NAME","summary":"ANOTHER_SUMMARY"}' -X PUT
 
     # Prepare a service specification 
-    curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=PrepareServiceSpecificationCommand" -d '{"ownerId":{"identifier":"AN_ORG_ID"}, "serviceSpecificationId":{"identifier":"A_SPEC_ID"}, "name":"A_NAME","summary":"A_SUMMARY fail"}' -X POST
+    curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=PrepareServiceSpecificationCommand" -d '{"ownerId":{"identifier":"AN_ORG_ID"}, "serviceSpecificationId":{"identifier":"A_SPEC_ID"}, "serviceType":"REST", "name":"A_NAME","summary":"A_SUMMARY fail"}' -X POST
 
     # Rename service specification and change summary 
     curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=ChangeServiceSpecificationNameAndSummaryCommand" -d '{"serviceSpecificationId":{"identifier":"A_SPEC_ID"},"name":"ANOTHER_NAME","summary":"ANOTHER_SUMMARY"}' -X PUT
@@ -25,7 +25,7 @@
     curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=CreateOrganizationCommand" -d '{"organizationId":{"identifier":"dma"},"name":"Danish Maritime Authority","summary":"The Danish Maritime Authority is a government agency of Denmark that regulates maritime affairs. The field of responsibility is based on the shipping industry and its framework conditions, the ship and its crew. In addition, it is responsible for aids to navigation in the waters surrounding Denmark and ashore. admin. Tintin","url":"http://dma.dk"}' -X POST
 
     # dma: Prepare a service specification 'imo-mis-rest'
-    curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=PrepareServiceSpecificationCommand" -d '{"ownerId":{"identifier":"dma"}, "serviceSpecificationId":{"identifier":"imo-mis-rest"}, "name":"IMO MIS REST","summary":"A_SUMMARY"}' -X POST
+    curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=PrepareServiceSpecificationCommand" -d '{"ownerId":{"identifier":"dma"}, "serviceSpecificationId":{"identifier":"imo-mis-rest"}, "serviceType":"REST", "name":"IMO MIS REST","summary":"A_SUMMARY"}' -X POST
 
     # Provide a service instance (with no coverage!!!)
     curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=ProvideServiceInstanceCommand" -d '{"providerId":{"identifier":"dma"},"specificationId":{"identifier":"A_SPEC_ID"},"serviceInstanceId":{"identifier":"dma-AN_INSTANCE_ID"},"name":"dmaA_NAME","summary":"This is a summary that extend to the real wild world of nowhere. If you ever go there, make sure to bring hope and a lot of love. Be aware, though, that too much love will kill it. Life is like a cage full of sqizzels. You never know which one is gonna bite you first! And when it does, death is always inevitable.","coverage":null}' -X POST

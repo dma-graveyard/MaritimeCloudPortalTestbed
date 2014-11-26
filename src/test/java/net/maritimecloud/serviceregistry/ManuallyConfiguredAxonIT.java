@@ -19,7 +19,6 @@ import net.maritimecloud.serviceregistry.command.organization.*;
 import java.util.UUID;
 import javax.annotation.Resource;
 import net.maritimecloud.common.infrastructure.axon.AbstractManuallyComnfiguredAxonCqrsIT;
-import net.maritimecloud.common.infrastructure.axon.CommonFixture;
 import net.maritimecloud.serviceregistry.query.ServiceSpecificationListener;
 import net.maritimecloud.serviceregistry.query.ServiceSpecificationQueryRepository;
 import org.axonframework.eventsourcing.EventSourcingRepository;
@@ -67,17 +66,16 @@ public class ManuallyConfiguredAxonIT extends AbstractManuallyComnfiguredAxonCqr
 
         serviceSpecificationQueryRepository.deleteAll();
         commandGateway.sendAndWait(CREATE_ORGANIZATION_COMMAND);
-        commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId1, A_NAME, A_SUMMARY));
+        commandGateway.sendAndWait(aPrepareServiceSpecificationCommand(organizationId, serviceSpecificationId1));
         assertEquals(1, serviceSpecificationQueryRepository.count());
-        assertEquals("a name", serviceSpecificationQueryRepository.findOne(serviceSpecificationId1.identifier()).getName());
+        assertEquals(A_NAME, serviceSpecificationQueryRepository.findOne(serviceSpecificationId1.identifier()).getName());
 
-        commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId2, A_NAME, A_SUMMARY));
-        commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId3, A_NAME, A_SUMMARY));
-
+        commandGateway.sendAndWait(aPrepareServiceSpecificationCommand(organizationId, serviceSpecificationId2));
+        commandGateway.sendAndWait(aPrepareServiceSpecificationCommand(organizationId, serviceSpecificationId3));
         assertEquals(3, serviceSpecificationQueryRepository.count());
 
         try {
-            commandGateway.sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId1, A_NAME, A_SUMMARY));
+            commandGateway.sendAndWait(aPrepareServiceSpecificationCommand(organizationId, serviceSpecificationId1));
             fail("Should fail as item already exist");
         } catch (Exception e) {
         }

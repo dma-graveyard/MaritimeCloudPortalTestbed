@@ -53,33 +53,37 @@ public class OrganizationCommandHandlerTest extends CommonFixture {
     @Test
     public void prepareServiceSpecification() {
         Mockito.when(anOrganization.isDeleted()).thenReturn(false);
-        Mockito.when(anOrganization.prepareServiceSpecification(serviceSpecificationId, "a name", "a summary ..."))
-                .thenReturn(new ServiceSpecification(anOrganizationId, serviceSpecificationId, "a name", "a summary ..."));
+        Mockito.when(anOrganization.prepareServiceSpecification(serviceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY))
+                .thenReturn(new ServiceSpecification(anOrganizationId, serviceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY));
         Mockito.when(anOrganization.getIdentifier()).thenReturn(anOrganizationId);
 
-        fixture.given(new OrganizationCreatedEvent(anOrganizationId, "a name", "a summary ...", A_URL))
-                .when(new PrepareServiceSpecificationCommand(anOrganizationId, serviceSpecificationId, "a name", "a summary ..."))
-                .expectEvents(new ServiceSpecificationCreatedEvent(anOrganizationId, new ServiceSpecificationId("a ServiceSpecification id"), "a name", "a summary ..."));
+        fixture.given(new OrganizationCreatedEvent(anOrganizationId, A_NAME, A_SUMMARY, A_URL))
+                .when(aPrepareServiceSpecificationCommand(anOrganizationId, serviceSpecificationId))
+                .expectEvents(new ServiceSpecificationCreatedEvent(
+                        anOrganizationId, 
+                        new ServiceSpecificationId("a ServiceSpecification id"), 
+                        A_SERVICE_TYPE, A_NAME, A_SUMMARY)
+                );
     }
 
     @Test
     public void prepareServiceSpecificationOnDeletedOrganization() {
         Mockito.when(anOrganization.isDeleted()).thenReturn(true);
 
-        fixture.given(new OrganizationCreatedEvent(anOrganizationId, "a name", "a summary ...", A_URL))
-                .when(new PrepareServiceSpecificationCommand(anOrganizationId, serviceSpecificationId, "a name", "a summary ..."))
+        fixture.given(new OrganizationCreatedEvent(anOrganizationId, A_NAME, A_SUMMARY, A_URL))
+                .when(aPrepareServiceSpecificationCommand(anOrganizationId, serviceSpecificationId))
                 .expectException(IllegalArgumentException.class);
     }
 
     @Test
     public void dublicatePrepareServiceSpecification() {
         Mockito.when(anOrganization.isDeleted()).thenReturn(false);
-        Mockito.when(anOrganization.prepareServiceSpecification(serviceSpecificationId, "a name", "a summary ..."))
-                .thenReturn(new ServiceSpecification(anOrganizationId, serviceSpecificationId, "a name", "a summary ..."));
+        Mockito.when(anOrganization.prepareServiceSpecification(serviceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY))
+                .thenReturn(new ServiceSpecification(anOrganizationId, serviceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY));
         Mockito.when(anOrganization.getIdentifier()).thenReturn(anOrganizationId);
 
         PrepareServiceSpecificationCommand prepareServiceSpecificationCommand
-                = new PrepareServiceSpecificationCommand(anOrganizationId, serviceSpecificationId, "a name", "a summary ...");
+                = aPrepareServiceSpecificationCommand(anOrganizationId, serviceSpecificationId);
 
         fixture.givenCommands(prepareServiceSpecificationCommand)
                 .when(prepareServiceSpecificationCommand)

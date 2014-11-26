@@ -16,6 +16,7 @@ package net.maritimecloud.serviceregistry.query;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceType;
 import org.springframework.data.annotation.Id;
 
 /**
@@ -28,6 +29,7 @@ public class ServiceSpecificationEntry implements Serializable {
     @javax.persistence.Id
     private String serviceSpecificationIdentifier;
     private String ownerIdentifier;
+    private ServiceType serviceType;
     private String name;
     private String summary;
 
@@ -45,6 +47,14 @@ public class ServiceSpecificationEntry implements Serializable {
 
     public void setOwnerIdentifier(String ownerIdentifier) {
         this.ownerIdentifier = ownerIdentifier;
+    }
+
+    public ServiceType getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(ServiceType serviceType) {
+        this.serviceType = serviceType;
     }
 
     public String getName() {
@@ -68,6 +78,7 @@ public class ServiceSpecificationEntry implements Serializable {
         return "ServiceSpecificationEntry{"
                 + "serviceSpecificationIdentifier=" + serviceSpecificationIdentifier
                 + ", ownerIdentifier=" + ownerIdentifier
+                + ", serviceType=" + serviceType
                 + ", name=" + name
                 + ", summary=" + summary
                 + '}';

@@ -26,12 +26,15 @@ public class ServiceSpecificationCreatedEvent {
     @TargetAggregateIdentifier
     private final ServiceSpecificationId serviceSpecificationId;
     private final OrganizationId ownerId;
+    private final ServiceType serviceType;
     private final String name;
     private final String summary;
 
-    public ServiceSpecificationCreatedEvent(OrganizationId ownerId, ServiceSpecificationId serviceSpecificationId, String name, String summary) {
+    public ServiceSpecificationCreatedEvent(
+            OrganizationId ownerId, ServiceSpecificationId serviceSpecificationId, ServiceType serviceType, String name, String summary) {
         this.ownerId = ownerId;
         this.serviceSpecificationId = serviceSpecificationId;
+        this.serviceType = serviceType;
         this.name = name;
         this.summary = summary;
     }
@@ -42,6 +45,10 @@ public class ServiceSpecificationCreatedEvent {
 
     public ServiceSpecificationId getServiceSpecificationId() {
         return serviceSpecificationId;
+    }
+
+    public ServiceType getServiceType() {
+        return serviceType;
     }
 
     public String getName() {

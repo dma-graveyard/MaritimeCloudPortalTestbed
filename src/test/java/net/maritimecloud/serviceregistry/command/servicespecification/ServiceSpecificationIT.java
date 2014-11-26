@@ -16,7 +16,6 @@ package net.maritimecloud.serviceregistry.command.servicespecification;
 
 import net.maritimecloud.serviceregistry.command.organization.*;
 import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
-import java.util.UUID;
 import javax.annotation.Resource;
 import net.maritimecloud.serviceregistry.query.ServiceSpecificationEntry;
 import net.maritimecloud.serviceregistry.query.ServiceSpecificationQueryRepository;
@@ -50,8 +49,7 @@ public class ServiceSpecificationIT extends AbstractAxonCqrsIT {
         organizationId = createOrganizationCommand.getOrganizationId();
         // prepare a service specification
         serviceSpecificationId = generateServiceSpecificationId();
-        prepareServiceSpecificationCommand
-                = new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId, A_NAME, A_SUMMARY);
+        prepareServiceSpecificationCommand = aPrepareServiceSpecificationCommand(organizationId, serviceSpecificationId);
     }
 
     @Test
@@ -70,8 +68,8 @@ public class ServiceSpecificationIT extends AbstractAxonCqrsIT {
         assertEquals(A_SUMMARY, entry.getSummary());
 
         // When we add some more
-        commandGateway().sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId2, A_NAME, A_SUMMARY));
-        commandGateway().sendAndWait(new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId3, A_NAME, A_SUMMARY));
+        commandGateway().sendAndWait(aPrepareServiceSpecificationCommand(organizationId, serviceSpecificationId2));
+        commandGateway().sendAndWait(aPrepareServiceSpecificationCommand(organizationId, serviceSpecificationId3));
 
         // The views grow
         assertEquals(3, serviceSpecificationQueryRepository.count());

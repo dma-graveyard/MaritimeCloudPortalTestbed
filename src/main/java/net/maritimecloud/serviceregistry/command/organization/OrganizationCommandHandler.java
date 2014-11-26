@@ -63,7 +63,7 @@ public class OrganizationCommandHandler {
         }
 
         ServiceSpecification serviceSpecification
-                = organization.prepareServiceSpecification(command.getServiceSpecificationId(), command.getName(), command.getSummary());
+                = organization.prepareServiceSpecification(command.getServiceSpecificationId(), command.getServiceType(), command.getName(), command.getSummary());
 
         serviceSpecificationRepository.add(serviceSpecification);
     }
