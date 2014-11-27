@@ -59,6 +59,7 @@
         </div>
         <div>
             <button type="submit" class="btn btn-success center" ng-disabled="!form.$valid || !formIsSubmitable()" ng-click="submit()">{{isCreateState() ? 'Register service' : 'Commit'}}</button>
+            <button class="btn btn-grey center" ng-click="close()">Close</button>
         </div>
     </form>
 </div>

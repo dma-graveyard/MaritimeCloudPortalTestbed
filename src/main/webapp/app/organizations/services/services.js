@@ -25,7 +25,7 @@ angular.module('mcp.organizations.services', [])
           OperationalServiceService, ServiceSpecificationService, ServiceInstanceService) {
 
         angular.extend($scope, {
-          map: {},
+          map: {}, // this property is populated with methods by the "thumbnail-map"-directive!!!
           message: null,
           alertMessages: null,
           selection: {
@@ -53,6 +53,9 @@ angular.module('mcp.organizations.services', [])
           formIsSubmitable: function () {
             return ($scope.service.serviceInstanceId && $scope.service.name /*&& $scope.service.coverage*/);
           },
+          close: function (result) {
+            $location.path('/orgs/' + $scope.service.providerId).replace();
+          },
           submit: function () {
             $scope.providerId = $stateParams.organizationId;
 
@@ -71,7 +74,7 @@ angular.module('mcp.organizations.services', [])
             } else {
               $scope.service.specificationId = $scope.selection.specification.serviceSpecificationId;
               ServiceInstanceService.create($scope.service, function (result) {
-                $location.path('/orgs/' + $scope.service.providerId).replace();
+                $scope.close();
               }, function (error) {
                 $scope.message = null;
                 $scope.alertMessages = ["Error on the serverside :( ", error];

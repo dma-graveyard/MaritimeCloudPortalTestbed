@@ -261,7 +261,7 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
         if (featureGroupCallback) {
           featureGroupCallback(featureGroup);
         }
-        if(!service.coverage)
+        if (!service.coverage)
           service.coverage = [];
         service.coverage.forEach(function (shape) {
           featureGroup.addLayer(shapeToLayer(shape));
@@ -526,86 +526,105 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
   }])
 
     .directive('latitude', function () {
-        return positionDirective('latitude', formatLatitude, parseLatitude);
-      })
+      return positionDirective('latitude', formatLatitude, parseLatitude);
+    })
 
     .directive('longitude', function () {
-        return positionDirective('longitude', formatLongitude, parseLongitude);
-      })
-    
+      return positionDirective('longitude', formatLongitude, parseLongitude);
+    })
+
     .directive('thumbnailMap', ['mapService', function (mapService) {
-      return {
-        priority: 0,
-        restrict: 'E',
-        replace: false,
-        scope: {
-          services: "=",
-          map: "=",
-          onClick: "&" // " on-click='handle(...)' "
-        },
-        link: function (scope, element, attrs) {
-          var group = new L.FeatureGroup(),
-              map = L.map(element[0], {
-                center: [40, -86],
-                zoom: 4,
-                attributionControl: false,
-                boxZoom: false,
-                doubleClickZoom: false,
-                dragging: false,
-                keyboard: false,
-                scrollWheelZoom: false,
-                tap: false,
-                touchZoom: false,
-                zoomAnimation: false,
-                zoomControl: false
-              });
+        return {
+          priority: 0,
+          restrict: 'E',
+          replace: false,
+          scope: {
+            services: "=",
+            map: "=",
+            onClick: "&" // " on-click='handle(...)' "
+          },
+          link: function (scope, element, attrs) {
+            var group = new L.FeatureGroup(),
+                map = L.map(element[0], {
+                  center: [40, -86],
+                  zoom: 4,
+                  attributionControl: false,
+                  boxZoom: false,
+                  doubleClickZoom: false,
+                  dragging: false,
+                  keyboard: false,
+                  scrollWheelZoom: false,
+                  tap: false,
+                  touchZoom: false,
+                  zoomAnimation: false,
+                  zoomControl: false
+                });
 
-          function populateServicesGroup(group, services) {
-            group.clearLayers();
-            group.addLayer(L.featureGroup(mapService.servicesToLayers(services, function (featureGroup) {
-              // add click handler to layers
-              featureGroup.on('click', scope.onClick);
-            })));
-            group.setStyle(mapService.Styles.STATIC);
-          }
+            function hasCoverageToZoomTo(services) {
+              // (a service can be new, that is, has no coverage defined yet)
+              return !(services.length === 1 && services[0].coverage.length === 0);
+            }
+            
+            function populateServicesGroup(group, services) {
+              group.clearLayers();
+              group.addLayer(L.featureGroup(mapService.servicesToLayers(services, function (featureGroup) {
+                // add click handler to layers
+                featureGroup.on('click', scope.onClick);
+              })));
+              group.setStyle(mapService.Styles.STATIC);
+            }
 
-          function fitToContent(group, services) {
+            function fitToContent(group, services) {
 
-            // (a service can be new, that is, has no coverage defined yet)
-            var isNewService = services.length === 1 && services[0].coverage.length === 0;
+              if (hasCoverageToZoomTo(services)) {
+                map.fitBounds(group.getBounds());
+              } else {
+                
+                // Try to locate user from geodata and zoom to that position 
+                // (see 'locationfound'-eventhandler below)
+                map.locate();
+              }
+            }
+            
+            function fitToUserLocation(locationEvent) {
 
-            if (isNewService) {
-              map.locate({setView: true, maxZoom: 7});
-            } else {
-              map.fitBounds(group.getBounds());
+              //  (a service can be new, that is, has no coverage defined yet)
+              var isNewService = scope.services.length === 1 && scope.services[0].coverage.length === 0;
+              // User location found - if coverage is still empty then zoom to location 
+              if (isNewService) {
+                map.fitBounds(locationEvent.bounds, {maxZoom: 12});
+              }
+
+            }
+
+            function rebuild() {
+              populateServicesGroup(group, scope.services);
+              fitToContent(group, scope.services);
+            }
+
+            rebuild();
+
+            // Add locationFound handler to map
+            map.on('locationfound', fitToUserLocation);
+
+            // Add click-handler to map
+            map.on('click', scope.onClick);
+            L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+              attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            group.addTo(map);
+
+            // expose the map and group layer to the outer scope 
+            // as $scope.map.handle and $scope.map.group
+            if (scope.map) {
+              scope.map.handle = map;
+              scope.map.group = group;
+              scope.map.rebuild = rebuild;
             }
           }
 
-          function rebuild() {
-            populateServicesGroup(group, scope.services);
-            fitToContent(group, scope.services);
-          }
-
-          rebuild();
-
-          // Add click-handler to map
-          map.on('click', scope.onClick);
-          L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          }).addTo(map);
-          group.addTo(map);
-
-          // expose the map and group layer to the outer scope 
-          // as $scope.map.handle and $scope.map.group
-          if (scope.map) {
-            scope.map.handle = map;
-            scope.map.group = group;
-            scope.map.rebuild = rebuild;
-          }
-        }
-
-      };
-    }])
+        };
+      }])
 
     .filter('distance', ['mapService', function (mapService) {
         return function (distanceInMeters, format) {
