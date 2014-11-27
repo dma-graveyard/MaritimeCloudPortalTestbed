@@ -40,6 +40,7 @@ public class CommonFixture {
     public static final String A_SUMMARY = "a summary ...";
     public static final Coverage A_COVERAGE = new Coverage("[{\"type\":\"polygon\",\"points\":[[12.557373046874998,56.29215668507645],[11.656494140625,56.022948079627454],[12.381591796875,55.41030721005218],[13.568115234375,55.61558902526749],[13.90869140625,56.072035471800866],[13.0517578125,55.83214387781303],[13.128662109375,56.17613891766981],[12.513427734375,55.99838095535963]]},{\"type\":\"rectangle\",\"topLeftLatitude\":56.05976947910657,\"topLeftLongitude\":9.38232421875,\"buttomRightLatitude\":55.429013452407396,\"buttomRightLongitude\":11.1181640625},{\"type\":\"circle\",\"center-latitude\":55.29162848682989,\"center-longitude\":11.074218749999998,\"radius\":49552.58124628375}]");
     public static final ServiceEndpoint AN_ENDPOINT = new ServiceEndpoint(URI.create("http://some-url/an-endpoint"));
+    public static final ServiceEndpoint ANOTHER_ENDPOINT = new ServiceEndpoint(URI.create("http://some-url/another-endpoint"));
     public static final String ANOTHER_NAME = "another name";
     public static final String ANOTHER_SUMMARY = "another summary ...";
     public static final Coverage ANOTHER_COVERAGE = new Coverage("[{\"type\":\"rectangle\",\"topLeftLatitude\":56.05976947910657,\"topLeftLongitude\":9.38232421875,\"buttomRightLatitude\":55.429013452407396,\"buttomRightLongitude\":11.1181640625},{\"type\":\"circle\",\"center-latitude\":55.29162848682989,\"center-longitude\":11.074218749999998,\"radius\":49552.58124628375}]");

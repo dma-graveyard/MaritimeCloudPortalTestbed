@@ -50,7 +50,13 @@ public class ServiceInstanceIT extends AbstractAxonCqrsIT {
         serviceSpecificationId = generateServiceSpecificationId();
         prepareServiceSpecificationCommand = aPrepareServiceSpecificationCommand(organizationId, serviceSpecificationId);
         // Prepare a service instance 
-        provideServiceInstanceCommand = generateProvideServiceInstanceCommand();
+        provideServiceInstanceCommand = new ProvideServiceInstanceCommand(
+                organizationId,
+                serviceSpecificationId,
+                generateServiceInstanceId(),
+                A_NAME,
+                A_SUMMARY,
+                A_COVERAGE);
     }
 
     /**
@@ -70,7 +76,7 @@ public class ServiceInstanceIT extends AbstractAxonCqrsIT {
         assertEquals(1, serviceInstanceQueryRepository.count());
         assertTrue(serviceInstanceQueryRepository.exists(provideServiceInstanceCommand.getServiceInstanceId().identifier()));
 
-        final ServiceInstanceEntry originalInstance = serviceInstanceQueryRepository.findOne(provideServiceInstanceCommand.getServiceInstanceId().identifier());
+        ServiceInstanceEntry originalInstance = serviceInstanceQueryRepository.findOne(provideServiceInstanceCommand.getServiceInstanceId().identifier());
         assertEquals(A_NAME, originalInstance.getName());
         assertEquals(A_SUMMARY, originalInstance.getSummary());
     }
@@ -82,7 +88,6 @@ public class ServiceInstanceIT extends AbstractAxonCqrsIT {
         commandGateway().sendAndWait(createOrganizationCommand);
         commandGateway().sendAndWait(prepareServiceSpecificationCommand);
         commandGateway().sendAndWait(provideServiceInstanceCommand);
-        assertEquals(1, serviceInstanceQueryRepository.count());
 
         // When the name and summary are changed 
         commandGateway().sendAndWait(
@@ -92,7 +97,7 @@ public class ServiceInstanceIT extends AbstractAxonCqrsIT {
                         ANOTHER_SUMMARY));
 
         // Then the service instance is visible in views 
-        final ServiceInstanceEntry instance = serviceInstanceQueryRepository.findOne(provideServiceInstanceCommand.getServiceInstanceId().identifier());
+        ServiceInstanceEntry instance = serviceInstanceQueryRepository.findOne(provideServiceInstanceCommand.getServiceInstanceId().identifier());
         assertEquals(ANOTHER_NAME, instance.getName());
         assertEquals(ANOTHER_SUMMARY, instance.getSummary());
     }
@@ -104,27 +109,54 @@ public class ServiceInstanceIT extends AbstractAxonCqrsIT {
         commandGateway().sendAndWait(createOrganizationCommand);
         commandGateway().sendAndWait(prepareServiceSpecificationCommand);
         commandGateway().sendAndWait(provideServiceInstanceCommand);
-        assertEquals(1, serviceInstanceQueryRepository.count());
 
-        // When the name and summary are changed 
+        // When
         commandGateway().sendAndWait(
                 new ChangeServiceInstanceCoverageCommand(
                         provideServiceInstanceCommand.getServiceInstanceId(),
                         ANOTHER_COVERAGE));
 
-        // Then the service instance is visible in views 
-        final ServiceInstanceEntry instance = serviceInstanceQueryRepository.findOne(provideServiceInstanceCommand.getServiceInstanceId().identifier());
+        // Then
+        ServiceInstanceEntry instance = serviceInstanceQueryRepository.findOne(provideServiceInstanceCommand.getServiceInstanceId().identifier());
         assertEquals(ANOTHER_COVERAGE, instance.getCoverage());
     }
 
-    private ProvideServiceInstanceCommand generateProvideServiceInstanceCommand() {
-        return new ProvideServiceInstanceCommand(
-                organizationId,
-                serviceSpecificationId,
-                generateServiceInstanceId(),
-                A_NAME,
-                A_SUMMARY,
-                A_COVERAGE);
+    @Test
+    public void addEndpoint() {
+
+        // Given an organization with a Service Specification and a provided Service Instance
+        commandGateway().sendAndWait(createOrganizationCommand);
+        commandGateway().sendAndWait(prepareServiceSpecificationCommand);
+        commandGateway().sendAndWait(provideServiceInstanceCommand);
+
+        // When
+        commandGateway().sendAndWait(new AddServiceInstanceEndpointCommand(provideServiceInstanceCommand.getServiceInstanceId(), AN_ENDPOINT));
+
+        // Then
+        ServiceInstanceEntry instance = serviceInstanceQueryRepository.findOne(provideServiceInstanceCommand.getServiceInstanceId().identifier());
+        assertEquals(1, instance.getEndpoints().size());
+        assertEquals(AN_ENDPOINT, instance.getEndpoints().get(0));
+    }
+
+    @Test
+    public void removeEndpoint() {
+
+        // Given an organization with a Service Specification and a provided Service Instance with two endpoints
+        commandGateway().sendAndWait(createOrganizationCommand);
+        commandGateway().sendAndWait(prepareServiceSpecificationCommand);
+        commandGateway().sendAndWait(provideServiceInstanceCommand);
+        commandGateway().sendAndWait(new AddServiceInstanceEndpointCommand(provideServiceInstanceCommand.getServiceInstanceId(), AN_ENDPOINT));
+        commandGateway().sendAndWait(new AddServiceInstanceEndpointCommand(provideServiceInstanceCommand.getServiceInstanceId(), ANOTHER_ENDPOINT));
+        ServiceInstanceEntry instance = serviceInstanceQueryRepository.findOne(provideServiceInstanceCommand.getServiceInstanceId().identifier());
+        assertEquals(2, instance.getEndpoints().size());
+        
+        // When
+        commandGateway().sendAndWait(new RemoveServiceInstanceEndpointCommand(provideServiceInstanceCommand.getServiceInstanceId(), AN_ENDPOINT));
+
+        // Then
+        ServiceInstanceEntry instanceAfter = serviceInstanceQueryRepository.findOne(provideServiceInstanceCommand.getServiceInstanceId().identifier());
+        assertEquals(1, instanceAfter.getEndpoints().size());
+        assertEquals(ANOTHER_ENDPOINT, instanceAfter.getEndpoints().get(0));
     }
 
 }

@@ -30,11 +30,10 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.AddServiceInsta
 import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceCoverageCommand;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceNameAndSummaryCommand;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
-import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceEndpoint;
+import net.maritimecloud.serviceregistry.command.serviceinstance.RemoveServiceInstanceEndpointCommand;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ChangeServiceSpecificationNameAndSummaryCommand;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
-import net.maritimecloud.serviceregistry.command.servicespecification.ServiceType;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -61,7 +60,7 @@ public class GenericCommandResourceTest extends CommonFixture {
         commandRegistry.put(CreateOrganizationCommand.class.getCanonicalName(), CreateOrganizationCommand.class);
         commandRegistry.put(CreateOrganizationCommand.class.getSimpleName(), CreateOrganizationCommand.class);
         Object command = mapper.readValue(commandAsJSON, commandRegistry.get("CreateOrganizationCommand"));
-        System.out.println("Command: " + mapper.writeValueAsString(command));
+        //System.out.println("Command: " + mapper.writeValueAsString(command));
     }
 
     @Test
@@ -69,7 +68,7 @@ public class GenericCommandResourceTest extends CommonFixture {
         CreateOrganizationCommand createOrganizationCommand
                 = new CreateOrganizationCommand(new OrganizationId(AN_ORG_ID), A_NAME, A_SUMMARY, A_URL);
         String commandAsJSON = mapper.writeValueAsString(createOrganizationCommand);
-        System.out.println(commandAsJSON);
+        //System.out.println(commandAsJSON);
     }
 
     @Test
@@ -144,7 +143,7 @@ public class GenericCommandResourceTest extends CommonFixture {
     public void jsonProvideServiceInstanceCommand() throws Exception {
 
         String commandAsJSON = "{\"providerId\":{\"identifier\":\"dma\"},\"specificationId\":{\"identifier\":\"imo-msi-soap\"},\"serviceInstanceId\":{\"identifier\":\"vcxzvzvcxz\"},\"name\":\"vcxvcxzvxz\",\"summary\":\"vcxzvcxzvx\",\"coverage\":[{\"type\":\"polygon\",\"points\":[[12.557373046874998,56.29215668507645],[11.656494140625,56.022948079627454],[12.381591796875,55.41030721005218],[13.568115234375,55.61558902526749],[13.90869140625,56.072035471800866],[13.0517578125,55.83214387781303],[13.128662109375,56.17613891766981],[12.513427734375,55.99838095535963]]},{\"type\":\"rectangle\",\"topLeftLatitude\":56.05976947910657,\"topLeftLongitude\":9.38232421875,\"buttomRightLatitude\":55.429013452407396,\"buttomRightLongitude\":11.1181640625},{\"type\":\"circle\",\"center-latitude\":55.29162848682989,\"center-longitude\":11.074218749999998,\"radius\":49552.58124628375}]}";
-        System.out.println("mapper.readValue: " + mapper.readValue(commandAsJSON, ProvideServiceInstanceCommand.class));
+        //System.out.println("mapper.readValue: " + mapper.readValue(commandAsJSON, ProvideServiceInstanceCommand.class));
 
         ProvideServiceInstanceCommand command
                 = serializeAndDeserializeCommand(
@@ -203,10 +202,38 @@ public class GenericCommandResourceTest extends CommonFixture {
         assertEquals(A_COVERAGE, command.getCoverage());
     }
 
+    @Test
+    public void jsonAddServiceInstanceEndpointCommand() throws Exception {
+        AddServiceInstanceEndpointCommand command
+                = serializeAndDeserializeCommand(
+                        new AddServiceInstanceEndpointCommand(
+                                new ServiceInstanceId(AN_INSTANCE_ID),
+                                AN_ENDPOINT
+                        )
+                );
+
+        assertEquals(AN_INSTANCE_ID, command.getServiceInstanceId().identifier());
+        assertEquals(AN_ENDPOINT, command.getServiceEndpoint());
+    }
+
+    @Test
+    public void jsonRemoveServiceInstanceEndpointCommand() throws Exception {
+        RemoveServiceInstanceEndpointCommand command
+                = serializeAndDeserializeCommand(
+                        new RemoveServiceInstanceEndpointCommand(
+                                new ServiceInstanceId(AN_INSTANCE_ID),
+                                AN_ENDPOINT
+                        )
+                );
+
+        assertEquals(AN_INSTANCE_ID, command.getServiceInstanceId().identifier());
+        assertEquals(AN_ENDPOINT, command.getServiceEndpoint());
+    }
+
     private <T extends Command> T serializeAndDeserializeCommand(T command)
             throws JsonProcessingException, IOException {
         String commandAsJSON = mapper.writeValueAsString(command);
-        System.out.println(String.format("JSON of %s: \n  %s", command.getClass().getSimpleName(), commandAsJSON));
+        System.out.println(String.format("[JSON] %0$50s: %1s", command.getClass().getSimpleName(), commandAsJSON));
         return (T) mapper.readValue(commandAsJSON, command.getClass());
     }
 
