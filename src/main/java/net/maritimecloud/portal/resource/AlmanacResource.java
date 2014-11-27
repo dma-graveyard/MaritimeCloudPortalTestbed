@@ -120,7 +120,9 @@ public class AlmanacResource {
         if (operationalServiceId.isEmpty()) {
             return ApplicationServiceRegistry.serviceSpecificationQueryRepository().findAll();
         } else {
-            return ApplicationServiceRegistry.serviceSpecificationQueryRepository().findByOperationalServiceId(operationalServiceId);
+            // FIXME: should query a mapping table with Operational Services mapped to this Specification instead
+            System.out.println("HACK: querying 'summary contains operation service id' instead of real lookup table! ");
+            return ApplicationServiceRegistry.serviceSpecificationQueryRepository().findBySummaryContains(operationalServiceId);
         }
 
     }
