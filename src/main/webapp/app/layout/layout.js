@@ -4,8 +4,8 @@
 
 angular.module('mcp.layout', [])
 
-    .controller('SidebarController', ['$scope', '$state', 'searchServiceFilterModel', 'ServiceSpecificationService',
-      function ($scope, $state, searchServiceFilterModel, ServiceSpecificationService) {
+    .controller('SidebarController', ['$scope', '$state', 'searchServiceFilterModel', 'AlmanacServiceSpecificationService',
+      function ($scope, $state, searchServiceFilterModel, AlmanacServiceSpecificationService) {
 
         // holder for accordion header 'open status' properties 
         $scope.isOpen = {
@@ -29,7 +29,7 @@ angular.module('mcp.layout', [])
         $scope.setFilterByOperationalService = function (selectedOpreationalService) {
 
           // rebuild specification filter options
-          $scope.specifications = selectedOpreationalService ? ServiceSpecificationService.query({
+          $scope.specifications = selectedOpreationalService ? AlmanacServiceSpecificationService.query({
                 operationalServiceId : selectedOpreationalService.id
               }) : null;
 

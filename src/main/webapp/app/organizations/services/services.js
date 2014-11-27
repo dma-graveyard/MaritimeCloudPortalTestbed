@@ -20,9 +20,9 @@ angular.module('mcp.organizations.services', [])
     ])
 
     .controller('EditServiceInstanceController', ['$scope', '$location', '$modal', '$stateParams', '$state',
-      'OperationalServiceService', 'ServiceSpecificationService', 'ServiceInstanceService',
+      'AlmanacOperationalServiceService', 'AlmanacServiceSpecificationService', 'ServiceInstanceService',
       function ($scope, $location, $modal, $stateParams, $state,
-          OperationalServiceService, ServiceSpecificationService, ServiceInstanceService) {
+          AlmanacOperationalServiceService, AlmanacServiceSpecificationService, ServiceInstanceService) {
 
         angular.extend($scope, {
           map: {}, // this property is populated with methods by the "thumbnail-map"-directive!!!
@@ -32,7 +32,7 @@ angular.module('mcp.organizations.services', [])
             operationalService: null,
             specification: null
           },
-          operationalServices: OperationalServiceService.query(),
+          operationalServices: AlmanacOperationalServiceService.query(),
           isCreateState: function () {
             return $state.current.data.createState;
           },
@@ -47,8 +47,8 @@ angular.module('mcp.organizations.services', [])
             coverage: []
           },
           selectOperationalService: function (selectedOperationalService) {
-            $scope.specifications = selectedOperationalService ? ServiceSpecificationService.query(
-                {operationalServiceId: selectedOperationalService.id}) : [];
+            $scope.specifications = selectedOperationalService ? AlmanacServiceSpecificationService.query(
+                {operationalServiceId: selectedOperationalService.operationalServiceId}) : [];
           },
           formIsSubmitable: function () {
             return ($scope.service.serviceInstanceId && $scope.service.name /*&& $scope.service.coverage*/);
@@ -90,12 +90,13 @@ angular.module('mcp.organizations.services', [])
             // we need to rebuild the map once the request has returned the service details
             $scope.map.rebuild();
 
+            // "hydrate" ServiceInstance with ServiceSpecification data
+            $scope.service.specification = AlmanacServiceSpecificationService.get({serviceSpecificationId: $scope.service.specificationId});
+
+            // FIXME: should lookup value based on id $scope.selectedSpecification.operationalServiceId
+            //$scope.selectedOperationalService = OperationalServiceService.query({operationalServiceId: $scope.selectedSpecification.operationalServices[0]});
           });
 
-          $scope.selectedSpecification = ServiceSpecificationService.get({serviceSpecificationId: $scope.service.specificationId});
-
-// FIXME: should lookup value based on id $scope.selectedSpecification.operationalServiceId
-//          $scope.selectedOperationalService = OperationalServiceService.query({operationalServiceId: $scope.selectedSpecification.operationalServices[0]});
         }
 
         $scope.services = [$scope.service];

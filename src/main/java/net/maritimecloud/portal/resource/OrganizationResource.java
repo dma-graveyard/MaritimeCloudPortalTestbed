@@ -88,7 +88,7 @@ public class OrganizationResource {
     @POST
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
-    public void mappedPostCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
+    public void organizationPostCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
         LOG.info("POST command: " + commandJSON);
         simulateLack();
         GenericCommandResource.sendAndWait(contentType, queryCommandName, postCommandsRegistry, commandJSON);
@@ -97,7 +97,7 @@ public class OrganizationResource {
     @PUT
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
-    public void mappedPutCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
+    public void organizationPutCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
         LOG.info("PUT command: " + commandJSON);
         sendAndWait(contentType, queryCommandName, putCommandsRegistry, commandJSON);
     }
@@ -182,8 +182,27 @@ public class OrganizationResource {
     // SERVICE INSTANCE ------------------------------------------------
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("{organizationId}/service-specification")
+    public List<ServiceSpecificationEntry> queryServiceSpecifications(
+            @PathParam("organizationId") String organizationId,
+            @QueryParam("namePattern") @DefaultValue("") String usernamePattern
+    ) {
+        return ApplicationServiceRegistry.serviceSpecificationQueryRepository().findByOwnerId(organizationId);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{organizationId}/service-specification/{serviceSpecificationId}")
+    public ServiceSpecificationEntry getServiceSpecification(
+            @PathParam("serviceSpecificationId") String serviceSpecificationId
+    ) {
+        return ApplicationServiceRegistry.serviceSpecificationQueryRepository().findOne(serviceSpecificationId);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("{organizationId}/service-instance")
-    public List<ServiceInstanceEntry> getInstances(
+    public List<ServiceInstanceEntry> queryServiceInstances(
             @PathParam("organizationId") String organizationId,
             @QueryParam("namePattern") @DefaultValue("") String usernamePattern
     ) {
@@ -194,10 +213,8 @@ public class OrganizationResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{organizationId}/service-instance/{serviceInstanceId}")
-    public ServiceInstanceEntry getInstances(
-            @PathParam("organizationId") String organizationId,
-            @PathParam("serviceInstanceId") String serviceInstanceId,
-            @QueryParam("namePattern") @DefaultValue("") String usernamePattern
+    public ServiceInstanceEntry getServiceInstance(
+            @PathParam("serviceInstanceId") String serviceInstanceId
     ) {
         return ApplicationServiceRegistry.serviceInstanceQueryRepository().findOne(serviceInstanceId);
     }

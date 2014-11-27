@@ -17,7 +17,7 @@ package net.maritimecloud.serviceregistry.query;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import org.springframework.data.annotation.Id;
+import javax.persistence.Id;
 
 /**
  * @author Christoffer Børrild
@@ -26,7 +26,6 @@ import org.springframework.data.annotation.Id;
 public class OrganizationEntry implements Serializable {
 
     @Id
-    @javax.persistence.Id
     private String organizationId;
     private String name;
     @Column(length = 1000)

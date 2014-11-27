@@ -12,18 +12,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package net.maritimecloud.serviceregistry.query;
 
-import java.util.List;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**
  * @author Christoffer Børrild
  */
-public interface ServiceSpecificationQueryRepository extends PagingAndSortingRepository<ServiceSpecificationEntry, String> {
-    
-    List<ServiceSpecificationEntry> findByOwnerId(String ownerId);
-//    List<ServiceSpecificationEntry> findByOperationalServiceId(String operationalServiceId);
-    List<ServiceSpecificationEntry> findBySummaryContains(String operationalServiceId);
+public interface OperationalServiceQueryRepository extends PagingAndSortingRepository<OperationalServiceEntry, String> {
 
+    
 }

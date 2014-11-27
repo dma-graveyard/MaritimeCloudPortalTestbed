@@ -16,25 +16,36 @@ package net.maritimecloud.serviceregistry.query;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
-import net.maritimecloud.serviceregistry.command.servicespecification.ServiceType;
-import org.springframework.data.annotation.Id;
+import javax.persistence.Id;
 
 /**
  * @author Christoffer Børrild
  */
 @Entity
-public class ServiceSpecificationEntry implements Serializable {
+public class OperationalServiceEntry implements Serializable {
 
     @Id
-    @javax.persistence.Id
-    private String serviceSpecificationId;
+    private String operationalServiceId;
+    private String ownerId;
+    private String name;
+    private String summary;
 
-    public String getServiceSpecificationId() {
-        return serviceSpecificationId;
+    public OperationalServiceEntry() {
+    }
+    
+    public OperationalServiceEntry(String operationalServiceId, String ownerId, String name, String summary) {
+        this.operationalServiceId = operationalServiceId;
+        this.ownerId = ownerId;
+        this.name = name;
+        this.summary = summary;
     }
 
-    public void setServiceSpecificationId(String serviceSpecificationId) {
-        this.serviceSpecificationId = serviceSpecificationId;
+    public String getOperationalServiceId() {
+        return operationalServiceId;
+    }
+
+    public void setOperationalServiceId(String operationalServiceId) {
+        this.operationalServiceId = operationalServiceId;
     }
 
     public String getOwnerId() {
@@ -43,18 +54,6 @@ public class ServiceSpecificationEntry implements Serializable {
 
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
-    }
-    private String ownerId;
-    private ServiceType serviceType;
-    private String name;
-    private String summary;
-
-    public ServiceType getServiceType() {
-        return serviceType;
-    }
-
-    public void setServiceType(ServiceType serviceType) {
-        this.serviceType = serviceType;
     }
 
     public String getName() {
@@ -75,10 +74,9 @@ public class ServiceSpecificationEntry implements Serializable {
 
     @Override
     public String toString() {
-        return "ServiceSpecificationEntry{"
-                + "serviceSpecificationId=" + serviceSpecificationId
+        return "OperationalServiceEntry{"
+                + "operationalServiceId=" + operationalServiceId
                 + ", ownerId=" + ownerId
-                + ", serviceType=" + serviceType
                 + ", name=" + name
                 + ", summary=" + summary
                 + '}';

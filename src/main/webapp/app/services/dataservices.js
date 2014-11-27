@@ -158,6 +158,11 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         return $resource(serviceBaseUrl + '/rest/api/almanac/organization/:organizationId');
       }])
 
+    .factory('AlmanacOperationalServiceService', ['$resource', 'serviceBaseUrl',
+      function ($resource, serviceBaseUrl) {
+        return $resource(serviceBaseUrl + '/rest/api/almanac/operational-service/:operationalServiceId');
+      }])
+
     .factory('AlmanacServiceSpecificationService', ['$resource', 'serviceBaseUrl',
       function ($resource, serviceBaseUrl) {
         return $resource(serviceBaseUrl + '/rest/api/almanac/service-specification/:serviceSpecificationId');
@@ -168,6 +173,16 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         return $resource(serviceBaseUrl + '/rest/api/almanac/service-instance/:serviceInstanceId', {}, {});
       }])
 
+    .factory('OperationalServiceService', ['$resource', 'serviceBaseUrl',
+      function ($resource, serviceBaseUrl) {
+        return $resource(serviceBaseUrl + '/rest/api/organization/:organizationId/operational-service/:operationalServiceId');
+      }])
+
+    .factory('ServiceSpecificationService', ['$resource', 'serviceBaseUrl',
+      function ($resource, serviceBaseUrl) {
+        return $resource(serviceBaseUrl + '/rest/api/organization/:organizationId/service-specification/:serviceSpecificationId');
+      }])
+    
     .factory('ServiceInstanceService', ['$resource', 'serviceBaseUrl',
       function ($resource, serviceBaseUrl) {
         
@@ -272,93 +287,93 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 //        };
 //      }])
 
-    .factory('OperationalServiceService', ['$resource',
-      function ($resource) {
-//    return $resource('/rest/serviceInstance/:specificationname', {}, {
-//      query: {method: 'GET', params: {specificationname: ''}, isArray: true},
-//      signUp: {method: 'POST', params: {}, isArray: false}
-//    });
-        console.log("TODO: using mocked operational service data");
-        return {
-          query: function (request) {
-            return data.operationalServicesList;
-          }
-        };
-      }])
+//    .factory('OperationalServiceService', ['$resource',
+//      function ($resource) {
+////    return $resource('/rest/serviceInstance/:specificationname', {}, {
+////      query: {method: 'GET', params: {specificationname: ''}, isArray: true},
+////      signUp: {method: 'POST', params: {}, isArray: false}
+////    });
+//        console.log("TODO: using mocked operational service data");
+//        return {
+//          query: function (request) {
+//            return data.operationalServicesList;
+//          }
+//        };
+//      }])
 
-    .factory('ServiceSpecificationService', ['$resource',
-      function ($resource) {
-        //    return $resource('/rest/api/specifications/:serviceSpecificationId', {}, {
-        //      get: {method: 'GET', params: {serviceSpecificationId: '@id'}, isArray: false},
-        //      query: {method: 'GET', params: {serviceSpecificationId: ''}, isArray: true},
-        //      signUp: {method: 'POST', params: {}, isArray: false}
-        //    });
-
-        // mimics GET /rest/api/specifications?serviceSpecificationId='some ssid'
-
-        console.log("TODO: using mocked service specification data");
-        return {
-          get: function (parameters) {
-            var serviceSpecificationId = parameters.serviceSpecificationId;
-            var result;
-
-            for (var key in data.serviceSpecifications) {
-              if (data.serviceSpecifications[key].serviceSpecificationId === serviceSpecificationId) {
-                result = data.serviceSpecifications[key];
-                break;
-              }
-            }
-
-            if (result) {
-              result.$save = function (success, failure) {
-                success(result);
-              };
-              return result;
-            }
-            else
-              console.log("Error. Service Specification with id not found! ", serviceSpecificationId);
-          },
-          query: function (parameters) {
-
-            var matchingSpecifications = [];
-
-            if (parameters) {
-
-              for (var key in data.serviceSpecifications) {
-
-                if (
-                    // no filter?
-                    !parameters
-
-                    // filter by organizationId
-                    || parameters.organizationId && data.serviceSpecifications[key].ownerId === parameters.organizationId
-
-                    // filter by operational service
-                    // does this specification link to the desired operational service?
-                    || parameters.operationalServiceId && data.serviceSpecifications[key].operationalServices.indexOf(parameters.operationalServiceId) !== -1
-
-                    )
-                {
-                  matchingSpecifications.push(data.serviceSpecifications[key]);
-                }
-              }
-            }
-            console.log("matchingSpecifications", matchingSpecifications);
-            return matchingSpecifications;
-          }
-        };
-      }])
-    ;
+//    .factory('ServiceSpecificationService', ['$resource',
+//      function ($resource) {
+//        //    return $resource('/rest/api/specifications/:serviceSpecificationId', {}, {
+//        //      get: {method: 'GET', params: {serviceSpecificationId: '@id'}, isArray: false},
+//        //      query: {method: 'GET', params: {serviceSpecificationId: ''}, isArray: true},
+//        //      signUp: {method: 'POST', params: {}, isArray: false}
+//        //    });
+//
+//        // mimics GET /rest/api/specifications?serviceSpecificationId='some ssid'
+//
+//        console.log("TODO: using mocked service specification data");
+//        return {
+//          get: function (parameters) {
+//            var serviceSpecificationId = parameters.serviceSpecificationId;
+//            var result;
+//
+//            for (var key in data.serviceSpecifications) {
+//              if (data.serviceSpecifications[key].serviceSpecificationId === serviceSpecificationId) {
+//                result = data.serviceSpecifications[key];
+//                break;
+//              }
+//            }
+//
+//            if (result) {
+//              result.$save = function (success, failure) {
+//                success(result);
+//              };
+//              return result;
+//            }
+//            else
+//              console.log("Error. Service Specification with id not found! ", serviceSpecificationId);
+//          },
+//          query: function (parameters) {
+//
+//            var matchingSpecifications = [];
+//
+//            if (parameters) {
+//
+//              for (var key in data.serviceSpecifications) {
+//
+//                if (
+//                    // no filter?
+//                    !parameters
+//
+//                    // filter by organizationId
+//                    || parameters.organizationId && data.serviceSpecifications[key].ownerId === parameters.organizationId
+//
+//                    // filter by operational service
+//                    // does this specification link to the desired operational service?
+//                    || parameters.operationalServiceId && data.serviceSpecifications[key].operationalServices.indexOf(parameters.operationalServiceId) !== -1
+//
+//                    )
+//                {
+//                  matchingSpecifications.push(data.serviceSpecifications[key]);
+//                }
+//              }
+//            }
+//            console.log("matchingSpecifications", matchingSpecifications);
+//            return matchingSpecifications;
+//          }
+//        };
+//      }])
+//    ;
 
 // ----------------------------------------------------------------------------
 // HELPER FUNCTIONS
 // ----------------------------------------------------------------------------
 
-var arrayIndexOf = function (value, array) {
-  var i = 0;
-  array.forEach(function (element) {
-    if (element === value)
-      i++;
-  });
-  return i;
-};
+//var arrayIndexOf = function (value, array) {
+//  var i = 0;
+//  array.forEach(function (element) {
+//    if (element === value)
+//      i++;
+//  });
+//  return i;
+//};

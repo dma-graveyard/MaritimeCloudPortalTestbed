@@ -17,6 +17,7 @@ package net.maritimecloud.portal.application;
 import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
 import net.maritimecloud.portal.infrastructure.mail.MailService;
 import net.maritimecloud.portal.resource.LogService;
+import net.maritimecloud.serviceregistry.query.OperationalServiceQueryRepository;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import net.maritimecloud.serviceregistry.query.ServiceInstanceQueryRepository;
 import net.maritimecloud.serviceregistry.query.ServiceSpecificationQueryRepository;
@@ -54,6 +55,10 @@ public class ApplicationServiceRegistry extends SpringContextBasedRegistry {
 
     public static OrganizationQueryRepository organizationQueryRepository() {
         return (OrganizationQueryRepository) get("organizationQueryRepository");
+    }
+
+    public static OperationalServiceQueryRepository operationalServiceQueryRepository() {
+        return (OperationalServiceQueryRepository) get("operationalServiceQueryRepository");
     }
 
     public static ServiceSpecificationQueryRepository serviceSpecificationQueryRepository() {

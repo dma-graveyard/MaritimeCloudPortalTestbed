@@ -31,7 +31,7 @@
             </div>
         </div>
         <div  ng-if="isEditState()" class="form-group">
-            <label>Service Specification:</label> {{selection.specification.name + ' (' + selection.specification.serviceType + ')'}}
+            <label>Service Specification:</label> {{service.specification.name + ' (' + service.specification.serviceType + ')'}}
         </div>
         <div class="form-group" ng-if="isCreateState()">
             <label for="serviceId">Id</label>
@@ -59,7 +59,7 @@
         </div>
         <div>
             <button type="submit" class="btn btn-success center" ng-disabled="!form.$valid || !formIsSubmitable()" ng-click="submit()">{{isCreateState() ? 'Register service' : 'Commit'}}</button>
-            <button class="btn btn-grey center" ng-click="close()">Close</button>
+            <button class="btn btn-grey center" ng-click="close()">{{isCreateState() ? 'Cancel' : 'Close'}}</button>
         </div>
     </form>
 </div>

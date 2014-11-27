@@ -291,9 +291,9 @@ angular.module('mcp.search.services', [])
 
     // Search Filter Object
     // that holds the various filters supplied by controls in eg. the sidebar and used to filter services
-    .service('searchServiceFilterModel', function (OperationalServiceService, OrganizationService) {
+    .service('searchServiceFilterModel', function (AlmanacOperationalServiceService, OrganizationService) {
       this.data = {
-        operationalServices: OperationalServiceService.query(),
+        operationalServices: AlmanacOperationalServiceService.query(),
         serviceSpecifications: null,
         organizations: OrganizationService.query(),
         serviceTypes: {

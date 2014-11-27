@@ -46,7 +46,7 @@ public class ServiceInstanceEntry implements Serializable {
     @JsonSerialize(using = CoverageSerializer.class)
     @Embedded
     private Coverage coverage; // FIXME: create complex version of coverage instead of json-serialized one
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.EAGER) // FIXME: introduce a separate view with endpoints-per-instance!
     private List<ServiceEndpoint> endpoints = new ArrayList<>();
 
     public ServiceInstanceEntry() {

@@ -329,9 +329,6 @@ Examples:
     # List all service instances of the current organization
     curl http://localhost:8080/rest/api/organization/dma/service-instance
 
-    # List all service instances
-    curl http://localhost:8080/rest/api/almanac/service-instance
-
 ### The Almanac (the public query api)
     
     # List organizations 
@@ -339,4 +336,23 @@ Examples:
 
     # Details of the selected organization (=dma) 
     curl http://localhost:8080/rest/api/almanac/organization/dma
- 
+
+    # List operational services
+    curl http://localhost:8080/rest/api/almanac/operational-service
+
+    # Details of the selected operational service
+    curl http://localhost:8080/rest/api/almanac/operational-service/vsr
+
+    # List all service specifications
+    curl http://localhost:8080/rest/api/almanac/service-specification
+
+    # Details service specification
+    curl http://localhost:8080/rest/api/almanac/service-specification/a-spec
+
+    # List all service instances
+    curl http://localhost:8080/rest/api/almanac/service-instance
+
+    # Details service instance
+    curl http://localhost:8080/rest/api/almanac/service-instance/an-instance
+
+

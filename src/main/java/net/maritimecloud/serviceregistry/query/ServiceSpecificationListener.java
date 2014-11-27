@@ -44,8 +44,8 @@ public class ServiceSpecificationListener {
     public void on(ServiceSpecificationCreatedEvent event) {
         logger.debug("About to handle the ServiceSpecificationCreatedEvent: {}", event);
         ServiceSpecificationEntry entry = new ServiceSpecificationEntry();
-        entry.setServiceSpecificationIdentifier(event.getServiceSpecificationId().identifier());
-        entry.setOwnerIdentifier(event.getOwnerId().identifier());
+        entry.setServiceSpecificationId(event.getServiceSpecificationId().identifier());
+        entry.setOwnerId(event.getOwnerId().identifier());
         entry.setServiceType(event.getServiceType());
         entry.setName(event.getName());
         entry.setSummary(event.getSummary());
