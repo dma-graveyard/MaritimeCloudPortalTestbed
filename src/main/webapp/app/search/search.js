@@ -2,15 +2,8 @@
 
 angular.module('mcp.search.services', [])
 
-    .controller('SearchServiceMapDetailsController', ['$scope', 'AlmanacServiceSpecificationService', 'AlmanacOrganizationService',
-      function ($scope, AlmanacServiceSpecificationService, AlmanacOrganizationService) {
-        $scope.selectedService.specification = AlmanacServiceSpecificationService.get({serviceSpecificationId: $scope.selectedService.specificationId});
-        $scope.selectedService.provider = AlmanacOrganizationService.get({organizationId: $scope.selectedService.providerId});
-      }
-    ])
-
-    .controller('SearchServiceMapController', ['$scope', '$filter', 'mapService', 'leafletData', 'AlmanacServiceInstanceService', 'searchServiceFilterModel',
-      function ($scope, $filter, mapService, leafletData, AlmanacServiceInstanceService, searchServiceFilterModel) {
+    .controller('SearchServiceMapController', ['$scope', '$filter', 'mapService', 'leafletData', 'AlmanacServiceSpecificationService', 'AlmanacOrganizationService', 'AlmanacServiceInstanceService', 'searchServiceFilterModel',
+      function ($scope, $filter, mapService, leafletData, AlmanacServiceSpecificationService, AlmanacOrganizationService, AlmanacServiceInstanceService, searchServiceFilterModel) {
 
         var SEARCHMAP_ID = 'searchmap';
 
@@ -230,6 +223,14 @@ angular.module('mcp.search.services', [])
           });
         }
 
+        // TODO: move to some more common place, eg. a service
+        function hydrateService(service) {
+          
+          // load members referenced by id
+          service.specification = AlmanacServiceSpecificationService.get({serviceSpecificationId: $scope.selectedService.specificationId});
+          service.provider = AlmanacOrganizationService.get({organizationId: $scope.selectedService.providerId});
+        }
+
         $scope.toggleSelectService = function (service) {
           if (service === $scope.selectedService) {
             $scope.unselectService();
@@ -251,12 +252,13 @@ angular.module('mcp.search.services', [])
         };
 
         $scope.selectService = function (service) {
-          // unselect prevous service
+          // unselect previous service
           if ($scope.selectedService && serviceLayer($scope.selectedService))
             serviceLayer($scope.selectedService).unselect();
 
           if (service !== $scope.selectedService) {
             $scope.selectedService = service;
+            hydrateService(service);
             serviceLayer(service).select();
             fitToLayer(serviceLayer(service));
           }

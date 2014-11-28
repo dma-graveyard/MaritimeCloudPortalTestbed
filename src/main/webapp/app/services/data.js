@@ -234,7 +234,7 @@ function demoData() {
       organizationId: "sma",
       name: "Swedish Maritime Administration",
       url: "http://www.sjofartsverket.se",
-      summary: "The Swedish Maritime Administration (SMA) offers modern and safe shipping routes with 24 hour service. We take responsibility for the future of shipping. SMA is a governmental agency and enterprise within the transport sector and is responsible for maritime safety and availability. Our services include, for example: Pilotage,Fairway Service, Maritime Traffic Information, Icebreaking, Hydrograpy, Maritime and Aeronautical Search and Rescue & Seamen's Service Our activities focus primarily on merchant shipping, but also take the pleasure boating and fishing interests into account.",
+      summary: "The Swedish Maritime Administration (SMA) offers modern and safe shipping routes with 24 hour service. We take responsibility for the future of shipping. SMA is a governmental agency and enterprise within the transport sector and is responsible for maritime safety and availability. Our services include, for example: Pilotage,Fairway Service, Maritime Traffic Information, Icebreaking, Hydrograpy, Maritime and Aeronautical Search and Rescue & Seamens Service Our activities focus primarily on merchant shipping, but also take the pleasure boating and fishing interests into account.",
       members: ["admin", "Tintin", "Haddock"],
       teams: [
         {
@@ -337,7 +337,7 @@ function demoData() {
     },
     imoMisWww: {
       serviceSpecificationId: 'imo-mis-www',
-      ownerId: organization.imo,
+      ownerId: organization.imo.organizationId,
       ownerName: organization.imo.name,
       operationalServices: [operationalServices.mis.id],
       serviceType: serviceTypes.www,
@@ -346,7 +346,7 @@ function demoData() {
     },
     imoMsiSoap: {
       serviceSpecificationId: 'imo-msi-soap',
-      ownerId: organization.imo,
+      ownerId: organization.imo.organizationId,
       ownerName: organization.imo.name,
       operationalServices: [operationalServices.msi.id],
       serviceType: serviceTypes.soap,
@@ -355,7 +355,7 @@ function demoData() {
     },
     imoMsiMms: {
       serviceSpecificationId: 'imo-msi-mms',
-      ownerId: organization.imo,
+      ownerId: organization.imo.organizationId,
       ownerName: organization.imo.name,
       operationalServices: [operationalServices.msi.id],
       serviceType: serviceTypes.mms,
@@ -364,7 +364,7 @@ function demoData() {
     },
     imoMsinmMms: {
       serviceSpecificationId: 'imo-msinm-mms',
-      ownerId: organization.imo,
+      ownerId: organization.imo.organizationId,
       ownerName: organization.imo.name,
       operationalServices: [operationalServices.msinm.id],
       serviceType: serviceTypes.mms,
@@ -373,7 +373,7 @@ function demoData() {
     },
     imoMsinmWww: {
       serviceSpecificationId: 'imo-msinm-www',
-      ownerId: organization.imo,
+      ownerId: organization.imo.organizationId,
       ownerName: organization.imo.name,
       operationalServices: [operationalServices.msinm.id],
       serviceType: serviceTypes.www,
@@ -382,7 +382,7 @@ function demoData() {
     },
     imoMsiNavtex: {
       serviceSpecificationId: 'imo-msi-navtext',
-      ownerId: organization.imo,
+      ownerId: organization.imo.organizationId,
       ownerName: organization.imo.name,
       operationalServices: [operationalServices.msi.id],
       serviceType: serviceTypes.navtex,
@@ -391,7 +391,7 @@ function demoData() {
     },
     imoMsiVhf: {
       serviceSpecificationId: 'imo-msi-vhf',
-      ownerId: organization.imo,
+      ownerId: organization.imo.organizationId,
       ownerName: organization.imo.name,
       operationalServices: [operationalServices.msi.id],
       serviceType: serviceTypes.vhf,
@@ -400,7 +400,7 @@ function demoData() {
     },
     imoMsiWww: {
       serviceSpecificationId: 'imo-msi-www',
-      ownerId: organization.imo,
+      ownerId: organization.imo.organizationId,
       ownerName: organization.imo.name,
       operationalServices: [operationalServices.msi.id],
       serviceType: serviceTypes.www,
@@ -738,8 +738,80 @@ function demoData() {
   }
 
   toList(operationalServices).forEach(function (os) {
-    console.log('operationalServices.put("'+ os.id +'", new OperationalServiceEntry("'+ os.id +'","imo","'+ os.name+'","Summary of '+ os.name+'"));');
+    console.log('operationalServices.put("' + os.id + '", new OperationalServiceEntry("' + os.id + '","imo","' + os.name + '","Summary of ' + os.name + '"));');
   });
+
+  var curl = 'curl ';
+  var orgUrl = 'http://localhost:8080/rest/api/organization';
+  var contentType = ' -H "Content-Type: application/json;domain-model=';
+  var createOrgCommand = curl + orgUrl + contentType + 'CreateOrganizationCommand" -d ';
+  var prepareSSCommand = curl + orgUrl + contentType + 'PrepareServiceSpecificationCommand" -d ';
+
+  var dma = {
+    organizationId: "dma",
+    name: "Danish Maritime Authority",
+    url: "http://dma.dk",
+    summary: "The Danish Maritime Authority is a government agency of Denmark that regulates maritime affairs. The field of responsibility is based on the shipping industry and its framework conditions, the ship and its crew. In addition, it is responsible for aids to navigation in the waters surrounding Denmark and ashore.",
+    members: ["admin", "Haddock"],
+    teams: [
+      {
+        name: "Owners",
+        description: "Special team of owners. Owners can do just about anything.",
+        isOwner: true,
+        members: ["admin"],
+        accessLevel: "admin"
+      },
+      {
+        name: "Captains",
+        description: "Captains of the royal danish fleet with priviledge of editing stuff.",
+        isAdmin: false,
+        members: ["Hadock"],
+        accessLevel: "write"
+      }
+    ]
+  };
+
+  toList(organization).forEach(function (org) {
+    console.log(createOrgCommand + '\'\{"organizationId":{"identifier":"' + org.organizationId + '"},"name":"' + org.name + '","summary":"' + org.summary + ' members: Tintin","url":"' + org.url + '"}\'');
+  });
+
+  toList(serviceSpecifications).forEach(function (ss) {
+    //console.log(ss);
+    console.log(prepareSSCommand + '\'{"ownerId":{"identifier":"' + ss.ownerId + '"}, "serviceSpecificationId":{"identifier":"' + ss.serviceSpecificationId + '"}, "serviceType":"' + ss.serviceType + '", "name":"' + ss.name + '","summary":"' + ss.summary + '"}\'');
+  });
+
+  var dmaImoMsinmMms = {
+    providerId: organization.dma.organizationId,
+    specificationId: serviceSpecifications.imoMsinmMms.serviceSpecificationId,
+    serviceInstanceId: "imo-msinm-mms-1",
+    name: "DMA MSI-NM Danish waters (mms)",
+    summary: "The Danish Maritime Authority issues navigational warnings for Danish waters. Navigational warnings are generally based on information reported to the Danish Maritime Administration by vessels, ports, military agencies, etc.",
+    coverage: area.eez_dk,
+    endpoints: [
+      {uri: "mms://999000301"},
+      {uri: "mms://dma/imo-msinm-mms-1/secondary"}
+    ]
+  };
+
+
+  var prepareSICommand = contentType + 'ProvideServiceInstanceCommand" -d ';
+  var addEndpointCommand = contentType + 'AddServiceInstanceEndpointCommand" -X PUT -d ';
+  toList(serviceInstances).forEach(function (si) {
+
+    var cmd = curl + orgUrl + "/" + si.providerId + "/service-instance" + prepareSICommand;
+
+    console.log(cmd + '\'{"providerId":{"identifier":"' + si.providerId + '"},"specificationId":{"identifier":"' + si.specificationId + '"},"serviceInstanceId":{"identifier":"' + si.providerId +'-'+ si.serviceInstanceId + '"},"name":"' + si.name + '","summary":"' + si.summary + '","coverage":' + JSON.stringify(si.coverage) + '}\'');
+
+    if (si && si.endpoints) {
+
+      si.endpoints.forEach(function (ep) {
+        var cmd2 = curl + orgUrl + "/" + si.providerId + "/service-instance/" + si.providerId +'-'+ si.specificationId + addEndpointCommand;
+        console.log(cmd2 + ' \'{"serviceInstanceId":{"identifier":"' + si.providerId +'-'+ si.serviceInstanceId + '"},"serviceEndpoint":{"uri":"' + ep.uri + '"}}\'');
+      });
+    }
+  });
+
+
 
   console.log("toList(operationalServices): ", toList(operationalServices));
 

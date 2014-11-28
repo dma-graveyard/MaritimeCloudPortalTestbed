@@ -30,7 +30,7 @@ import net.maritimecloud.portal.domain.model.ValueObject;
 @Embeddable
 public class Coverage extends ValueObject {
     
-    @Column(length = 5000)
+    @Column(length = 500000)
     String serializedJsonValue;
 
     public Coverage() {
