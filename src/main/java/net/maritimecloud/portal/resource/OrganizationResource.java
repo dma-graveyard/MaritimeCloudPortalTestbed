@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -120,6 +121,16 @@ public class OrganizationResource {
         LOG.info("Service Instance PUT command: " + commandJSON);
         simulateLack();
         GenericCommandResource.sendAndWait(contentType, queryCommandName, putCommandsRegistry, commandJSON);
+    }
+
+    @DELETE
+    @Consumes(APPLICATION_JSON_CQRS_COMMAND)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{organizationId}/service-instance/{serviceInstanceId}")
+    public void serviceInstanceDeleteCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
+        LOG.info("Service Instance DELETE command: " + commandJSON);
+        simulateLack();
+        GenericCommandResource.sendAndWait(contentType, queryCommandName, deleteCommandsRegistry, commandJSON);
     }
 
     private void simulateLack() {
