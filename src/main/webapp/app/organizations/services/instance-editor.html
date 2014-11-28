@@ -57,9 +57,40 @@
             </div>
             <p class="help-block">Select the geographical extend of the provided service. That is, specify the area where this service should be visible to consumers.</p>
         </div>
+
+        <div class="form-group">
+            <label for="serviceEndpoints">Endpoints</label>
+            <div>
+                <ul>
+                    <li ng-if="service.endpoints.length === 0"><i>No service endpoints - use the field below to add at least one!</i></li>
+                    <li  ng-repeat="endpoint in service.endpoints">{{endpoint.uri}}
+                        <span class="Xinput-group-btn">
+                            <button ng-if="service.endpoints.length > 1 || isCreateState()" ng-click="removeEndpoint(endpoint.uri);" class="btn btn-default btn-sm">
+                                <span class="fa fa-trash-o"></span>
+                            </button>
+                        </span>
+
+                    </li>
+                    <!--                    <li>http://subdomain.dma.dk:6786/maritime-cool-info2</li>
+                                        <li>http://subdomain.dma.dk:6787/maritime-cool-info-backup2</li>-->
+                </ul>
+            </div>
+            <!--<div class="col-sm-12">-->
+            <div class="input-group">
+                {{protocol}}<input type="text" class="xform-control" id="serviceEndpoints" placeholder="Enter an endpoint URI to add to the list" ng-model="newEndpoint" >
+                <span class="Xinput-group-btn">
+                    <button ng-click="addEndpoint(newEndpoint);" ng-disabled="invalidEndpoint(newEndpoint)" class="btn btn-primary">
+                        <span class="fa fa-plus">Add</span>
+                    </button>
+                </span>
+            </div>
+            <p class="help-block">Endpoints are the resource identifiers that will enable clients to locate and use the service. Depending on the type of service this might be the URL address of the service like http://my-org/my-cool-service, a phone number or a call sign for VHF. It is possible to specify multiple endpoints for instance for backup or load balancing</p>
+        </div>
+
         <div>
             <button type="submit" class="btn btn-success center" ng-disabled="!form.$valid || !formIsSubmitable()" ng-click="submit()">{{isCreateState() ? 'Register service' : 'Commit'}}</button>
             <button class="btn btn-grey center" ng-click="close()">{{isCreateState() ? 'Cancel' : 'Close'}}</button>
         </div>
+        <br>
     </form>
 </div>

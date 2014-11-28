@@ -44,14 +44,63 @@ angular.module('mcp.organizations.services', [])
             providerId: $stateParams.organizationId,
             name: null,
             summary: null,
-            coverage: []
+            coverage: [],
+            endpoints: []
           },
+          // FIXME - use service type info!!!!
+          protocol: "http://",
           selectOperationalService: function (selectedOperationalService) {
             $scope.specifications = selectedOperationalService ? AlmanacServiceSpecificationService.query(
                 {operationalServiceId: selectedOperationalService.operationalServiceId}) : [];
           },
           formIsSubmitable: function () {
             return ($scope.service.serviceInstanceId && $scope.service.name /*&& $scope.service.coverage*/);
+          },
+          invalidEndpoint: function (newEndpoint) {
+            var protocol = $scope.protocol;
+
+            return !newEndpoint
+                || newEndpoint.trim().length === 0
+                //|| newEndpoint.trim().indexOf("http://") < 0 
+                || indexOfUri(protocol + newEndpoint) >= 0;
+          },
+          addEndpoint: function (newEndpointUri) {
+            var protocol = $scope.protocol;
+            // FIXME: add validation
+            //validateUri(newEndpoint, serviceType);
+
+            // chekc for redundancy!
+            if ($scope.isEditState()) {
+
+              // send remote command right away
+              ServiceInstanceService.addEndpoint($scope.service, protocol + newEndpointUri, function () {
+                $scope.service = ServiceInstanceService.get({organizationId: $stateParams.organizationId, serviceInstanceId: $stateParams.serviceInstanceId});
+              }, function (error) {
+                $scope.message = null;
+                $scope.alertMessages = ["Error on the serverside :( ", error];
+              });
+            } else {
+              $scope.service.endpoints.push({uri: protocol + newEndpointUri});
+            }
+
+          },
+          removeEndpoint: function (endpointUri) {
+            // FIXME: add validation
+            //validateUri(newEndpoint, serviceType);
+            if ($scope.isEditState()) {
+              ServiceInstanceService.removeEndpoint($scope.service, endpointUri, function () {
+                $scope.service = ServiceInstanceService.get({organizationId: $stateParams.organizationId, serviceInstanceId: $stateParams.serviceInstanceId});
+              }, function (error) {
+                $scope.message = null;
+                $scope.alertMessages = ["Error on the serverside :( ", error];
+              });
+
+            } else {
+              var index = indexOfUri(endpointUri);
+              if (index >= 0) {
+                $scope.service.endpoints.splice(index, 1);
+              }
+            }
           },
           close: function (result) {
             $location.path('/orgs/' + $scope.service.providerId).replace();
@@ -73,7 +122,20 @@ angular.module('mcp.organizations.services', [])
               });
             } else {
               $scope.service.specificationId = $scope.selection.specification.serviceSpecificationId;
+              // Create instance
               ServiceInstanceService.create($scope.service, function (result) {
+
+                // add endpoints  
+                $scope.service.endpoints.forEach(function (endpoint) {
+
+                  // add endpoint 
+                  ServiceInstanceService.addEndpoint($scope.service, endpoint.uri, function () {
+                  }, function (error) {
+                    console.log("Error adding endpoint", protocol + newEndpointUri, error);
+                    $scope.alertMessages = ["Error adding endpoint", protocol + newEndpointUri, error];
+                  });
+                });
+
                 $scope.close();
               }, function (error) {
                 $scope.message = null;
@@ -82,6 +144,14 @@ angular.module('mcp.organizations.services', [])
             }
           }
         });
+
+        var indexOfUri = function (endpointUri) {
+          for (var i = 0; i < $scope.service.endpoints.length; i++) {
+            if ($scope.service.endpoints[i].uri === endpointUri)
+              return i;
+          }
+          return -1;
+        };
 
         if ($scope.isEditState()) {
           $scope.service = ServiceInstanceService.get({organizationId: $stateParams.organizationId, serviceInstanceId: $stateParams.serviceInstanceId},

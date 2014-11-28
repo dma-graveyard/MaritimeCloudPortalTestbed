@@ -36,6 +36,16 @@ function ChangeServiceInstanceCoverageCommand(serviceInstanceId, coverage) {
   this.coverage = coverage;
 }
 
+function AddServiceInstanceEndpointCommand(serviceInstanceId, endpointUri) {
+  this.serviceInstanceId = {identifier: serviceInstanceId};
+  this.serviceEndpoint = {uri: endpointUri};
+}
+
+function RemoveServiceInstanceEndpointCommand(serviceInstanceId, endpointUri) {
+  this.serviceInstanceId = {identifier: serviceInstanceId};
+  this.serviceEndpoint = {uri: endpointUri};
+}
+
 // --------------------------------------------------
 /* Services */
 // --------------------------------------------------
@@ -203,6 +213,14 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         
         resource.changeCoverage = function(serviceInstance, succes, error){
           return this.put({organizationId: serviceInstance.providerId}, new ChangeServiceInstanceCoverageCommand(serviceInstance.serviceInstanceId, serviceInstance.coverage), succes, error);
+        };
+        
+        resource.addEndpoint = function(serviceInstance, endpointUri, succes, error){
+          return this.put({organizationId: serviceInstance.providerId}, new AddServiceInstanceEndpointCommand(serviceInstance.serviceInstanceId, endpointUri), succes, error);
+        };
+        
+        resource.removeEndpoint = function(serviceInstance, endpointUri, succes, error){
+          return this.put({organizationId: serviceInstance.providerId}, new RemoveServiceInstanceEndpointCommand(serviceInstance.serviceInstanceId, endpointUri), succes, error);
         };
         
 //        resource.changeNameAndSummary = function(serviceInstance, succes, error){
