@@ -193,7 +193,7 @@ angular.module('mcp.search.services', [])
         }
 
         function uniqueId(service) {
-          return service.providerId + '-' + service.specificationId;
+          return service.serviceInstanceId;
         }
 
         function clickEventHandler(e) {
