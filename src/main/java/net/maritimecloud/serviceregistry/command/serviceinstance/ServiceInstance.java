@@ -14,6 +14,9 @@
  */
 package net.maritimecloud.serviceregistry.command.serviceinstance;
 
+import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceType;
@@ -37,8 +40,10 @@ public class ServiceInstance extends AbstractAnnotatedAggregateRoot<ServiceInsta
     private String name;
     private String summary;
     private Coverage coverage;
+    private Set<URI> endpoints;
 
     protected ServiceInstance() {
+        endpoints = new HashSet<>();
     }
 
     public ServiceInstance(
@@ -50,13 +55,14 @@ public class ServiceInstance extends AbstractAnnotatedAggregateRoot<ServiceInsta
             Coverage coverage,
             ServiceType serviceType
             ) {
+        this();
+        this.providerId = providerId;
+        this.specificationId = specificationId;
+        this.serviceInstanceId = serviceInstanceId;
+        this.name = name;
+        this.summary = summary;
+        this.coverage = coverage;
         apply(new ServiceInstanceCreatedEvent(providerId, specificationId, serviceInstanceId, name, summary, coverage, serviceType));
-//        this.providerId = providerId;
-//        this.serviceSpecificationId = serviceSpecificationId;
-//        this.serviceInstanceId = serviceInstanceId;
-//        this.name = name;
-//        this.summary = summary;
-//        this.coverage = coverage;
     }
 
     @CommandHandler
@@ -81,6 +87,23 @@ public class ServiceInstance extends AbstractAnnotatedAggregateRoot<ServiceInsta
 
     @EventSourcingHandler
     public void on(ServiceInstanceCreatedEvent event) {
+        this.serviceInstanceId = event.getServiceInstanceId();
+        this.providerId = event.getProviderId();
+        this.specificationId = event.getSpecificationId();
+        this.name = event.getName();
+        this.summary = event.getSummary();
+        this.coverage = event.getCoverage();
+    }
+
+    @EventSourcingHandler
+    public void on(ServiceInstanceEndpointAddedEvent event) {
+        endpoints.add(event.getServiceEndpoint().getUri());
+        this.serviceInstanceId = event.getServiceInstanceId();
+    }
+
+    @EventSourcingHandler
+    public void on(ServiceInstanceEndpointRemovedEvent event) {
+        endpoints.remove(event.getServiceEndpoint().getUri());
         this.serviceInstanceId = event.getServiceInstanceId();
     }
 

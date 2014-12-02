@@ -45,12 +45,16 @@ public class OrganizationCommandHandler {
     @Resource
     private Repository<ServiceInstance> serviceInstanceRepository;
 
-    public void setRepository(Repository<Organization> organizationRepository) {
+    public void setOrganizationRepository(Repository<Organization> organizationRepository) {
         this.repository = organizationRepository;
     }
 
     public void setServiceSpecificationRepository(Repository<ServiceSpecification> serviceSpecificationRepository) {
         this.serviceSpecificationRepository = serviceSpecificationRepository;
+    }
+
+    public void setServiceInstanceRepository(Repository<ServiceInstance> serviceInstanceRepository) {
+        this.serviceInstanceRepository = serviceInstanceRepository;
     }
 
     @CommandHandler

@@ -19,6 +19,7 @@ import net.maritimecloud.serviceregistry.command.organization.*;
 import java.util.UUID;
 import javax.annotation.Resource;
 import net.maritimecloud.common.infrastructure.axon.AbstractManuallyComnfiguredAxonCqrsIT;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
 import net.maritimecloud.serviceregistry.query.ServiceSpecificationListener;
 import net.maritimecloud.serviceregistry.query.ServiceSpecificationQueryRepository;
 import org.axonframework.eventsourcing.EventSourcingRepository;
@@ -50,9 +51,11 @@ public class ManuallyConfiguredAxonIT extends AbstractManuallyComnfiguredAxonCqr
     public static void setUpClass() {
         EventSourcingRepository<Organization> organizationRepository = subscribe(Organization.class);
         EventSourcingRepository<ServiceSpecification> serviceSpecificationRepository = subscribe(ServiceSpecification.class);
+        EventSourcingRepository<ServiceInstance> serviceInstanceRepository = subscribe(ServiceInstance.class);
         OrganizationCommandHandler organizationCommandHandler = new OrganizationCommandHandler();
-        organizationCommandHandler.setRepository(organizationRepository);
+        organizationCommandHandler.setOrganizationRepository(organizationRepository);
         organizationCommandHandler.setServiceSpecificationRepository(serviceSpecificationRepository);
+        organizationCommandHandler.setServiceInstanceRepository(serviceInstanceRepository);
         subscribeHandler(organizationCommandHandler);
     }
 
