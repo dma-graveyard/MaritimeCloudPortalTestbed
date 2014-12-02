@@ -28,6 +28,10 @@ public class ServiceSpecificationEntry implements Serializable {
     @Id
     @javax.persistence.Id
     private String serviceSpecificationId;
+    private String ownerId;
+    private String name;
+    private String summary;
+    private ServiceType serviceType;
 
     public String getServiceSpecificationId() {
         return serviceSpecificationId;
