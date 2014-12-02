@@ -53,6 +53,7 @@ public class ServiceInstanceListener {
         entry.setName(event.getName());
         entry.setSummary(event.getSummary());
         entry.setCoverage(event.getCoverage());
+        entry.setSpecificationServiceType(event.getServiceType());
         save(entry);
     }
 

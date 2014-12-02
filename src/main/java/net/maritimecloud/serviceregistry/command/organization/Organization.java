@@ -83,8 +83,9 @@ public class Organization extends AbstractAnnotatedAggregateRoot<OrganizationId>
      *   that a ServiceInstance cannot be created for a non-existing or deleted
      *   Organization )
      */
-    public ServiceInstance provideServiceInstance(ServiceSpecificationId specificationId, ServiceInstanceId serviceInstanceId, String name, String summary, Coverage coverage) {
-        return new ServiceInstance(organizationId, specificationId, serviceInstanceId, name, summary, coverage);
+    public ServiceInstance provideServiceInstance(
+            ServiceSpecification specification, ServiceInstanceId serviceInstanceId, String name, String summary, Coverage coverage) {
+        return specification.materialize(organizationId, serviceInstanceId, name, summary, coverage);
     }
     
 //    private OrganizationId organizationId;

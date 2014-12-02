@@ -104,7 +104,7 @@ angular.module('mcp.search.services', [])
             return false;
 
 
-          if (filter.serviceType && service.specification.serviceType !== filter.serviceType)
+          if (filter.serviceType && service.specificationServiceType !== filter.serviceType)
             return false;
           
           // Should match if specificationId is in set of specificationIds (...as prepared as stated above)

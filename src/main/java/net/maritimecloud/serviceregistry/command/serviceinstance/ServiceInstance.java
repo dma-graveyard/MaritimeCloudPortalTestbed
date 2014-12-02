@@ -16,6 +16,7 @@ package net.maritimecloud.serviceregistry.command.serviceinstance;
 
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceType;
 import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.eventsourcing.annotation.AbstractAnnotatedAggregateRoot;
 import org.axonframework.eventsourcing.annotation.AggregateIdentifier;
@@ -40,8 +41,16 @@ public class ServiceInstance extends AbstractAnnotatedAggregateRoot<ServiceInsta
     protected ServiceInstance() {
     }
 
-    public ServiceInstance(OrganizationId providerId, ServiceSpecificationId specificationId, ServiceInstanceId serviceInstanceId, String name, String summary, Coverage coverage) {
-        apply(new ServiceInstanceCreatedEvent(providerId, specificationId, serviceInstanceId, name, summary, coverage));
+    public ServiceInstance(
+            OrganizationId providerId, 
+            ServiceSpecificationId specificationId, 
+            ServiceInstanceId serviceInstanceId, 
+            String name, 
+            String summary, 
+            Coverage coverage,
+            ServiceType serviceType
+            ) {
+        apply(new ServiceInstanceCreatedEvent(providerId, specificationId, serviceInstanceId, name, summary, coverage, serviceType));
 //        this.providerId = providerId;
 //        this.serviceSpecificationId = serviceSpecificationId;
 //        this.serviceInstanceId = serviceInstanceId;

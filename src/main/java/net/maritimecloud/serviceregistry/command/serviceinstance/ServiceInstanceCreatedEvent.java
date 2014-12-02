@@ -16,6 +16,7 @@ package net.maritimecloud.serviceregistry.command.serviceinstance;
 
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceType;
 import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
 
 /**
@@ -31,6 +32,7 @@ public class ServiceInstanceCreatedEvent {
     private final String name;
     private final String summary;
     private final Coverage coverage;
+    private final ServiceType serviceType;
 
     public ServiceInstanceCreatedEvent(
             OrganizationId providerId,
@@ -38,13 +40,16 @@ public class ServiceInstanceCreatedEvent {
             ServiceInstanceId serviceInstanceId,
             String name,
             String summary,
-            Coverage coverage) {
+            Coverage coverage,
+            // enrich with redundant data
+            ServiceType serviceType) {
         this.providerId = providerId;
         this.specificationId = specificationId;
         this.serviceInstanceId = serviceInstanceId;
         this.name = name;
         this.summary = summary;
         this.coverage = coverage;
+        this.serviceType = serviceType;
     }
 
     public ServiceInstanceId getServiceInstanceId() {
@@ -69,6 +74,10 @@ public class ServiceInstanceCreatedEvent {
 
     public Coverage getCoverage() {
         return coverage;
+    }
+
+    public ServiceType getServiceType() {
+        return serviceType;
     }
 
 }

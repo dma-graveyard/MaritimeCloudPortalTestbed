@@ -86,11 +86,12 @@ public class OrganizationCommandHandler {
 
         ServiceInstance serviceInstance
                 = organization.provideServiceInstance(
-                        command.getSpecificationId(),
+                        serviceSpecification,
                         command.getServiceInstanceId(),
                         command.getName(),
                         command.getSummary(),
-                        command.getCoverage());
+                        command.getCoverage()
+                );
 
         serviceInstanceRepository.add(serviceInstance);
 

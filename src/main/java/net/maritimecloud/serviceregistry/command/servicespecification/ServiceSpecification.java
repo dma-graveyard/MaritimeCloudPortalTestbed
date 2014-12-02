@@ -15,6 +15,9 @@
 package net.maritimecloud.serviceregistry.command.servicespecification;
 
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
+import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.eventsourcing.annotation.AbstractAnnotatedAggregateRoot;
 import org.axonframework.eventsourcing.annotation.AggregateIdentifier;
@@ -45,11 +48,18 @@ public class ServiceSpecification extends AbstractAnnotatedAggregateRoot<Service
             String name,
             String summary
     ) {
+        this.organizationId = organizationId;
+        this.serviceSpecificationId = serviceSpecificationId;
+        this.serviceType = serviceType;
+        this.name = name;
+        this.summary = summary;
         apply(new ServiceSpecificationCreatedEvent(organizationId, serviceSpecificationId, serviceType, name, summary));
     }
 
     @CommandHandler
     public void handle(ChangeServiceSpecificationNameAndSummaryCommand command) {
+        this.name = command.getName();
+        this.summary = command.getSummary();
         apply(new ServiceSpecificationNameAndSummaryChangedEvent(command.getServiceSpecificationId(), command.getName(), command.getSummary()));
     }
 
@@ -57,6 +67,21 @@ public class ServiceSpecification extends AbstractAnnotatedAggregateRoot<Service
     public void on(ServiceSpecificationCreatedEvent event) {
         this.serviceSpecificationId = event.getServiceSpecificationId();
         this.organizationId = event.getOwnerId();
+        this.serviceType = event.getServiceType();
+    }
+
+    /**
+     * Factory method that will create (materialize) a ServiceInstance of this specification to be provisioned by an organization.
+     * <p>
+     * @param organizationId
+     * @param serviceInstanceId
+     * @param name
+     * @param summary
+     * @param coverage
+     * @return
+     */
+    public ServiceInstance materialize(OrganizationId organizationId, ServiceInstanceId serviceInstanceId, String name, String summary, Coverage coverage) {
+        return new ServiceInstance(organizationId, serviceSpecificationId, serviceInstanceId, name, summary, coverage, serviceType);
     }
 
 }

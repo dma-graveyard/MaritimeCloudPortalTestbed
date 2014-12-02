@@ -27,6 +27,7 @@ import javax.persistence.Id;
 import net.maritimecloud.portal.domain.infrastructure.jackson.CoverageSerializer;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceEndpoint;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceType;
 
 /**
  *
@@ -48,6 +49,7 @@ public class ServiceInstanceEntry implements Serializable {
     private Coverage coverage; // FIXME: create complex version of coverage instead of json-serialized one
     @ElementCollection(fetch = FetchType.EAGER) // FIXME: introduce a separate view with endpoints-per-instance!
     private List<ServiceEndpoint> endpoints = new ArrayList<>();
+    private ServiceType specificationServiceType;
 
     public ServiceInstanceEntry() {
     }
@@ -106,6 +108,14 @@ public class ServiceInstanceEntry implements Serializable {
         return endpoints;
     }
 
+    public ServiceType getSpecificationServiceType() {
+        return specificationServiceType;
+    }
+
+    public void setSpecificationServiceType(ServiceType serviceType) {
+        this.specificationServiceType = serviceType;
+    }
+
     @Override
     public String toString() {
         return "ServiceInstanceEntry{"
@@ -116,6 +126,7 @@ public class ServiceInstanceEntry implements Serializable {
                 + ", summary=" + summary
                 + ", coverage=" + coverage
                 + ", endpoints=" + endpoints
+                + ", specificationServiceType=" + specificationServiceType
                 + '}';
     }
 
