@@ -48,10 +48,6 @@ public class ServiceSpecificationEntry implements Serializable {
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
     }
-    private String ownerId;
-    private ServiceType serviceType;
-    private String name;
-    private String summary;
 
     public ServiceType getServiceType() {
         return serviceType;

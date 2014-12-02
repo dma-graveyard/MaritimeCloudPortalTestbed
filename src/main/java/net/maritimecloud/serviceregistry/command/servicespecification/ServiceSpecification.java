@@ -68,6 +68,14 @@ public class ServiceSpecification extends AbstractAnnotatedAggregateRoot<Service
         this.serviceSpecificationId = event.getServiceSpecificationId();
         this.organizationId = event.getOwnerId();
         this.serviceType = event.getServiceType();
+        this.name = event.getName();
+        this.summary = event.getSummary();
+    }
+
+    @EventSourcingHandler
+    public void on(ServiceSpecificationNameAndSummaryChangedEvent event) {
+        this.name = event.getName();
+        this.summary = event.getSummary();
     }
 
     /**
