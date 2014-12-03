@@ -141,11 +141,36 @@ public class AlmanacResource {
     public Iterable<ServiceInstanceEntry> queryInstances(
             @QueryParam("operationalServiceId") @DefaultValue("") String operationalServiceId,
             @QueryParam("serviceSpecificationId") @DefaultValue("") String serviceSpecificationId,
+            @QueryParam("serviceSpecificationIds") List<String> serviceSpecificationIds,
             @QueryParam("providerId") @DefaultValue("") String providerId,
             @QueryParam("serviceType") @DefaultValue("") String serviceType,
             @QueryParam("anyTextPattern") @DefaultValue("") String anyTextPattern
     ) {
         simulateLack(143);
+
+        // Filter ServiceInstances that implements a SepcificationType that belongs to a specific OperationlaService category
+        if (!operationalServiceId.isEmpty()) {
+            
+            // FIXME: should query a mapping table with Operational Services mapped to this Specification instead
+            System.out.println("HACK: querying 'summary contains operation service id' instead of real lookup table! ");
+            List<ServiceSpecificationEntry> serviceSpecifications 
+                    = ApplicationServiceRegistry.serviceSpecificationQueryRepository().findBySummaryContains(operationalServiceId);
+
+            if (serviceSpecifications.isEmpty()) {
+                // no result, return empty list
+                return new ArrayList();
+            } else {
+                serviceSpecifications.stream().forEach((spec) -> {
+                    serviceSpecificationIds.add(spec.getServiceSpecificationId());
+                });
+            }
+        }
+        
+        if (!serviceSpecificationIds.isEmpty()) {
+        System.out.println("serviceSpecificationIds: "+serviceSpecificationIds);
+            return ApplicationServiceRegistry.serviceInstanceQueryRepository().findBySpecificationIdIn(serviceSpecificationIds);
+        }
+        
         return ApplicationServiceRegistry.serviceInstanceQueryRepository().findAll();
     }
 

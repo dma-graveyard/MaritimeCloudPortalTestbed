@@ -777,7 +777,7 @@ function demoData() {
 
   toList(serviceSpecifications).forEach(function (ss) {
     //console.log(ss);
-    console.log(prepareSSCommand + '\'{"ownerId":{"identifier":"' + ss.ownerId + '"}, "serviceSpecificationId":{"identifier":"' + ss.serviceSpecificationId + '"}, "serviceType":"' + ss.serviceType + '", "name":"' + ss.name + '","summary":"' + ss.summary + '"}\'');
+    console.log(prepareSSCommand + '\'{"ownerId":{"identifier":"' + ss.ownerId + '"}, "serviceSpecificationId":{"identifier":"' + ss.serviceSpecificationId + '"}, "serviceType":"' + ss.serviceType + '", "name":"' + ss.name + '","summary":"' + ss.summary +" operational services: "+ ss.operationalServices + '"}\'');
   });
 
   var dmaImoMsinmMms = {

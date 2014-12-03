@@ -30,11 +30,16 @@ angular.module('mcp.layout', [])
 
           // rebuild specification filter options
           $scope.specifications = selectedOpreationalService ? AlmanacServiceSpecificationService.query({
-                operationalServiceId : selectedOpreationalService.id
-              }) : null;
+            operationalServiceId: selectedOpreationalService.operationalServiceId
+          }, function (specs) {
+            $scope.filter.serviceSpecificationIds = [];
+            specs.forEach(function (spec) {
+              $scope.filter.serviceSpecificationIds.push(spec.serviceSpecificationId);
+            });
+          }) : null;
 
           // reset specification filter if not in current set
-          if ($scope.specifications && $scope.specifications.indexOf($scope.filter.serviceSpecification) === -1){
+          if ($scope.specifications && $scope.specifications.indexOf($scope.filter.serviceSpecification) === -1) {
             delete $scope.filter.serviceSpecification;
           }
         };

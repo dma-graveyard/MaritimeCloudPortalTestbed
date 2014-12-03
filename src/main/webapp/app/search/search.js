@@ -100,17 +100,20 @@ angular.module('mcp.search.services', [])
 
         function match(service, filter) {
 
+          if (filter.serviceSpecification && filter.serviceSpecification.serviceSpecificationId !== service.specificationId)
+            return false;
+
           if (filter.provider && service.providerId !== filter.provider.organizationId)
             return false;
 
-
           if (filter.serviceType && service.specificationServiceType !== filter.serviceType)
             return false;
-          
-          // Should match if specificationId is in set of specificationIds (...as prepared as stated above)
-          
-          
-          if (filter.serviceSpecification && service.specificationId !== filter.serviceSpecification.serviceSpecificationId)
+
+          // Should deny match if specificationId is not in set of 
+          // specificationIds as prepared in search by OperaitionalService
+          if (filter.operationalService
+              && $scope.filter.serviceSpecificationIds
+              && $scope.filter.serviceSpecificationIds.indexOf(service.specificationId) === -1)
             return false;
 
           return true;
@@ -225,7 +228,7 @@ angular.module('mcp.search.services', [])
 
         // TODO: move to some more common place, eg. a service
         function hydrateService(service) {
-          
+
           // load members referenced by id
           service.specification = AlmanacServiceSpecificationService.get({serviceSpecificationId: $scope.selectedService.specificationId});
           service.provider = AlmanacOrganizationService.get({organizationId: $scope.selectedService.providerId});

@@ -25,4 +25,6 @@ public interface ServiceInstanceQueryRepository extends PagingAndSortingReposito
     
     List<ServiceInstanceEntry> findByProviderId(String providerId);
     
+    List<ServiceInstanceEntry> findBySpecificationIdIn(List<String> providerIds);
+    
 }
