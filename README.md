@@ -239,7 +239,7 @@ Once up-n-running the result can be seen from the link below
 
 ### Alternatively, skip the git-part
 
-Commit chamges and await build on jenkins.
+Commit changes and await build on jenkins.
 
 Log on to server and "reploy"
 
