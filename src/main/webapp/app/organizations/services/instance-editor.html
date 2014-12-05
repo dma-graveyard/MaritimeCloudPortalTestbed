@@ -65,7 +65,8 @@
 
                     </li>
                     <li>
-                        {{protocol}}<input type="text" class="xform-control" id="serviceEndpoints" placeholder="Enter an endpoint URI to add to the list" ng-model="newEndpoint" >
+                        <select ng-model="protocol" ng-options="protocol for protocol in protocols"></select>
+                        <input type="text" class="xform-control" id="serviceEndpoints" placeholder="Enter an endpoint URI to add to the list" ng-model="newEndpoint" >
                         <span>
                             <button ng-click="addEndpoint(newEndpoint);" ng-disabled="isLockedOrInvalidEndpoint(newEndpoint)" class="btn btn-primary">
                                 <span class="fa fa-plus">Add</span>

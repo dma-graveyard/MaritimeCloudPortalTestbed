@@ -177,6 +177,7 @@ angular.module('mcp.organizations.services', [])
         var setServiceTypeProtocol = function (ss) {
           console.log("SS", ss);
           if (ss)
+            $scope.protocols = servicetypeProtocols[ss.serviceType];
             $scope.protocol = servicetypeProtocols[ss.serviceType][0];
         };
         $scope.setServiceTypeProtocol = setServiceTypeProtocol;
