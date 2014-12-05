@@ -24,6 +24,23 @@ angular.module('mcp.organizations.services', [])
       function ($scope, $location, $modal, $stateParams, $state,
           AlmanacOperationalServiceService, AlmanacServiceSpecificationService, ServiceInstanceService) {
 
+        var servicetypeProtocols = {
+          AISASM: ['ais:'],
+          DGNSS: ['dgnss:'],
+          FTP: ['ftp:'],
+          EMAIL: ['mailto:'],
+          HTTP: ['http://', 'https://'],
+          MMS: ['mms:'],
+          NAVTEX: ['navtex:'],
+          REST: ['http://', 'https://'],
+          SOAP: ['http://', 'https://'],
+          TCP: ['tcp:'],
+          TEL: ['tel:'],
+          UDP: ['udp:'],
+          VHF: ['vhf:'],
+          WWW: ['http://', 'https://']
+        };
+
         angular.extend($scope, {
           map: {}, // this property is populated with methods by the "thumbnail-map"-directive!!!
           message: null,
@@ -48,21 +65,25 @@ angular.module('mcp.organizations.services', [])
             endpoints: []
           },
           // FIXME - use service type info!!!!
-          protocol: "http://",
+          protocol: "<select a specification type>",
           selectOperationalService: function (selectedOperationalService) {
             $scope.specifications = selectedOperationalService ? AlmanacServiceSpecificationService.query(
-                {operationalServiceId: selectedOperationalService.operationalServiceId}) : [];
+                {operationalServiceId: selectedOperationalService.operationalServiceId}, function (data) {
+              // is not in list then reset
+              $scope.selection.specification = null;
+            }) : [];
           },
           formIsSubmitable: function () {
             return ($scope.service.serviceInstanceId && $scope.service.name /*&& $scope.service.coverage*/);
           },
-          invalidEndpoint: function (newEndpoint) {
+          isLockedOrInvalidEndpoint: function (newEndpoint) {
             var protocol = $scope.protocol;
 
-            return !newEndpoint
+            var b = !($scope.selection.specification || $scope.isEditState())
+                || !newEndpoint
                 || newEndpoint.trim().length === 0
-                //|| newEndpoint.trim().indexOf("http://") < 0 
                 || indexOfUri(protocol + newEndpoint) >= 0;
+            return b;
           },
           addEndpoint: function (newEndpointUri) {
             var protocol = $scope.protocol;
@@ -153,6 +174,13 @@ angular.module('mcp.organizations.services', [])
           return -1;
         };
 
+        var setServiceTypeProtocol = function (ss) {
+          console.log("SS", ss);
+          if (ss)
+            $scope.protocol = servicetypeProtocols[ss.serviceType][0];
+        };
+        $scope.setServiceTypeProtocol = setServiceTypeProtocol;
+
         if ($scope.isEditState()) {
           $scope.service = ServiceInstanceService.get({organizationId: $stateParams.organizationId, serviceInstanceId: $stateParams.serviceInstanceId},
           function (data) {
@@ -161,7 +189,7 @@ angular.module('mcp.organizations.services', [])
             $scope.map.rebuild();
 
             // "hydrate" ServiceInstance with ServiceSpecification data
-            $scope.service.specification = AlmanacServiceSpecificationService.get({serviceSpecificationId: $scope.service.specificationId});
+            $scope.service.specification = AlmanacServiceSpecificationService.get({serviceSpecificationId: $scope.service.specificationId}, setServiceTypeProtocol);
 
             // FIXME: should lookup value based on id $scope.selectedSpecification.operationalServiceId
             //$scope.selectedOperationalService = OperationalServiceService.query({operationalServiceId: $scope.selectedSpecification.operationalServices[0]});

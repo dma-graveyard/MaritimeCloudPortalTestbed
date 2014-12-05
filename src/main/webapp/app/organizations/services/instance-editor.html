@@ -19,6 +19,7 @@
             <div class="form-group">
                 <label for="operationalService">Operational Service</label>
                 <select required class='form-control' id='operationalService'  mcp-focus-me
+                        ng-disabled="service.endpoints.length"
                         ng-change="selectOperationalService(selection.operationalService)"
                         ng-model="selection.operationalService" ng-options="operationalService.name for operationalService in operationalServices"></select>
                 <p class="help-block">Select the operational service (the service category) that the provisioned service belong to.</p>
@@ -26,6 +27,8 @@
             <div class="form-group">
                 <label for="specification">Service Specification</label>
                 <select required class='form-control' id='specification' ng-model="selection.specification" 
+                        ng-disabled="service.endpoints.length"
+                        ng-change="setServiceTypeProtocol(selection.specification)"
                         ng-options="specification.name+' ('+specification.serviceType+')' group by specification.ownerName for specification in specifications"></select>
                 <p class="help-block">Select the technical service specification that describes the interface of the provisioned service.</p>
             </div>
@@ -48,16 +51,6 @@
             <textarea class="form-control" id="serviceDescription" rows="3" placeholder="Enter a description of the service" ng-model="service.summary"></textarea>
             <p class="help-block">The description is usually presented together with the name and should capture the essence of the service in a few words.</p>
         </div>
-        <div class="form-group" >
-            <label for="serviceDescription">Coverage </label>
-            <p class="help-block" style="display: inline"> <I>Click the map to edit the coverage</I></p>
-            <div popover="Click the map to edit the coverage" popover-trigger="mouseenter" popover-placement="top">
-                <thumbnail-map id="instanceEditorMap" services="services" on-click="openCoverageEditor()" map="map"></thumbnail-map>
-                <a class="btn btn-default center" style="display: inherit;" ng-click="openCoverageEditor()">Edit Coverage</a>
-            </div>
-            <p class="help-block">Select the geographical extend of the provided service. That is, specify the area where this service should be visible to consumers.</p>
-        </div>
-
         <div class="form-group">
             <label for="serviceEndpoints">Endpoints</label>
             <div>
@@ -71,22 +64,28 @@
                         </span>
 
                     </li>
-                    <!--                    <li>http://subdomain.dma.dk:6786/maritime-cool-info2</li>
-                                        <li>http://subdomain.dma.dk:6787/maritime-cool-info-backup2</li>-->
+                    <li>
+                        {{protocol}}<input type="text" class="xform-control" id="serviceEndpoints" placeholder="Enter an endpoint URI to add to the list" ng-model="newEndpoint" >
+                        <span>
+                            <button ng-click="addEndpoint(newEndpoint);" ng-disabled="isLockedOrInvalidEndpoint(newEndpoint)" class="btn btn-primary">
+                                <span class="fa fa-plus">Add</span>
+                            </button>
+                        </span>
+                    </li>
                 </ul>
             </div>
             <!--<div class="col-sm-12">-->
-            <div class="input-group">
-                {{protocol}}<input type="text" class="xform-control" id="serviceEndpoints" placeholder="Enter an endpoint URI to add to the list" ng-model="newEndpoint" >
-                <span class="Xinput-group-btn">
-                    <button ng-click="addEndpoint(newEndpoint);" ng-disabled="invalidEndpoint(newEndpoint)" class="btn btn-primary">
-                        <span class="fa fa-plus">Add</span>
-                    </button>
-                </span>
-            </div>
             <p class="help-block">Endpoints are the resource identifiers that will enable clients to locate and use the service. Depending on the type of service this might be the URL address of the service like http://my-org/my-cool-service, a phone number or a call sign for VHF. It is possible to specify multiple endpoints for instance for backup or load balancing</p>
         </div>
-
+        <div class="form-group" >
+            <label for="serviceDescription">Coverage </label>
+            <p class="help-block" style="display: inline"> <I>Click the map to edit the coverage</I></p>
+            <div popover="Click the map to edit the coverage" popover-trigger="mouseenter" popover-placement="top">
+                <thumbnail-map id="instanceEditorMap" services="services" on-click="openCoverageEditor()" map="map"></thumbnail-map>
+                <a class="btn btn-default center" style="display: inherit;" ng-click="openCoverageEditor()">Edit Coverage</a>
+            </div>
+            <p class="help-block">Select the geographical extend of the provided service. That is, specify the area where this service should be visible to consumers.</p>
+        </div>
         <div>
             <button type="submit" class="btn btn-success center" ng-disabled="!form.$valid || !formIsSubmitable()" ng-click="submit()">{{isCreateState() ? 'Register service' : 'Commit'}}</button>
             <button class="btn btn-grey center" ng-click="close()">{{isCreateState() ? 'Cancel' : 'Close'}}</button>
