@@ -18,6 +18,7 @@ import net.maritimecloud.portal.resource.AlmanacResource;
 import net.maritimecloud.portal.resource.OrganizationResource;
 import net.maritimecloud.portal.resource.AuthenticationResource;
 import net.maritimecloud.portal.resource.GenericCommandResource;
+import net.maritimecloud.portal.resource.UniqueIdResource;
 import net.maritimecloud.portal.resource.UserResource;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -36,10 +37,11 @@ public class JerseyConfig extends ResourceConfig {
         //       Explicitly register all resources here instead :-(
         //packages("net.maritimecloud.portal.resource");
         register(AlmanacResource.class);
-        register(UserResource.class);
-        register(OrganizationResource.class);
-        register(GenericCommandResource.class);
         register(AuthenticationResource.class);
+        register(GenericCommandResource.class);
+        register(OrganizationResource.class);
+        register(UniqueIdResource.class);
+        register(UserResource.class);
         register(LoggingFilter.class);
     }
 }

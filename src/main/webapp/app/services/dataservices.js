@@ -60,6 +60,11 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         return protocol + "://" + host + ":" + port;
       }])
 
+    .factory('UUID', ['$resource', 'serviceBaseUrl',
+      function ($resource, serviceBaseUrl) {
+        return $resource(serviceBaseUrl + '/rest/api/uuid');
+      }])
+
     .factory('UserService', ['$resource', 'serviceBaseUrl',
       function ($resource, serviceBaseUrl) {
         return $resource(serviceBaseUrl + '/rest/users/:username', {}, {
@@ -72,15 +77,15 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 
     .factory('OrganizationService', ['$resource', 'serviceBaseUrl',
       function ($resource, serviceBaseUrl) {
-        
+
         var resource = $resource(serviceBaseUrl + '/rest/api/organization/:organizationId', {}, {
           post: {method: 'POST'},
         });
-        
-        resource.create = function(organization, succes, error){
+
+        resource.create = function (organization, succes, error) {
           return this.post(new CreateOrganizationCommand(organization.organizationId, organization.name, organization.summary, organization.url), succes, error);
         };
-        
+
         return resource;
       }])
 
@@ -113,35 +118,35 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
       function ($resource, serviceBaseUrl) {
         return $resource(serviceBaseUrl + '/rest/api/organization/:organizationId/service-specification/:serviceSpecificationId');
       }])
-    
+
     .factory('ServiceInstanceService', ['$resource', 'serviceBaseUrl',
       function ($resource, serviceBaseUrl) {
-        
-        var resource = $resource(serviceBaseUrl + '/rest/api/organization/:organizationId/service-instance/:serviceInstanceId', {}, 
-        {
-          post: {method: 'POST', params:{organizationId: '@providerId'}},
-          put: {method: 'PUT', params:{serviceInstanceId: '@serviceInstanceId.identifier'}},
-        });
-        
-        resource.create = function(serviceInstance, succes, error){
+
+        var resource = $resource(serviceBaseUrl + '/rest/api/organization/:organizationId/service-instance/:serviceInstanceId', {},
+            {
+              post: {method: 'POST', params: {organizationId: '@providerId'}},
+              put: {method: 'PUT', params: {serviceInstanceId: '@serviceInstanceId.identifier'}},
+            });
+
+        resource.create = function (serviceInstance, succes, error) {
           return this.post(new ProvideServiceInstanceCommand(serviceInstance.providerId, serviceInstance.specificationId, serviceInstance.serviceInstanceId, serviceInstance.name, serviceInstance.summary, serviceInstance.coverage), succes, error);
         };
-        
-        resource.changeNameAndSummary = function(serviceInstance, succes, error){
+
+        resource.changeNameAndSummary = function (serviceInstance, succes, error) {
           return this.put({organizationId: serviceInstance.providerId}, new ChangeServiceInstanceNameAndSummaryCommand(serviceInstance.serviceInstanceId, serviceInstance.name, serviceInstance.summary), succes, error);
         };
-        
-        resource.changeCoverage = function(serviceInstance, succes, error){
+
+        resource.changeCoverage = function (serviceInstance, succes, error) {
           return this.put({organizationId: serviceInstance.providerId}, new ChangeServiceInstanceCoverageCommand(serviceInstance.serviceInstanceId, serviceInstance.coverage), succes, error);
         };
-        
-        resource.addEndpoint = function(serviceInstance, endpointUri, succes, error){
+
+        resource.addEndpoint = function (serviceInstance, endpointUri, succes, error) {
           return this.put({organizationId: serviceInstance.providerId}, new AddServiceInstanceEndpointCommand(serviceInstance.serviceInstanceId, endpointUri), succes, error);
         };
-        
-        resource.removeEndpoint = function(serviceInstance, endpointUri, succes, error){
+
+        resource.removeEndpoint = function (serviceInstance, endpointUri, succes, error) {
           return this.put({organizationId: serviceInstance.providerId}, new RemoveServiceInstanceEndpointCommand(serviceInstance.serviceInstanceId, endpointUri), succes, error);
         };
-        
+
         return resource;
       }]);
