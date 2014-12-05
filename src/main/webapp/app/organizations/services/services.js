@@ -41,6 +41,26 @@ angular.module('mcp.organizations.services', [])
           WWW: ['http://', 'https://']
         };
 
+        var reportError = function (error) {
+          $scope.message = null;
+          $scope.alertMessages = ["Error on the serverside :( ", error];
+        };
+
+        var getHydratedServiceInstance = function (success) {
+          return ServiceInstanceService.get({organizationId: $stateParams.organizationId, serviceInstanceId: $stateParams.serviceInstanceId},
+          function (serviceInstance) {
+
+            // "hydrate" ServiceInstance with ServiceSpecification data
+            AlmanacServiceSpecificationService.get({serviceSpecificationId: $scope.service.specificationId}, function (serviceSpecification) {
+              serviceInstance.specification = serviceSpecification;
+
+              if (success)
+                success(serviceInstance);
+            });
+
+          }, reportError);
+        };
+
         angular.extend($scope, {
           map: {}, // this property is populated with methods by the "thumbnail-map"-directive!!!
           message: null,
@@ -64,7 +84,6 @@ angular.module('mcp.organizations.services', [])
             coverage: [],
             endpoints: []
           },
-          // FIXME - use service type info!!!!
           protocol: "<select a specification type>",
           selectOperationalService: function (selectedOperationalService) {
             $scope.specifications = selectedOperationalService ? AlmanacServiceSpecificationService.query(
@@ -87,34 +106,27 @@ angular.module('mcp.organizations.services', [])
           },
           addEndpoint: function (newEndpointUri) {
             var protocol = $scope.protocol;
+           
             // FIXME: add validation
             //validateUri(newEndpoint, serviceType);
 
-            // chekc for redundancy!
             if ($scope.isEditState()) {
 
-              // send remote command right away
+              // send remote command right away 
               ServiceInstanceService.addEndpoint($scope.service, protocol + newEndpointUri, function () {
-                $scope.service = ServiceInstanceService.get({organizationId: $stateParams.organizationId, serviceInstanceId: $stateParams.serviceInstanceId});
-              }, function (error) {
-                $scope.message = null;
-                $scope.alertMessages = ["Error on the serverside :( ", error];
-              });
+                // reload serviceInstance
+                $scope.service = getHydratedServiceInstance();
+              }, reportError);
+              
             } else {
               $scope.service.endpoints.push({uri: protocol + newEndpointUri});
             }
-
           },
           removeEndpoint: function (endpointUri) {
-            // FIXME: add validation
-            //validateUri(newEndpoint, serviceType);
             if ($scope.isEditState()) {
               ServiceInstanceService.removeEndpoint($scope.service, endpointUri, function () {
-                $scope.service = ServiceInstanceService.get({organizationId: $stateParams.organizationId, serviceInstanceId: $stateParams.serviceInstanceId});
-              }, function (error) {
-                $scope.message = null;
-                $scope.alertMessages = ["Error on the serverside :( ", error];
-              });
+                $scope.service = getHydratedServiceInstance();
+              }, reportError);
 
             } else {
               var index = indexOfUri(endpointUri);
@@ -137,10 +149,7 @@ angular.module('mcp.organizations.services', [])
               ServiceInstanceService.changeCoverage($scope.service);
               ServiceInstanceService.changeNameAndSummary($scope.service, function () {
                 $location.path('/orgs/' + $scope.service.providerId).replace();
-              }, function (error) {
-                $scope.message = null;
-                $scope.alertMessages = ["Error on the serverside :( ", error];
-              });
+              }, reportError);
             } else {
               $scope.service.specificationId = $scope.selection.specification.serviceSpecificationId;
               // Create instance
@@ -158,42 +167,37 @@ angular.module('mcp.organizations.services', [])
                 });
 
                 $scope.close();
-              }, function (error) {
-                $scope.message = null;
-                $scope.alertMessages = ["Error on the serverside :( ", error];
-              });
+              }, reportError);
             }
           }
         });
 
         var indexOfUri = function (endpointUri) {
-          for (var i = 0; i < $scope.service.endpoints.length; i++) {
-            if ($scope.service.endpoints[i].uri === endpointUri)
-              return i;
+          if ($scope.service.endpoints) {
+            for (var i = 0; i < $scope.service.endpoints.length; i++) {
+              if ($scope.service.endpoints[i].uri === endpointUri)
+                return i;
+            }
           }
           return -1;
         };
 
-        var setServiceTypeProtocol = function (ss) {
-          console.log("SS", ss);
-          if (ss)
-            $scope.protocols = servicetypeProtocols[ss.serviceType];
-            $scope.protocol = servicetypeProtocols[ss.serviceType][0];
+        var setServiceTypeProtocol = function (serviceSpecification) {
+          console.log("SS", serviceSpecification);
+          if (serviceSpecification) {
+            $scope.protocols = servicetypeProtocols[serviceSpecification.serviceType];
+            $scope.protocol = servicetypeProtocols[serviceSpecification.serviceType][0];
+          }
         };
         $scope.setServiceTypeProtocol = setServiceTypeProtocol;
 
         if ($scope.isEditState()) {
-          $scope.service = ServiceInstanceService.get({organizationId: $stateParams.organizationId, serviceInstanceId: $stateParams.serviceInstanceId},
-          function (data) {
+          $scope.service = getHydratedServiceInstance(function (serviceInstance) {
 
-            // we need to rebuild the map once the request has returned the service details
+            // rebuild the map once the request has returned the serviceInstance
             $scope.map.rebuild();
 
-            // "hydrate" ServiceInstance with ServiceSpecification data
-            $scope.service.specification = AlmanacServiceSpecificationService.get({serviceSpecificationId: $scope.service.specificationId}, setServiceTypeProtocol);
-
-            // FIXME: should lookup value based on id $scope.selectedSpecification.operationalServiceId
-            //$scope.selectedOperationalService = OperationalServiceService.query({operationalServiceId: $scope.selectedSpecification.operationalServices[0]});
+            setServiceTypeProtocol(serviceInstance.specification);
           });
 
         }
