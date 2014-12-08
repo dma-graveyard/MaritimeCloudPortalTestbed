@@ -12,14 +12,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.domain;
+package net.maritimecloud.serviceregistry.command;
 
 import java.io.IOException;
 import net.maritimecloud.cqrs.tool.SourceGenerator;
 
 /**
- *  Run the Main method of this class in order to re-build Command and Events specified in CqrsContrcts 
- * 
+ * Run the Main method of this class in order to re-build Command and Events specified in CqrsContrcts. This generator will generate source
+ * files into the "Generated Sources" folder.
+ * <p>
+ * The Generator cannot be build without a valid, compilable source base. This bootstrap-problem forms a classic "Hen and the Egg"-problem,
+ * since the generated sources are needed to obtains a valid source base.
+ * <p>
+ * Until the bootstrap-problem is solved, you will need to put the generated classes under version-control, eg. by copying them up into the
+ * source-folder, and delete the rest. Otherwise it will be impossible to rebuild from scratch.
+ * <p>
+ * To solve the problem the generator should use a parser that can run independently of whether the entire code base is in a valid state,
+ * e.g an ANTLR-based parser.
+ * <p>
  * @author Christoffer Børrild
  */
 public class CommandEventSourceGenerator {
@@ -27,10 +37,10 @@ public class CommandEventSourceGenerator {
     public static void main(String[] args) throws IOException {
 
         System.out.println("sourceGenerator running");
-        String target = "./src/main/java/";
-        SourceGenerator sourceGenerator = new SourceGenerator(ServiceRegistryContract.class, target);
+        //String target = "./src/main/java/";
+        SourceGenerator sourceGenerator = new SourceGenerator(ServiceRegistryContract.class);
         sourceGenerator.generate();
 
     }
-    
+
 }

@@ -22,10 +22,11 @@ import java.io.OutputStreamWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import org.axonframework.common.Assert;
 
 /**
- * Converts methods of an interface-file into corresponding (serializable) Value Objects for use as Commands and Events. 
- * 
+ * Converts methods of an interface-file into corresponding (serializable) Value Objects for use as Commands and Events.
+ * <p>
  * @author Christoffer Børrild
  */
 public class SourceGenerator {
@@ -65,7 +66,7 @@ public class SourceGenerator {
 
     private void generateClass(Method declaredMethod) throws IOException {
 
-        String packageBaseName = contractClass.getPackage().getName()+".api";
+        String packageBaseName = contractClass.getPackage().getName() + ".api";
         String className = capitalizeFirstLetter(declaredMethod.getName());
         File file = new File(baseTarget + pathOf(packageBaseName), className + ".java");
 
@@ -133,6 +134,7 @@ public class SourceGenerator {
             osw.write("import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;" + EOL);
 
             if (isCommand) {
+                osw.write("import org.axonframework.common.Assert;" + EOL);
                 osw.write("import com.fasterxml.jackson.annotation.JsonCreator;" + EOL);
                 osw.write("import com.fasterxml.jackson.annotation.JsonProperty;" + EOL);
                 osw.write("import net.maritimecloud.serviceregistry.command.Command;" + EOL);
@@ -155,7 +157,7 @@ public class SourceGenerator {
         private void writeClass() throws IOException {
             osw.write("/**" + EOL);
             osw.write(" * GENERATED CLASS!" + EOL);
-            osw.write(" * @see " + contractClass.getName()+"#"+declaredMethod.getName() + EOL);
+            osw.write(" * @see " + contractClass.getName() + "#" + declaredMethod.getName() + EOL);
             osw.write(" */" + EOL);
             if (isEvent()) {
                 osw.write("@Event" + EOL);
@@ -193,9 +195,12 @@ public class SourceGenerator {
             if (isCommand) {
                 osw.write("    @JsonCreator" + EOL);
             }
-            osw.write("    private " + className + "(" + EOL);
+            osw.write("    public " + className + "(" + EOL);
             writeParameters();
             osw.write("    ) {" + EOL);
+            if (isCommand) {
+                writeAssertions();
+            }
             writeAssignments();
             osw.write("    }" + EOL);
         }
@@ -212,16 +217,16 @@ public class SourceGenerator {
             if (isCommand) {
                 osw.write("            @JsonProperty(\"" + parameter.getName() + "\") ");
                 writeAnnotations(parameter);
-                osw.write(" " + parameter.getType().getSimpleName() + " " + parameter.getName());
+                osw.write(parameter.getType().getSimpleName() + " " + parameter.getName());
             } else {
-                osw.write("            "+parameter.getType().getSimpleName() + " " + parameter.getName());
+                osw.write("            " + parameter.getType().getSimpleName() + " " + parameter.getName());
             }
             if (!isLast) {
                 osw.write(",");
             }
             osw.write(EOL);
         }
-        
+
         private void writeAnnotations(Parameter parameter) throws IOException {
             for (Annotation declaredAnnotation : parameter.getDeclaredAnnotations()) {
                 writeAnnotation(declaredAnnotation);
@@ -230,9 +235,19 @@ public class SourceGenerator {
 
         private void writeAnnotation(Annotation declaredAnnotation) throws IOException {
             // TODO: introduce an annotaion that will allow to transfer annotations as a string
-            if(declaredAnnotation instanceof JsonSerialize ){
+            if (declaredAnnotation instanceof JsonSerialize) {
                 //osw.write("@JsonSerialize(using=" + ((JsonSerialize) declaredAnnotation).contentUsing().getName() + ".class " + EOL);
             }
+        }
+
+        private void writeAssertions() throws IOException {
+            for (Parameter parameter : declaredMethod.getParameters()) {
+                writeAssertion(parameter);
+            }
+        }
+
+        private void writeAssertion(Parameter parameter) throws IOException {
+            osw.write("        Assert.notNull(" + parameter.getName() + ", \"The " + parameter.getName() + " must be provided\");" + EOL);
         }
 
         private void writeAssignments() throws IOException {
@@ -274,7 +289,6 @@ public class SourceGenerator {
         private boolean isEvent() {
             return !isCommand;
         }
-
 
     }
 
