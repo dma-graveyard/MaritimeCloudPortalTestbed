@@ -111,4 +111,15 @@ public class ServiceInstanceTest extends CommonFixture {
                 .when(new RemoveServiceInstanceEndpointCommand(serviceInstanceId, AN_ENDPOINT))
                 .expectEvents(new ServiceInstanceEndpointRemovedEvent(serviceInstanceId, AN_ENDPOINT));
     }
+
+    @Test
+    public void addAlias() {
+        fixture.given(
+                organizationCreatedEvent, 
+                serviceSpecificationCreatedEvent, 
+                serviceInstanceCreatedEvent
+        )
+                .when(new AddServiceInstanceAliasCommand(serviceInstanceId, AN_ALIAS))
+                .expectEvents(new ServiceInstanceAliasAddedEvent(serviceInstanceId, AN_ALIAS));
+    }
 }

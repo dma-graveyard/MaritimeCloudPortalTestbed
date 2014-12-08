@@ -41,8 +41,10 @@ public class ServiceInstance extends AbstractAnnotatedAggregateRoot<ServiceInsta
     private String summary;
     private Coverage coverage;
     private Set<URI> endpoints;
+    private Set<String> aliases;
 
     protected ServiceInstance() {
+        this.aliases = new HashSet<>();
         endpoints = new HashSet<>();
     }
 
@@ -85,6 +87,11 @@ public class ServiceInstance extends AbstractAnnotatedAggregateRoot<ServiceInsta
         apply(new ServiceInstanceEndpointRemovedEvent(command.getServiceInstanceId(), command.getServiceEndpoint()));
     }
 
+    @CommandHandler
+    public void handle(AddServiceInstanceAliasCommand command) {
+        apply(new ServiceInstanceAliasAddedEvent(command.getServiceInstanceId(), command.getAlias()));
+    }
+
     @EventSourcingHandler
     public void on(ServiceInstanceCreatedEvent event) {
         this.serviceInstanceId = event.getServiceInstanceId();
@@ -98,13 +105,16 @@ public class ServiceInstance extends AbstractAnnotatedAggregateRoot<ServiceInsta
     @EventSourcingHandler
     public void on(ServiceInstanceEndpointAddedEvent event) {
         endpoints.add(event.getServiceEndpoint().getUri());
-        this.serviceInstanceId = event.getServiceInstanceId();
     }
 
     @EventSourcingHandler
     public void on(ServiceInstanceEndpointRemovedEvent event) {
         endpoints.remove(event.getServiceEndpoint().getUri());
-        this.serviceInstanceId = event.getServiceInstanceId();
+    }
+
+    @EventSourcingHandler
+    public void on(ServiceInstanceAliasAddedEvent event) {
+        aliases.add(event.getAlias());
     }
 
 }

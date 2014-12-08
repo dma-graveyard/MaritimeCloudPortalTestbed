@@ -50,6 +50,8 @@ public class ServiceInstanceEntry implements Serializable {
     @ElementCollection(fetch = FetchType.EAGER) // FIXME: introduce a separate view with endpoints-per-instance!
     private List<ServiceEndpoint> endpoints = new ArrayList<>();
     private ServiceType specificationServiceType;
+    @ElementCollection(fetch = FetchType.EAGER) // TODO: consider if this could be done differently - perhaps aliases is a separate aggregate?
+    private List<String> aliases = new ArrayList<>();
 
     public ServiceInstanceEntry() {
     }
@@ -116,6 +118,14 @@ public class ServiceInstanceEntry implements Serializable {
         this.specificationServiceType = serviceType;
     }
 
+    public List<String> getAliases() {
+        return aliases;
+    }
+
+    public void setAliases(List<String> aliases) {
+        this.aliases = aliases;
+    }
+
     @Override
     public String toString() {
         return "ServiceInstanceEntry{"
@@ -126,6 +136,7 @@ public class ServiceInstanceEntry implements Serializable {
                 + ", summary=" + summary
                 + ", coverage=" + coverage
                 + ", endpoints=" + endpoints
+                + ", aliases=" + aliases
                 + ", specificationServiceType=" + specificationServiceType
                 + '}';
     }
@@ -136,6 +147,14 @@ public class ServiceInstanceEntry implements Serializable {
 
     void removeEndpoint(ServiceEndpoint serviceEndpoint) {
         getEndpoints().remove(serviceEndpoint);
+    }
+
+    void addAlias(String alias) {
+        getAliases().add(alias);
+    }
+
+    void removeAlias(String alias) {
+        getAliases().remove(alias);
     }
 
 }
