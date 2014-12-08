@@ -82,8 +82,8 @@ public class ServiceInstance extends AbstractAnnotatedAggregateRoot<ServiceInsta
     }
 
     @CommandHandler
-    public void handle(ChangeServiceInstanceCoverageCommand command) {
-        apply(new ServiceInstanceCoverageChangedEvent(command.getServiceInstanceId(), command.getCoverage()));
+    public void handle(ChangeServiceInstanceCoverage command) {
+        apply(new ServiceInstanceCoverageChanged(command.getServiceInstanceId(), command.getCoverage()));
     }
 
     @CommandHandler

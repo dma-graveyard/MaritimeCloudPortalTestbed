@@ -17,9 +17,9 @@ package net.maritimecloud.common.infrastructure.axon;
 import java.net.URI;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import java.util.UUID;
-import net.maritimecloud.serviceregistry.command.organization.CreateOrganizationCommand;
+import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
-import net.maritimecloud.serviceregistry.command.organization.PrepareServiceSpecificationCommand;
+import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceEndpoint;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
@@ -73,15 +73,15 @@ public class CommonFixture {
         return new ServiceInstanceId(generateIdentity());
     }
 
-    public static CreateOrganizationCommand generateCreateOrganizationCommand(String organizationIdentity) {
-        return new CreateOrganizationCommand(generateOrganizationId(organizationIdentity), A_NAME, A_SUMMARY, A_URL);
+    public static CreateOrganization generateCreateOrganizationCommand(String organizationIdentity) {
+        return new CreateOrganization(generateOrganizationId(organizationIdentity), A_NAME, A_SUMMARY, A_URL);
     }
 
-    public static PrepareServiceSpecificationCommand aPrepareServiceSpecificationCommand(
+    public static PrepareServiceSpecification aPrepareServiceSpecificationCommand(
             OrganizationId organizationId,
             ServiceSpecificationId serviceSpecificationId
     ) {
-        return new PrepareServiceSpecificationCommand(organizationId, serviceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY);
+        return new PrepareServiceSpecification(organizationId, serviceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY);
     }
 
 }

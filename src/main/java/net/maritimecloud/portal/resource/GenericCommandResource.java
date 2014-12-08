@@ -32,14 +32,14 @@ import javax.ws.rs.core.MediaType;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import static net.maritimecloud.serviceregistry.command.RestCommandUtil.readCommand;
 import static net.maritimecloud.serviceregistry.command.RestCommandUtil.resolveCommandName;
-import net.maritimecloud.serviceregistry.command.organization.ChangeOrganizationNameAndSummaryCommand;
-import net.maritimecloud.serviceregistry.command.organization.CreateOrganizationCommand;
-import net.maritimecloud.serviceregistry.command.organization.PrepareServiceSpecificationCommand;
-import net.maritimecloud.serviceregistry.command.organization.ProvideServiceInstanceCommand;
+import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
+import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
+import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
+import net.maritimecloud.serviceregistry.command.api.ProvideServiceInstance;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpoint;
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
-import net.maritimecloud.serviceregistry.command.servicespecification.ChangeServiceSpecificationNameAndSummaryCommand;
+import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,15 +55,15 @@ public class GenericCommandResource {
     public static final String APPLICATION_JSON_CQRS_COMMAND = MediaType.APPLICATION_JSON + ";domain-model=*Command";
 
     private static final CommandRegistry postCommandsRegistry = new CommandRegistry(
-            CreateOrganizationCommand.class,
-            PrepareServiceSpecificationCommand.class,
+            CreateOrganization.class,
+            PrepareServiceSpecification.class,
             AddServiceInstanceEndpoint.class,
             RemoveServiceInstanceEndpoint.class,
-            ProvideServiceInstanceCommand.class
+            ProvideServiceInstance.class
     );
     private static final CommandRegistry putCommandsRegistry = new CommandRegistry(
-            ChangeOrganizationNameAndSummaryCommand.class,
-            ChangeServiceSpecificationNameAndSummaryCommand.class,
+            ChangeOrganizationNameAndSummary.class,
+            ChangeServiceSpecificationNameAndSummary.class,
             ChangeServiceInstanceNameAndSummary.class
     );
     private static final CommandRegistry deleteCommandsRegistry = new CommandRegistry();

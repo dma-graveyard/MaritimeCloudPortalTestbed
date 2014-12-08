@@ -38,22 +38,67 @@ import net.maritimecloud.serviceregistry.command.servicespecification.ServiceTyp
 public interface ServiceRegistryContract extends CqrsContract {
 
     @Command
-    void addServiceInstanceAliasCommand(ServiceInstanceId serviceInstanceId, String alias);
+    void createOrganization(OrganizationId organizationId, String name, String summary, String url);
 
     @Command
-    void addServiceInstanceEndpointCommand(ServiceInstanceId serviceInstanceId, ServiceEndpoint serviceEndpoint);
+    void changeOrganizationNameAndSummary(OrganizationId organizationId, String name, String summary);
 
     @Command
-    void changeServiceInstanceNameAndSummaryCommand(ServiceInstanceId serviceInstanceId, String name, String summary);
+    void changeServiceSpecificationNameAndSummary(ServiceSpecificationId serviceSpecificationId, String name, String summary);
 
     @Command
-    void RemoveServiceInstanceEndpointCommand(ServiceInstanceId serviceInstanceId, ServiceEndpoint serviceEndpoint);
-    
+    void prepareServiceSpecification(
+            OrganizationId ownerId,
+            ServiceSpecificationId serviceSpecificationId,
+            ServiceType serviceType,
+            String name,
+            String summary
+    );
+
+    @Command
+    void addServiceInstanceAlias(ServiceInstanceId serviceInstanceId, String alias);
+
+    @Command
+    void addServiceInstanceEndpoint(ServiceInstanceId serviceInstanceId, ServiceEndpoint serviceEndpoint);
+
+    @Command
+    void changeServiceInstanceNameAndSummary(ServiceInstanceId serviceInstanceId, String name, String summary);
+
+    @Command
+    void RemoveServiceInstanceEndpoint(ServiceInstanceId serviceInstanceId, ServiceEndpoint serviceEndpoint);
+
+    @Command
+    void provideServiceInstance(
+            OrganizationId providerId,
+            ServiceSpecificationId specificationId,
+            ServiceInstanceId serviceInstanceId,
+            String name,
+            String summary,
+            Coverage coverage);
+
     @Event
-    void serviceInstanceAliasAddedEvent(ServiceInstanceId serviceInstanceId, String alias);
+    void serviceSpecificationNameAndSummaryChanged(ServiceSpecificationId serviceSpecificationId, String name, String summary);
 
     @Event
-    void serviceInstanceCreatedEvent(
+    void organizationCreated(OrganizationId organizationId, String name, String summary, String url);
+
+    @Event
+    void organizationNameAndSummaryChanged(OrganizationId organizationId, String name, String summary);
+
+    @Event
+    void serviceSpecificationCreated(
+            OrganizationId ownerId,
+            ServiceSpecificationId serviceSpecificationId,
+            ServiceType serviceType,
+            String name,
+            String summary
+    );
+
+    @Event
+    void serviceInstanceAliasAdded(ServiceInstanceId serviceInstanceId, String alias);
+
+    @Event
+    void serviceInstanceCreated(
             OrganizationId providerId,
             ServiceSpecificationId specificationId,
             ServiceInstanceId serviceInstanceId,
@@ -62,15 +107,14 @@ public interface ServiceRegistryContract extends CqrsContract {
             Coverage coverage,
             // enrich with redundant data
             ServiceType serviceType);
-    
+
     @Event
-    void serviceInstanceEndpointAddedEvent(ServiceInstanceId serviceInstanceId, ServiceEndpoint serviceEndpoint);
-    
+    void serviceInstanceEndpointAdded(ServiceInstanceId serviceInstanceId, ServiceEndpoint serviceEndpoint);
+
     @Event
-    void serviceInstanceEndpointRemovedEvent(ServiceInstanceId serviceInstanceId, ServiceEndpoint serviceEndpoint);
-    
+    void serviceInstanceEndpointRemoved(ServiceInstanceId serviceInstanceId, ServiceEndpoint serviceEndpoint);
+
     @Event
-    void serviceInstanceNameAndSummaryChangedEvent(ServiceInstanceId serviceInstanceId, String name, String summary);
-    
-    
+    void serviceInstanceNameAndSummaryChanged(ServiceInstanceId serviceInstanceId, String name, String summary);
+
 }

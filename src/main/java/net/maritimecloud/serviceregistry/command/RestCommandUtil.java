@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ws.rs.core.MediaType;
-import net.maritimecloud.serviceregistry.command.organization.CreateOrganizationCommand;
+import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import org.axonframework.common.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,11 +35,11 @@ public class RestCommandUtil {
     public static final Map<String, Class> commandRegistry = new HashMap<>();
 
     static {
-        commandRegistry.put(CreateOrganizationCommand.class.getCanonicalName(), CreateOrganizationCommand.class);
-        commandRegistry.put(CreateOrganizationCommand.class.getSimpleName(), CreateOrganizationCommand.class);
+        commandRegistry.put(CreateOrganization.class.getCanonicalName(), CreateOrganization.class);
+        commandRegistry.put(CreateOrganization.class.getSimpleName(), CreateOrganization.class);
 
-        commandRegistry.put(CreateOrganizationCommand.class.getCanonicalName(), CreateOrganizationCommand.class);
-        commandRegistry.put(CreateOrganizationCommand.class.getSimpleName(), CreateOrganizationCommand.class);
+        commandRegistry.put(CreateOrganization.class.getCanonicalName(), CreateOrganization.class);
+        commandRegistry.put(CreateOrganization.class.getSimpleName(), CreateOrganization.class);
     }
     
 

@@ -14,8 +14,7 @@
  */
 package net.maritimecloud.serviceregistry.command;
 
-import net.maritimecloud.serviceregistry.command.organization.ChangeOrganizationNameAndSummaryCommand;
-import org.junit.Before;
+import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -25,19 +24,19 @@ import static org.junit.Assert.*;
  */
 public class CommandRegistryTest {
 
-    private CommandRegistry putCommandsRegistry = new CommandRegistry(false, ChangeOrganizationNameAndSummaryCommand.class);
+    private final CommandRegistry putCommandsRegistry = new CommandRegistry(false, ChangeOrganizationNameAndSummary.class);
     
     public CommandRegistryTest() {
     }
     
     @Test(expected = RuntimeException.class)
     public void notRegisteredShouldReturnNull() {
-        assertNull("Expected to be null", putCommandsRegistry.resolve("CreateOrganizationCommand"));
+        assertNull("Expected to be null", putCommandsRegistry.resolve("CreateOrganization"));
     }
 
     @Test
     public void shouldFindRegistered() {
-        assertEquals(ChangeOrganizationNameAndSummaryCommand.class, putCommandsRegistry.resolve("ChangeOrganizationNameAndSummaryCommand"));
+        assertEquals(ChangeOrganizationNameAndSummary.class, putCommandsRegistry.resolve("ChangeOrganizationNameAndSummary"));
     }
     
 }

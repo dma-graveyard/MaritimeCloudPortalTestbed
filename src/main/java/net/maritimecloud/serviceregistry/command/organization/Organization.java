@@ -14,6 +14,10 @@
  */
 package net.maritimecloud.serviceregistry.command.organization;
 
+import net.maritimecloud.serviceregistry.command.api.OrganizationNameAndSummaryChanged;
+import net.maritimecloud.serviceregistry.command.api.OrganizationCreated;
+import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
+import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
@@ -49,17 +53,17 @@ public class Organization extends AbstractAnnotatedAggregateRoot<OrganizationId>
     }
 
     @CommandHandler
-    public Organization(CreateOrganizationCommand command) {
-        apply(new OrganizationCreatedEvent(command.getOrganizationId(), command.getName(), command.getSummary(), command.getUrl()));
+    public Organization(CreateOrganization command) {
+        apply(new OrganizationCreated(command.getOrganizationId(), command.getName(), command.getSummary(), command.getUrl()));
     }
 
     @CommandHandler
-    public void handle(ChangeOrganizationNameAndSummaryCommand command) {
-        apply(new OrganizationNameAndSummaryChangedEvent(command.getOrganizationId(), command.getName(), command.getSummary()));
+    public void handle(ChangeOrganizationNameAndSummary command) {
+        apply(new OrganizationNameAndSummaryChanged(command.getOrganizationId(), command.getName(), command.getSummary()));
     }
 
     @EventSourcingHandler
-    public void on(OrganizationCreatedEvent event) {
+    public void on(OrganizationCreated event) {
         this.organizationId = event.getOrganizationId();
     }
 

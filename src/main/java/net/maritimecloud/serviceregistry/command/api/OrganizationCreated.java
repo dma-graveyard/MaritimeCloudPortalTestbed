@@ -12,7 +12,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.command.servicespecification;
+package net.maritimecloud.serviceregistry.command.api;
 
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
@@ -21,34 +21,23 @@ import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
  *
  * @author Christoffer Børrild
  */
-public class ServiceSpecificationCreatedEvent {
+public class OrganizationCreated {
 
     @TargetAggregateIdentifier
-    private final ServiceSpecificationId serviceSpecificationId;
-    private final OrganizationId ownerId;
-    private final ServiceType serviceType;
+    private final OrganizationId organizationId;
     private final String name;
     private final String summary;
+    private final String url;
 
-    public ServiceSpecificationCreatedEvent(
-            OrganizationId ownerId, ServiceSpecificationId serviceSpecificationId, ServiceType serviceType, String name, String summary) {
-        this.ownerId = ownerId;
-        this.serviceSpecificationId = serviceSpecificationId;
-        this.serviceType = serviceType;
+    public OrganizationCreated(OrganizationId organizationId, String name, String summary, String url) {
+        this.organizationId = organizationId;
         this.name = name;
         this.summary = summary;
+        this.url = url;
     }
 
-    public OrganizationId getOwnerId() {
-        return ownerId;
-    }
-
-    public ServiceSpecificationId getServiceSpecificationId() {
-        return serviceSpecificationId;
-    }
-
-    public ServiceType getServiceType() {
-        return serviceType;
+    public OrganizationId getOrganizationId() {
+        return organizationId;
     }
 
     public String getName() {
@@ -57,6 +46,10 @@ public class ServiceSpecificationCreatedEvent {
 
     public String getSummary() {
         return summary;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
 }

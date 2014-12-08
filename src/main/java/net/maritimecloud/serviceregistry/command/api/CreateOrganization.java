@@ -12,11 +12,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.command.organization;
+package net.maritimecloud.serviceregistry.command.api;
 
 import net.maritimecloud.serviceregistry.command.Command;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
 import org.axonframework.common.Assert;
 
@@ -24,7 +25,7 @@ import org.axonframework.common.Assert;
  *
  * @author Christoffer Børrild
  */
-public class CreateOrganizationCommand implements Command {
+public class CreateOrganization implements Command {
 
     @TargetAggregateIdentifier
     private final OrganizationId organizationId;
@@ -33,7 +34,7 @@ public class CreateOrganizationCommand implements Command {
     private final String url;
 
     @JsonCreator
-    public CreateOrganizationCommand(
+    public CreateOrganization(
             @JsonProperty("organizationId") OrganizationId organizationId,
             @JsonProperty("name") String name,
             @JsonProperty("summary") String summary,

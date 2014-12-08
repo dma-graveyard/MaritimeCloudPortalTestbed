@@ -14,6 +14,8 @@
  */
 package net.maritimecloud.serviceregistry.command.organization;
 
+import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
+import net.maritimecloud.serviceregistry.command.api.ProvideServiceInstance;
 import javax.annotation.Resource;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
@@ -58,7 +60,7 @@ public class OrganizationCommandHandler {
     }
 
     @CommandHandler
-    public void handle(PrepareServiceSpecificationCommand command) {
+    public void handle(PrepareServiceSpecification command) {
 
         Organization organization = repository.load(command.getOwnerId());
 
@@ -73,7 +75,7 @@ public class OrganizationCommandHandler {
     }
 
     @CommandHandler
-    public void handle(ProvideServiceInstanceCommand command) {
+    public void handle(ProvideServiceInstance command) {
 
         Organization organization = repository.load(command.getProviderId());
 

@@ -19,10 +19,10 @@ import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAn
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpoint;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
 import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
-import net.maritimecloud.serviceregistry.command.organization.CreateOrganizationCommand;
+import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
-import net.maritimecloud.serviceregistry.command.organization.PrepareServiceSpecificationCommand;
-import net.maritimecloud.serviceregistry.command.organization.ProvideServiceInstanceCommand;
+import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
+import net.maritimecloud.serviceregistry.command.api.ProvideServiceInstance;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 import net.maritimecloud.serviceregistry.query.ServiceInstanceEntry;
 import static org.junit.Assert.assertEquals;
@@ -39,11 +39,11 @@ import org.junit.Test;
  */
 public class ServiceInstanceIT extends AbstractAxonCqrsIT {
 
-    private CreateOrganizationCommand createOrganizationCommand;
+    private CreateOrganization createOrganizationCommand;
     private OrganizationId organizationId;
     private ServiceSpecificationId serviceSpecificationId;
-    private PrepareServiceSpecificationCommand prepareServiceSpecificationCommand;
-    private ProvideServiceInstanceCommand provideServiceInstanceCommand;
+    private PrepareServiceSpecification prepareServiceSpecificationCommand;
+    private ProvideServiceInstance provideServiceInstanceCommand;
 
     @Before
     public void setUp() {
@@ -54,7 +54,7 @@ public class ServiceInstanceIT extends AbstractAxonCqrsIT {
         serviceSpecificationId = generateServiceSpecificationId();
         prepareServiceSpecificationCommand = aPrepareServiceSpecificationCommand(organizationId, serviceSpecificationId);
         // Prepare a service instance 
-        provideServiceInstanceCommand = new ProvideServiceInstanceCommand(
+        provideServiceInstanceCommand = new ProvideServiceInstance(
                 organizationId,
                 serviceSpecificationId,
                 generateServiceInstanceId(),
@@ -115,7 +115,7 @@ public class ServiceInstanceIT extends AbstractAxonCqrsIT {
 
         // When
         commandGateway().sendAndWait(
-                new ChangeServiceInstanceCoverageCommand(
+                new ChangeServiceInstanceCoverage(
                         provideServiceInstanceCommand.getServiceInstanceId(),
                         ANOTHER_COVERAGE));
 

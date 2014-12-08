@@ -19,13 +19,13 @@ import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
 /**
  * @author Christoffer Børrild
  */
-public class ServiceInstanceCoverageChangedEvent {
+public class ServiceInstanceCoverageChanged {
 
     @TargetAggregateIdentifier
     private final ServiceInstanceId serviceInstanceId;
     private final Coverage coverage;
 
-    public ServiceInstanceCoverageChangedEvent(ServiceInstanceId serviceInstanceId, Coverage coverage) {
+    public ServiceInstanceCoverageChanged(ServiceInstanceId serviceInstanceId, Coverage coverage) {
         this.serviceInstanceId = serviceInstanceId;
         this.coverage = coverage;
     }

@@ -15,8 +15,8 @@
 package net.maritimecloud.serviceregistry.query;
 
 import javax.annotation.Resource;
-import net.maritimecloud.serviceregistry.command.organization.OrganizationCreatedEvent;
-import net.maritimecloud.serviceregistry.command.organization.OrganizationNameAndSummaryChangedEvent;
+import net.maritimecloud.serviceregistry.command.api.OrganizationCreated;
+import net.maritimecloud.serviceregistry.command.api.OrganizationNameAndSummaryChanged;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class OrganizationListener {
     }
     
     @EventHandler
-    public void on(OrganizationCreatedEvent event) {
+    public void on(OrganizationCreated event) {
         logger.debug("About to handle the OrganizationCreatedEvent: {}", event);
         OrganizationEntry organizationEntry = new OrganizationEntry();
         organizationEntry.setOrganizationId(event.getOrganizationId().identifier());
@@ -56,7 +56,7 @@ public class OrganizationListener {
     }
 
     @EventHandler
-    public void on(OrganizationNameAndSummaryChangedEvent event) {
+    public void on(OrganizationNameAndSummaryChanged event) {
         OrganizationEntry organizationEntry = organizationQueryRepository.findOne(event.getOrganizationId().identifier());
         organizationEntry.setName(event.getName());
         organizationEntry.setSummary(event.getSummary());

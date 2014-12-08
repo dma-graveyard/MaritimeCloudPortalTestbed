@@ -12,11 +12,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.command.servicespecification;
+package net.maritimecloud.serviceregistry.command.api;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.maritimecloud.serviceregistry.command.Command;
+import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceType;
 import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
 import org.axonframework.common.Assert;
 
@@ -24,29 +27,46 @@ import org.axonframework.common.Assert;
  *
  * @author Christoffer Børrild
  */
-public class ChangeServiceSpecificationNameAndSummaryCommand implements Command {
+public class PrepareServiceSpecification implements Command {
 
     @TargetAggregateIdentifier
+    private final OrganizationId ownerId;
     private final ServiceSpecificationId serviceSpecificationId;
+    private final ServiceType serviceType;
     private final String name;
     private final String summary;
 
     @JsonCreator
-    public ChangeServiceSpecificationNameAndSummaryCommand(
+    public PrepareServiceSpecification(
+            @JsonProperty("ownerId") OrganizationId ownerId,
             @JsonProperty("serviceSpecificationId") ServiceSpecificationId serviceSpecificationId,
+            @JsonProperty("serviceType") ServiceType serviceType,
             @JsonProperty("name") String name,
-            @JsonProperty("summary") String summary) {
+            @JsonProperty("summary") String summary
+    ) {
+        Assert.notNull(ownerId, "The organizationId of the owning organization must be provided");
         Assert.notNull(serviceSpecificationId, "The serviceSpecificationId must be provided");
         Assert.notNull(name, "The provided name cannot be null");
         Assert.notNull(summary, "The provided summary cannot be null");
+        Assert.notNull(serviceType, "The provided serviceType cannot be null");
 
+        this.ownerId = ownerId;
         this.serviceSpecificationId = serviceSpecificationId;
+        this.serviceType = serviceType;
         this.name = name;
         this.summary = summary;
     }
 
+    public OrganizationId getOwnerId() {
+        return ownerId;
+    }
+
     public ServiceSpecificationId getServiceSpecificationId() {
         return serviceSpecificationId;
+    }
+
+    public ServiceType getServiceType() {
+        return serviceType;
     }
 
     public String getName() {

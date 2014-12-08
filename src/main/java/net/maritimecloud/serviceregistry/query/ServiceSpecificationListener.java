@@ -15,8 +15,8 @@
 package net.maritimecloud.serviceregistry.query;
 
 import javax.annotation.Resource;
-import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationCreatedEvent;
-import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationNameAndSummaryChangedEvent;
+import net.maritimecloud.serviceregistry.command.api.ServiceSpecificationCreated;
+import net.maritimecloud.serviceregistry.command.api.ServiceSpecificationNameAndSummaryChanged;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ public class ServiceSpecificationListener {
     }
 
     @EventHandler
-    public void on(ServiceSpecificationCreatedEvent event) {
+    public void on(ServiceSpecificationCreated event) {
         logger.debug("About to handle the ServiceSpecificationCreatedEvent: {}", event);
         ServiceSpecificationEntry entry = new ServiceSpecificationEntry();
         entry.setServiceSpecificationId(event.getServiceSpecificationId().identifier());
@@ -53,7 +53,7 @@ public class ServiceSpecificationListener {
     }
 
     @EventHandler
-    public void on(ServiceSpecificationNameAndSummaryChangedEvent event) {
+    public void on(ServiceSpecificationNameAndSummaryChanged event) {
         ServiceSpecificationEntry servicespecificationEntry = serviceSpecificationQueryRepository.findOne(event.getServiceSpecificationId().identifier());
         servicespecificationEntry.setName(event.getName());
         servicespecificationEntry.setSummary(event.getSummary());

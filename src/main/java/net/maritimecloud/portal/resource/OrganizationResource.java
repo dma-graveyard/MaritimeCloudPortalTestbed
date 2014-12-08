@@ -35,18 +35,18 @@ import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import static net.maritimecloud.portal.resource.GenericCommandResource.APPLICATION_JSON_CQRS_COMMAND;
 import static net.maritimecloud.portal.resource.GenericCommandResource.sendAndWait;
 import net.maritimecloud.serviceregistry.command.CommandRegistry;
-import net.maritimecloud.serviceregistry.command.organization.ChangeOrganizationNameAndSummaryCommand;
-import net.maritimecloud.serviceregistry.command.organization.CreateOrganizationCommand;
+import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
+import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
-import net.maritimecloud.serviceregistry.command.organization.PrepareServiceSpecificationCommand;
-import net.maritimecloud.serviceregistry.command.organization.ProvideServiceInstanceCommand;
+import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
+import net.maritimecloud.serviceregistry.command.api.ProvideServiceInstance;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpoint;
-import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceCoverageCommand;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceCoverage;
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
-import net.maritimecloud.serviceregistry.command.servicespecification.ChangeServiceSpecificationNameAndSummaryCommand;
+import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceType;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
@@ -76,15 +76,15 @@ public class OrganizationResource {
     // Commands
     // -------------------------------------------------------
     private static final CommandRegistry postCommandsRegistry = new CommandRegistry(
-            CreateOrganizationCommand.class,
-            PrepareServiceSpecificationCommand.class,
-            ProvideServiceInstanceCommand.class
+            CreateOrganization.class,
+            PrepareServiceSpecification.class,
+            ProvideServiceInstance.class
     );
     private static final CommandRegistry putCommandsRegistry = new CommandRegistry(
-            ChangeOrganizationNameAndSummaryCommand.class,
-            ChangeServiceSpecificationNameAndSummaryCommand.class,
+            ChangeOrganizationNameAndSummary.class,
+            ChangeServiceSpecificationNameAndSummary.class,
             ChangeServiceInstanceNameAndSummary.class,
-            ChangeServiceInstanceCoverageCommand.class,
+            ChangeServiceInstanceCoverage.class,
             AddServiceInstanceEndpoint.class,
             RemoveServiceInstanceEndpoint.class
     );
@@ -260,7 +260,7 @@ public class OrganizationResource {
             return;
         
         for (int i = 0; i < amount; i++) {
-            Object command = new PrepareServiceSpecificationCommand(
+            Object command = new PrepareServiceSpecification(
                     new OrganizationId(random(l).getOwnerId()),
                     new ServiceSpecificationId("SS-" + i + "-" + UUID.randomUUID()),
                     
@@ -282,7 +282,7 @@ public class OrganizationResource {
             return;
         
         for (int i = 0; i < siAmount; i++) {
-            Object command = new ProvideServiceInstanceCommand(
+            Object command = new ProvideServiceInstance(
                     new OrganizationId(random(l).getProviderId()),
                     new ServiceSpecificationId(random(l).getSpecificationId()),
                     new ServiceInstanceId("rand-" + i + "-" + UUID.randomUUID()),

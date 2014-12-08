@@ -12,31 +12,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.command.organization;
+package net.maritimecloud.serviceregistry.command.api;
 
-import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 
 /**
- *
  * @author Christoffer Børrild
  */
-public class OrganizationCreatedEvent {
+public class ServiceSpecificationNameAndSummaryChanged {
 
-    @TargetAggregateIdentifier
-    private final OrganizationId organizationId;
+    private final ServiceSpecificationId serviceSpecificationId;
     private final String name;
     private final String summary;
-    private final String url;
 
-    public OrganizationCreatedEvent(OrganizationId organizationId, String name, String summary, String url) {
-        this.organizationId = organizationId;
+    public ServiceSpecificationNameAndSummaryChanged(ServiceSpecificationId serviceSpecificationId, String name, String summary) {
+        this.serviceSpecificationId = serviceSpecificationId;
         this.name = name;
         this.summary = summary;
-        this.url = url;
     }
 
-    public OrganizationId getOrganizationId() {
-        return organizationId;
+    public ServiceSpecificationId getServiceSpecificationId() {
+        return serviceSpecificationId;
     }
 
     public String getName() {
@@ -45,10 +41,6 @@ public class OrganizationCreatedEvent {
 
     public String getSummary() {
         return summary;
-    }
-
-    public String getUrl() {
-        return url;
     }
 
 }

@@ -14,6 +14,9 @@
  */
 package net.maritimecloud.serviceregistry.command.servicespecification;
 
+import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
+import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
+import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import net.maritimecloud.serviceregistry.command.organization.*;
 import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
 import javax.annotation.Resource;
@@ -37,10 +40,10 @@ public class ServiceSpecificationIT extends AbstractAxonCqrsIT {
     private final ServiceSpecificationId serviceSpecificationId2 = generateServiceSpecificationId();
     private final ServiceSpecificationId serviceSpecificationId3 = generateServiceSpecificationId();
 
-    private CreateOrganizationCommand createOrganizationCommand;
+    private CreateOrganization createOrganizationCommand;
     private OrganizationId organizationId;
     private ServiceSpecificationId serviceSpecificationId;
-    private PrepareServiceSpecificationCommand prepareServiceSpecificationCommand;
+    private PrepareServiceSpecification prepareServiceSpecificationCommand;
 
     @Before
     public void setUp() {
@@ -94,8 +97,7 @@ public class ServiceSpecificationIT extends AbstractAxonCqrsIT {
         commandGateway().sendAndWait(prepareServiceSpecificationCommand);
 
         // When the description is changed
-        commandGateway().sendAndWait(
-                new ChangeServiceSpecificationNameAndSummaryCommand(serviceSpecificationId, ANOTHER_NAME, ANOTHER_SUMMARY));
+        commandGateway().sendAndWait(new ChangeServiceSpecificationNameAndSummary(serviceSpecificationId, ANOTHER_NAME, ANOTHER_SUMMARY));
         
         // Then the name and summary has changed in the view
         ServiceSpecificationEntry entry = serviceSpecificationQueryRepository.findOne(serviceSpecificationId.identifier());

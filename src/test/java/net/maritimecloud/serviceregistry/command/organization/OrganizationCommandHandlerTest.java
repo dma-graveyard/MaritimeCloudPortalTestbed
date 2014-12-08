@@ -14,13 +14,15 @@
  */
 package net.maritimecloud.serviceregistry.command.organization;
 
+import net.maritimecloud.serviceregistry.command.api.OrganizationCreated;
+import net.maritimecloud.serviceregistry.command.api.ProvideServiceInstance;
 import net.maritimecloud.common.infrastructure.axon.CommonFixture;
 import net.maritimecloud.common.infrastructure.axon.RepositoryMock;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceCreated;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
-import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationCreatedEvent;
+import net.maritimecloud.serviceregistry.command.api.ServiceSpecificationCreated;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 import org.axonframework.test.FixtureConfiguration;
 import org.axonframework.test.Fixtures;
@@ -78,9 +80,9 @@ public class OrganizationCommandHandlerTest extends CommonFixture {
 
     @Test
     public void prepareServiceSpecification() {
-        fixtureServiceSpecification.given(new OrganizationCreatedEvent(anOrganizationId, A_NAME, A_SUMMARY, A_URL))
+        fixtureServiceSpecification.given(new OrganizationCreated(anOrganizationId, A_NAME, A_SUMMARY, A_URL))
                 .when(aPrepareServiceSpecificationCommand(anOrganizationId, serviceSpecificationId))
-                .expectEvents(new ServiceSpecificationCreatedEvent(
+                .expectEvents(new ServiceSpecificationCreated(
                                 anOrganizationId,
                                 new ServiceSpecificationId(A_SPEC_ID),
                                 A_SERVICE_TYPE, A_NAME, A_SUMMARY)
@@ -90,7 +92,7 @@ public class OrganizationCommandHandlerTest extends CommonFixture {
     @Test
     public void prepareServiceSpecificationOnDeletedOrganization() {
         mockDeleted = true;
-        fixtureServiceSpecification.given(new OrganizationCreatedEvent(anOrganizationId, A_NAME, A_SUMMARY, A_URL))
+        fixtureServiceSpecification.given(new OrganizationCreated(anOrganizationId, A_NAME, A_SUMMARY, A_URL))
                 .when(aPrepareServiceSpecificationCommand(anOrganizationId, serviceSpecificationId))
                 .expectException(IllegalArgumentException.class);
     }
@@ -98,7 +100,7 @@ public class OrganizationCommandHandlerTest extends CommonFixture {
 // Duplicate test not currently possible !?!    
 //    @Test
 //    public void dublicatePrepareServiceSpecification() {
-//        PrepareServiceSpecificationCommand prepareServiceSpecificationCommand
+//        PrepareServiceSpecification prepareServiceSpecificationCommand
 //                = aPrepareServiceSpecificationCommand(anOrganizationId, serviceSpecificationId);
 //
 //        fixtureServiceSpecification.givenCommands(prepareServiceSpecificationCommand)
@@ -111,11 +113,10 @@ public class OrganizationCommandHandlerTest extends CommonFixture {
 
         final ServiceInstanceId serviceInstanceId = new ServiceInstanceId(AN_INSTANCE_ID);
 
-        fixtureServiceInstance.given(
-                new OrganizationCreatedEvent(anOrganizationId, A_NAME, A_SUMMARY, A_URL),
-                new ServiceSpecificationCreatedEvent(anOrganizationId, serviceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY)
+        fixtureServiceInstance.given(new OrganizationCreated(anOrganizationId, A_NAME, A_SUMMARY, A_URL),
+                new ServiceSpecificationCreated(anOrganizationId, serviceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY)
         )
-                .when(new ProvideServiceInstanceCommand(anOrganizationId, serviceSpecificationId, serviceInstanceId, A_NAME, A_SUMMARY, A_COVERAGE))
+                .when(new ProvideServiceInstance(anOrganizationId, serviceSpecificationId, serviceInstanceId, A_NAME, A_SUMMARY, A_COVERAGE))
                 .expectEvents(new ServiceInstanceCreated(
                                 anOrganizationId,
                                 serviceSpecificationId,

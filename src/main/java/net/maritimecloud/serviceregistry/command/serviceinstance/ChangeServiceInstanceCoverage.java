@@ -12,7 +12,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.command.organization;
+package net.maritimecloud.serviceregistry.command.serviceinstance;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -22,8 +22,9 @@ import net.maritimecloud.serviceregistry.infrastructure.jackson.CoverageDeserial
 import net.maritimecloud.serviceregistry.infrastructure.jackson.CoverageSerializer;
 import net.maritimecloud.serviceregistry.command.Command;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
+import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
-import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
 import org.axonframework.common.Assert;
 
@@ -31,59 +32,27 @@ import org.axonframework.common.Assert;
  *
  * @author Christoffer Børrild
  */
-public class ProvideServiceInstanceCommand implements Command {
+public class ChangeServiceInstanceCoverage implements Command {
 
     @TargetAggregateIdentifier
     private final ServiceInstanceId serviceInstanceId;
-    private final OrganizationId providerId;
-    private final ServiceSpecificationId specificationId;
-    private final String name;
-    private final String summary;
     private final Coverage coverage;
 
     @JsonCreator
-    public ProvideServiceInstanceCommand(
-            @JsonProperty("providerId") OrganizationId providerId,
-            @JsonProperty("specificationId") ServiceSpecificationId specificationId,
+    public ChangeServiceInstanceCoverage(
             @JsonProperty("serviceInstanceId") ServiceInstanceId serviceInstanceId,
-            @JsonProperty("name") String name,
-            @JsonProperty("summary") String summary,
             @JsonProperty("coverage") @JsonSerialize(using = CoverageSerializer.class) @JsonDeserialize(using = CoverageDeserializer.class) Coverage coverage
     ) {
-        Assert.notNull(providerId, "The organizationId of the providing organization must be supplied");
-        Assert.notNull(specificationId, "The serviceSpecificationId must be provided");
-        Assert.notNull(name, "The provided name cannot be null");
-        Assert.notNull(summary, "The provided summary cannot be null");
-        this.providerId = providerId;
-        this.specificationId = specificationId;
+        Assert.notNull(serviceInstanceId, "The serviceInstanceId must be provided");
         this.serviceInstanceId = serviceInstanceId;
-        this.name = name;
-        this.summary = summary;
         this.coverage = coverage;
-    }
-
-    public OrganizationId getProviderId() {
-        return providerId;
-    }
-
-    public ServiceSpecificationId getSpecificationId() {
-        return specificationId;
     }
 
     public ServiceInstanceId getServiceInstanceId() {
         return serviceInstanceId;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
     public Coverage getCoverage() {
         return coverage;
     }
-
 }

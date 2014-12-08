@@ -16,7 +16,7 @@ package net.maritimecloud.serviceregistry.query;
 
 import javax.annotation.Resource;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAdded;
-import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceCoverageChangedEvent;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceCoverageChanged;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceCreated;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointAdded;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointRemoved;
@@ -67,7 +67,7 @@ public class ServiceInstanceListener {
     }
 
     @EventHandler
-    public void on(ServiceInstanceCoverageChangedEvent event) {
+    public void on(ServiceInstanceCoverageChanged event) {
         ServiceInstanceEntry instance = getInstanceWith(event.getServiceInstanceId());
         instance.setCoverage(event.getCoverage());
         save(instance);

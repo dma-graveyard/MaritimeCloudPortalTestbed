@@ -14,6 +14,9 @@
  */
 package net.maritimecloud.serviceregistry.command.servicespecification;
 
+import net.maritimecloud.serviceregistry.command.api.ServiceSpecificationCreated;
+import net.maritimecloud.serviceregistry.command.api.ServiceSpecificationNameAndSummaryChanged;
+import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
 import net.maritimecloud.common.infrastructure.axon.CommonFixture;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import org.axonframework.test.FixtureConfiguration;
@@ -39,9 +42,9 @@ public class ServiceSpecificationTest extends CommonFixture {
     public void changeServiceSpecificationNameAndSummary() {
         OrganizationId organizationId = new OrganizationId(AN_ORG_ID);
 
-        fixture.given(new ServiceSpecificationCreatedEvent(organizationId, new ServiceSpecificationId(A_SPEC_ID), ServiceType.AISASM, A_NAME, A_SUMMARY))
-                .when(new ChangeServiceSpecificationNameAndSummaryCommand(new ServiceSpecificationId(A_SPEC_ID), ANOTHER_NAME, ANOTHER_SUMMARY))
-                .expectEvents(new ServiceSpecificationNameAndSummaryChangedEvent(new ServiceSpecificationId(A_SPEC_ID), ANOTHER_NAME, ANOTHER_SUMMARY));
+        fixture.given(new ServiceSpecificationCreated(organizationId, new ServiceSpecificationId(A_SPEC_ID), ServiceType.AISASM, A_NAME, A_SUMMARY))
+                .when(new ChangeServiceSpecificationNameAndSummary(new ServiceSpecificationId(A_SPEC_ID), ANOTHER_NAME, ANOTHER_SUMMARY))
+                .expectEvents(new ServiceSpecificationNameAndSummaryChanged(new ServiceSpecificationId(A_SPEC_ID), ANOTHER_NAME, ANOTHER_SUMMARY));
     }
 
 }

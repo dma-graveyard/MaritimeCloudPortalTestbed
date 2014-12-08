@@ -14,6 +14,8 @@
  */
 package net.maritimecloud.serviceregistry.command.organization;
 
+import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
+import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
 import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
 import org.axonframework.commandhandling.CommandExecutionException;
@@ -30,7 +32,7 @@ import org.junit.Test;
  */
 public class OrganizationIT extends AbstractAxonCqrsIT {
 
-    private CreateOrganizationCommand createOrganizationCommand;
+    private CreateOrganization createOrganizationCommand;
     private OrganizationId organizationId;
     private OrganizationId organizationId2;
 
@@ -46,7 +48,7 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
     public void testOrganization() {
 
         commandGateway().sendAndWait(createOrganizationCommand);
-        commandGateway().sendAndWait(new ChangeOrganizationNameAndSummaryCommand(organizationId, ANOTHER_NAME, ANOTHER_SUMMARY));
+        commandGateway().sendAndWait(new ChangeOrganizationNameAndSummary(organizationId, ANOTHER_NAME, ANOTHER_SUMMARY));
 
         try {
             commandGateway().sendAndWait(createOrganizationCommand);
@@ -59,14 +61,14 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
         assertEquals(ANOTHER_NAME, entry.getName());
         assertEquals(ANOTHER_SUMMARY, entry.getSummary());
 
-        commandGateway().send(new CreateOrganizationCommand(organizationId2, A_NAME, A_SUMMARY, A_URL));
+        commandGateway().send(new CreateOrganization(organizationId2, A_NAME, A_SUMMARY, A_URL));
         assertEquals(2, organizationQueryRepository.count());
     }
 
     @Test(expected = AggregateNotFoundException.class)
     public void cannotChangeNonExistingOrganization() throws Throwable {
         try {
-            commandGateway().sendAndWait(new ChangeOrganizationNameAndSummaryCommand(new OrganizationId("notCreated"), A_NAME, A_SUMMARY));
+            commandGateway().sendAndWait(new ChangeOrganizationNameAndSummary(new OrganizationId("notCreated"), A_NAME, A_SUMMARY));
         } catch (CommandExecutionException e) {
             throw e.getCause();
         }

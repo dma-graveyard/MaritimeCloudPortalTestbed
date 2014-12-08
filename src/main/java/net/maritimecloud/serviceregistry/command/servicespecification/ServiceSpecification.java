@@ -14,6 +14,9 @@
  */
 package net.maritimecloud.serviceregistry.command.servicespecification;
 
+import net.maritimecloud.serviceregistry.command.api.ServiceSpecificationCreated;
+import net.maritimecloud.serviceregistry.command.api.ServiceSpecificationNameAndSummaryChanged;
+import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
@@ -53,18 +56,18 @@ public class ServiceSpecification extends AbstractAnnotatedAggregateRoot<Service
         this.serviceType = serviceType;
         this.name = name;
         this.summary = summary;
-        apply(new ServiceSpecificationCreatedEvent(organizationId, serviceSpecificationId, serviceType, name, summary));
+        apply(new ServiceSpecificationCreated(organizationId, serviceSpecificationId, serviceType, name, summary));
     }
 
     @CommandHandler
-    public void handle(ChangeServiceSpecificationNameAndSummaryCommand command) {
+    public void handle(ChangeServiceSpecificationNameAndSummary command) {
         this.name = command.getName();
         this.summary = command.getSummary();
-        apply(new ServiceSpecificationNameAndSummaryChangedEvent(command.getServiceSpecificationId(), command.getName(), command.getSummary()));
+        apply(new ServiceSpecificationNameAndSummaryChanged(command.getServiceSpecificationId(), command.getName(), command.getSummary()));
     }
 
     @EventSourcingHandler
-    public void on(ServiceSpecificationCreatedEvent event) {
+    public void on(ServiceSpecificationCreated event) {
         this.serviceSpecificationId = event.getServiceSpecificationId();
         this.organizationId = event.getOwnerId();
         this.serviceType = event.getServiceType();
@@ -73,7 +76,7 @@ public class ServiceSpecification extends AbstractAnnotatedAggregateRoot<Service
     }
 
     @EventSourcingHandler
-    public void on(ServiceSpecificationNameAndSummaryChangedEvent event) {
+    public void on(ServiceSpecificationNameAndSummaryChanged event) {
         this.name = event.getName();
         this.summary = event.getSummary();
     }

@@ -12,18 +12,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.command.organization;
+package net.maritimecloud.serviceregistry.command.api;
+
+import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 
 /**
  * @author Christoffer Børrild
  */
-public class OrganizationNameAndSummaryChangedEvent {
+public class OrganizationNameAndSummaryChanged {
 
     private final OrganizationId organizationId;
     private final String name;
     private final String summary;
 
-    public OrganizationNameAndSummaryChangedEvent(OrganizationId organizationId, String name, String summary) {
+    public OrganizationNameAndSummaryChanged(OrganizationId organizationId, String name, String summary) {
         this.organizationId = organizationId;
         this.name = name;
         this.summary = summary;

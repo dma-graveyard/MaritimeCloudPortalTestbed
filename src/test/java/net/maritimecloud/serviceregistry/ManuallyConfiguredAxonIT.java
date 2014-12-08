@@ -14,6 +14,7 @@
  */
 package net.maritimecloud.serviceregistry;
 
+import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import net.maritimecloud.serviceregistry.command.servicespecification.*;
 import net.maritimecloud.serviceregistry.command.organization.*;
 import java.util.UUID;
@@ -45,7 +46,7 @@ public class ManuallyConfiguredAxonIT extends AbstractManuallyComnfiguredAxonCqr
     private final ServiceSpecificationId serviceSpecificationId1 = new ServiceSpecificationId(UUID.randomUUID().toString());
     private final ServiceSpecificationId serviceSpecificationId2 = new ServiceSpecificationId(UUID.randomUUID().toString());
     private final ServiceSpecificationId serviceSpecificationId3 = new ServiceSpecificationId(UUID.randomUUID().toString());
-    private final CreateOrganizationCommand CREATE_ORGANIZATION_COMMAND = new CreateOrganizationCommand(organizationId, A_NAME, A_SUMMARY, A_URL);
+    private final CreateOrganization CREATE_ORGANIZATION_COMMAND = new CreateOrganization(organizationId, A_NAME, A_SUMMARY, A_URL);
 
     @BeforeClass
     public static void setUpClass() {

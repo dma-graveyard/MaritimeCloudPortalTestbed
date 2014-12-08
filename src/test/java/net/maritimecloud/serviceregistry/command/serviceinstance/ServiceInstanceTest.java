@@ -27,10 +27,10 @@ import net.maritimecloud.common.infrastructure.axon.CommonFixture;
 import net.maritimecloud.common.infrastructure.axon.RepositoryMock;
 import net.maritimecloud.serviceregistry.command.organization.Organization;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationCommandHandler;
-import net.maritimecloud.serviceregistry.command.organization.OrganizationCreatedEvent;
+import net.maritimecloud.serviceregistry.command.api.OrganizationCreated;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
-import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationCreatedEvent;
+import net.maritimecloud.serviceregistry.command.api.ServiceSpecificationCreated;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 import org.axonframework.test.FixtureConfiguration;
 import org.axonframework.test.Fixtures;
@@ -50,16 +50,16 @@ public class ServiceInstanceTest extends CommonFixture {
     private final ServiceInstanceId serviceInstanceId = new ServiceInstanceId(AN_INSTANCE_ID);
     
     private ServiceInstanceCreated serviceInstanceCreatedEvent;
-    private ServiceSpecificationCreatedEvent serviceSpecificationCreatedEvent;
-    private OrganizationCreatedEvent organizationCreatedEvent;
+    private ServiceSpecificationCreated serviceSpecificationCreatedEvent;
+    private OrganizationCreated organizationCreatedEvent;
 
     @Before
     public void setUp() throws Exception {
         
         // setup predefined events
         serviceInstanceCreatedEvent = new ServiceInstanceCreated(anOrganizationId, serviceSpecificationId, serviceInstanceId, A_NAME, A_SUMMARY, A_COVERAGE, A_SERVICE_TYPE);
-        serviceSpecificationCreatedEvent = new ServiceSpecificationCreatedEvent(anOrganizationId, serviceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY);
-        organizationCreatedEvent = new OrganizationCreatedEvent(anOrganizationId, A_NAME, A_SUMMARY, A_URL);
+        serviceSpecificationCreatedEvent = new ServiceSpecificationCreated(anOrganizationId, serviceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY);
+        organizationCreatedEvent = new OrganizationCreated(anOrganizationId, A_NAME, A_SUMMARY, A_URL);
 
         // Setup a fixture with an OrganizationCommandHandler with mocked 
         // organization- and serviceSpecification repositories and aggregates
@@ -94,8 +94,8 @@ public class ServiceInstanceTest extends CommonFixture {
                 serviceSpecificationCreatedEvent, 
                 serviceInstanceCreatedEvent
         )
-                .when(new ChangeServiceInstanceCoverageCommand(serviceInstanceId, ANOTHER_COVERAGE))
-                .expectEvents(new ServiceInstanceCoverageChangedEvent(serviceInstanceId, ANOTHER_COVERAGE));
+                .when(new ChangeServiceInstanceCoverage(serviceInstanceId, ANOTHER_COVERAGE))
+                .expectEvents(new ServiceInstanceCoverageChanged(serviceInstanceId, ANOTHER_COVERAGE));
     }
 
     @Test
