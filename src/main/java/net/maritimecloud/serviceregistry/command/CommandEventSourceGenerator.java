@@ -37,7 +37,10 @@ public class CommandEventSourceGenerator {
     public static void main(String[] args) throws IOException {
 
         System.out.println("sourceGenerator running");
-        //String target = "./src/main/java/";
+        String target = "./src/main/java/";
+        /*
+        SourceGenerator sourceGenerator = new SourceGenerator(ServiceRegistryContract.class, target);
+        */
         SourceGenerator sourceGenerator = new SourceGenerator(ServiceRegistryContract.class);
         sourceGenerator.generate();
 
