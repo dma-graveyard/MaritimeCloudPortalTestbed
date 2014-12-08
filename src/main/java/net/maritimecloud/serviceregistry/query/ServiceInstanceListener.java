@@ -15,13 +15,13 @@
 package net.maritimecloud.serviceregistry.query;
 
 import javax.annotation.Resource;
-import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAddedEvent;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAdded;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceCoverageChangedEvent;
-import net.maritimecloud.serviceregistry.command.api.ServiceInstanceCreatedEvent;
-import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointAddedEvent;
-import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointRemovedEvent;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceCreated;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointAdded;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointRemoved;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
-import net.maritimecloud.serviceregistry.command.api.ServiceInstanceNameAndSummaryChangedEvent;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceNameAndSummaryChanged;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class ServiceInstanceListener {
     }
 
     @EventHandler
-    public void on(ServiceInstanceCreatedEvent event) {
+    public void on(ServiceInstanceCreated event) {
         ServiceInstanceEntry entry = new ServiceInstanceEntry();
         entry.setServiceInstanceId(event.getServiceInstanceId().identifier());
         entry.setProviderId(event.getProviderId().identifier());
@@ -59,7 +59,7 @@ public class ServiceInstanceListener {
     }
 
     @EventHandler
-    public void on(ServiceInstanceNameAndSummaryChangedEvent event) {
+    public void on(ServiceInstanceNameAndSummaryChanged event) {
         ServiceInstanceEntry instance = getInstanceWith(event.getServiceInstanceId());
         instance.setName(event.getName());
         instance.setSummary(event.getSummary());
@@ -74,21 +74,21 @@ public class ServiceInstanceListener {
     }
 
     @EventHandler
-    public void on(ServiceInstanceEndpointAddedEvent event) {
+    public void on(ServiceInstanceEndpointAdded event) {
         ServiceInstanceEntry instance = getInstanceWith(event.getServiceInstanceId());
         instance.addEndpoint(event.getServiceEndpoint());
         save(instance);
     }
 
     @EventHandler
-    public void on(ServiceInstanceEndpointRemovedEvent event) {
+    public void on(ServiceInstanceEndpointRemoved event) {
         ServiceInstanceEntry instance = getInstanceWith(event.getServiceInstanceId());
         instance.removeEndpoint(event.getServiceEndpoint());
         save(instance);
     }
 
     @EventHandler
-    public void on(ServiceInstanceAliasAddedEvent event) {
+    public void on(ServiceInstanceAliasAdded event) {
         ServiceInstanceEntry instance = getInstanceWith(event.getServiceInstanceId());
         instance.addAlias(event.getAlias());
         save(instance);

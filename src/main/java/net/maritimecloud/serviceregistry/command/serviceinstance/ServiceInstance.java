@@ -14,15 +14,15 @@
  */
 package net.maritimecloud.serviceregistry.command.serviceinstance;
 
-import net.maritimecloud.serviceregistry.command.api.ServiceInstanceNameAndSummaryChangedEvent;
-import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointAddedEvent;
-import net.maritimecloud.serviceregistry.command.api.ServiceInstanceCreatedEvent;
-import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointRemovedEvent;
-import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAddedEvent;
-import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpointCommand;
-import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummaryCommand;
-import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpointCommand;
-import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAliasCommand;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceNameAndSummaryChanged;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointAdded;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceCreated;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointRemoved;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAdded;
+import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
+import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
+import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpoint;
+import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
@@ -73,12 +73,12 @@ public class ServiceInstance extends AbstractAnnotatedAggregateRoot<ServiceInsta
         this.name = name;
         this.summary = summary;
         this.coverage = coverage;
-        apply(new ServiceInstanceCreatedEvent(providerId, specificationId, serviceInstanceId, name, summary, coverage, serviceType));
+        apply(new ServiceInstanceCreated(providerId, specificationId, serviceInstanceId, name, summary, coverage, serviceType));
     }
 
     @CommandHandler
-    public void handle(ChangeServiceInstanceNameAndSummaryCommand command) {
-        apply(new ServiceInstanceNameAndSummaryChangedEvent(command.getServiceInstanceId(), command.getName(), command.getSummary()));
+    public void handle(ChangeServiceInstanceNameAndSummary command) {
+        apply(new ServiceInstanceNameAndSummaryChanged(command.getServiceInstanceId(), command.getName(), command.getSummary()));
     }
 
     @CommandHandler
@@ -87,22 +87,22 @@ public class ServiceInstance extends AbstractAnnotatedAggregateRoot<ServiceInsta
     }
 
     @CommandHandler
-    public void handle(AddServiceInstanceEndpointCommand command) {
-        apply(new ServiceInstanceEndpointAddedEvent(command.getServiceInstanceId(), command.getServiceEndpoint()));
+    public void handle(AddServiceInstanceEndpoint command) {
+        apply(new ServiceInstanceEndpointAdded(command.getServiceInstanceId(), command.getServiceEndpoint()));
     }
 
     @CommandHandler
-    public void handle(RemoveServiceInstanceEndpointCommand command) {
-        apply(new ServiceInstanceEndpointRemovedEvent(command.getServiceInstanceId(), command.getServiceEndpoint()));
+    public void handle(RemoveServiceInstanceEndpoint command) {
+        apply(new ServiceInstanceEndpointRemoved(command.getServiceInstanceId(), command.getServiceEndpoint()));
     }
 
     @CommandHandler
-    public void handle(AddServiceInstanceAliasCommand command) {
-        apply(new ServiceInstanceAliasAddedEvent(command.getServiceInstanceId(), command.getAlias()));
+    public void handle(AddServiceInstanceAlias command) {
+        apply(new ServiceInstanceAliasAdded(command.getServiceInstanceId(), command.getAlias()));
     }
 
     @EventSourcingHandler
-    public void on(ServiceInstanceCreatedEvent event) {
+    public void on(ServiceInstanceCreated event) {
         this.serviceInstanceId = event.getServiceInstanceId();
         this.providerId = event.getProviderId();
         this.specificationId = event.getSpecificationId();
@@ -112,17 +112,17 @@ public class ServiceInstance extends AbstractAnnotatedAggregateRoot<ServiceInsta
     }
 
     @EventSourcingHandler
-    public void on(ServiceInstanceEndpointAddedEvent event) {
+    public void on(ServiceInstanceEndpointAdded event) {
         endpoints.add(event.getServiceEndpoint().getUri());
     }
 
     @EventSourcingHandler
-    public void on(ServiceInstanceEndpointRemovedEvent event) {
+    public void on(ServiceInstanceEndpointRemoved event) {
         endpoints.remove(event.getServiceEndpoint().getUri());
     }
 
     @EventSourcingHandler
-    public void on(ServiceInstanceAliasAddedEvent event) {
+    public void on(ServiceInstanceAliasAdded event) {
         aliases.add(event.getAlias());
     }
 

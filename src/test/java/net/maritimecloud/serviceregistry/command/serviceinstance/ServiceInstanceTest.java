@@ -14,15 +14,15 @@
  */
 package net.maritimecloud.serviceregistry.command.serviceinstance;
 
-import net.maritimecloud.serviceregistry.command.api.ServiceInstanceNameAndSummaryChangedEvent;
-import net.maritimecloud.serviceregistry.command.api.ServiceInstanceCreatedEvent;
-import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointRemovedEvent;
-import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointAddedEvent;
-import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAddedEvent;
-import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpointCommand;
-import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummaryCommand;
-import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpointCommand;
-import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAliasCommand;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceNameAndSummaryChanged;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceCreated;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointRemoved;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointAdded;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAdded;
+import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
+import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
+import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpoint;
+import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
 import net.maritimecloud.common.infrastructure.axon.CommonFixture;
 import net.maritimecloud.common.infrastructure.axon.RepositoryMock;
 import net.maritimecloud.serviceregistry.command.organization.Organization;
@@ -49,7 +49,7 @@ public class ServiceInstanceTest extends CommonFixture {
     private final ServiceSpecificationId serviceSpecificationId = new ServiceSpecificationId(A_SPEC_ID);
     private final ServiceInstanceId serviceInstanceId = new ServiceInstanceId(AN_INSTANCE_ID);
     
-    private ServiceInstanceCreatedEvent serviceInstanceCreatedEvent;
+    private ServiceInstanceCreated serviceInstanceCreatedEvent;
     private ServiceSpecificationCreatedEvent serviceSpecificationCreatedEvent;
     private OrganizationCreatedEvent organizationCreatedEvent;
 
@@ -57,7 +57,7 @@ public class ServiceInstanceTest extends CommonFixture {
     public void setUp() throws Exception {
         
         // setup predefined events
-        serviceInstanceCreatedEvent = new ServiceInstanceCreatedEvent(anOrganizationId, serviceSpecificationId, serviceInstanceId, A_NAME, A_SUMMARY, A_COVERAGE, A_SERVICE_TYPE);
+        serviceInstanceCreatedEvent = new ServiceInstanceCreated(anOrganizationId, serviceSpecificationId, serviceInstanceId, A_NAME, A_SUMMARY, A_COVERAGE, A_SERVICE_TYPE);
         serviceSpecificationCreatedEvent = new ServiceSpecificationCreatedEvent(anOrganizationId, serviceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY);
         organizationCreatedEvent = new OrganizationCreatedEvent(anOrganizationId, A_NAME, A_SUMMARY, A_URL);
 
@@ -82,8 +82,8 @@ public class ServiceInstanceTest extends CommonFixture {
                 serviceSpecificationCreatedEvent, 
                 serviceInstanceCreatedEvent
         )
-                .when(new ChangeServiceInstanceNameAndSummaryCommand(serviceInstanceId, ANOTHER_NAME, ANOTHER_SUMMARY))
-                .expectEvents(new ServiceInstanceNameAndSummaryChangedEvent(serviceInstanceId, ANOTHER_NAME, ANOTHER_SUMMARY));
+                .when(new ChangeServiceInstanceNameAndSummary(serviceInstanceId, ANOTHER_NAME, ANOTHER_SUMMARY))
+                .expectEvents(new ServiceInstanceNameAndSummaryChanged(serviceInstanceId, ANOTHER_NAME, ANOTHER_SUMMARY));
     }
 
     @Test
@@ -105,20 +105,19 @@ public class ServiceInstanceTest extends CommonFixture {
                 serviceSpecificationCreatedEvent, 
                 serviceInstanceCreatedEvent
         )
-                .when(new AddServiceInstanceEndpointCommand(serviceInstanceId, AN_ENDPOINT))
-                .expectEvents(new ServiceInstanceEndpointAddedEvent(serviceInstanceId, AN_ENDPOINT));
+                .when(new AddServiceInstanceEndpoint(serviceInstanceId, AN_ENDPOINT))
+                .expectEvents(new ServiceInstanceEndpointAdded(serviceInstanceId, AN_ENDPOINT));
     }
 
     @Test
     public void removeEndpoint() {
-        fixture.given(
-                organizationCreatedEvent, 
+        fixture.given(organizationCreatedEvent, 
                 serviceSpecificationCreatedEvent, 
                 serviceInstanceCreatedEvent,
-                new ServiceInstanceEndpointAddedEvent(serviceInstanceId, AN_ENDPOINT)
+                new ServiceInstanceEndpointAdded(serviceInstanceId, AN_ENDPOINT)
         )
-                .when(new RemoveServiceInstanceEndpointCommand(serviceInstanceId, AN_ENDPOINT))
-                .expectEvents(new ServiceInstanceEndpointRemovedEvent(serviceInstanceId, AN_ENDPOINT));
+                .when(new RemoveServiceInstanceEndpoint(serviceInstanceId, AN_ENDPOINT))
+                .expectEvents(new ServiceInstanceEndpointRemoved(serviceInstanceId, AN_ENDPOINT));
     }
 
     @Test
@@ -128,7 +127,7 @@ public class ServiceInstanceTest extends CommonFixture {
                 serviceSpecificationCreatedEvent, 
                 serviceInstanceCreatedEvent
         )
-                .when(new AddServiceInstanceAliasCommand(serviceInstanceId, AN_ALIAS))
-                .expectEvents(new ServiceInstanceAliasAddedEvent(serviceInstanceId, AN_ALIAS));
+                .when(new AddServiceInstanceAlias(serviceInstanceId, AN_ALIAS))
+                .expectEvents(new ServiceInstanceAliasAdded(serviceInstanceId, AN_ALIAS));
     }
 }

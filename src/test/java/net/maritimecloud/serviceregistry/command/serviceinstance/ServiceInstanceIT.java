@@ -14,10 +14,10 @@
  */
 package net.maritimecloud.serviceregistry.command.serviceinstance;
 
-import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpointCommand;
-import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummaryCommand;
-import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpointCommand;
-import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAliasCommand;
+import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
+import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
+import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpoint;
+import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
 import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
 import net.maritimecloud.serviceregistry.command.organization.CreateOrganizationCommand;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
@@ -94,8 +94,7 @@ public class ServiceInstanceIT extends AbstractAxonCqrsIT {
         commandGateway().sendAndWait(provideServiceInstanceCommand);
 
         // When the name and summary are changed 
-        commandGateway().sendAndWait(
-                new ChangeServiceInstanceNameAndSummaryCommand(
+        commandGateway().sendAndWait(new ChangeServiceInstanceNameAndSummary(
                         provideServiceInstanceCommand.getServiceInstanceId(),
                         ANOTHER_NAME,
                         ANOTHER_SUMMARY));
@@ -134,7 +133,7 @@ public class ServiceInstanceIT extends AbstractAxonCqrsIT {
         commandGateway().sendAndWait(provideServiceInstanceCommand);
 
         // When
-        commandGateway().sendAndWait(new AddServiceInstanceEndpointCommand(provideServiceInstanceCommand.getServiceInstanceId(), AN_ENDPOINT));
+        commandGateway().sendAndWait(new AddServiceInstanceEndpoint(provideServiceInstanceCommand.getServiceInstanceId(), AN_ENDPOINT));
 
         // Then
         ServiceInstanceEntry instance = serviceInstanceQueryRepository.findOne(provideServiceInstanceCommand.getServiceInstanceId().identifier());
@@ -149,13 +148,13 @@ public class ServiceInstanceIT extends AbstractAxonCqrsIT {
         commandGateway().sendAndWait(createOrganizationCommand);
         commandGateway().sendAndWait(prepareServiceSpecificationCommand);
         commandGateway().sendAndWait(provideServiceInstanceCommand);
-        commandGateway().sendAndWait(new AddServiceInstanceEndpointCommand(provideServiceInstanceCommand.getServiceInstanceId(), AN_ENDPOINT));
-        commandGateway().sendAndWait(new AddServiceInstanceEndpointCommand(provideServiceInstanceCommand.getServiceInstanceId(), ANOTHER_ENDPOINT));
+        commandGateway().sendAndWait(new AddServiceInstanceEndpoint(provideServiceInstanceCommand.getServiceInstanceId(), AN_ENDPOINT));
+        commandGateway().sendAndWait(new AddServiceInstanceEndpoint(provideServiceInstanceCommand.getServiceInstanceId(), ANOTHER_ENDPOINT));
         ServiceInstanceEntry instance = serviceInstanceQueryRepository.findOne(provideServiceInstanceCommand.getServiceInstanceId().identifier());
         assertEquals(2, instance.getEndpoints().size());
         
         // When
-        commandGateway().sendAndWait(new RemoveServiceInstanceEndpointCommand(provideServiceInstanceCommand.getServiceInstanceId(), AN_ENDPOINT));
+        commandGateway().sendAndWait(new RemoveServiceInstanceEndpoint(provideServiceInstanceCommand.getServiceInstanceId(), AN_ENDPOINT));
 
         // Then
         ServiceInstanceEntry instanceAfter = serviceInstanceQueryRepository.findOne(provideServiceInstanceCommand.getServiceInstanceId().identifier());
@@ -172,7 +171,7 @@ public class ServiceInstanceIT extends AbstractAxonCqrsIT {
         commandGateway().sendAndWait(provideServiceInstanceCommand);
 
         // When
-        commandGateway().sendAndWait(new AddServiceInstanceAliasCommand(provideServiceInstanceCommand.getServiceInstanceId(), AN_ALIAS));
+        commandGateway().sendAndWait(new AddServiceInstanceAlias(provideServiceInstanceCommand.getServiceInstanceId(), AN_ALIAS));
 
         // Then
         ServiceInstanceEntry instance = serviceInstanceQueryRepository.findOne(provideServiceInstanceCommand.getServiceInstanceId().identifier());

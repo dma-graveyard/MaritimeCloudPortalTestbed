@@ -13,16 +13,16 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceEndpoint
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#RemoveServiceInstanceEndpointCommand
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#addServiceInstanceEndpointCommand
  */
-public class RemoveServiceInstanceEndpointCommand implements Command {
+public class AddServiceInstanceEndpoint implements Command {
 
     @TargetAggregateIdentifier
     private final ServiceInstanceId serviceInstanceId;
     private final ServiceEndpoint serviceEndpoint;
 
     @JsonCreator
-    public RemoveServiceInstanceEndpointCommand(
+    public AddServiceInstanceEndpoint(
             @JsonProperty("serviceInstanceId") ServiceInstanceId serviceInstanceId,
             @JsonProperty("serviceEndpoint") ServiceEndpoint serviceEndpoint
     ) {

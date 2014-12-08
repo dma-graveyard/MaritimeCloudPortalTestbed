@@ -16,7 +16,7 @@ import net.maritimecloud.serviceregistry.command.servicespecification.ServiceTyp
  * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#serviceInstanceCreatedEvent
  */
 @Event
-public class ServiceInstanceCreatedEvent {
+public class ServiceInstanceCreated {
 
     @TargetAggregateIdentifier
     private final OrganizationId providerId;
@@ -27,7 +27,7 @@ public class ServiceInstanceCreatedEvent {
     private final Coverage coverage;
     private final ServiceType serviceType;
 
-    public ServiceInstanceCreatedEvent(
+    public ServiceInstanceCreated(
             OrganizationId providerId,
             ServiceSpecificationId specificationId,
             ServiceInstanceId serviceInstanceId,

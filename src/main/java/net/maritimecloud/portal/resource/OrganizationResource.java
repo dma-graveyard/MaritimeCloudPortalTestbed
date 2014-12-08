@@ -40,11 +40,11 @@ import net.maritimecloud.serviceregistry.command.organization.CreateOrganization
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.organization.PrepareServiceSpecificationCommand;
 import net.maritimecloud.serviceregistry.command.organization.ProvideServiceInstanceCommand;
-import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpointCommand;
+import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpoint;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceCoverageCommand;
-import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummaryCommand;
+import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
-import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpointCommand;
+import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ChangeServiceSpecificationNameAndSummaryCommand;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
@@ -83,13 +83,13 @@ public class OrganizationResource {
     private static final CommandRegistry putCommandsRegistry = new CommandRegistry(
             ChangeOrganizationNameAndSummaryCommand.class,
             ChangeServiceSpecificationNameAndSummaryCommand.class,
-            ChangeServiceInstanceNameAndSummaryCommand.class,
+            ChangeServiceInstanceNameAndSummary.class,
             ChangeServiceInstanceCoverageCommand.class,
-            AddServiceInstanceEndpointCommand.class,
-            RemoveServiceInstanceEndpointCommand.class
+            AddServiceInstanceEndpoint.class,
+            RemoveServiceInstanceEndpoint.class
     );
     private static final CommandRegistry deleteCommandsRegistry = new CommandRegistry(
-            RemoveServiceInstanceEndpointCommand.class
+            RemoveServiceInstanceEndpoint.class
     );
     private static final CommandRegistry patchCommandsRegistry = new CommandRegistry();
 

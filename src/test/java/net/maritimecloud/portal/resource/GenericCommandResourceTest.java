@@ -26,11 +26,11 @@ import net.maritimecloud.serviceregistry.command.organization.CreateOrganization
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.organization.PrepareServiceSpecificationCommand;
 import net.maritimecloud.serviceregistry.command.organization.ProvideServiceInstanceCommand;
-import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpointCommand;
+import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpoint;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceCoverageCommand;
-import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummaryCommand;
+import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
-import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpointCommand;
+import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ChangeServiceSpecificationNameAndSummaryCommand;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
@@ -173,9 +173,8 @@ public class GenericCommandResourceTest extends CommonFixture {
     @Test
     public void jsonChangeServiceInstanceNameAndSummaryCommand() throws Exception {
 
-        ChangeServiceInstanceNameAndSummaryCommand command
-                = serializeAndDeserializeCommand(
-                        new ChangeServiceInstanceNameAndSummaryCommand(
+        ChangeServiceInstanceNameAndSummary command
+                = serializeAndDeserializeCommand(new ChangeServiceInstanceNameAndSummary(
                                 new ServiceInstanceId(AN_INSTANCE_ID),
                                 A_NAME,
                                 A_SUMMARY
@@ -204,9 +203,8 @@ public class GenericCommandResourceTest extends CommonFixture {
 
     @Test
     public void jsonAddServiceInstanceEndpointCommand() throws Exception {
-        AddServiceInstanceEndpointCommand command
-                = serializeAndDeserializeCommand(
-                        new AddServiceInstanceEndpointCommand(
+        AddServiceInstanceEndpoint command
+                = serializeAndDeserializeCommand(new AddServiceInstanceEndpoint(
                                 new ServiceInstanceId(AN_INSTANCE_ID),
                                 AN_ENDPOINT
                         )
@@ -218,9 +216,8 @@ public class GenericCommandResourceTest extends CommonFixture {
 
     @Test
     public void jsonRemoveServiceInstanceEndpointCommand() throws Exception {
-        RemoveServiceInstanceEndpointCommand command
-                = serializeAndDeserializeCommand(
-                        new RemoveServiceInstanceEndpointCommand(
+        RemoveServiceInstanceEndpoint command
+                = serializeAndDeserializeCommand(new RemoveServiceInstanceEndpoint(
                                 new ServiceInstanceId(AN_INSTANCE_ID),
                                 AN_ENDPOINT
                         )

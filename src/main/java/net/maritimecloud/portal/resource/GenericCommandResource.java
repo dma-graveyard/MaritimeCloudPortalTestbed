@@ -36,9 +36,9 @@ import net.maritimecloud.serviceregistry.command.organization.ChangeOrganization
 import net.maritimecloud.serviceregistry.command.organization.CreateOrganizationCommand;
 import net.maritimecloud.serviceregistry.command.organization.PrepareServiceSpecificationCommand;
 import net.maritimecloud.serviceregistry.command.organization.ProvideServiceInstanceCommand;
-import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpointCommand;
-import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummaryCommand;
-import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpointCommand;
+import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpoint;
+import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
+import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
 import net.maritimecloud.serviceregistry.command.servicespecification.ChangeServiceSpecificationNameAndSummaryCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,14 +57,14 @@ public class GenericCommandResource {
     private static final CommandRegistry postCommandsRegistry = new CommandRegistry(
             CreateOrganizationCommand.class,
             PrepareServiceSpecificationCommand.class,
-            AddServiceInstanceEndpointCommand.class,
-            RemoveServiceInstanceEndpointCommand.class,
+            AddServiceInstanceEndpoint.class,
+            RemoveServiceInstanceEndpoint.class,
             ProvideServiceInstanceCommand.class
     );
     private static final CommandRegistry putCommandsRegistry = new CommandRegistry(
             ChangeOrganizationNameAndSummaryCommand.class,
             ChangeServiceSpecificationNameAndSummaryCommand.class,
-            ChangeServiceInstanceNameAndSummaryCommand.class
+            ChangeServiceInstanceNameAndSummary.class
     );
     private static final CommandRegistry deleteCommandsRegistry = new CommandRegistry();
     private static final CommandRegistry patchCommandsRegistry = new CommandRegistry();

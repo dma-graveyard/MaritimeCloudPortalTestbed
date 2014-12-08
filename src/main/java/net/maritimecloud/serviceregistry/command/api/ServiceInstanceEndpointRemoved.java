@@ -4,30 +4,25 @@
 package net.maritimecloud.serviceregistry.command.api;
 
 import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
-import org.axonframework.common.Assert;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import net.maritimecloud.serviceregistry.command.Command;
+import net.maritimecloud.cqrs.tool.Event;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceEndpoint;
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#addServiceInstanceEndpointCommand
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#serviceInstanceEndpointRemovedEvent
  */
-public class AddServiceInstanceEndpointCommand implements Command {
+@Event
+public class ServiceInstanceEndpointRemoved {
 
     @TargetAggregateIdentifier
     private final ServiceInstanceId serviceInstanceId;
     private final ServiceEndpoint serviceEndpoint;
 
-    @JsonCreator
-    public AddServiceInstanceEndpointCommand(
-            @JsonProperty("serviceInstanceId") ServiceInstanceId serviceInstanceId,
-            @JsonProperty("serviceEndpoint") ServiceEndpoint serviceEndpoint
+    public ServiceInstanceEndpointRemoved(
+            ServiceInstanceId serviceInstanceId,
+            ServiceEndpoint serviceEndpoint
     ) {
-        Assert.notNull(serviceInstanceId, "The serviceInstanceId must be provided");
-        Assert.notNull(serviceEndpoint, "The serviceEndpoint must be provided");
         this.serviceInstanceId = serviceInstanceId;
         this.serviceEndpoint = serviceEndpoint;
     }

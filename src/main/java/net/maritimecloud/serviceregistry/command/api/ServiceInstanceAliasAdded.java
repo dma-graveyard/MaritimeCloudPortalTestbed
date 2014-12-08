@@ -6,33 +6,32 @@ package net.maritimecloud.serviceregistry.command.api;
 import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
 import net.maritimecloud.cqrs.tool.Event;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
-import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceEndpoint;
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#serviceInstanceEndpointRemovedEvent
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#serviceInstanceAliasAddedEvent
  */
 @Event
-public class ServiceInstanceEndpointRemovedEvent {
+public class ServiceInstanceAliasAdded {
 
     @TargetAggregateIdentifier
     private final ServiceInstanceId serviceInstanceId;
-    private final ServiceEndpoint serviceEndpoint;
+    private final String alias;
 
-    public ServiceInstanceEndpointRemovedEvent(
+    public ServiceInstanceAliasAdded(
             ServiceInstanceId serviceInstanceId,
-            ServiceEndpoint serviceEndpoint
+            String alias
     ) {
         this.serviceInstanceId = serviceInstanceId;
-        this.serviceEndpoint = serviceEndpoint;
+        this.alias = alias;
     }
 
     public ServiceInstanceId getServiceInstanceId() {
         return serviceInstanceId;
     }
 
-    public ServiceEndpoint getServiceEndpoint() {
-        return serviceEndpoint;
+    public String getAlias() {
+        return alias;
     }
 
 }

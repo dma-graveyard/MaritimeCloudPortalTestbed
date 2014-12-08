@@ -12,31 +12,39 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#addServiceInstanceAliasCommand
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#changeServiceInstanceNameAndSummaryCommand
  */
-public class AddServiceInstanceAliasCommand implements Command {
+public class ChangeServiceInstanceNameAndSummary implements Command {
 
     @TargetAggregateIdentifier
     private final ServiceInstanceId serviceInstanceId;
-    private final String alias;
+    private final String name;
+    private final String summary;
 
     @JsonCreator
-    public AddServiceInstanceAliasCommand(
+    public ChangeServiceInstanceNameAndSummary(
             @JsonProperty("serviceInstanceId") ServiceInstanceId serviceInstanceId,
-            @JsonProperty("alias") String alias
+            @JsonProperty("name") String name,
+            @JsonProperty("summary") String summary
     ) {
         Assert.notNull(serviceInstanceId, "The serviceInstanceId must be provided");
-        Assert.notNull(alias, "The alias must be provided");
+        Assert.notNull(name, "The name must be provided");
+        Assert.notNull(summary, "The summary must be provided");
         this.serviceInstanceId = serviceInstanceId;
-        this.alias = alias;
+        this.name = name;
+        this.summary = summary;
     }
 
     public ServiceInstanceId getServiceInstanceId() {
         return serviceInstanceId;
     }
 
-    public String getAlias() {
-        return alias;
+    public String getName() {
+        return name;
+    }
+
+    public String getSummary() {
+        return summary;
     }
 
 }

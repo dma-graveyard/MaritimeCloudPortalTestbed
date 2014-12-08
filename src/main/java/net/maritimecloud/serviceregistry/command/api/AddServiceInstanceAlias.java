@@ -4,24 +4,29 @@
 package net.maritimecloud.serviceregistry.command.api;
 
 import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
-import net.maritimecloud.cqrs.tool.Event;
+import org.axonframework.common.Assert;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import net.maritimecloud.serviceregistry.command.Command;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#serviceInstanceAliasAddedEvent
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#addServiceInstanceAliasCommand
  */
-@Event
-public class ServiceInstanceAliasAddedEvent {
+public class AddServiceInstanceAlias implements Command {
 
     @TargetAggregateIdentifier
     private final ServiceInstanceId serviceInstanceId;
     private final String alias;
 
-    public ServiceInstanceAliasAddedEvent(
-            ServiceInstanceId serviceInstanceId,
-            String alias
+    @JsonCreator
+    public AddServiceInstanceAlias(
+            @JsonProperty("serviceInstanceId") ServiceInstanceId serviceInstanceId,
+            @JsonProperty("alias") String alias
     ) {
+        Assert.notNull(serviceInstanceId, "The serviceInstanceId must be provided");
+        Assert.notNull(alias, "The alias must be provided");
         this.serviceInstanceId = serviceInstanceId;
         this.alias = alias;
     }

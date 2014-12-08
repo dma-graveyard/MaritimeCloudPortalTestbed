@@ -17,7 +17,7 @@ package net.maritimecloud.serviceregistry.command.organization;
 import net.maritimecloud.common.infrastructure.axon.CommonFixture;
 import net.maritimecloud.common.infrastructure.axon.RepositoryMock;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
-import net.maritimecloud.serviceregistry.command.api.ServiceInstanceCreatedEvent;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceCreated;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationCreatedEvent;
@@ -116,7 +116,7 @@ public class OrganizationCommandHandlerTest extends CommonFixture {
                 new ServiceSpecificationCreatedEvent(anOrganizationId, serviceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY)
         )
                 .when(new ProvideServiceInstanceCommand(anOrganizationId, serviceSpecificationId, serviceInstanceId, A_NAME, A_SUMMARY, A_COVERAGE))
-                .expectEvents(new ServiceInstanceCreatedEvent(
+                .expectEvents(new ServiceInstanceCreated(
                                 anOrganizationId,
                                 serviceSpecificationId,
                                 new ServiceInstanceId(AN_INSTANCE_ID),

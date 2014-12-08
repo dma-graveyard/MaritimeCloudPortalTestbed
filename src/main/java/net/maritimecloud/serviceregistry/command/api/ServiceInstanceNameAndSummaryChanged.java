@@ -4,32 +4,26 @@
 package net.maritimecloud.serviceregistry.command.api;
 
 import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
-import org.axonframework.common.Assert;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import net.maritimecloud.serviceregistry.command.Command;
+import net.maritimecloud.cqrs.tool.Event;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#changeServiceInstanceNameAndSummaryCommand
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#serviceInstanceNameAndSummaryChangedEvent
  */
-public class ChangeServiceInstanceNameAndSummaryCommand implements Command {
+@Event
+public class ServiceInstanceNameAndSummaryChanged {
 
     @TargetAggregateIdentifier
     private final ServiceInstanceId serviceInstanceId;
     private final String name;
     private final String summary;
 
-    @JsonCreator
-    public ChangeServiceInstanceNameAndSummaryCommand(
-            @JsonProperty("serviceInstanceId") ServiceInstanceId serviceInstanceId,
-            @JsonProperty("name") String name,
-            @JsonProperty("summary") String summary
+    public ServiceInstanceNameAndSummaryChanged(
+            ServiceInstanceId serviceInstanceId,
+            String name,
+            String summary
     ) {
-        Assert.notNull(serviceInstanceId, "The serviceInstanceId must be provided");
-        Assert.notNull(name, "The name must be provided");
-        Assert.notNull(summary, "The summary must be provided");
         this.serviceInstanceId = serviceInstanceId;
         this.name = name;
         this.summary = summary;
