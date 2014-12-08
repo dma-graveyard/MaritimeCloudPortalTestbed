@@ -21,6 +21,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import net.maritimecloud.portal.domain.infrastructure.jackson.CoverageDeserializer;
 import net.maritimecloud.portal.domain.infrastructure.jackson.CoverageSerializer;
 import net.maritimecloud.serviceregistry.command.Command;
+import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
 import org.axonframework.common.Assert;
 

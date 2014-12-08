@@ -12,40 +12,37 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.command.serviceinstance;
+package net.maritimecloud.serviceregistry.command.api;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import net.maritimecloud.serviceregistry.command.Command;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
-import org.axonframework.common.Assert;
 
 /**
  * @author Christoffer Børrild
  */
-public class RemoveServiceInstanceEndpointCommand implements Command {
+public class ServiceInstanceNameAndSummaryChangedEvent {
 
     @TargetAggregateIdentifier
     private final ServiceInstanceId serviceInstanceId;
-    private final ServiceEndpoint serviceEndpoint;
+    private final String name;
+    private final String summary;
 
-    @JsonCreator
-    public RemoveServiceInstanceEndpointCommand(
-            @JsonProperty("serviceInstanceId") ServiceInstanceId serviceInstanceId,
-            @JsonProperty("serviceEndpoint") ServiceEndpoint serviceEndpoint
-    ) {
-        Assert.notNull(serviceInstanceId, "The serviceInstanceId must be provided");
-        Assert.notNull(serviceEndpoint, "The serviceEndpoint must be provided");
+    public ServiceInstanceNameAndSummaryChangedEvent(ServiceInstanceId serviceInstanceId, String name, String summary) {
         this.serviceInstanceId = serviceInstanceId;
-        this.serviceEndpoint = serviceEndpoint;
+        this.name = name;
+        this.summary = summary;
     }
 
     public ServiceInstanceId getServiceInstanceId() {
         return serviceInstanceId;
     }
 
-    public ServiceEndpoint getServiceEndpoint() {
-        return serviceEndpoint;
+    public String getName() {
+        return name;
     }
-    
+
+    public String getSummary() {
+        return summary;
+    }
+
 }

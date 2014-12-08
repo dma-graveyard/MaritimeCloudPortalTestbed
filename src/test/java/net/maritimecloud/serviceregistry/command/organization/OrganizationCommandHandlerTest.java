@@ -17,7 +17,7 @@ package net.maritimecloud.serviceregistry.command.organization;
 import net.maritimecloud.common.infrastructure.axon.CommonFixture;
 import net.maritimecloud.common.infrastructure.axon.RepositoryMock;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
-import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceCreatedEvent;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceCreatedEvent;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationCreatedEvent;

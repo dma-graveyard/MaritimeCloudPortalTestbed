@@ -12,9 +12,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.command.serviceinstance;
+package net.maritimecloud.serviceregistry.command.api;
 
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
+import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceType;
 import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;

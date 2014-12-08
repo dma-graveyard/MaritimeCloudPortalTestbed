@@ -14,6 +14,10 @@
  */
 package net.maritimecloud.serviceregistry.command.serviceinstance;
 
+import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpointCommand;
+import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummaryCommand;
+import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpointCommand;
+import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAliasCommand;
 import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
 import net.maritimecloud.serviceregistry.command.organization.CreateOrganizationCommand;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;

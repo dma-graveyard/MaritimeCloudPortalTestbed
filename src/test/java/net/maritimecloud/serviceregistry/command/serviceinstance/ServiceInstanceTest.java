@@ -14,6 +14,15 @@
  */
 package net.maritimecloud.serviceregistry.command.serviceinstance;
 
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceNameAndSummaryChangedEvent;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceCreatedEvent;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointRemovedEvent;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointAddedEvent;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAddedEvent;
+import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpointCommand;
+import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummaryCommand;
+import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpointCommand;
+import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAliasCommand;
 import net.maritimecloud.common.infrastructure.axon.CommonFixture;
 import net.maritimecloud.common.infrastructure.axon.RepositoryMock;
 import net.maritimecloud.serviceregistry.command.organization.Organization;
