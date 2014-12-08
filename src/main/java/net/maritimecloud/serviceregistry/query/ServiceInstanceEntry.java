@@ -24,7 +24,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import net.maritimecloud.portal.domain.infrastructure.jackson.CoverageSerializer;
+import net.maritimecloud.serviceregistry.infrastructure.jackson.CoverageSerializer;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceEndpoint;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceType;
