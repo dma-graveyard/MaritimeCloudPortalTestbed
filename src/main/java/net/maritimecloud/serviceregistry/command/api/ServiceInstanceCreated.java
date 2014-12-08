@@ -13,7 +13,7 @@ import net.maritimecloud.serviceregistry.command.servicespecification.ServiceTyp
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#serviceInstanceCreatedEvent
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#serviceInstanceCreated
  */
 @Event
 public class ServiceInstanceCreated {

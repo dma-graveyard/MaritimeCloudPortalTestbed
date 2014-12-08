@@ -9,7 +9,7 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#serviceInstanceNameAndSummaryChangedEvent
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#serviceInstanceNameAndSummaryChanged
  */
 @Event
 public class ServiceInstanceNameAndSummaryChanged {

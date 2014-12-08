@@ -261,8 +261,8 @@ public class OrganizationResource {
         
         for (int i = 0; i < amount; i++) {
             Object command = new PrepareServiceSpecification(
-                    new OrganizationId(random(l).getOwnerId()),
                     new ServiceSpecificationId("SS-" + i + "-" + UUID.randomUUID()),
+                    new OrganizationId(random(l).getOwnerId()),
                     
                     random(Arrays.asList(ServiceType.values())),
                     random(l).getName() + "-" + i,

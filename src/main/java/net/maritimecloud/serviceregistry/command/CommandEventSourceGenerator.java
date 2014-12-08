@@ -39,9 +39,9 @@ public class CommandEventSourceGenerator {
         System.out.println("sourceGenerator running");
         String target = "./src/main/java/";
         /*
-        SourceGenerator sourceGenerator = new SourceGenerator(ServiceRegistryContract.class, target);
-        */
         SourceGenerator sourceGenerator = new SourceGenerator(ServiceRegistryContract.class);
+        */
+        SourceGenerator sourceGenerator = new SourceGenerator(ServiceRegistryContract.class, target);
         sourceGenerator.generate();
 
     }

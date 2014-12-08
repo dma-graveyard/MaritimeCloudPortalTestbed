@@ -12,7 +12,7 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#addServiceInstanceAliasCommand
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#addServiceInstanceAlias
  */
 public class AddServiceInstanceAlias implements Command {
 

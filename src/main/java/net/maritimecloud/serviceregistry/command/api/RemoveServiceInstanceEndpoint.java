@@ -13,7 +13,7 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceEndpoint
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#RemoveServiceInstanceEndpointCommand
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#RemoveServiceInstanceEndpoint
  */
 public class RemoveServiceInstanceEndpoint implements Command {
 

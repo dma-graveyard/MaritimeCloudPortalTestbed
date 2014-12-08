@@ -10,7 +10,7 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceEndpoint
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#serviceInstanceEndpointAddedEvent
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#serviceInstanceEndpointAdded
  */
 @Event
 public class ServiceInstanceEndpointAdded {

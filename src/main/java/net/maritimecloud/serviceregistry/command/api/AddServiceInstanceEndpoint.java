@@ -13,7 +13,7 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceEndpoint
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#addServiceInstanceEndpointCommand
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#addServiceInstanceEndpoint
  */
 public class AddServiceInstanceEndpoint implements Command {
 

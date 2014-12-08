@@ -12,7 +12,7 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#changeServiceInstanceNameAndSummaryCommand
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#changeServiceInstanceNameAndSummary
  */
 public class ChangeServiceInstanceNameAndSummary implements Command {
 

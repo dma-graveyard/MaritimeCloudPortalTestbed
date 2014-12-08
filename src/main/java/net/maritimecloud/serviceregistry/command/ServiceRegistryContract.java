@@ -48,8 +48,8 @@ public interface ServiceRegistryContract extends CqrsContract {
 
     @Command
     void prepareServiceSpecification(
-            OrganizationId ownerId,
             ServiceSpecificationId serviceSpecificationId,
+            OrganizationId ownerId,
             ServiceType serviceType,
             String name,
             String summary
@@ -67,14 +67,14 @@ public interface ServiceRegistryContract extends CqrsContract {
     @Command
     void RemoveServiceInstanceEndpoint(ServiceInstanceId serviceInstanceId, ServiceEndpoint serviceEndpoint);
 
-    @Command
-    void provideServiceInstance(
-            OrganizationId providerId,
-            ServiceSpecificationId specificationId,
-            ServiceInstanceId serviceInstanceId,
-            String name,
-            String summary,
-            Coverage coverage);
+//    @Command
+//    void provideServiceInstance(
+//            OrganizationId providerId,
+//            ServiceSpecificationId specificationId,
+//            ServiceInstanceId serviceInstanceId,
+//            String name,
+//            String summary,
+//            Coverage coverage);
 
     @Event
     void serviceSpecificationNameAndSummaryChanged(ServiceSpecificationId serviceSpecificationId, String name, String summary);

@@ -55,7 +55,7 @@ public class GenericCommandResourceTest extends CommonFixture {
     @Test
     public void deserialize() throws JsonProcessingException, IOException {
 
-        String commandAsJSON = "{\"organizationId\":{\"identifier\":\"AN_ORG_ID\"},\"name\":\"A_NAME\",\"summary\":\"A_SUMMARY\"}";
+        String commandAsJSON = "{\"organizationId\":{\"identifier\":\"AN_ORG_ID\"},\"name\":\"A_NAME\",\"summary\":\"A_SUMMARY\",\"url\":\"http://a.url\"}";
         Map<String, Class> commandRegistry = new HashMap<>();
         commandRegistry.put(CreateOrganization.class.getCanonicalName(), CreateOrganization.class);
         commandRegistry.put(CreateOrganization.class.getSimpleName(), CreateOrganization.class);
@@ -107,8 +107,8 @@ public class GenericCommandResourceTest extends CommonFixture {
 
         PrepareServiceSpecification command
                 = serializeAndDeserializeCommand(new PrepareServiceSpecification(
-                                new OrganizationId(AN_ORG_ID),
                                 new ServiceSpecificationId(A_SPEC_ID),
+                                new OrganizationId(AN_ORG_ID),
                                 A_SERVICE_TYPE,
                                 A_NAME,
                                 A_SUMMARY)

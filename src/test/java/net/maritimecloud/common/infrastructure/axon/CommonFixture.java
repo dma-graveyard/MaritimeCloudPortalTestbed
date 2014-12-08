@@ -81,7 +81,7 @@ public class CommonFixture {
             OrganizationId organizationId,
             ServiceSpecificationId serviceSpecificationId
     ) {
-        return new PrepareServiceSpecification(organizationId, serviceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY);
+        return new PrepareServiceSpecification(serviceSpecificationId, organizationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY);
     }
 
 }
