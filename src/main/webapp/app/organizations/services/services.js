@@ -19,9 +19,9 @@ angular.module('mcp.organizations.services', [])
       }
     ])
 
-    .controller('EditServiceInstanceController', ['$scope', '$location', '$modal', '$stateParams', '$state',
+    .controller('EditServiceInstanceController', ['$scope', '$location', '$modal', '$stateParams', '$state', 'UUID',
       'AlmanacOperationalServiceService', 'AlmanacServiceSpecificationService', 'ServiceInstanceService',
-      function ($scope, $location, $modal, $stateParams, $state,
+      function ($scope, $location, $modal, $stateParams, $state, UUID,
           AlmanacOperationalServiceService, AlmanacServiceSpecificationService, ServiceInstanceService) {
 
         var servicetypeProtocols = {
@@ -45,6 +45,8 @@ angular.module('mcp.organizations.services', [])
           $scope.message = null;
           $scope.alertMessages = ["Error on the serverside :( ", error];
         };
+        
+        console.log('UUID:', UUID.get({name:"identifier"}));
 
         var getHydratedServiceInstance = function (success) {
           return ServiceInstanceService.get({organizationId: $stateParams.organizationId, serviceInstanceId: $stateParams.serviceInstanceId},
@@ -183,7 +185,6 @@ angular.module('mcp.organizations.services', [])
         };
 
         var setServiceTypeProtocol = function (serviceSpecification) {
-          console.log("SS", serviceSpecification);
           if (serviceSpecification) {
             $scope.protocols = servicetypeProtocols[serviceSpecification.serviceType];
             $scope.protocol = servicetypeProtocols[serviceSpecification.serviceType][0];

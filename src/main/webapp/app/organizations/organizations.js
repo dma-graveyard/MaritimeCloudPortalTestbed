@@ -50,6 +50,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
         $scope.userHasWriteAccess = function () {
 
+// FIXME: rewrite to use a list of organizations the user is a member of  
           //return UserService.isAdminMemberOf($scope.organization.organizationId);
 //          return $scope.organization.teams[0].members[0] === $scope.currentUser.name;
           return true;
