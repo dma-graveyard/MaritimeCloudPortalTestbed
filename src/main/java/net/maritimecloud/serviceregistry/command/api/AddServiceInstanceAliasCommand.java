@@ -22,8 +22,8 @@ public class AddServiceInstanceAliasCommand implements Command {
 
     @JsonCreator
     public AddServiceInstanceAliasCommand(
-            @JsonProperty("serviceInstanceId")  ServiceInstanceId serviceInstanceId,
-            @JsonProperty("alias")  String alias
+            @JsonProperty("serviceInstanceId") ServiceInstanceId serviceInstanceId,
+            @JsonProperty("alias") String alias
     ) {
         Assert.notNull(serviceInstanceId, "The serviceInstanceId must be provided");
         Assert.notNull(alias, "The alias must be provided");

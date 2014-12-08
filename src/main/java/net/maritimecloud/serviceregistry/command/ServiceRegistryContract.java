@@ -12,7 +12,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.domain;
+package net.maritimecloud.serviceregistry.command;
 
 import net.maritimecloud.cqrs.tool.CqrsContract;
 import net.maritimecloud.cqrs.tool.Event;
@@ -38,10 +38,10 @@ import net.maritimecloud.serviceregistry.command.servicespecification.ServiceTyp
 public interface ServiceRegistryContract extends CqrsContract {
 
     @Command
-    void addServiceInstanceAlias(ServiceInstanceId serviceInstanceId, String alias);
+    void addServiceInstanceAliasCommand(ServiceInstanceId serviceInstanceId, String alias);
 
     @Command
-    void addServiceInstanceEndpoint(ServiceInstanceId serviceInstanceId, ServiceEndpoint serviceEndpoint);
+    void addServiceInstanceEndpointCommand(ServiceInstanceId serviceInstanceId, ServiceEndpoint serviceEndpoint);
 
     @Command
     void changeServiceInstanceNameAndSummaryCommand(ServiceInstanceId serviceInstanceId, String name, String summary);
@@ -50,7 +50,7 @@ public interface ServiceRegistryContract extends CqrsContract {
     void RemoveServiceInstanceEndpointCommand(ServiceInstanceId serviceInstanceId, ServiceEndpoint serviceEndpoint);
     
     @Event
-    void serviceInstanceAliasAdded(ServiceInstanceId serviceInstanceId, String alias);
+    void serviceInstanceAliasAddedEvent(ServiceInstanceId serviceInstanceId, String alias);
 
     @Event
     void serviceInstanceCreatedEvent(
