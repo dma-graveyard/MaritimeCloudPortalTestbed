@@ -22,7 +22,6 @@ import java.io.OutputStreamWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import org.axonframework.common.Assert;
 
 /**
  * Converts methods of an interface-file into corresponding (serializable) Value Objects for use as Commands and Events.
@@ -175,9 +174,29 @@ public class SourceGenerator {
         }
 
         private void writeProperties() throws IOException {
-            osw.write("    @TargetAggregateIdentifier" + EOL);
+            writeTargetAggregateIdentifierAnnotationIfTrue(!hasTargetAggregateIdentifierAnnotation());
             for (Parameter parameter : declaredMethod.getParameters()) {
+                writeTargetAggregateIdentifierAnnotationIfTrue(hasTargetAggregateIdentifierAnnotation(parameter));
                 writeProperty(parameter);
+            }
+        }
+
+        private boolean hasTargetAggregateIdentifierAnnotation() {
+            for (Parameter parameter : declaredMethod.getParameters()) {
+                if (hasTargetAggregateIdentifierAnnotation(parameter)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private boolean hasTargetAggregateIdentifierAnnotation(Parameter parameter) {
+            return parameter.getAnnotation(TargetAggregateIdentifier.class) != null;
+        }
+
+        private void writeTargetAggregateIdentifierAnnotationIfTrue(boolean shouldWrite) throws IOException {
+            if (shouldWrite) {
+                osw.write("    @TargetAggregateIdentifier" + EOL);
             }
         }
 

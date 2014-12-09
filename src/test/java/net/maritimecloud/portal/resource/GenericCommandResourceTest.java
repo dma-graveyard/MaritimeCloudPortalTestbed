@@ -107,8 +107,8 @@ public class GenericCommandResourceTest extends CommonFixture {
 
         PrepareServiceSpecification command
                 = serializeAndDeserializeCommand(new PrepareServiceSpecification(
-                                new ServiceSpecificationId(A_SPEC_ID),
                                 new OrganizationId(AN_ORG_ID),
+                                new ServiceSpecificationId(A_SPEC_ID),
                                 A_SERVICE_TYPE,
                                 A_NAME,
                                 A_SUMMARY)

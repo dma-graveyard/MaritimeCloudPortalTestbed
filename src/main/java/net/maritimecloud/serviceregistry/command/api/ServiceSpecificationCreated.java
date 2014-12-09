@@ -16,8 +16,8 @@ import net.maritimecloud.serviceregistry.command.servicespecification.ServiceTyp
 @Event
 public class ServiceSpecificationCreated {
 
-    @TargetAggregateIdentifier
     private final OrganizationId ownerId;
+    @TargetAggregateIdentifier
     private final ServiceSpecificationId serviceSpecificationId;
     private final ServiceType serviceType;
     private final String name;

@@ -17,6 +17,7 @@ package net.maritimecloud.serviceregistry.command;
 import net.maritimecloud.cqrs.tool.CqrsContract;
 import net.maritimecloud.cqrs.tool.Event;
 import net.maritimecloud.cqrs.tool.Command;
+import net.maritimecloud.cqrs.tool.TargetAggregateIdentifier;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceEndpoint;
@@ -44,16 +45,26 @@ public interface ServiceRegistryContract extends CqrsContract {
     void changeOrganizationNameAndSummary(OrganizationId organizationId, String name, String summary);
 
     @Command
-    void changeServiceSpecificationNameAndSummary(ServiceSpecificationId serviceSpecificationId, String name, String summary);
-
-    @Command
     void prepareServiceSpecification(
-            ServiceSpecificationId serviceSpecificationId,
             OrganizationId ownerId,
+            @TargetAggregateIdentifier
+            ServiceSpecificationId serviceSpecificationId,
             ServiceType serviceType,
             String name,
             String summary
     );
+
+//    @Command
+//    void provideServiceInstance(
+//            OrganizationId providerId,
+//            ServiceSpecificationId specificationId,
+//            ServiceInstanceId serviceInstanceId,
+//            String name,
+//            String summary,
+//            Coverage coverage);
+
+    @Command
+    void changeServiceSpecificationNameAndSummary(ServiceSpecificationId serviceSpecificationId, String name, String summary);
 
     @Command
     void addServiceInstanceAlias(ServiceInstanceId serviceInstanceId, String alias);
@@ -67,20 +78,16 @@ public interface ServiceRegistryContract extends CqrsContract {
     @Command
     void RemoveServiceInstanceEndpoint(ServiceInstanceId serviceInstanceId, ServiceEndpoint serviceEndpoint);
 
-//    @Command
-//    void provideServiceInstance(
-//            OrganizationId providerId,
-//            ServiceSpecificationId specificationId,
-//            ServiceInstanceId serviceInstanceId,
-//            String name,
-//            String summary,
-//            Coverage coverage);
+    
+    // ------------------------------------------------------------------------
+    // EVENTS
+    // ------------------------------------------------------------------------
+    
+    @Event
+    void organizationCreated(OrganizationId organizationId, String name, String summary, String url);
 
     @Event
     void serviceSpecificationNameAndSummaryChanged(ServiceSpecificationId serviceSpecificationId, String name, String summary);
-
-    @Event
-    void organizationCreated(OrganizationId organizationId, String name, String summary, String url);
 
     @Event
     void organizationNameAndSummaryChanged(OrganizationId organizationId, String name, String summary);
@@ -88,6 +95,7 @@ public interface ServiceRegistryContract extends CqrsContract {
     @Event
     void serviceSpecificationCreated(
             OrganizationId ownerId,
+            @TargetAggregateIdentifier
             ServiceSpecificationId serviceSpecificationId,
             ServiceType serviceType,
             String name,

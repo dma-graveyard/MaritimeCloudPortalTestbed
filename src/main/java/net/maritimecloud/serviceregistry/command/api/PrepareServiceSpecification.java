@@ -8,8 +8,8 @@ import org.axonframework.common.Assert;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.maritimecloud.serviceregistry.command.Command;
-import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceType;
 
 /**
@@ -18,39 +18,39 @@ import net.maritimecloud.serviceregistry.command.servicespecification.ServiceTyp
  */
 public class PrepareServiceSpecification implements Command {
 
+    private final OrganizationId ownerId;
     @TargetAggregateIdentifier
     private final ServiceSpecificationId serviceSpecificationId;
-    private final OrganizationId ownerId;
     private final ServiceType serviceType;
     private final String name;
     private final String summary;
 
     @JsonCreator
     public PrepareServiceSpecification(
-            @JsonProperty("serviceSpecificationId") ServiceSpecificationId serviceSpecificationId,
             @JsonProperty("ownerId") OrganizationId ownerId,
+            @JsonProperty("serviceSpecificationId") ServiceSpecificationId serviceSpecificationId,
             @JsonProperty("serviceType") ServiceType serviceType,
             @JsonProperty("name") String name,
             @JsonProperty("summary") String summary
     ) {
-        Assert.notNull(serviceSpecificationId, "The serviceSpecificationId must be provided");
         Assert.notNull(ownerId, "The ownerId must be provided");
+        Assert.notNull(serviceSpecificationId, "The serviceSpecificationId must be provided");
         Assert.notNull(serviceType, "The serviceType must be provided");
         Assert.notNull(name, "The name must be provided");
         Assert.notNull(summary, "The summary must be provided");
-        this.serviceSpecificationId = serviceSpecificationId;
         this.ownerId = ownerId;
+        this.serviceSpecificationId = serviceSpecificationId;
         this.serviceType = serviceType;
         this.name = name;
         this.summary = summary;
     }
 
-    public ServiceSpecificationId getServiceSpecificationId() {
-        return serviceSpecificationId;
-    }
-
     public OrganizationId getOwnerId() {
         return ownerId;
+    }
+
+    public ServiceSpecificationId getServiceSpecificationId() {
+        return serviceSpecificationId;
     }
 
     public ServiceType getServiceType() {
