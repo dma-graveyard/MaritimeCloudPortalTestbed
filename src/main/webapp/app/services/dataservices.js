@@ -116,13 +116,13 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 
     .factory('ServiceSpecificationService', ['$resource', 'serviceBaseUrl',
       function ($resource, serviceBaseUrl) {
-        return $resource(serviceBaseUrl + '/rest/api/organization/:organizationId/service-specification/:serviceSpecificationId');
+        return $resource(serviceBaseUrl + '/rest/api/org/:organizationId/ss/:serviceSpecificationId');
       }])
 
     .factory('ServiceInstanceService', ['$resource', 'serviceBaseUrl',
       function ($resource, serviceBaseUrl) {
 
-        var resource = $resource(serviceBaseUrl + '/rest/api/organization/:organizationId/service-instance/:serviceInstanceId', {},
+        var resource = $resource(serviceBaseUrl + '/rest/api/org/:organizationId/si/:serviceInstanceId', {},
             {
               post: {method: 'POST', params: {organizationId: '@providerId'}},
               put: {method: 'PUT', params: {serviceInstanceId: '@serviceInstanceId.identifier'}},

@@ -69,6 +69,19 @@ public class GenericCommandResource {
     private static final CommandRegistry deleteCommandsRegistry = new CommandRegistry();
     private static final CommandRegistry patchCommandsRegistry = new CommandRegistry();
 
+    public static void sendAndWait(String contentType, String queryCommandName, CommandRegistry commandRegistry, String commandJSON) throws WebApplicationException {
+        try {
+            LOG.info("Received command: Cmd={}{}", contentType, queryCommandName);
+            LOG.info("JSON: {}", commandJSON);
+            Class commandClass = commandRegistry.resolve(resolveCommandName(contentType, queryCommandName));
+            Object command = readCommand(commandJSON, commandClass);
+            ApplicationServiceRegistry.commandGateway().sendAndWait(command);
+        } catch (Throwable ex) {
+            LOG.error("Error occured when reading command!", ex);
+            throw new WebApplicationException("Error occured when reading command!", ex);
+        }
+    }
+
     @POST
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
@@ -83,17 +96,6 @@ public class GenericCommandResource {
     public void mappedPutCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
         LOG.info("PUT command: " + commandJSON);
         sendAndWait(contentType, queryCommandName, putCommandsRegistry, commandJSON);
-    }
-
-    public static void sendAndWait(String contentType, String queryCommandName, CommandRegistry commandRegistry, String commandJSON) throws WebApplicationException {
-        try {
-            Class commandClass = commandRegistry.resolve(resolveCommandName(contentType, queryCommandName));
-            Object command = readCommand(commandJSON, commandClass);
-            ApplicationServiceRegistry.commandGateway().sendAndWait(command);
-        } catch (Throwable ex) {
-            LOG.error("Error occured when reading command!", ex);
-            throw new WebApplicationException("Error occured when reading command!", ex);
-        }
     }
 
     @GET

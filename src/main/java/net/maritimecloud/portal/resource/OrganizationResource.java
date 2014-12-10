@@ -30,23 +30,19 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
-import static net.maritimecloud.portal.resource.ResourceResolver.lookupServiceInstance;
 import static net.maritimecloud.portal.resource.ResourceResolver.resolveOrganizationIdOrFail;
 import static net.maritimecloud.portal.resource.ResourceResolver.resolveServiceInstance;
 import static net.maritimecloud.portal.resource.ResourceResolver.resolveServiceSpecification;
 import static net.maritimecloud.portal.resource.GenericCommandResource.APPLICATION_JSON_CQRS_COMMAND;
-import static net.maritimecloud.portal.resource.GenericCommandResource.sendAndWait;
 import net.maritimecloud.serviceregistry.command.CommandRegistry;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
-import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
 import net.maritimecloud.serviceregistry.command.api.ProvideServiceInstance;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpoint;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceCoverage;
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
-import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import net.maritimecloud.serviceregistry.query.ServiceInstanceEntry;
@@ -73,33 +69,15 @@ public class OrganizationResource {
     // -------------------------------------------------------
     // Commands
     // -------------------------------------------------------
-    private static final CommandRegistry postCommandsRegistry = new CommandRegistry(
-            CreateOrganization.class,
-            PrepareServiceSpecification.class,
-            ProvideServiceInstance.class
-    );
-    private static final CommandRegistry putCommandsRegistry = new CommandRegistry(
-            ChangeOrganizationNameAndSummary.class,
-            ChangeServiceSpecificationNameAndSummary.class,
-            ChangeServiceInstanceNameAndSummary.class,
-            ChangeServiceInstanceCoverage.class,
-            AddServiceInstanceEndpoint.class,
-            AddServiceInstanceAlias.class,
-            RemoveServiceInstanceEndpoint.class
-    );
-    private static final CommandRegistry deleteCommandsRegistry = new CommandRegistry(
-            RemoveServiceInstanceEndpoint.class
-    );
-    private static final CommandRegistry patchCommandsRegistry = new CommandRegistry();
-
     @POST
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("organization")
     public void organizationPostCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
-        LOG.info("POST command: " + commandJSON);
-        simulateLack();
-        GenericCommandResource.sendAndWait(contentType, queryCommandName, postCommandsRegistry, commandJSON);
+        LOG.info("Organization POST command");
+        sendAndWait(contentType, queryCommandName, commandJSON,
+                CreateOrganization.class
+        );
     }
 
     @PUT
@@ -107,46 +85,51 @@ public class OrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("organization")
     public void organizationPutCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
-        LOG.info("PUT command: " + commandJSON);
-        sendAndWait(contentType, queryCommandName, putCommandsRegistry, commandJSON);
+        LOG.info("Organization PUT command");
+        sendAndWait(contentType, queryCommandName, commandJSON,
+                ChangeOrganizationNameAndSummary.class
+        );
     }
 
     @POST
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("organization/{organizationId}/service-instance")
+    @Path("org/{organizationId}/si")
     public void serviceInstancePostCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
-        LOG.info("POST command: " + commandJSON);
-        simulateLack();
-        GenericCommandResource.sendAndWait(contentType, queryCommandName, postCommandsRegistry, commandJSON);
+        LOG.info("Service Instance POST command");
+        sendAndWait(contentType, queryCommandName, commandJSON,
+                ProvideServiceInstance.class
+        );
     }
 
     @PUT
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("organization/{organizationId}/service-instance/{serviceInstanceId}")
+    @Path("org/{organizationId}/si/{serviceInstanceId}")
     public void serviceInstancePutCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
-        LOG.info("Service Instance PUT command: " + commandJSON);
-        simulateLack();
-        GenericCommandResource.sendAndWait(contentType, queryCommandName, putCommandsRegistry, commandJSON);
+        LOG.info("Service Instance PUT command");
+        sendAndWait(contentType, queryCommandName, commandJSON,
+                ChangeServiceInstanceNameAndSummary.class,
+                ChangeServiceInstanceCoverage.class,
+                AddServiceInstanceEndpoint.class,
+                AddServiceInstanceAlias.class,
+                RemoveServiceInstanceEndpoint.class
+        );
     }
 
     @DELETE
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("organization/{organizationId}/service-instance/{serviceInstanceId}")
+    @Path("org/{organizationId}/si/{serviceInstanceId}")
     public void serviceInstanceDeleteCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
-        LOG.info("Service Instance DELETE command: " + commandJSON);
-        simulateLack();
-        GenericCommandResource.sendAndWait(contentType, queryCommandName, deleteCommandsRegistry, commandJSON);
+        LOG.info("Service Instance DELETE command");
+        sendAndWait(contentType, queryCommandName, commandJSON,
+                RemoveServiceInstanceEndpoint.class
+        );
     }
 
-    private void simulateLack() {
-//        try {
-//            Thread.sleep(10);
-//        } catch (InterruptedException ex) {
-//            java.util.logging.Logger.getLogger(OrganizationResource.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+    private void sendAndWait(String contentType, String queryCommandName, String commandJSON, Class... classes) {
+        GenericCommandResource.sendAndWait(contentType, queryCommandName, new CommandRegistry(classes), commandJSON);
     }
 
     // -------------------------------------------------------
@@ -184,41 +167,18 @@ public class OrganizationResource {
         return ApplicationServiceRegistry.organizationQueryRepository().findOne(organizationId);
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("organization/specification")
-    public List<ServiceSpecificationEntry> getSpecifications(@QueryParam("namePattern") @DefaultValue("") String usernamePattern) {
-
-        Iterable<ServiceSpecificationEntry> all = ApplicationServiceRegistry.serviceSpecificationQueryRepository().findAll();
-        List<ServiceSpecificationEntry> serviceSpecificationEntries = new ArrayList<>();
-
-        for (ServiceSpecificationEntry organizationEntry : all) {
-            serviceSpecificationEntries.add(organizationEntry);
-        }
-
-        return serviceSpecificationEntries;
-    }
-
     // ------------------------------------------------------------------------
     // SERVICE SPECIFICATIONS
     // ------------------------------------------------------------------------
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("organization/{organizationId}/service-specification")
-    public List<ServiceSpecificationEntry> queryServiceSpecifications(
-            @PathParam("organizationId") String organizationId,
+    @Path("org/{organizationAliasOrId}/ss")
+    public List<ServiceSpecificationEntry> queryServiceSpecificationsByAlias(
+            @PathParam("organizationAliasOrId") String organizationAliasOrId,
             @QueryParam("namePattern") @DefaultValue("") String usernamePattern
     ) {
+        String organizationId = resolveOrganizationIdOrFail(organizationAliasOrId);
         return ApplicationServiceRegistry.serviceSpecificationQueryRepository().findByOwnerId(organizationId);
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("organization/{organizationId}/service-specification/{serviceSpecificationId}")
-    public ServiceSpecificationEntry getServiceSpecification(
-            @PathParam("serviceSpecificationId") String serviceSpecificationId
-    ) {
-        return ApplicationServiceRegistry.serviceSpecificationQueryRepository().findOne(serviceSpecificationId);
     }
 
     @GET
@@ -237,19 +197,13 @@ public class OrganizationResource {
     // ------------------------------------------------------------------------
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("organization/{organizationId}/service-instance")
-    public List<ServiceInstanceEntry> queryServiceInstances(
-            @PathParam("organizationId") String organizationId,
+    @Path("org/{organizationAliasOrId}/si")
+    public List<ServiceInstanceEntry> queryServiceInstancesByAlias(
+            @PathParam("organizationAliasOrId") String organizationAliasOrId,
             @QueryParam("namePattern") @DefaultValue("") String usernamePattern
     ) {
+        String organizationId = resolveOrganizationIdOrFail(organizationAliasOrId);
         return ApplicationServiceRegistry.serviceInstanceQueryRepository().findByProviderId(organizationId);
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("organization/{organizationId}/service-instance/{serviceInstanceId}")
-    public ServiceInstanceEntry getServiceInstance(@PathParam("serviceInstanceId") String serviceInstanceId) {
-        return lookupServiceInstance(serviceInstanceId);
     }
 
     @GET
@@ -259,7 +213,9 @@ public class OrganizationResource {
             @PathParam("organizationAliasOrId") String organizationAliasOrId,
             @PathParam("serviceInstanceAliasOrId") String serviceInstanceAliasOrId
     ) {
+        // TODO: move to almanac api as list aliases ...or something
         System.out.println("ALL: " + ApplicationServiceRegistry.aliasRegistryQueryRepository().findAll());
+
         String organizationId = resolveOrganizationIdOrFail(organizationAliasOrId);
         return resolveServiceInstance(organizationId, serviceInstanceAliasOrId);
     }
