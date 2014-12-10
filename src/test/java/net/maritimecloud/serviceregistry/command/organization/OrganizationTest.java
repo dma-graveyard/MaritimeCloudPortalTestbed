@@ -19,6 +19,10 @@ import net.maritimecloud.serviceregistry.command.api.OrganizationCreated;
 import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
 import net.maritimecloud.common.infrastructure.axon.CommonFixture;
+import static net.maritimecloud.common.infrastructure.axon.CommonFixture.AN_ALIAS;
+import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAdded;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasRegistrationDenied;
 import org.axonframework.test.FixtureConfiguration;
 import org.axonframework.test.Fixtures;
 import org.junit.Before;
@@ -49,6 +53,41 @@ public class OrganizationTest extends CommonFixture {
         fixture.given(new OrganizationCreated(new OrganizationId("an organization id"), "a name", "a summary ...", A_URL))
                 .when(new ChangeOrganizationNameAndSummary(new OrganizationId("an organization id"), "a new name", "a new summary ..."))
                 .expectEvents(new OrganizationNameAndSummaryChanged(new OrganizationId("an organization id"), "a new name", "a new summary ..."));
+    }
+
+    @Test
+    public void addServiceInstanceAlias() {
+        fixture.given(
+                organizationCreatedEvent(),
+                serviceSpecificationCreatedEvent(),
+                serviceInstanceCreatedEvent()
+        )
+                .when(new AddServiceInstanceAlias(anOrganizationId, aServiceInstanceId, AN_ALIAS))
+                .expectEvents(new ServiceInstanceAliasAdded(anOrganizationId, aServiceInstanceId, AN_ALIAS));
+    }
+
+    @Test
+    public void addDuplicateServiceInstanceAliasShouldFail() {
+        fixture.given(
+                organizationCreatedEvent(),
+                serviceSpecificationCreatedEvent(),
+                serviceInstanceCreatedEvent(),
+                new ServiceInstanceAliasAdded(anOrganizationId, aServiceInstanceId, AN_ALIAS)
+        )
+                .when(new AddServiceInstanceAlias(anOrganizationId, anotherServiceInstanceId, AN_ALIAS))
+                .expectEvents(new ServiceInstanceAliasRegistrationDenied(anOrganizationId, anotherServiceInstanceId, AN_ALIAS));
+    }
+
+    @Test
+    public void ResubmittedAddDuplicateServiceInstanceAliasShouldBeIgnored() {
+        fixture.given(
+                organizationCreatedEvent(),
+                serviceSpecificationCreatedEvent(),
+                serviceInstanceCreatedEvent(),
+                new ServiceInstanceAliasAdded(anOrganizationId, aServiceInstanceId, AN_ALIAS)
+        )
+                .when(new AddServiceInstanceAlias(anOrganizationId, aServiceInstanceId, AN_ALIAS))
+                .expectEvents();
     }
 
 }

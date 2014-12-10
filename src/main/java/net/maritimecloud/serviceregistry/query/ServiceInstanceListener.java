@@ -15,7 +15,6 @@
 package net.maritimecloud.serviceregistry.query;
 
 import javax.annotation.Resource;
-import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAdded;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceCoverageChanged;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceCreated;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointAdded;
@@ -84,13 +83,6 @@ public class ServiceInstanceListener {
     public void on(ServiceInstanceEndpointRemoved event) {
         ServiceInstanceEntry instance = getInstanceWith(event.getServiceInstanceId());
         instance.removeEndpoint(event.getServiceEndpoint());
-        save(instance);
-    }
-
-    @EventHandler
-    public void on(ServiceInstanceAliasAdded event) {
-        ServiceInstanceEntry instance = getInstanceWith(event.getServiceInstanceId());
-        instance.addAlias(event.getAlias());
         save(instance);
     }
 

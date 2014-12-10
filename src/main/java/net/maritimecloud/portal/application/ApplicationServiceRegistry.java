@@ -14,9 +14,11 @@
  */
 package net.maritimecloud.portal.application;
 
+import javax.annotation.Resource;
 import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
 import net.maritimecloud.portal.infrastructure.mail.MailService;
 import net.maritimecloud.portal.resource.LogService;
+import net.maritimecloud.serviceregistry.query.AliasRegistryQueryRepository;
 import net.maritimecloud.serviceregistry.query.OperationalServiceQueryRepository;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import net.maritimecloud.serviceregistry.query.ServiceInstanceQueryRepository;
@@ -68,4 +70,9 @@ public class ApplicationServiceRegistry extends SpringContextBasedRegistry {
     public static ServiceInstanceQueryRepository serviceInstanceQueryRepository() {
         return (ServiceInstanceQueryRepository) get("serviceInstanceQueryRepository");
     }
+    
+    public static AliasRegistryQueryRepository aliasRegistryQueryRepository() {
+        return (AliasRegistryQueryRepository) get("aliasRegistryQueryRepository");
+    }
+    
 }

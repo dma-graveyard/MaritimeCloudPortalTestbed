@@ -18,8 +18,11 @@ import java.net.URI;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import java.util.UUID;
 import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
+import net.maritimecloud.serviceregistry.command.api.OrganizationCreated;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceCreated;
+import net.maritimecloud.serviceregistry.command.api.ServiceSpecificationCreated;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceEndpoint;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
@@ -35,6 +38,7 @@ public class CommonFixture {
     public static final String AN_ORG_ID = "AN_ORG_ID";
     public static final String A_SPEC_ID = "A_SPEC_ID";
     public static final String AN_INSTANCE_ID = "AN_INSTANCE_ID";
+    public static final String ANOTHER_INSTANCE_ID = "ANOTHER_INSTANCE_ID";
     public static final ServiceType A_SERVICE_TYPE = ServiceType.AISASM;
     public static final String A_NAME = "a name";
     public static final String A_SUMMARY = "a summary ...";
@@ -48,7 +52,24 @@ public class CommonFixture {
     public static final Coverage ANOTHER_COVERAGE = new Coverage("[{\"type\":\"rectangle\",\"topLeftLatitude\":56.05976947910657,\"topLeftLongitude\":9.38232421875,\"buttomRightLatitude\":55.429013452407396,\"buttomRightLongitude\":11.1181640625},{\"type\":\"circle\",\"center-latitude\":55.29162848682989,\"center-longitude\":11.074218749999998,\"radius\":49552.58124628375}]");
     public static final String A_URL = "http://a-url.com";
     public static final String ANOTHER_URL = "http://another-url.com";
+    
+    public static final OrganizationId anOrganizationId = new OrganizationId(AN_ORG_ID);
+    public static final ServiceSpecificationId aServiceSpecificationId = new ServiceSpecificationId(A_SPEC_ID);
+    public static final ServiceInstanceId aServiceInstanceId = new ServiceInstanceId(AN_INSTANCE_ID);
+    public static final ServiceInstanceId anotherServiceInstanceId = new ServiceInstanceId(ANOTHER_INSTANCE_ID);
 
+    public static OrganizationCreated organizationCreatedEvent() {
+        return new OrganizationCreated(anOrganizationId, A_NAME, A_SUMMARY, A_URL);
+    }
+
+    public static ServiceSpecificationCreated serviceSpecificationCreatedEvent() {
+        return new ServiceSpecificationCreated(anOrganizationId, aServiceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY);
+    }
+
+    public static ServiceInstanceCreated serviceInstanceCreatedEvent() {
+        return new ServiceInstanceCreated(anOrganizationId, aServiceSpecificationId, aServiceInstanceId, A_NAME, A_SUMMARY, A_COVERAGE, A_SERVICE_TYPE);
+    }
+    
     public static String generateIdentity() {
         return UUID.randomUUID().toString();
     }

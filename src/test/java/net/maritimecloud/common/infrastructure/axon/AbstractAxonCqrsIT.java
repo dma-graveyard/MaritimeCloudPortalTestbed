@@ -17,6 +17,7 @@ package net.maritimecloud.common.infrastructure.axon;
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import net.maritimecloud.portal.config.ApplicationTestConfig;
+import net.maritimecloud.serviceregistry.query.AliasRegistryQueryRepository;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import net.maritimecloud.serviceregistry.query.ServiceInstanceQueryRepository;
 import net.maritimecloud.serviceregistry.query.ServiceSpecificationQueryRepository;
@@ -46,6 +47,9 @@ public abstract class AbstractAxonCqrsIT extends CommonFixture {
 
     @Resource
     protected ServiceInstanceQueryRepository serviceInstanceQueryRepository;
+
+    @Resource
+    protected AliasRegistryQueryRepository aliasRegistryQueryRepository;
 
     @Resource
     protected EntityManager entityManager;

@@ -18,11 +18,9 @@ import net.maritimecloud.serviceregistry.command.api.ServiceInstanceNameAndSumma
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointAdded;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceCreated;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointRemoved;
-import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAdded;
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpoint;
-import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
@@ -50,10 +48,8 @@ public class ServiceInstance extends AbstractAnnotatedAggregateRoot<ServiceInsta
     private String summary;
     private Coverage coverage;
     private Set<URI> endpoints;
-    private Set<String> aliases;
 
     protected ServiceInstance() {
-        this.aliases = new HashSet<>();
         endpoints = new HashSet<>();
     }
 
@@ -96,11 +92,6 @@ public class ServiceInstance extends AbstractAnnotatedAggregateRoot<ServiceInsta
         apply(new ServiceInstanceEndpointRemoved(command.getServiceInstanceId(), command.getServiceEndpoint()));
     }
 
-    @CommandHandler
-    public void handle(AddServiceInstanceAlias command) {
-        apply(new ServiceInstanceAliasAdded(command.getServiceInstanceId(), command.getAlias()));
-    }
-
     @EventSourcingHandler
     public void on(ServiceInstanceCreated event) {
         this.serviceInstanceId = event.getServiceInstanceId();
@@ -119,11 +110,6 @@ public class ServiceInstance extends AbstractAnnotatedAggregateRoot<ServiceInsta
     @EventSourcingHandler
     public void on(ServiceInstanceEndpointRemoved event) {
         endpoints.remove(event.getServiceEndpoint().getUri());
-    }
-
-    @EventSourcingHandler
-    public void on(ServiceInstanceAliasAdded event) {
-        aliases.add(event.getAlias());
     }
 
 }

@@ -329,6 +329,12 @@ Examples:
     # List all service instances of the current organization
     curl http://localhost:8080/rest/api/organization/dma/service-instance
 
+    # List a service instance resource by its "alias path" 
+    curl -X GET http://localhost:8080/rest/api/organization/a/sma/si/anAlias
+    # (to be in near future:)
+    curl -X GET http://localhost:8080/rest/api/org/sma/si/anAlias
+
+
 ### The Almanac (the public query api)
     
     # List organizations 

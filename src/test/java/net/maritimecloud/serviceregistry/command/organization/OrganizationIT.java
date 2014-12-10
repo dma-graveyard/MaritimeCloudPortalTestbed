@@ -14,13 +14,18 @@
  */
 package net.maritimecloud.serviceregistry.command.organization;
 
+import net.maritimecloud.serviceregistry.query.AliasRegistryEntry;
+import java.util.List;
 import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
 import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
+import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
 import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.repository.AggregateNotFoundException;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,6 +77,42 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
         } catch (CommandExecutionException e) {
             throw e.getCause();
         }
+    }
+
+    @Test
+    public void addAlias() {
+
+        // Given an organization (with a Service Specification and a provided Service Instance)
+        commandGateway().sendAndWait(createOrganizationCommand);
+        
+        // as we are currently not guarding that the target service instance 
+        // in fact belongs to the organization or even exists, we skip to 
+        // create them in this test (...for now)
+        //
+        //commandGateway().sendAndWait(aPrepareServiceSpecificationCommand());
+        //commandGateway().sendAndWait(provideServiceInstanceCommand);
+
+        // When
+        commandGateway().sendAndWait(new AddServiceInstanceAlias(createOrganizationCommand.getOrganizationId(), aServiceInstanceId, AN_ALIAS));
+
+        // Then
+        AliasRegistryEntry instance = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndAlias(
+                createOrganizationCommand.getOrganizationId().identifier(),
+                ServiceInstanceId.class.getName(),
+                AN_ALIAS);
+        assertNotNull(instance);
+        assertEquals(aServiceInstanceId.identifier(), instance.getTargetId());
+        assertEquals(AN_ALIAS, instance.getAlias());
+
+        commandGateway().sendAndWait(new AddServiceInstanceAlias(createOrganizationCommand.getOrganizationId(), aServiceInstanceId, ANOTHER_ALIAS));
+        List<AliasRegistryEntry> instances = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndTargetId(
+                createOrganizationCommand.getOrganizationId().identifier(),
+                ServiceInstanceId.class.getName(),
+                aServiceInstanceId.identifier());
+
+        assertEquals(aServiceInstanceId.identifier(), instance.getTargetId());
+        assertEquals(AN_ALIAS, instance.getAlias());
+        assertEquals(2, instances.size());
     }
 
 }

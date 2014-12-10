@@ -64,10 +64,10 @@ public interface ServiceRegistryContract extends CqrsContract {
 //            Coverage coverage);
 
     @Command
-    void changeServiceSpecificationNameAndSummary(ServiceSpecificationId serviceSpecificationId, String name, String summary);
+    void addServiceInstanceAlias(OrganizationId organizationId, ServiceInstanceId serviceInstanceId, String alias);
 
     @Command
-    void addServiceInstanceAlias(ServiceInstanceId serviceInstanceId, String alias);
+    void changeServiceSpecificationNameAndSummary(ServiceSpecificationId serviceSpecificationId, String name, String summary);
 
     @Command
     void addServiceInstanceEndpoint(ServiceInstanceId serviceInstanceId, ServiceEndpoint serviceEndpoint);
@@ -103,7 +103,10 @@ public interface ServiceRegistryContract extends CqrsContract {
     );
 
     @Event
-    void serviceInstanceAliasAdded(ServiceInstanceId serviceInstanceId, String alias);
+    void serviceInstanceAliasAdded(OrganizationId organizationId, ServiceInstanceId serviceInstanceId, String alias);
+
+    @Event
+    void serviceInstanceAliasRegistrationDenied(OrganizationId organizationId, ServiceInstanceId serviceInstanceId, String alias);
 
     @Event
     void serviceInstanceCreated(

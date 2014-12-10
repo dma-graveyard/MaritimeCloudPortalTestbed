@@ -8,6 +8,7 @@ import org.axonframework.common.Assert;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.maritimecloud.serviceregistry.command.Command;
+import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 
 /**
@@ -17,18 +18,26 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance
 public class AddServiceInstanceAlias implements Command {
 
     @TargetAggregateIdentifier
+    private final OrganizationId organizationId;
     private final ServiceInstanceId serviceInstanceId;
     private final String alias;
 
     @JsonCreator
     public AddServiceInstanceAlias(
+            @JsonProperty("organizationId") OrganizationId organizationId,
             @JsonProperty("serviceInstanceId") ServiceInstanceId serviceInstanceId,
             @JsonProperty("alias") String alias
     ) {
+        Assert.notNull(organizationId, "The organizationId must be provided");
         Assert.notNull(serviceInstanceId, "The serviceInstanceId must be provided");
         Assert.notNull(alias, "The alias must be provided");
+        this.organizationId = organizationId;
         this.serviceInstanceId = serviceInstanceId;
         this.alias = alias;
+    }
+
+    public OrganizationId getOrganizationId() {
+        return organizationId;
     }
 
     public ServiceInstanceId getServiceInstanceId() {

@@ -35,6 +35,7 @@ import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import static net.maritimecloud.portal.resource.GenericCommandResource.APPLICATION_JSON_CQRS_COMMAND;
 import static net.maritimecloud.portal.resource.GenericCommandResource.sendAndWait;
 import net.maritimecloud.serviceregistry.command.CommandRegistry;
+import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
@@ -49,6 +50,7 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceType;
+import net.maritimecloud.serviceregistry.query.AliasRegistryEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import net.maritimecloud.serviceregistry.query.ServiceInstanceEntry;
@@ -86,6 +88,7 @@ public class OrganizationResource {
             ChangeServiceInstanceNameAndSummary.class,
             ChangeServiceInstanceCoverage.class,
             AddServiceInstanceEndpoint.class,
+            AddServiceInstanceAlias.class,
             RemoveServiceInstanceEndpoint.class
     );
     private static final CommandRegistry deleteCommandsRegistry = new CommandRegistry(
@@ -197,7 +200,9 @@ public class OrganizationResource {
         return serviceSpecificationEntries;
     }
 
-    // SERVICE INSTANCE ------------------------------------------------
+    // ------------------------------------------------------------------------
+    // SERVICE SPECIFICATIONS
+    // ------------------------------------------------------------------------
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{organizationId}/service-specification")
@@ -217,6 +222,9 @@ public class OrganizationResource {
         return ApplicationServiceRegistry.serviceSpecificationQueryRepository().findOne(serviceSpecificationId);
     }
 
+    // ------------------------------------------------------------------------
+    // SERVICE INSTANCES
+    // ------------------------------------------------------------------------
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{organizationId}/service-instance")
@@ -237,7 +245,37 @@ public class OrganizationResource {
         return ApplicationServiceRegistry.serviceInstanceQueryRepository().findOne(serviceInstanceId);
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("a/{organizationAlias}/si/{serviceInstanceAlias}")
+    public ServiceInstanceEntry getServiceInstanceByAlias(
+            @PathParam("organizationAlias") String organizationAlias,
+            @PathParam("serviceInstanceAlias") String serviceInstanceAlias
+    ) {
+        String organizationId = resolveOrganizationId(organizationAlias);
+        String serviceInstanceId = resolveServiceInstanceId(organizationId, serviceInstanceAlias);
+        return serviceInstanceId == null ? null : ApplicationServiceRegistry.serviceInstanceQueryRepository().findOne(serviceInstanceId);
+    }
+
+    private String resolveOrganizationId(String organizationAlias) {
+        /*TODO resolve based on alias*/
+        return organizationAlias;
+    }
+
+    private String resolveServiceInstanceId(String organizationId, String serviceInstanceAlias) {
+        
+        System.out.println("ALL: "+ApplicationServiceRegistry.aliasRegistryQueryRepository().findAll());
+        
+        AliasRegistryEntry registryEntry = ApplicationServiceRegistry.aliasRegistryQueryRepository().findByGroupIdAndTypeNameAndAlias(
+                organizationId,
+                ServiceInstanceId.class.getName(),
+                serviceInstanceAlias);
+        return registryEntry == null ? null : registryEntry.getTargetId();
+    }
+
+    // ------------------------------------------------------------------------
     // HACK - RANDOMIZER
+    // ------------------------------------------------------------------------
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("randomizer")
@@ -255,15 +293,15 @@ public class OrganizationResource {
         for (ServiceSpecificationEntry specificationEntry : serviceSpecificationEntrys) {
             l.add(specificationEntry);
         }
-        
-        if (l.isEmpty())
+
+        if (l.isEmpty()) {
             return;
-        
+        }
+
         for (int i = 0; i < amount; i++) {
             Object command = new PrepareServiceSpecification(
                     new OrganizationId(random(l).getOwnerId()),
                     new ServiceSpecificationId("SS-" + i + "-" + UUID.randomUUID()),
-                    
                     random(Arrays.asList(ServiceType.values())),
                     random(l).getName() + "-" + i,
                     random(l).getSummary() + "-" + i);
@@ -277,10 +315,11 @@ public class OrganizationResource {
         for (ServiceInstanceEntry serviceInstance : serviceInstances) {
             l.add(serviceInstance);
         }
-        
-        if (l.isEmpty())
+
+        if (l.isEmpty()) {
             return;
-        
+        }
+
         for (int i = 0; i < siAmount; i++) {
             Object command = new ProvideServiceInstance(
                     new OrganizationId(random(l).getProviderId()),
@@ -300,9 +339,9 @@ public class OrganizationResource {
     private Coverage randomCoverage() {
         return new Coverage("[{"
                 + "\"type\": \"circle\","
-                + "\"center-latitude\": "+(80 - Math.random() * 160)+","
-                + "\"center-longitude\": "+(180 - Math.random() * 360)+","
-                + "\"radius\": "+(450000 - Math.random() * 22000)+ "}]");
+                + "\"center-latitude\": " + (80 - Math.random() * 160) + ","
+                + "\"center-longitude\": " + (180 - Math.random() * 360) + ","
+                + "\"radius\": " + (450000 - Math.random() * 22000) + "}]");
     }
 
 }

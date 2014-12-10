@@ -150,10 +150,10 @@ public class AlmanacResource {
 
         // Filter ServiceInstances that implements a SepcificationType that belongs to a specific OperationlaService category
         if (!operationalServiceId.isEmpty()) {
-            
+
             // FIXME: should query a mapping table with Operational Services mapped to this Specification instead
             System.out.println("HACK: querying 'summary contains operation service id' instead of real lookup table! ");
-            List<ServiceSpecificationEntry> serviceSpecifications 
+            List<ServiceSpecificationEntry> serviceSpecifications
                     = ApplicationServiceRegistry.serviceSpecificationQueryRepository().findBySummaryContains(operationalServiceId);
 
             if (serviceSpecifications.isEmpty()) {
@@ -165,12 +165,12 @@ public class AlmanacResource {
                 });
             }
         }
-        
+
         if (!serviceSpecificationIds.isEmpty()) {
-        System.out.println("serviceSpecificationIds: "+serviceSpecificationIds);
+            System.out.println("serviceSpecificationIds: " + serviceSpecificationIds);
             return ApplicationServiceRegistry.serviceInstanceQueryRepository().findBySpecificationIdIn(serviceSpecificationIds);
         }
-        
+
         return ApplicationServiceRegistry.serviceInstanceQueryRepository().findAll();
     }
 

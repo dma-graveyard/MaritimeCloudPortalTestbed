@@ -10,17 +10,17 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#serviceInstanceAliasAdded
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#serviceInstanceAliasRegistrationDenied
  */
 @Event
-public class ServiceInstanceAliasAdded {
+public class ServiceInstanceAliasRegistrationDenied {
 
     @TargetAggregateIdentifier
     private final OrganizationId organizationId;
     private final ServiceInstanceId serviceInstanceId;
     private final String alias;
 
-    public ServiceInstanceAliasAdded(
+    public ServiceInstanceAliasRegistrationDenied(
             OrganizationId organizationId,
             ServiceInstanceId serviceInstanceId,
             String alias

@@ -101,7 +101,7 @@ public class OrganizationCommandHandlerTest extends CommonFixture {
 //    @Test
 //    public void dublicatePrepareServiceSpecification() {
 //        PrepareServiceSpecification prepareServiceSpecificationCommand
-//                = aPrepareServiceSpecificationCommand(anOrganizationId, serviceSpecificationId);
+//                = aPrepareServiceSpecificationCommand(anOrganizationId, aServiceSpecificationId);
 //
 //        fixtureServiceSpecification.givenCommands(prepareServiceSpecificationCommand)
 //                .when(prepareServiceSpecificationCommand)

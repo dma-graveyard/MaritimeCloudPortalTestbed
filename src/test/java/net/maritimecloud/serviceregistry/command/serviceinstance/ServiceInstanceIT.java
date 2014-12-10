@@ -162,21 +162,4 @@ public class ServiceInstanceIT extends AbstractAxonCqrsIT {
         assertEquals(ANOTHER_ENDPOINT, instanceAfter.getEndpoints().get(0));
     }
 
-    @Test
-    public void addAlias() {
-
-        // Given an organization with a Service Specification and a provided Service Instance
-        commandGateway().sendAndWait(createOrganizationCommand);
-        commandGateway().sendAndWait(prepareServiceSpecificationCommand);
-        commandGateway().sendAndWait(provideServiceInstanceCommand);
-
-        // When
-        commandGateway().sendAndWait(new AddServiceInstanceAlias(provideServiceInstanceCommand.getServiceInstanceId(), AN_ALIAS));
-
-        // Then
-        ServiceInstanceEntry instance = serviceInstanceQueryRepository.findOne(provideServiceInstanceCommand.getServiceInstanceId().identifier());
-        assertEquals(1, instance.getAliases().size());
-        assertEquals(AN_ALIAS, instance.getAliases().get(0));
-    }
-
 }
