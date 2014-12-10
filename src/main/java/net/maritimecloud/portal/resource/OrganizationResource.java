@@ -15,9 +15,7 @@
 package net.maritimecloud.portal.resource;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import javax.annotation.Resource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -38,18 +36,14 @@ import net.maritimecloud.serviceregistry.command.CommandRegistry;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
-import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
 import net.maritimecloud.serviceregistry.command.api.ProvideServiceInstance;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpoint;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceCoverage;
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
-import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
-import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
-import net.maritimecloud.serviceregistry.command.servicespecification.ServiceType;
 import net.maritimecloud.serviceregistry.query.AliasRegistryEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
@@ -271,77 +265,6 @@ public class OrganizationResource {
                 ServiceInstanceId.class.getName(),
                 serviceInstanceAlias);
         return registryEntry == null ? null : registryEntry.getTargetId();
-    }
-
-    // ------------------------------------------------------------------------
-    // HACK - RANDOMIZER
-    // ------------------------------------------------------------------------
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("randomizer")
-    public void randomizer(
-            @QueryParam("ss") @DefaultValue("0") int ssAmount,
-            @QueryParam("si") @DefaultValue("1") int siAmount
-    ) {
-        randomizeServiceSpecification(ssAmount);
-        randomizeServiceInstances(siAmount);
-    }
-
-    private void randomizeServiceSpecification(int amount) {
-        Iterable<ServiceSpecificationEntry> serviceSpecificationEntrys = ApplicationServiceRegistry.serviceSpecificationQueryRepository().findAll();
-        ArrayList<ServiceSpecificationEntry> l = new ArrayList<>();
-        for (ServiceSpecificationEntry specificationEntry : serviceSpecificationEntrys) {
-            l.add(specificationEntry);
-        }
-
-        if (l.isEmpty()) {
-            return;
-        }
-
-        for (int i = 0; i < amount; i++) {
-            Object command = new PrepareServiceSpecification(
-                    new OrganizationId(random(l).getOwnerId()),
-                    new ServiceSpecificationId("SS-" + i + "-" + UUID.randomUUID()),
-                    random(Arrays.asList(ServiceType.values())),
-                    random(l).getName() + "-" + i,
-                    random(l).getSummary() + "-" + i);
-            ApplicationServiceRegistry.commandGateway().sendAndWait(command);
-        }
-    }
-
-    private void randomizeServiceInstances(int siAmount) {
-        Iterable<ServiceInstanceEntry> serviceInstances = ApplicationServiceRegistry.serviceInstanceQueryRepository().findAll();
-        ArrayList<ServiceInstanceEntry> l = new ArrayList<>();
-        for (ServiceInstanceEntry serviceInstance : serviceInstances) {
-            l.add(serviceInstance);
-        }
-
-        if (l.isEmpty()) {
-            return;
-        }
-
-        for (int i = 0; i < siAmount; i++) {
-            Object command = new ProvideServiceInstance(
-                    new OrganizationId(random(l).getProviderId()),
-                    new ServiceSpecificationId(random(l).getSpecificationId()),
-                    new ServiceInstanceId("rand-" + i + "-" + UUID.randomUUID()),
-                    random(l).getName() + "-" + i,
-                    random(l).getSummary() + "-" + i,
-                    randomCoverage());
-            ApplicationServiceRegistry.commandGateway().sendAndWait(command);
-        }
-    }
-
-    private <T> T random(List<T> l) {
-        return l.get((int) (Math.random() * (l.size() - 1)));
-    }
-
-    private Coverage randomCoverage() {
-        return new Coverage("[{"
-                + "\"type\": \"circle\","
-                + "\"center-latitude\": " + (80 - Math.random() * 160) + ","
-                + "\"center-longitude\": " + (180 - Math.random() * 360) + ","
-                + "\"radius\": " + (450000 - Math.random() * 22000) + "}]");
     }
 
 }
