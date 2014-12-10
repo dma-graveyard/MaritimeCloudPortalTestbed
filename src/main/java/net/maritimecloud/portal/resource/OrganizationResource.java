@@ -28,6 +28,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import static net.maritimecloud.portal.resource.GenericCommandResource.APPLICATION_JSON_CQRS_COMMAND;
@@ -44,6 +45,8 @@ import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAn
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
+import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 import net.maritimecloud.serviceregistry.query.AliasRegistryEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
@@ -57,7 +60,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Christoffer Børrild
  */
-@Path("/api/organization")
+@Path("/api")
 public class OrganizationResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(OrganizationResource.class);
@@ -93,6 +96,7 @@ public class OrganizationResource {
     @POST
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("organization")
     public void organizationPostCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
         LOG.info("POST command: " + commandJSON);
         simulateLack();
@@ -102,6 +106,7 @@ public class OrganizationResource {
     @PUT
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("organization")
     public void organizationPutCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
         LOG.info("PUT command: " + commandJSON);
         sendAndWait(contentType, queryCommandName, putCommandsRegistry, commandJSON);
@@ -110,7 +115,7 @@ public class OrganizationResource {
     @POST
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{organizationId}/service-instance")
+    @Path("organization/{organizationId}/service-instance")
     public void serviceInstancePostCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
         LOG.info("POST command: " + commandJSON);
         simulateLack();
@@ -120,7 +125,7 @@ public class OrganizationResource {
     @PUT
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{organizationId}/service-instance/{serviceInstanceId}")
+    @Path("organization/{organizationId}/service-instance/{serviceInstanceId}")
     public void serviceInstancePutCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
         LOG.info("Service Instance PUT command: " + commandJSON);
         simulateLack();
@@ -130,7 +135,7 @@ public class OrganizationResource {
     @DELETE
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{organizationId}/service-instance/{serviceInstanceId}")
+    @Path("organization/{organizationId}/service-instance/{serviceInstanceId}")
     public void serviceInstanceDeleteCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
         LOG.info("Service Instance DELETE command: " + commandJSON);
         simulateLack();
@@ -150,6 +155,7 @@ public class OrganizationResource {
     // -------------------------------------------------------
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("organization")
     public List<OrganizationEntry> getOrganizations(
             @QueryParam("member") @DefaultValue("") String memberUID,
             @QueryParam("namePattern") @DefaultValue("") String organizationNamePattern
@@ -174,14 +180,14 @@ public class OrganizationResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{organizationId}")
+    @Path("organization/{organizationId}")
     public OrganizationEntry getOrganization(@PathParam("organizationId") String organizationId) {
         return ApplicationServiceRegistry.organizationQueryRepository().findOne(organizationId);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("specification")
+    @Path("organization/specification")
     public List<ServiceSpecificationEntry> getSpecifications(@QueryParam("namePattern") @DefaultValue("") String usernamePattern) {
 
         Iterable<ServiceSpecificationEntry> all = ApplicationServiceRegistry.serviceSpecificationQueryRepository().findAll();
@@ -199,7 +205,7 @@ public class OrganizationResource {
     // ------------------------------------------------------------------------
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{organizationId}/service-specification")
+    @Path("organization/{organizationId}/service-specification")
     public List<ServiceSpecificationEntry> queryServiceSpecifications(
             @PathParam("organizationId") String organizationId,
             @QueryParam("namePattern") @DefaultValue("") String usernamePattern
@@ -209,11 +215,40 @@ public class OrganizationResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{organizationId}/service-specification/{serviceSpecificationId}")
+    @Path("organization/{organizationId}/service-specification/{serviceSpecificationId}")
     public ServiceSpecificationEntry getServiceSpecification(
             @PathParam("serviceSpecificationId") String serviceSpecificationId
     ) {
         return ApplicationServiceRegistry.serviceSpecificationQueryRepository().findOne(serviceSpecificationId);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("org/{organizationAliasOrId}/ss/{serviceSpecificationAliasOrId}")
+    public ServiceSpecificationEntry getServiceSpecificationByAlias(
+            @PathParam("organizationAliasOrId") String organizationAliasOrId,
+            @PathParam("serviceSpecificationAliasOrId") String serviceSpecificationAliasOrId
+    ) {
+        String organizationId = resolveOrganizationIdOrFail(organizationAliasOrId);
+        return resolveServiceSpecification(organizationId, serviceSpecificationAliasOrId);
+    }
+
+    private ServiceSpecificationEntry resolveServiceSpecification(String organizationId, String serviceSpecificationAliasOrId) {
+        String serviceSpecificationId = resolveServiceSpecificationId(organizationId, serviceSpecificationAliasOrId);
+        ServiceSpecificationEntry serviceSpecification = lookupServiceSpecification(serviceSpecificationId);
+        assertBelongsToOrganization(organizationId, serviceSpecification);
+        return serviceSpecification;
+    }
+
+    private String resolveServiceSpecificationId(String organizationId, String serviceSpecificationAliasOrId) {
+        AliasRegistryEntry aliasEntry = lookupServiceSpecificationAliasEntry(organizationId, serviceSpecificationAliasOrId);
+        return chooseIdFrom(aliasEntry, serviceSpecificationAliasOrId);
+    }
+
+    private ServiceSpecificationEntry lookupServiceSpecification(String serviceSpecificationId) {
+        final ServiceSpecificationEntry entry = ApplicationServiceRegistry.serviceSpecificationQueryRepository().findOne(serviceSpecificationId);
+        throwResourceNotFoundExceptionIfNull(entry, "Unable to find service specification based on serviceInstanceId=" + serviceSpecificationId);
+        return entry;
     }
 
     // ------------------------------------------------------------------------
@@ -221,50 +256,98 @@ public class OrganizationResource {
     // ------------------------------------------------------------------------
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{organizationId}/service-instance")
+    @Path("organization/{organizationId}/service-instance")
     public List<ServiceInstanceEntry> queryServiceInstances(
             @PathParam("organizationId") String organizationId,
             @QueryParam("namePattern") @DefaultValue("") String usernamePattern
     ) {
-
         return ApplicationServiceRegistry.serviceInstanceQueryRepository().findByProviderId(organizationId);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{organizationId}/service-instance/{serviceInstanceId}")
-    public ServiceInstanceEntry getServiceInstance(
-            @PathParam("serviceInstanceId") String serviceInstanceId
-    ) {
-        return ApplicationServiceRegistry.serviceInstanceQueryRepository().findOne(serviceInstanceId);
+    @Path("organization/{organizationId}/service-instance/{serviceInstanceId}")
+    public ServiceInstanceEntry getServiceInstance(@PathParam("serviceInstanceId") String serviceInstanceId) {
+        return lookupServiceInstance(serviceInstanceId);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("a/{organizationAlias}/si/{serviceInstanceAlias}")
+    @Path("org/{organizationAliasOrId}/si/{serviceInstanceAliasOrId}")
     public ServiceInstanceEntry getServiceInstanceByAlias(
-            @PathParam("organizationAlias") String organizationAlias,
-            @PathParam("serviceInstanceAlias") String serviceInstanceAlias
+            @PathParam("organizationAliasOrId") String organizationAliasOrId,
+            @PathParam("serviceInstanceAliasOrId") String serviceInstanceAliasOrId
     ) {
-        String organizationId = resolveOrganizationId(organizationAlias);
-        String serviceInstanceId = resolveServiceInstanceId(organizationId, serviceInstanceAlias);
-        return serviceInstanceId == null ? null : ApplicationServiceRegistry.serviceInstanceQueryRepository().findOne(serviceInstanceId);
+        System.out.println("ALL: " + ApplicationServiceRegistry.aliasRegistryQueryRepository().findAll());
+        String organizationId = resolveOrganizationIdOrFail(organizationAliasOrId);
+        return resolveServiceInstance(organizationId, serviceInstanceAliasOrId);
     }
 
-    private String resolveOrganizationId(String organizationAlias) {
-        /*TODO resolve based on alias*/
-        return organizationAlias;
+    private String resolveOrganizationIdOrFail(String organizationAliasOrId) {
+        String organizationId = resolveOrganizationId(organizationAliasOrId);
+        throwResourceNotFoundExceptionIfNull(organizationId, "Unable to find Organization based on key=" + organizationAliasOrId);
+        return organizationAliasOrId;
     }
 
-    private String resolveServiceInstanceId(String organizationId, String serviceInstanceAlias) {
-        
-        System.out.println("ALL: "+ApplicationServiceRegistry.aliasRegistryQueryRepository().findAll());
-        
-        AliasRegistryEntry registryEntry = ApplicationServiceRegistry.aliasRegistryQueryRepository().findByGroupIdAndTypeNameAndAlias(
-                organizationId,
-                ServiceInstanceId.class.getName(),
-                serviceInstanceAlias);
-        return registryEntry == null ? null : registryEntry.getTargetId();
+    private String resolveOrganizationId(String organizationAliasOrId) {
+        AliasRegistryEntry aliasEntry = lookupOrganizationAliasEntry(organizationAliasOrId);
+        return chooseIdFrom(aliasEntry, organizationAliasOrId);
+    }
+
+    private ServiceInstanceEntry resolveServiceInstance(String organizationId, String serviceInstanceAliasOrId) {
+        String serviceInstanceId = resolveServiceInstanceId(organizationId, serviceInstanceAliasOrId);
+        ServiceInstanceEntry serviceInstance = lookupServiceInstance(serviceInstanceId);
+        assertBelongsToOrganization(organizationId, serviceInstance);
+        return serviceInstance;
+    }
+
+    private String resolveServiceInstanceId(String organizationId, String serviceInstanceAliasOrId) {
+        AliasRegistryEntry aliasEntry = lookupServiceInstanceAliasEntry(organizationId, serviceInstanceAliasOrId);
+        return chooseIdFrom(aliasEntry, serviceInstanceAliasOrId);
+    }
+
+    private AliasRegistryEntry lookupOrganizationAliasEntry(String organizationAliasOrId) {
+        return lookupAlias(AliasRegistryEntry.USER_ORGANIZATION_GROUP, OrganizationId.class, organizationAliasOrId);
+    }
+
+    private AliasRegistryEntry lookupServiceInstanceAliasEntry(String organizationId, String serviceInstanceAliasOrId) {
+        return lookupAlias(organizationId, ServiceInstanceId.class, serviceInstanceAliasOrId);
+    }
+
+    private AliasRegistryEntry lookupServiceSpecificationAliasEntry(String organizationId, String serviceSpecificationAliasOrId) {
+        return lookupAlias(organizationId, ServiceSpecificationId.class, serviceSpecificationAliasOrId);
+    }
+
+    private AliasRegistryEntry lookupAlias(String groupId, Class type, String alias) {
+        return ApplicationServiceRegistry.aliasRegistryQueryRepository().findByGroupIdAndTypeNameAndAlias(groupId, type.getName(), alias);
+    }
+
+    private static String chooseIdFrom(AliasRegistryEntry aliasEntry, String serviceSpecificationAliasOrId) {
+        return aliasEntry != null ? aliasEntry.getTargetId() : serviceSpecificationAliasOrId;
+    }
+
+    private ServiceInstanceEntry lookupServiceInstance(String serviceInstanceId) {
+        final ServiceInstanceEntry entry = ApplicationServiceRegistry.serviceInstanceQueryRepository().findOne(serviceInstanceId);
+        throwResourceNotFoundExceptionIfNull(entry, "Unable to find service instance based on serviceInstanceId=" + serviceInstanceId);
+        return entry;
+    }
+
+    private void assertBelongsToOrganization(String organizationId, ServiceInstanceEntry serviceInstance) {
+        if (!serviceInstance.getProviderId().equals(organizationId)) {
+            throwResourceNotFoundExceptionIfNull(null, "service instance is not own by organization");
+        }
+    }
+
+    private void assertBelongsToOrganization(String organizationId, ServiceSpecificationEntry serviceSpecificationEntry) {
+        if (!serviceSpecificationEntry.getOwnerId().equals(organizationId)) {
+            throwResourceNotFoundExceptionIfNull(null, "service specification is not own by organization");
+        }
+    }
+
+    private void throwResourceNotFoundExceptionIfNull(Object objectToTestForNull, String message) throws WebApplicationException {
+        if (objectToTestForNull == null) {
+            throw new WebApplicationException(message, 404);
+        }
     }
 
 }

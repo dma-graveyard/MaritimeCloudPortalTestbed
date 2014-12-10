@@ -24,6 +24,9 @@ import javax.persistence.Id;
  */
 @Entity
 public class AliasRegistryEntry {
+    
+    /** Key for the unique aliases group that governs Organizations and Users aliases */
+    public static final String USER_ORGANIZATION_GROUP = "USER_ORGANIZATION_GROUP";
 
     @Id
     @GeneratedValue
