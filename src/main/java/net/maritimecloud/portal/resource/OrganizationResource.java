@@ -28,9 +28,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
+import static net.maritimecloud.portal.resource.ResourceResolver.lookupServiceInstance;
+import static net.maritimecloud.portal.resource.ResourceResolver.resolveOrganizationIdOrFail;
+import static net.maritimecloud.portal.resource.ResourceResolver.resolveServiceInstance;
+import static net.maritimecloud.portal.resource.ResourceResolver.resolveServiceSpecification;
 import static net.maritimecloud.portal.resource.GenericCommandResource.APPLICATION_JSON_CQRS_COMMAND;
 import static net.maritimecloud.portal.resource.GenericCommandResource.sendAndWait;
 import net.maritimecloud.serviceregistry.command.CommandRegistry;
@@ -43,11 +46,7 @@ import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpoint;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceCoverage;
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
-import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
-import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
-import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
-import net.maritimecloud.serviceregistry.query.AliasRegistryEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import net.maritimecloud.serviceregistry.query.ServiceInstanceEntry;
@@ -233,24 +232,6 @@ public class OrganizationResource {
         return resolveServiceSpecification(organizationId, serviceSpecificationAliasOrId);
     }
 
-    private ServiceSpecificationEntry resolveServiceSpecification(String organizationId, String serviceSpecificationAliasOrId) {
-        String serviceSpecificationId = resolveServiceSpecificationId(organizationId, serviceSpecificationAliasOrId);
-        ServiceSpecificationEntry serviceSpecification = lookupServiceSpecification(serviceSpecificationId);
-        assertBelongsToOrganization(organizationId, serviceSpecification);
-        return serviceSpecification;
-    }
-
-    private String resolveServiceSpecificationId(String organizationId, String serviceSpecificationAliasOrId) {
-        AliasRegistryEntry aliasEntry = lookupServiceSpecificationAliasEntry(organizationId, serviceSpecificationAliasOrId);
-        return chooseIdFrom(aliasEntry, serviceSpecificationAliasOrId);
-    }
-
-    private ServiceSpecificationEntry lookupServiceSpecification(String serviceSpecificationId) {
-        final ServiceSpecificationEntry entry = ApplicationServiceRegistry.serviceSpecificationQueryRepository().findOne(serviceSpecificationId);
-        throwResourceNotFoundExceptionIfNull(entry, "Unable to find service specification based on serviceInstanceId=" + serviceSpecificationId);
-        return entry;
-    }
-
     // ------------------------------------------------------------------------
     // SERVICE INSTANCES
     // ------------------------------------------------------------------------
@@ -281,73 +262,6 @@ public class OrganizationResource {
         System.out.println("ALL: " + ApplicationServiceRegistry.aliasRegistryQueryRepository().findAll());
         String organizationId = resolveOrganizationIdOrFail(organizationAliasOrId);
         return resolveServiceInstance(organizationId, serviceInstanceAliasOrId);
-    }
-
-    private String resolveOrganizationIdOrFail(String organizationAliasOrId) {
-        String organizationId = resolveOrganizationId(organizationAliasOrId);
-        throwResourceNotFoundExceptionIfNull(organizationId, "Unable to find Organization based on key=" + organizationAliasOrId);
-        return organizationAliasOrId;
-    }
-
-    private String resolveOrganizationId(String organizationAliasOrId) {
-        AliasRegistryEntry aliasEntry = lookupOrganizationAliasEntry(organizationAliasOrId);
-        return chooseIdFrom(aliasEntry, organizationAliasOrId);
-    }
-
-    private ServiceInstanceEntry resolveServiceInstance(String organizationId, String serviceInstanceAliasOrId) {
-        String serviceInstanceId = resolveServiceInstanceId(organizationId, serviceInstanceAliasOrId);
-        ServiceInstanceEntry serviceInstance = lookupServiceInstance(serviceInstanceId);
-        assertBelongsToOrganization(organizationId, serviceInstance);
-        return serviceInstance;
-    }
-
-    private String resolveServiceInstanceId(String organizationId, String serviceInstanceAliasOrId) {
-        AliasRegistryEntry aliasEntry = lookupServiceInstanceAliasEntry(organizationId, serviceInstanceAliasOrId);
-        return chooseIdFrom(aliasEntry, serviceInstanceAliasOrId);
-    }
-
-    private AliasRegistryEntry lookupOrganizationAliasEntry(String organizationAliasOrId) {
-        return lookupAlias(AliasRegistryEntry.USER_ORGANIZATION_GROUP, OrganizationId.class, organizationAliasOrId);
-    }
-
-    private AliasRegistryEntry lookupServiceInstanceAliasEntry(String organizationId, String serviceInstanceAliasOrId) {
-        return lookupAlias(organizationId, ServiceInstanceId.class, serviceInstanceAliasOrId);
-    }
-
-    private AliasRegistryEntry lookupServiceSpecificationAliasEntry(String organizationId, String serviceSpecificationAliasOrId) {
-        return lookupAlias(organizationId, ServiceSpecificationId.class, serviceSpecificationAliasOrId);
-    }
-
-    private AliasRegistryEntry lookupAlias(String groupId, Class type, String alias) {
-        return ApplicationServiceRegistry.aliasRegistryQueryRepository().findByGroupIdAndTypeNameAndAlias(groupId, type.getName(), alias);
-    }
-
-    private static String chooseIdFrom(AliasRegistryEntry aliasEntry, String serviceSpecificationAliasOrId) {
-        return aliasEntry != null ? aliasEntry.getTargetId() : serviceSpecificationAliasOrId;
-    }
-
-    private ServiceInstanceEntry lookupServiceInstance(String serviceInstanceId) {
-        final ServiceInstanceEntry entry = ApplicationServiceRegistry.serviceInstanceQueryRepository().findOne(serviceInstanceId);
-        throwResourceNotFoundExceptionIfNull(entry, "Unable to find service instance based on serviceInstanceId=" + serviceInstanceId);
-        return entry;
-    }
-
-    private void assertBelongsToOrganization(String organizationId, ServiceInstanceEntry serviceInstance) {
-        if (!serviceInstance.getProviderId().equals(organizationId)) {
-            throwResourceNotFoundExceptionIfNull(null, "service instance is not own by organization");
-        }
-    }
-
-    private void assertBelongsToOrganization(String organizationId, ServiceSpecificationEntry serviceSpecificationEntry) {
-        if (!serviceSpecificationEntry.getOwnerId().equals(organizationId)) {
-            throwResourceNotFoundExceptionIfNull(null, "service specification is not own by organization");
-        }
-    }
-
-    private void throwResourceNotFoundExceptionIfNull(Object objectToTestForNull, String message) throws WebApplicationException {
-        if (objectToTestForNull == null) {
-            throw new WebApplicationException(message, 404);
-        }
     }
 
 }
