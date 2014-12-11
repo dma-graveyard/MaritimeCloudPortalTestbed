@@ -1,0 +1,88 @@
+<div class="col-lg-6">
+    <h1>Register a service</h1>
+    <i class="help-block"><label>Service Instance ID:</label> {{service.serviceInstanceId}}</i>
+    <p>Fill out the form below to register the service provisioned by your organization.</p>
+    <hr>
+
+    <!--MESSAGES-->
+    <div ng-show="alertMessages" class="alert alert-danger">
+        <span ng-repeat="msg in alertMessages">{{msg}}<br /></span>
+    </div>
+    <div ng-show="message" class="alert alert-info">{{message}}</div>
+    <!--FORM-->
+    <form role="form" name="form">
+        <div class="form-group">
+            <label for="operationalService">Operational Service</label>
+            <select required class='form-control' id='operationalService'  mcp-focus-me
+                    ng-disabled="service.endpoints.length"
+                    ng-change="selectOperationalService(selection.operationalService)"
+                    ng-model="selection.operationalService" ng-options="operationalService.name for operationalService in operationalServices"></select>
+            <p class="help-block">Select the operational service (the service category) that the provisioned service belong to.</p>
+        </div>
+        <div class="form-group">
+            <label for="specification">Service Specification</label>
+            <select required class='form-control' id='specification' ng-model="selection.specification" 
+                    ng-disabled="service.endpoints.length"
+                    ng-change="setServiceTypeProtocol(selection.specification)"
+                    ng-options="specification.name+' ('+specification.serviceType+')' group by specification.ownerName for specification in specifications"></select>
+            <p class="help-block">Select the technical service specification that describes the interface of the provisioned service.</p>
+        </div>
+        <div class="form-group">
+            <label for="serviceName">Name</label>
+            <input type="text" required class="form-control" id="serviceName" placeholder="Enter a service name" ng-model="service.name" >
+            <p class="help-block">The name will be presented on result lists when searching for services. It should distinguish this service from others offered by the organization.</p>
+        </div>
+        <div class="form-group">
+            <label for="serviceId">Primary alias</label>
+            <input type="text" required class="form-control" id="serviceId" placeholder="Enter a short id" ng-model="service.primaryAlias" >
+            <p class="help-block">This will be the id of the service instance and cannot be changed once created. It must be 
+                unique within the organization. You may choose to specify other aliases later on</p>
+        </div>
+        <div class="form-group">
+            <label for="serviceDescription">Summary</label>
+            <textarea class="form-control" id="serviceDescription" rows="3" placeholder="Enter a description of the service" ng-model="service.summary"></textarea>
+            <p class="help-block">The description is usually presented together with the name and should capture the essence of the service in a few words.</p>
+        </div>
+        <div class="form-group">
+            <label for="serviceEndpoints">Endpoints</label>
+            <div>
+                <ul>
+                    <li ng-if="service.endpoints.length === 0"><i>No service endpoints - use the field below to add at least one!</i></li>
+                    <li  ng-repeat="endpoint in service.endpoints">{{endpoint.uri}}
+                        <span class="Xinput-group-btn">
+                            <button ng-if="service.endpoints.length > 1 || isCreateState()" ng-click="removeEndpoint(endpoint.uri);" class="btn btn-default btn-sm">
+                                <span class="fa fa-trash-o"></span>
+                            </button>
+                        </span>
+
+                    </li>
+                    <li>
+                        <select ng-model="protocol" ng-options="protocol for protocol in protocols"></select>
+                        <input type="text" class="xform-control" id="serviceEndpoints" placeholder="Enter an endpoint URI to add to the list" ng-model="newEndpoint" >
+                        <span>
+                            <button ng-click="addEndpoint(newEndpoint);" ng-disabled="isLockedOrInvalidEndpoint(newEndpoint)" class="btn btn-primary">
+                                <span class="fa fa-plus">Add</span>
+                            </button>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <!--<div class="col-sm-12">-->
+            <p class="help-block">Endpoints are the resource identifiers that will enable clients to locate and use the service. Depending on the type of service this might be the URL address of the service like http://my-org/my-cool-service, a phone number or a call sign for VHF. It is possible to specify multiple endpoints for instance for backup or load balancing</p>
+        </div>
+        <div class="form-group" >
+            <label for="serviceDescription">Coverage </label>
+            <p class="help-block" style="display: inline"> <I>Click the map to edit the coverage</I></p>
+            <div popover="Click the map to edit the coverage" popover-trigger="mouseenter" popover-placement="top">
+                <thumbnail-map id="instanceEditorMap" services="services" on-click="openCoverageEditor()" map="map"></thumbnail-map>
+                <a class="btn btn-default center" style="display: inherit;" ng-click="openCoverageEditor()">Edit Coverage</a>
+            </div>
+            <p class="help-block">Select the geographical extend of the provided service. That is, specify the area where this service should be visible to consumers.</p>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-success center" ng-disabled="!form.$valid || !formIsSubmitable()" ng-click="submit()">Register service</button>
+            <button class="btn btn-grey center" ng-click="close()">Cancel</button>
+        </div>
+        <br>
+    </form>
+</div>

@@ -1,46 +1,18 @@
 <div class="col-lg-6">
-    <div ng-if="isCreateState()">
-        <h1>Register a service</h1>
-        <p>Fill out the form below to register the service provisioned by your organization.</p>
-    </div>
-    <div ng-if="isEditState()">
-        <h1>{{service.name}} [{{service.serviceInstanceId}}]</h1>
-        <p>Here you can change the service type, name, description and coverage.</p>
-    </div>
-
+    <h1>{{service.name}}</h1>
+    <i class="help-block">
+        <label>Service Instance ID:</label> {{service.serviceInstanceId}} <br/>
+        <label>Service Specification:</label> {{service.specification.name + ' (' + service.specification.serviceType + ')'}} <br/>
+        <label>Primary alias:</label> {{service.primaryAlias}} <br/>
+    </i>
     <!--MESSAGES-->
     <div ng-show="alertMessages" class="alert alert-danger">
         <span ng-repeat="msg in alertMessages">{{msg}}<br /></span>
     </div>
     <div ng-show="message" class="alert alert-info">{{message}}</div>
+    <hr>
     <!--FORM-->
     <form role="form" name="form">
-        <div ng-if="!isEditState()">
-            <div class="form-group">
-                <label for="operationalService">Operational Service</label>
-                <select required class='form-control' id='operationalService'  mcp-focus-me
-                        ng-disabled="service.endpoints.length"
-                        ng-change="selectOperationalService(selection.operationalService)"
-                        ng-model="selection.operationalService" ng-options="operationalService.name for operationalService in operationalServices"></select>
-                <p class="help-block">Select the operational service (the service category) that the provisioned service belong to.</p>
-            </div>
-            <div class="form-group">
-                <label for="specification">Service Specification</label>
-                <select required class='form-control' id='specification' ng-model="selection.specification" 
-                        ng-disabled="service.endpoints.length"
-                        ng-change="setServiceTypeProtocol(selection.specification)"
-                        ng-options="specification.name+' ('+specification.serviceType+')' group by specification.ownerName for specification in specifications"></select>
-                <p class="help-block">Select the technical service specification that describes the interface of the provisioned service.</p>
-            </div>
-        </div>
-        <div  ng-if="isEditState()" class="form-group">
-            <label>Service Specification:</label> {{service.specification.name + ' (' + service.specification.serviceType + ')'}}
-        </div>
-        <div class="form-group" ng-if="isCreateState()">
-            <label for="serviceId">Id</label>
-            <input type="text" required class="form-control" id="serviceId" placeholder="Enter a short id" ng-model="service.serviceInstanceId" >
-            <p class="help-block">This name will be the id of the service instance and cannot be changed once created. It must be unique within the organization.</p>
-        </div>
         <div class="form-group">
             <label for="serviceName">Name</label>
             <input type="text" required class="form-control" id="serviceName" placeholder="Enter a service name" ng-model="service.name" >
@@ -51,6 +23,10 @@
             <textarea class="form-control" id="serviceDescription" rows="3" placeholder="Enter a description of the service" ng-model="service.summary"></textarea>
             <p class="help-block">The description is usually presented together with the name and should capture the essence of the service in a few words.</p>
         </div>
+        <div>
+            <button type="submit" class="btn btn-success center" ng-disabled="!form.$valid || !formIsSubmitable()" ng-click="submit()">Commit</button>
+        </div>
+        <hr>
         <div class="form-group">
             <label for="serviceEndpoints">Endpoints</label>
             <div>
@@ -78,6 +54,7 @@
             <!--<div class="col-sm-12">-->
             <p class="help-block">Endpoints are the resource identifiers that will enable clients to locate and use the service. Depending on the type of service this might be the URL address of the service like http://my-org/my-cool-service, a phone number or a call sign for VHF. It is possible to specify multiple endpoints for instance for backup or load balancing</p>
         </div>
+        <hr>
         <div class="form-group" >
             <label for="serviceDescription">Coverage </label>
             <p class="help-block" style="display: inline"> <I>Click the map to edit the coverage</I></p>
@@ -87,10 +64,9 @@
             </div>
             <p class="help-block">Select the geographical extend of the provided service. That is, specify the area where this service should be visible to consumers.</p>
         </div>
-        <div>
-            <button type="submit" class="btn btn-success center" ng-disabled="!form.$valid || !formIsSubmitable()" ng-click="submit()">{{isCreateState() ? 'Register service' : 'Commit'}}</button>
-            <button class="btn btn-grey center" ng-click="close()">{{isCreateState() ? 'Cancel' : 'Close'}}</button>
-        </div>
-        <br>
     </form>
+    <div>
+        <button class="btn btn-grey center" ng-click="close()">Close</button>
+    </div>
+    <br>
 </div>
