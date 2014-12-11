@@ -124,7 +124,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 
         var resource = $resource(serviceBaseUrl + '/rest/api/org/:organizationId/si/:serviceInstanceId', {},
             {
-              post: {method: 'POST', params: {organizationId: '@providerId'}},
+              post: {method: 'POST', params: {organizationId: '@providerId.identifier'}},
               put: {method: 'PUT', params: {serviceInstanceId: '@serviceInstanceId.identifier'}},
             });
 
