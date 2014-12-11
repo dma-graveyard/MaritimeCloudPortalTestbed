@@ -313,21 +313,21 @@ Examples:
 Examples:
 
     #TODO: add list of commands bound to its aggregates, e.g.
-    #curl http://localhost:8080/rest/api/organization/dma/AN_ORG_ID -H "Content-Type: application/json;domain-model=ChangeOrganizationNameAndSummaryCommand" -d '{"name":"ANOTHER_NAME","summary":"ANOTHER_SUMMARY"}' -X PUT    
+    #curl http://localhost:8080/rest/api/org/dma/AN_ORG_ID -H "Content-Type: application/json;domain-model=ChangeOrganizationNameAndSummaryCommand" -d '{"name":"ANOTHER_NAME","summary":"ANOTHER_SUMMARY"}' -X PUT    
 
     # Rename service instance and change summary 
-    curl http://localhost:8080/rest/api/organization/dma/service-instance/AN_INSTANCE_ID -H "Content-Type: application/json;domain-model=ChangeServiceInstanceNameAndSummaryCommand" -d '{"serviceInstanceId":{"identifier":"AN_INSTANCE_ID"},"name":"ANOTHER_NAME","summary":"ANOTHER_SUMMARY"}' -X PUT
+    curl http://localhost:8080/rest/api/org/dma/si/AN_INSTANCE_ID -H "Content-Type: application/json;domain-model=ChangeServiceInstanceNameAndSummaryCommand" -d '{"serviceInstanceId":{"identifier":"AN_INSTANCE_ID"},"name":"ANOTHER_NAME","summary":"ANOTHER_SUMMARY"}' -X PUT
 
     # Change coverage to a circle:
-    curl http://localhost:8080/rest/api/organization/dma/service-instance/AN_INSTANCE_ID -H "Content-Type: application/json;domain-model=ChangeServiceInstanceCoverageCommand" -d '{"serviceInstanceId":{"identifier":"AN_INSTANCE_ID"},"coverage":[{"type":"circle","center-latitude":55.8444821875883,"center-longitude":11.788330078125,"radius":87521.03421291267}]}' -X PUT
+    curl http://localhost:8080/rest/api/org/dma/si/AN_INSTANCE_ID -H "Content-Type: application/json;domain-model=ChangeServiceInstanceCoverageCommand" -d '{"serviceInstanceId":{"identifier":"AN_INSTANCE_ID"},"coverage":[{"type":"circle","center-latitude":55.8444821875883,"center-longitude":11.788330078125,"radius":87521.03421291267}]}' -X PUT
 
 ## The Query API
 
     # List all specifications
-    curl http://localhost:8080/rest/api/organization/specification
+    curl http://localhost:8080/rest/api/org/specification
 
     # List all service instances of the current organization
-    curl http://localhost:8080/rest/api/organization/dma/service-instance
+    curl http://localhost:8080/rest/api/org/dma/service-instance
 
     # List a service instance resource by its "alias path" 
     curl -X GET http://localhost:8080/rest/api/org/sma/si/anAlias

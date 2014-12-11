@@ -28,6 +28,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import static net.maritimecloud.portal.resource.ResourceResolver.resolveOrganizationIdOrFail;
@@ -42,6 +43,8 @@ import net.maritimecloud.serviceregistry.command.api.ProvideServiceInstance;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpoint;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceCoverage;
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
+import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
+import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
@@ -67,12 +70,14 @@ public class OrganizationResource {
     protected CommandGateway commandGateway;
 
     // -------------------------------------------------------
+    // -------------------------------------------------------
     // Commands
+    // -------------------------------------------------------
     // -------------------------------------------------------
     @POST
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("organization")
+    @Path("org")
     public void organizationPostCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
         LOG.info("Organization POST command");
         sendAndWait(contentType, queryCommandName, commandJSON,
@@ -83,20 +88,72 @@ public class OrganizationResource {
     @PUT
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("organization")
-    public void organizationPutCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
+    @Path("org/{organizationIdOrAlias}")
+    public void organizationPutCommand(
+            @HeaderParam("Content-type") String contentType,
+            @QueryParam("command") @DefaultValue("") String queryCommandName,
+            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
+            String commandJSON
+    ) {
         LOG.info("Organization PUT command");
+        assertCommandContext(commandJSON, organizationIdOrAlias);
         sendAndWait(contentType, queryCommandName, commandJSON,
                 ChangeOrganizationNameAndSummary.class
         );
     }
 
+    // ------------------------------------------------------------------------
+    // SERVICE SPECIFICATIONS
+    // ------------------------------------------------------------------------
     @POST
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("org/{organizationId}/si")
-    public void serviceInstancePostCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
+    @Path("org/{organizationIdOrAlias}/ss")
+    public void serviceSpecificationPostCommand(
+            @HeaderParam("Content-type") String contentType,
+            @QueryParam("command") @DefaultValue("") String queryCommandName,
+            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
+            String commandJSON
+    ) {
         LOG.info("Service Instance POST command");
+        assertCommandContext(commandJSON, organizationIdOrAlias);
+        sendAndWait(contentType, queryCommandName, commandJSON,
+                PrepareServiceSpecification.class
+        );
+    }
+
+    @PUT
+    @Consumes(APPLICATION_JSON_CQRS_COMMAND)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("org/{organizationIdOrAlias}/ss/{serviceSpecificationIdOrAlias}")
+    public void serviceSpecificationPutCommand(
+            @HeaderParam("Content-type") String contentType,
+            @QueryParam("command") @DefaultValue("") String queryCommandName,
+            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
+            String commandJSON
+    ) {
+        LOG.info("Service Instance PUT command");
+        assertCommandContext(commandJSON, organizationIdOrAlias);
+        sendAndWait(contentType, queryCommandName, commandJSON,
+                ChangeServiceSpecificationNameAndSummary.class
+        );
+    }
+
+    // ------------------------------------------------------------------------
+    // SERVICE INSTANCES
+    // ------------------------------------------------------------------------
+    @POST
+    @Consumes(APPLICATION_JSON_CQRS_COMMAND)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("org/{organizationIdOrAlias}/si")
+    public void serviceInstancePostCommand(
+            @HeaderParam("Content-type") String contentType,
+            @QueryParam("command") @DefaultValue("") String queryCommandName,
+            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
+            String commandJSON
+    ) {
+        LOG.info("Service Instance POST command");
+        assertCommandContext(commandJSON, organizationIdOrAlias);
         sendAndWait(contentType, queryCommandName, commandJSON,
                 ProvideServiceInstance.class
         );
@@ -105,9 +162,15 @@ public class OrganizationResource {
     @PUT
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("org/{organizationId}/si/{serviceInstanceId}")
-    public void serviceInstancePutCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
+    @Path("org/{organizationIdOrAlias}/si/{serviceInstanceIdOrAlias}")
+    public void serviceInstancePutCommand(
+            @HeaderParam("Content-type") String contentType,
+            @QueryParam("command") @DefaultValue("") String queryCommandName,
+            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
+            String commandJSON
+    ) {
         LOG.info("Service Instance PUT command");
+        assertCommandContext(commandJSON, organizationIdOrAlias);
         sendAndWait(contentType, queryCommandName, commandJSON,
                 ChangeServiceInstanceNameAndSummary.class,
                 ChangeServiceInstanceCoverage.class,
@@ -120,12 +183,40 @@ public class OrganizationResource {
     @DELETE
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("org/{organizationId}/si/{serviceInstanceId}")
-    public void serviceInstanceDeleteCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
+    @Path("org/{organizationIdOrAlias}/si/{serviceInstanceIdOrAlias}")
+    public void serviceInstanceDeleteCommand(
+            @HeaderParam("Content-type") String contentType,
+            @QueryParam("command") @DefaultValue("") String queryCommandName,
+            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
+            String commandJSON
+    ) {
         LOG.info("Service Instance DELETE command");
+        assertCommandContext(commandJSON, organizationIdOrAlias);
         sendAndWait(contentType, queryCommandName, commandJSON,
                 RemoveServiceInstanceEndpoint.class
         );
+    }
+    
+    /**
+     * Will resolve the organizationId and check that it is mentioned in the command.
+     * <p>
+     * Security test to make sure that the command is in context of the current organization. It is presumed that only legal users are
+     * capable of submitting (POST) to the organization (a concern managed elsewhere)
+     * <p>
+     * @param commandJSON
+     * @param organizationIdOrAlias
+     */
+    private void assertCommandContext(String commandJSON, String organizationIdOrAlias) {
+        String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
+        assertCommandMentions(commandJSON, organizationId);
+    }
+
+    private void assertCommandMentions(String commandJSON, String... thingsToMention) {
+        for (String thingToMention : thingsToMention) {
+            if (!commandJSON.contains(thingToMention)) {
+                throw new WebApplicationException("Invalid context", 403);
+            }
+        }
     }
 
     private void sendAndWait(String contentType, String queryCommandName, String commandJSON, Class... classes) {
@@ -133,11 +224,13 @@ public class OrganizationResource {
     }
 
     // -------------------------------------------------------
+    // -------------------------------------------------------
     // Queries
+    // -------------------------------------------------------
     // -------------------------------------------------------
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("organization")
+    @Path("org")
     public List<OrganizationEntry> getOrganizations(
             @QueryParam("member") @DefaultValue("") String memberUID,
             @QueryParam("namePattern") @DefaultValue("") String organizationNamePattern
@@ -162,7 +255,7 @@ public class OrganizationResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("organization/{organizationId}")
+    @Path("org/{organizationId}")
     public OrganizationEntry getOrganization(@PathParam("organizationId") String organizationId) {
         return ApplicationServiceRegistry.organizationQueryRepository().findOne(organizationId);
     }
@@ -172,23 +265,23 @@ public class OrganizationResource {
     // ------------------------------------------------------------------------
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("org/{organizationAliasOrId}/ss")
+    @Path("org/{organizationIdOrAlias}/ss")
     public List<ServiceSpecificationEntry> queryServiceSpecificationsByAlias(
-            @PathParam("organizationAliasOrId") String organizationAliasOrId,
+            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
             @QueryParam("namePattern") @DefaultValue("") String usernamePattern
     ) {
-        String organizationId = resolveOrganizationIdOrFail(organizationAliasOrId);
+        String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
         return ApplicationServiceRegistry.serviceSpecificationQueryRepository().findByOwnerId(organizationId);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("org/{organizationAliasOrId}/ss/{serviceSpecificationAliasOrId}")
+    @Path("org/{organizationIdOrAlias}/ss/{serviceSpecificationAliasOrId}")
     public ServiceSpecificationEntry getServiceSpecificationByAlias(
-            @PathParam("organizationAliasOrId") String organizationAliasOrId,
+            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
             @PathParam("serviceSpecificationAliasOrId") String serviceSpecificationAliasOrId
     ) {
-        String organizationId = resolveOrganizationIdOrFail(organizationAliasOrId);
+        String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
         return resolveServiceSpecification(organizationId, serviceSpecificationAliasOrId);
     }
 
@@ -197,26 +290,26 @@ public class OrganizationResource {
     // ------------------------------------------------------------------------
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("org/{organizationAliasOrId}/si")
+    @Path("org/{organizationIdOrAlias}/si")
     public List<ServiceInstanceEntry> queryServiceInstancesByAlias(
-            @PathParam("organizationAliasOrId") String organizationAliasOrId,
+            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
             @QueryParam("namePattern") @DefaultValue("") String usernamePattern
     ) {
-        String organizationId = resolveOrganizationIdOrFail(organizationAliasOrId);
+        String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
         return ApplicationServiceRegistry.serviceInstanceQueryRepository().findByProviderId(organizationId);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("org/{organizationAliasOrId}/si/{serviceInstanceAliasOrId}")
+    @Path("org/{organizationIdOrAlias}/si/{serviceInstanceAliasOrId}")
     public ServiceInstanceEntry getServiceInstanceByAlias(
-            @PathParam("organizationAliasOrId") String organizationAliasOrId,
+            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
             @PathParam("serviceInstanceAliasOrId") String serviceInstanceAliasOrId
     ) {
         // TODO: move to almanac api as list aliases ...or something
         System.out.println("ALL: " + ApplicationServiceRegistry.aliasRegistryQueryRepository().findAll());
 
-        String organizationId = resolveOrganizationIdOrFail(organizationAliasOrId);
+        String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
         return resolveServiceInstance(organizationId, serviceInstanceAliasOrId);
     }
 
