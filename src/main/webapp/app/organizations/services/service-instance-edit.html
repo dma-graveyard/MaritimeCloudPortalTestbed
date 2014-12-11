@@ -41,7 +41,8 @@
 
                     </li>
                     <li>
-                        <select ng-model="protocol" ng-options="protocol for protocol in protocols"></select>
+                        <select ng-if="protocols.length > 1" ng-model="protocol" ng-options="protocol for protocol in protocols"></select>
+                        <span ng-if="!(protocols.length > 1)">{{protocol}}</span>
                         <input type="text" class="xform-control" id="serviceEndpoints" placeholder="Enter an endpoint URI to add to the list" ng-model="newEndpoint" >
                         <span>
                             <button ng-click="addEndpoint(newEndpoint);" ng-disabled="isLockedOrInvalidEndpoint(newEndpoint)" class="btn btn-primary">

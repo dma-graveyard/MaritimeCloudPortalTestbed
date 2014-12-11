@@ -24,6 +24,16 @@ var servicetypeProtocols = {
   WWW: ['http://', 'https://']
 };
 
+var indexOfUri = function (endpoints, endpointUri) {
+  if (endpoints) {
+    for (var i = 0; i < endpoints.length; i++) {
+      if (endpoints[i].uri === endpointUri)
+        return i;
+    }
+  }
+  return -1;
+};
+
 angular.module('mcp.organizations.services', [])
 
     .controller('ServiceInstanceDetailsController', ['$scope', 'AlmanacServiceSpecificationService', 'AlmanacOrganizationService',
@@ -81,7 +91,7 @@ angular.module('mcp.organizations.services', [])
             var b = !($scope.selection.specification)
                 || !newEndpoint
                 || newEndpoint.trim().length === 0
-                || indexOfUri(protocol + newEndpoint) >= 0;
+                || indexOfUri($scope.service.endpoints, protocol + newEndpoint) >= 0;
             return b;
           },
           addEndpoint: function (newEndpointUri) {
@@ -93,7 +103,7 @@ angular.module('mcp.organizations.services', [])
             $scope.service.endpoints.push({uri: protocol + newEndpointUri});
           },
           removeEndpoint: function (endpointUri) {
-            var index = indexOfUri(endpointUri);
+            var index = indexOfUri($scope.service.endpoints, endpointUri);
             if (index >= 0) {
               $scope.service.endpoints.splice(index, 1);
             }
@@ -130,16 +140,6 @@ angular.module('mcp.organizations.services', [])
         UUID.get({name: "identifier"}, function (newUuid) {
           $scope.service.serviceInstanceId = newUuid.identifier;
         });
-
-        var indexOfUri = function (endpointUri) {
-          if ($scope.service.endpoints) {
-            for (var i = 0; i < $scope.service.endpoints.length; i++) {
-              if ($scope.service.endpoints[i].uri === endpointUri)
-                return i;
-            }
-          }
-          return -1;
-        };
 
         var setServiceTypeProtocol = function (serviceSpecification) {
           if (serviceSpecification) {
@@ -186,7 +186,7 @@ angular.module('mcp.organizations.services', [])
           $scope.alertMessages = ["Error on the serverside :( ", error];
         };
 
-        var getHydratedServiceInstance = function (success) {
+        var getHydratedServiceInstance = function () {
           return ServiceInstanceService.get({organizationId: $stateParams.organizationId, serviceInstanceId: $stateParams.serviceInstanceId},
           function (serviceInstance) {
 
@@ -194,8 +194,18 @@ angular.module('mcp.organizations.services', [])
             AlmanacServiceSpecificationService.get({serviceSpecificationId: $scope.service.specificationId}, function (serviceSpecification) {
               serviceInstance.specification = serviceSpecification;
 
-              if (success)
-                success(serviceInstance);
+              // empty the services array (a reference is held by the map, so we cannot just assign a new empty array!)
+              $scope.services.length = 0;
+              // add the new instance reference
+              $scope.services.push(serviceInstance);
+              // rebuild the map once the request has returned the serviceInstance
+              $scope.map.rebuild();
+
+              if (serviceInstance.specification) {
+                $scope.protocols = servicetypeProtocols[serviceSpecification.serviceType];
+                $scope.protocol = servicetypeProtocols[serviceSpecification.serviceType][0];
+              }
+
             });
 
           }, reportError);
@@ -203,6 +213,7 @@ angular.module('mcp.organizations.services', [])
 
         angular.extend($scope, {
           map: {}, // this property is populated with methods by the "thumbnail-map"-directive!!!
+          services: [], // this property is referenced by the "thumbnail-map"-directive!!!
           message: null,
           alertMessages: null,
           selection: {
@@ -210,14 +221,7 @@ angular.module('mcp.organizations.services', [])
             specification: null
           },
           operationalServices: AlmanacOperationalServiceService.query(),
-          service: {
-            serviceInstanceId: null,
-            providerId: $stateParams.organizationId,
-            name: null,
-            summary: null,
-            coverage: [],
-            endpoints: []
-          },
+          service: getHydratedServiceInstance(),
           protocol: "<select a specification type>",
           selectOperationalService: function (selectedOperationalService) {
             $scope.specifications = selectedOperationalService ? AlmanacServiceSpecificationService.query(
@@ -234,7 +238,7 @@ angular.module('mcp.organizations.services', [])
 
             var b = !newEndpoint
                 || newEndpoint.trim().length === 0
-                || indexOfUri(protocol + newEndpoint) >= 0;
+                || indexOfUri($scope.service.endpoints, protocol + newEndpoint) >= 0;
             return b;
           },
           addEndpoint: function (newEndpointUri) {
@@ -245,13 +249,20 @@ angular.module('mcp.organizations.services', [])
 
             // send remote command right away 
             ServiceInstanceService.addEndpoint($scope.service, protocol + newEndpointUri, function () {
+
               // reload serviceInstance
               $scope.service = getHydratedServiceInstance();
+              $scope.message = "Endpoint added!";
+
             }, reportError);
           },
           removeEndpoint: function (endpointUri) {
             ServiceInstanceService.removeEndpoint($scope.service, endpointUri, function () {
+
+              // reload serviceInstance
               $scope.service = getHydratedServiceInstance();
+              $scope.message = "Endpoint removed!";
+
             }, reportError);
           },
           close: function (result) {
@@ -263,48 +274,11 @@ angular.module('mcp.organizations.services', [])
             $scope.alertMessages = null;
             $scope.message = "Sending request to register service instance...";
 
-            ServiceInstanceService.changeCoverage($scope.service);
             ServiceInstanceService.changeNameAndSummary($scope.service, function () {
-              $location.path('/orgs/' + $scope.service.providerId).replace();
+              $scope.message = "Name and summary successfully updated!";
             }, reportError);
           }
         });
-
-        var indexOfUri = function (endpointUri) {
-          if ($scope.service.endpoints) {
-            for (var i = 0; i < $scope.service.endpoints.length; i++) {
-              if ($scope.service.endpoints[i].uri === endpointUri)
-                return i;
-            }
-          }
-          return -1;
-        };
-
-        var setServiceTypeProtocol = function (serviceSpecification) {
-          if (serviceSpecification) {
-            $scope.protocols = servicetypeProtocols[serviceSpecification.serviceType];
-            $scope.protocol = servicetypeProtocols[serviceSpecification.serviceType][0];
-          }
-        };
-        $scope.setServiceTypeProtocol = setServiceTypeProtocol;
-
-//        if ($scope.isEditState()) {
-        $scope.service = getHydratedServiceInstance(function (serviceInstance) {
-
-          // rebuild the map once the request has returned the serviceInstance
-          $scope.map.rebuild();
-
-          setServiceTypeProtocol(serviceInstance.specification);
-        });
-//
-//        } else {
-//          // assign a random ID
-//          UUID.get({name: "identifier"}, function (newUuid) {
-//            $scope.service.serviceInstanceId = newUuid.identifier;
-//          });
-//        }
-
-        $scope.services = [$scope.service];
 
         $scope.openCoverageEditor = function () {
           $modal.open({
@@ -324,8 +298,9 @@ angular.module('mcp.organizations.services', [])
             // submit
             $scope.service.coverage = result;
             $scope.map.rebuild();
-          }, function () {
-            // dismiss
+            ServiceInstanceService.changeCoverage($scope.service, function () {
+              $scope.message = "Coverage changed!";
+            }, reportError /*TODO: shouldn't we reload original in this case?*/);
           });
         };
 

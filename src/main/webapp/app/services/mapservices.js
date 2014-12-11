@@ -253,6 +253,9 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
 
       var servicesLayers = [];
 
+      // default to empty array
+      services = services || [];
+
       // iterate services, and for each, convert its shapes to layers and 
       // add it to a layerGroup, finally add the layerGroup to the array-object 
       services.forEach(function (service) {
@@ -561,10 +564,11 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
                 });
 
             function hasCoverageToZoomTo(services) {
+
               // (a service can be new, that is, has no coverage defined yet)
-              return !(services.length === 1 && services[0].coverage.length === 0);
+              return services && services.length > 0 && !(services.length === 1 && services[0].coverage.length === 0);
             }
-            
+
             function populateServicesGroup(group, services) {
               group.clearLayers();
               group.addLayer(L.featureGroup(mapService.servicesToLayers(services, function (featureGroup) {
@@ -579,13 +583,13 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
               if (hasCoverageToZoomTo(services)) {
                 map.fitBounds(group.getBounds());
               } else {
-                
+
                 // Try to locate user from geodata and zoom to that position 
                 // (see 'locationfound'-eventhandler below)
                 map.locate();
               }
             }
-            
+
             function fitToUserLocation(locationEvent) {
 
               //  (a service can be new, that is, has no coverage defined yet)
