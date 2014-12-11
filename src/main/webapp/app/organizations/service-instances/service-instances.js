@@ -113,7 +113,7 @@ angular.module('mcp.organizations.services', [])
           },
           openCoverageEditor: function () {
             $modal.open({
-              templateUrl: 'organizations/services/coverage-editor.html',
+              templateUrl: 'organizations/service-instances/coverage-editor.html',
               controller: 'CoverageEditorController',
               size: 'lg',
               backdrop: 'static',
@@ -254,7 +254,7 @@ angular.module('mcp.organizations.services', [])
           },
           openCoverageEditor: function () {
             $modal.open({
-              templateUrl: 'organizations/services/coverage-editor.html',
+              templateUrl: 'organizations/service-instances/coverage-editor.html',
               controller: 'CoverageEditorController',
               size: 'lg',
               backdrop: 'static',
