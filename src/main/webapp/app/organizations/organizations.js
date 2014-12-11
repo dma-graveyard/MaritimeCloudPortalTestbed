@@ -59,7 +59,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
     .controller('OrganizationCreateController', ['$scope', '$location', 'OrganizationService', 'OrganizationContext',
       function ($scope, $location, OrganizationService, OrganizationContext) {
-        $scope.organization = {organizationId: null, name: null};
+        $scope.organization = {organizationId: null, name: null, url: "http://hardcoded.bwah.org"};
         $scope.message = null;
         $scope.alertMessages = null;
         //$("#rPreferredLogin").focus();
