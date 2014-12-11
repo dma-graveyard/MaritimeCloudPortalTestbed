@@ -82,8 +82,11 @@ angular.module('mcp.organizations.services', [])
               $scope.selection.specification = null;
             }) : [];
           },
-          formIsSubmitable: function () {
-            return ($scope.service.serviceInstanceId && $scope.service.name /*&& $scope.service.coverage*/);
+          setServiceTypeProtocol: function (serviceSpecification) {
+            if (serviceSpecification) {
+              $scope.protocols = servicetypeProtocols[serviceSpecification.serviceType];
+              $scope.protocol = servicetypeProtocols[serviceSpecification.serviceType][0];
+            }
           },
           isLockedOrInvalidEndpoint: function (newEndpoint) {
             var protocol = $scope.protocol;
@@ -108,8 +111,33 @@ angular.module('mcp.organizations.services', [])
               $scope.service.endpoints.splice(index, 1);
             }
           },
+          openCoverageEditor: function () {
+            $modal.open({
+              templateUrl: 'organizations/services/coverage-editor.html',
+              controller: 'CoverageEditorController',
+              size: 'lg',
+              backdrop: 'static',
+              resolve: {
+                coverage: function () {
+                  return $scope.service.coverage;
+                },
+                mapOptions: function () {
+                  return {bounds: $scope.map.handle.getBounds()};
+                }
+              }
+            }).result.then(function (result) {
+              // submit
+              $scope.service.coverage = result;
+              $scope.map.rebuild();
+            }, function () {
+              // dismiss
+            });
+          },
           close: function (result) {
             $location.path('/orgs/' + $scope.service.providerId).replace();
+          },
+          formIsSubmitable: function () {
+            return ($scope.service.serviceInstanceId && $scope.service.name /*&& $scope.service.coverage*/);
           },
           submit: function () {
             $scope.providerId = $stateParams.organizationId;
@@ -137,42 +165,13 @@ angular.module('mcp.organizations.services', [])
           }
         });
 
+        // this property is referenced by the "thumbnail-map"-directive!!!
+        $scope.services = [$scope.service];
+
+        // Fetch and assign a new UUID from the server
         UUID.get({name: "identifier"}, function (newUuid) {
           $scope.service.serviceInstanceId = newUuid.identifier;
         });
-
-        var setServiceTypeProtocol = function (serviceSpecification) {
-          if (serviceSpecification) {
-            $scope.protocols = servicetypeProtocols[serviceSpecification.serviceType];
-            $scope.protocol = servicetypeProtocols[serviceSpecification.serviceType][0];
-          }
-        };
-        $scope.setServiceTypeProtocol = setServiceTypeProtocol;
-
-        $scope.services = [$scope.service];
-
-        $scope.openCoverageEditor = function () {
-          $modal.open({
-            templateUrl: 'organizations/services/coverage-editor.html',
-            controller: 'CoverageEditorController',
-            size: 'lg',
-            backdrop: 'static',
-            resolve: {
-              coverage: function () {
-                return $scope.service.coverage;
-              },
-              mapOptions: function () {
-                return {bounds: $scope.map.handle.getBounds()};
-              }
-            }
-          }).result.then(function (result) {
-            // submit
-            $scope.service.coverage = result;
-            $scope.map.rebuild();
-          }, function () {
-            // dismiss
-          });
-        };
 
       }])
 
@@ -216,20 +215,8 @@ angular.module('mcp.organizations.services', [])
           services: [], // this property is referenced by the "thumbnail-map"-directive!!!
           message: null,
           alertMessages: null,
-          selection: {
-            operationalService: null,
-            specification: null
-          },
-          operationalServices: AlmanacOperationalServiceService.query(),
           service: getHydratedServiceInstance(),
           protocol: "<select a specification type>",
-          selectOperationalService: function (selectedOperationalService) {
-            $scope.specifications = selectedOperationalService ? AlmanacServiceSpecificationService.query(
-                {operationalServiceId: selectedOperationalService.operationalServiceId}, function (data) {
-              // is not in list then reset
-              $scope.selection.specification = null;
-            }) : [];
-          },
           formIsSubmitable: function () {
             return ($scope.service.serviceInstanceId && $scope.service.name /*&& $scope.service.coverage*/);
           },
@@ -265,6 +252,29 @@ angular.module('mcp.organizations.services', [])
 
             }, reportError);
           },
+          openCoverageEditor: function () {
+            $modal.open({
+              templateUrl: 'organizations/services/coverage-editor.html',
+              controller: 'CoverageEditorController',
+              size: 'lg',
+              backdrop: 'static',
+              resolve: {
+                coverage: function () {
+                  return $scope.service.coverage;
+                },
+                mapOptions: function () {
+                  return {bounds: $scope.map.handle.getBounds()};
+                }
+              }
+            }).result.then(function (result) {
+              // submit
+              $scope.service.coverage = result;
+              $scope.map.rebuild();
+              ServiceInstanceService.changeCoverage($scope.service, function () {
+                $scope.message = "Coverage changed!";
+              }, reportError /*TODO: shouldn't we reload original in this case?*/);
+            });
+          },
           close: function (result) {
             $location.path('/orgs/' + $scope.service.providerId).replace();
           },
@@ -279,30 +289,6 @@ angular.module('mcp.organizations.services', [])
             }, reportError);
           }
         });
-
-        $scope.openCoverageEditor = function () {
-          $modal.open({
-            templateUrl: 'organizations/services/coverage-editor.html',
-            controller: 'CoverageEditorController',
-            size: 'lg',
-            backdrop: 'static',
-            resolve: {
-              coverage: function () {
-                return $scope.service.coverage;
-              },
-              mapOptions: function () {
-                return {bounds: $scope.map.handle.getBounds()};
-              }
-            }
-          }).result.then(function (result) {
-            // submit
-            $scope.service.coverage = result;
-            $scope.map.rebuild();
-            ServiceInstanceService.changeCoverage($scope.service, function () {
-              $scope.message = "Coverage changed!";
-            }, reportError /*TODO: shouldn't we reload original in this case?*/);
-          });
-        };
 
       }])
 

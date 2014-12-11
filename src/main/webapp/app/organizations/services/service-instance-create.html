@@ -49,15 +49,13 @@
                 <ul>
                     <li ng-if="service.endpoints.length === 0"><i>No service endpoints - use the field below to add at least one!</i></li>
                     <li  ng-repeat="endpoint in service.endpoints">{{endpoint.uri}}
-                        <span class="Xinput-group-btn">
-                            <button ng-if="service.endpoints.length > 1 || isCreateState()" ng-click="removeEndpoint(endpoint.uri);" class="btn btn-default btn-sm">
-                                <span class="fa fa-trash-o"></span>
-                            </button>
-                        </span>
-
+                        <button ng-click="removeEndpoint(endpoint.uri);" class="btn btn-default btn-sm">
+                            <span class="fa fa-trash-o"></span>
+                        </button>
                     </li>
                     <li>
-                        <select ng-model="protocol" ng-options="protocol for protocol in protocols"></select>
+                        <select ng-if="protocols.length > 1" ng-model="protocol" ng-options="protocol for protocol in protocols"></select>
+                        <span ng-if="!(protocols.length > 1)">{{protocol}}</span>
                         <input type="text" class="xform-control" id="serviceEndpoints" placeholder="Enter an endpoint URI to add to the list" ng-model="newEndpoint" >
                         <span>
                             <button ng-click="addEndpoint(newEndpoint);" ng-disabled="isLockedOrInvalidEndpoint(newEndpoint)" class="btn btn-primary">

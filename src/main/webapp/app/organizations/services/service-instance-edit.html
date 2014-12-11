@@ -33,12 +33,9 @@
                 <ul>
                     <li ng-if="service.endpoints.length === 0"><i>No service endpoints - use the field below to add at least one!</i></li>
                     <li  ng-repeat="endpoint in service.endpoints">{{endpoint.uri}}
-                        <span class="Xinput-group-btn">
-                            <button ng-if="service.endpoints.length > 1 || isCreateState()" ng-click="removeEndpoint(endpoint.uri);" class="btn btn-default btn-sm">
-                                <span class="fa fa-trash-o"></span>
-                            </button>
-                        </span>
-
+                        <button ng-if="service.endpoints.length > 1" ng-click="removeEndpoint(endpoint.uri);" class="btn btn-default btn-sm">
+                            <span class="fa fa-trash-o"></span>
+                        </button>
                     </li>
                     <li>
                         <select ng-if="protocols.length > 1" ng-model="protocol" ng-options="protocol for protocol in protocols"></select>
