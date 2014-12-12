@@ -23,6 +23,7 @@ import static net.maritimecloud.common.infrastructure.axon.CommonFixture.AN_ALIA
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAdded;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasRegistrationDenied;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstancePrimaryAliasAdded;
 import org.axonframework.test.FixtureConfiguration;
 import org.axonframework.test.Fixtures;
 import org.junit.Before;
@@ -56,14 +57,26 @@ public class OrganizationTest extends CommonFixture {
     }
 
     @Test
-    public void addServiceInstanceAlias() {
+    public void firstAddServiceInstanceAlias() {
         fixture.given(
                 organizationCreatedEvent(),
                 serviceSpecificationCreatedEvent(),
                 serviceInstanceCreatedEvent()
         )
                 .when(new AddServiceInstanceAlias(anOrganizationId, aServiceInstanceId, AN_ALIAS))
-                .expectEvents(new ServiceInstanceAliasAdded(anOrganizationId, aServiceInstanceId, AN_ALIAS));
+                .expectEvents(new ServiceInstancePrimaryAliasAdded(anOrganizationId, aServiceInstanceId, AN_ALIAS));
+    }
+
+    @Test
+    public void subsequentServiceInstanceAlias() {
+        fixture.given(
+                organizationCreatedEvent(),
+                serviceSpecificationCreatedEvent(),
+                serviceInstanceCreatedEvent(),
+                new ServiceInstancePrimaryAliasAdded(anOrganizationId, aServiceInstanceId, AN_ALIAS)
+        )
+                .when(new AddServiceInstanceAlias(anOrganizationId, aServiceInstanceId, ANOTHER_ALIAS))
+                .expectEvents(new ServiceInstanceAliasAdded(anOrganizationId, aServiceInstanceId, ANOTHER_ALIAS));
     }
 
     @Test

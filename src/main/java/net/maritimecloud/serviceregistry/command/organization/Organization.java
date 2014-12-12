@@ -82,11 +82,11 @@ public class Organization extends AbstractAnnotatedAggregateRoot<OrganizationId>
             // idempotent, ok to register same alias and instance twice
             return;
         }
-        if (true) {
+        if (aliases.containsValue(command.getServiceInstanceId())) {
+            apply(new ServiceInstanceAliasAdded(command.getOrganizationId(), command.getServiceInstanceId(), command.getAlias()));
+        } else {
             // there's a first time for everything
             apply(new ServiceInstancePrimaryAliasAdded(command.getOrganizationId(), command.getServiceInstanceId(), command.getAlias()));
-        } else {
-            apply(new ServiceInstanceAliasAdded(command.getOrganizationId(), command.getServiceInstanceId(), command.getAlias()));
         }
     }
 
@@ -121,4 +121,5 @@ public class Organization extends AbstractAnnotatedAggregateRoot<OrganizationId>
             ServiceSpecification specification, ServiceInstanceId serviceInstanceId, String name, String summary, Coverage coverage) {
         return specification.materialize(organizationId, serviceInstanceId, name, summary, coverage);
     }
+    
 }
