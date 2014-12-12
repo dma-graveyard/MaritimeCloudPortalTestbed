@@ -16,6 +16,7 @@ package net.maritimecloud.serviceregistry.query;
 
 import javax.annotation.Resource;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAdded;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasRemoved;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.slf4j.Logger;
@@ -50,6 +51,16 @@ public class AliasRegistryListener {
                 event.getServiceInstanceId().identifier()
         );
         save(entry);
+    }
+
+    @EventHandler
+    public void on(ServiceInstanceAliasRemoved event) {
+        AliasRegistryEntry aliasEntry = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndAlias(
+                event.getOrganizationId().identifier(),
+                ServiceInstanceId.class.getName(),
+                event.getAlias()
+        );
+        aliasRegistryQueryRepository.delete(aliasEntry);
     }
 
     private void save(AliasRegistryEntry entry) {

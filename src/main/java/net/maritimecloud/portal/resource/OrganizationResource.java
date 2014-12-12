@@ -45,7 +45,9 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceIn
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
+import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceAlias;
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.query.AliasRegistryEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
@@ -187,6 +189,7 @@ public class OrganizationResource {
                 ChangeServiceInstanceCoverage.class,
                 AddServiceInstanceEndpoint.class,
                 AddServiceInstanceAlias.class,
+                RemoveServiceInstanceAlias.class,
                 RemoveServiceInstanceEndpoint.class
         );
     }
@@ -344,6 +347,17 @@ public class OrganizationResource {
             @PathParam("serviceInstanceIdOrAlias") String serviceInstanceIdOrAlias
     ) {
         return ResourceResolver.queryServiceinstanceAliases(getServiceInstanceByAlias(organizationIdOrAlias, serviceInstanceIdOrAlias));
+    }     
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("org/{organizationIdOrAlias}/si/{serviceInstanceIdOrAlias}/alias/{alias}")
+    public AliasRegistryEntry getAlias(
+            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
+            @PathParam("alias") String alias
+    ) {
+        String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
+        return lookupAlias(organizationId, ServiceInstanceId.class, alias);
     }     
     
 }

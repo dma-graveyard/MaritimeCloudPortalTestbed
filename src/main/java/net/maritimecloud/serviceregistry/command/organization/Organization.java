@@ -21,8 +21,10 @@ import net.maritimecloud.serviceregistry.command.api.OrganizationNameAndSummaryC
 import net.maritimecloud.serviceregistry.command.api.OrganizationCreated;
 import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
+import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceAlias;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAdded;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasRegistrationDenied;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasRemoved;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstancePrimaryAliasAdded;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
@@ -90,6 +92,14 @@ public class Organization extends AbstractAnnotatedAggregateRoot<OrganizationId>
         }
     }
 
+    @CommandHandler
+    public void handle(RemoveServiceInstanceAlias command) {
+        ServiceInstanceId serviceInstanceId = aliases.get(command.getAlias());
+        if (serviceInstanceId != null) {
+            apply(new ServiceInstanceAliasRemoved(command.getOrganizationId(), command.getAlias()));
+        }
+    }
+
     // Remove alias should ignore/fail on remove of last alias, as this one is locked for removal (primary alias)!
     @EventSourcingHandler
     public void on(OrganizationCreated event) {
@@ -99,6 +109,11 @@ public class Organization extends AbstractAnnotatedAggregateRoot<OrganizationId>
     @EventSourcingHandler
     public void on(ServiceInstanceAliasAdded event) {
         aliases.put(event.getAlias(), event.getServiceInstanceId());
+    }
+
+    @EventSourcingHandler
+    public void on(ServiceInstanceAliasRemoved event) {
+        aliases.remove(event.getAlias());
     }
 
     /**

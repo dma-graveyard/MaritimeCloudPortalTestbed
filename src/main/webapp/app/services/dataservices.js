@@ -41,6 +41,12 @@ function AddServiceInstanceAliasCommand(organizationId, serviceInstanceId, alias
   this.alias = alias;
 }
 
+function RemoveServiceInstanceAliasCommand(organizationId, serviceInstanceId, alias) {
+  this.organizationId = {identifier: organizationId};
+  this.serviceInstanceId = {identifier: serviceInstanceId};
+  this.alias = alias;
+}
+
 function AddServiceInstanceEndpointCommand(serviceInstanceId, endpointUri) {
   this.serviceInstanceId = {identifier: serviceInstanceId};
   this.serviceEndpoint = {uri: endpointUri};
@@ -132,6 +138,13 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
             {
               post: {method: 'POST', params: {organizationId: '@providerId.identifier'}},
               put: {method: 'PUT', params: {serviceInstanceId: '@serviceInstanceId.identifier'}},
+              aliases: {method: 'GET', params: {serviceInstanceId: '@serviceInstanceId.identifier'},
+                url: serviceBaseUrl + '/rest/api/org/:organizationId/si/:serviceInstanceId/alias',
+                isArray: true
+              },
+              alias: {method: 'GET', params: {},
+                url: serviceBaseUrl + '/rest/api/org/:organizationId/si/exist/alias/:alias'
+              }
             });
 
         resource.create = function (serviceInstance, succes, error) {
@@ -147,8 +160,11 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         };
 
         resource.addAlias = function (serviceInstance, alias, succes, error) {
-          console.log('serviceInstance',serviceInstance,alias);
           return this.put({organizationId: serviceInstance.providerId}, new AddServiceInstanceAliasCommand(serviceInstance.providerId, serviceInstance.serviceInstanceId, alias), succes, error);
+        };
+
+        resource.removeAlias = function (serviceInstance, alias, succes, error) {
+          return this.put({organizationId: serviceInstance.providerId, serviceInstanceId:serviceInstance.serviceInstanceId}, new RemoveServiceInstanceAliasCommand(serviceInstance.providerId, serviceInstance.serviceInstanceId, alias), succes, error);
         };
 
         resource.addEndpoint = function (serviceInstance, endpointUri, succes, error) {

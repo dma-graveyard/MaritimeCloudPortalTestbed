@@ -21,8 +21,10 @@ import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSu
 import net.maritimecloud.common.infrastructure.axon.CommonFixture;
 import static net.maritimecloud.common.infrastructure.axon.CommonFixture.AN_ALIAS;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
+import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceAlias;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAdded;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasRegistrationDenied;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasRemoved;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstancePrimaryAliasAdded;
 import org.axonframework.test.FixtureConfiguration;
 import org.axonframework.test.Fixtures;
@@ -68,7 +70,7 @@ public class OrganizationTest extends CommonFixture {
     }
 
     @Test
-    public void subsequentServiceInstanceAlias() {
+    public void subsequentAddServiceInstanceAlias() {
         fixture.given(
                 organizationCreatedEvent(),
                 serviceSpecificationCreatedEvent(),
@@ -80,7 +82,20 @@ public class OrganizationTest extends CommonFixture {
     }
 
     @Test
-    public void addDuplicateServiceInstanceAliasShouldFail() {
+    public void removeServiceInstanceAlias() {
+        fixture.given(
+                organizationCreatedEvent(),
+                serviceSpecificationCreatedEvent(),
+                serviceInstanceCreatedEvent(),
+                new ServiceInstancePrimaryAliasAdded(anOrganizationId, aServiceInstanceId, AN_ALIAS),
+                new ServiceInstanceAliasAdded(anOrganizationId, aServiceInstanceId, ANOTHER_ALIAS)
+        )
+                .when(new RemoveServiceInstanceAlias(anOrganizationId, aServiceInstanceId, ANOTHER_ALIAS))
+                .expectEvents(new ServiceInstanceAliasRemoved(anOrganizationId, ANOTHER_ALIAS));
+    }
+
+    @Test
+    public void duplicateAddServiceInstanceAliasShouldBeDenied() {
         fixture.given(
                 organizationCreatedEvent(),
                 serviceSpecificationCreatedEvent(),

@@ -165,10 +165,10 @@ angular.module('mcp.organizations.services', [])
                   // alias created
                   console.log("alias created", $scope.service.primaryAlias);
                   $scope.message = "Created alias " + $scope.service.primaryAlias;
-                  
+
                 }, function (error) {
                   console.log("Oh shoot - failed to create the alias for this service instance :-( ", $scope.service.primaryAlias, error);
-                  $scope.alertMessages = ["Oh shoot - failed to create the alias for this service instance :-( "+$scope.service.primaryAlias, error];
+                  $scope.alertMessages = ["Oh shoot - failed to create the alias for this service instance :-( " + $scope.service.primaryAlias, error];
                 });
 
                 $scope.close();
@@ -217,6 +217,16 @@ angular.module('mcp.organizations.services', [])
                 $scope.protocol = servicetypeProtocols[serviceSpecification.serviceType][0];
               }
 
+              // add list of aliases
+              ServiceInstanceService.aliases({organizationId: $stateParams.organizationId, serviceInstanceId: $stateParams.serviceInstanceId}, function (aliases) {
+                // ...but remove the primary alias from the list
+                var list = [];
+                aliases.forEach(function (alias) {
+                  if (alias.alias !== serviceInstance.primaryAlias)
+                    list.push(alias);
+                });
+                serviceInstance.aliases = list;
+              });
             });
 
           }, reportError);
@@ -239,6 +249,24 @@ angular.module('mcp.organizations.services', [])
                 || newEndpoint.trim().length === 0
                 || indexOfUri($scope.service.endpoints, protocol + newEndpoint) >= 0;
             return b;
+          },
+          addAlias: function (newAlias) {
+            ServiceInstanceService.addAlias($scope.service, newAlias, function () {
+
+              // reload serviceInstance
+              $scope.service = getHydratedServiceInstance();
+              $scope.message = "Alias added!";
+
+            }, reportError);
+          },
+          removeAlias: function (alias) {
+            ServiceInstanceService.removeAlias($scope.service, alias, function () {
+
+              // reload serviceInstance
+              $scope.service = getHydratedServiceInstance();
+              $scope.message = "Alias removed!";
+
+            }, reportError);
           },
           addEndpoint: function (newEndpointUri) {
             var protocol = $scope.protocol;
@@ -301,6 +329,28 @@ angular.module('mcp.organizations.services', [])
             }, reportError);
           }
         });
+
+        $scope.resolveUniqueAlias = function () {
+          if (!angular.isDefined($scope.newAlias)) {
+            $scope.aliasAlreadyExist = true;
+            return;
+          }
+
+          ServiceInstanceService.alias({organizationId: $stateParams.organizationId, alias: $scope.newAlias}, function (aliasEntry) {
+            console.log('alias result', aliasEntry);
+            $scope.aliasAlreadyExist = angular.isDefined(aliasEntry.alias);
+          });
+        };
+
+        $scope.$watch("newAlias",
+            function (newValue, oldValue, scope) {
+              if (newValue !== oldValue) {
+                //console.log(newValue, oldValue);
+                scope.resolveUniqueAlias();
+              }
+            }
+        );
+
 
       }])
 

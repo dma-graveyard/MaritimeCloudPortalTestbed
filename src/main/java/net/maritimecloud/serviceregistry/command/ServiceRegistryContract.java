@@ -68,8 +68,11 @@ public interface ServiceRegistryContract extends CqrsContract {
     void addServiceInstanceAlias(OrganizationId organizationId, ServiceInstanceId serviceInstanceId, String alias);
 
     @Command
-    void changeServiceSpecificationNameAndSummary(ServiceSpecificationId serviceSpecificationId, String name, String summary);
+    void removeServiceInstanceAlias(OrganizationId organizationId, ServiceInstanceId serviceInstanceId, String alias);
 
+    @Command
+    void changeServiceSpecificationNameAndSummary(ServiceSpecificationId serviceSpecificationId, String name, String summary);
+    
     @Command
     void addServiceInstanceEndpoint(ServiceInstanceId serviceInstanceId, ServiceEndpoint serviceEndpoint);
 
@@ -77,9 +80,8 @@ public interface ServiceRegistryContract extends CqrsContract {
     void changeServiceInstanceNameAndSummary(ServiceInstanceId serviceInstanceId, String name, String summary);
 
     @Command
-    void RemoveServiceInstanceEndpoint(ServiceInstanceId serviceInstanceId, ServiceEndpoint serviceEndpoint);
+    void removeServiceInstanceEndpoint(ServiceInstanceId serviceInstanceId, ServiceEndpoint serviceEndpoint);
 
-    
     // ------------------------------------------------------------------------
     // EVENTS
     // ------------------------------------------------------------------------
@@ -112,6 +114,9 @@ public interface ServiceRegistryContract extends CqrsContract {
 
     @Event
     void serviceInstanceAliasRegistrationDenied(OrganizationId organizationId, ServiceInstanceId serviceInstanceId, String alias);
+
+    @Event
+    void serviceInstanceAliasRemoved(OrganizationId organizationId, String alias);
 
     @Event
     void serviceInstanceCreated(

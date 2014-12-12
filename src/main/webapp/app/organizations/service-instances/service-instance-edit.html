@@ -26,9 +26,13 @@
         <div>
             <button type="submit" class="btn btn-success center" ng-disabled="!form.$valid || !formIsSubmitable()" ng-click="submit()">Commit</button>
         </div>
+
+
+
+
         <hr>
         <div class="form-group">
-            <label for="serviceEndpoints">Endpoints</label>
+            <label>Endpoints</label>
             <div>
                 <ul>
                     <li ng-if="service.endpoints.length === 0"><i>No service endpoints - use the field below to add at least one!</i></li>
@@ -40,9 +44,9 @@
                     <li>
                         <select ng-if="protocols.length > 1" ng-model="protocol" ng-options="protocol for protocol in protocols"></select>
                         <span ng-if="!(protocols.length > 1)">{{protocol}}</span>
-                        <input type="text" class="xform-control" id="serviceEndpoints" placeholder="Enter an endpoint URI to add to the list" ng-model="newEndpoint" >
+                        <input type="text" id="serviceEndpoints" placeholder="Enter an endpoint URI to add to the list" ng-model="newEndpoint" >
                         <span>
-                            <button ng-click="addEndpoint(newEndpoint);" ng-disabled="isLockedOrInvalidEndpoint(newEndpoint)" class="btn btn-primary">
+                            <button ng-click="addEndpoint(newEndpoint);" ng-disabled="isLockedOrInvalidEndpoint(newEndpoint)" class="btn btn-success">
                                 <span class="fa fa-plus">Add</span>
                             </button>
                         </span>
@@ -61,6 +65,41 @@
                 <a class="btn btn-default center" style="display: inherit;" ng-click="openCoverageEditor()">Edit Coverage</a>
             </div>
             <p class="help-block">Select the geographical extend of the provided service. That is, specify the area where this service should be visible to consumers.</p>
+        </div>
+    </form>
+    <form role="form" name="formAlias" novalidate>
+        <hr>
+        <div class="form-group">
+            <label>Secondary Aliases</label>
+            <div>
+                <ul>
+                    <li ng-if="service.aliases.length === 0"><i>No secondary aliases - use the field below to add one!</i></li>
+                    <li  ng-repeat="alias in service.aliases">{{alias.alias}}
+                        <button ng-click="removeAlias(alias.alias);" class="btn btn-default btn-sm">
+                            <span class="fa fa-trash-o"></span>
+                        </button>
+                    </li>
+                    <li>
+                        <input type="text" id="newAlias" placeholder="Enter an alias" ng-model="newAlias" 
+                               ng-pattern="/^[a-zA-Z]+[a-zA-Z0-9-]*$/"
+                               ng-minlength="2"
+                               Xng-class="formAlias.newAlias.$valid && formAlias.newAlias.$dirty && aliasAlreadyExist ? 'mcp-invalid-input' : '' "
+                               ng-class="aliasAlreadyExist ? 'mcp-invalid-input' : '' "
+                               >
+                        <span>
+                            <button ng-click="addAlias(newAlias);" ng-disabled="aliasAlreadyExist" class="btn btn-success">
+                                <span class="fa fa-plus">Add</span>
+                            </button>
+                        </span>
+                    </li>
+                    <div class="text-danger" ng-show="aliasAlreadyExist">
+                        Sorry, but this alias already taken : (
+                    </div>
+                </ul>
+            </div>
+            <!--<div class="col-sm-12">-->
+            <p class="help-block">An alias may be used in combination with the organization 
+                identifier or alias to reference and locate the service. </p>
         </div>
     </form>
     <div>
