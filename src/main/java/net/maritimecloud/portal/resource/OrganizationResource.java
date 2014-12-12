@@ -46,6 +46,7 @@ import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAn
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
+import net.maritimecloud.serviceregistry.query.AliasRegistryEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import net.maritimecloud.serviceregistry.query.ServiceInstanceEntry;
@@ -130,13 +131,13 @@ public class OrganizationResource {
             @HeaderParam("Content-type") String contentType,
             @QueryParam("command") @DefaultValue("") String queryCommandName,
             @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
-            @PathParam("serviceSpecificationAliasOrId") String serviceSpecificationAliasOrId,
+            @PathParam("serviceSpecificationIdOrAlias") String serviceSpecificationIdOrAlias,
             String commandJSON
     ) {
         LOG.info("Service Instance PUT command");
 
         // assert that specification exists and belongs to organization
-        ServiceSpecificationEntry serviceSpecification = getServiceSpecificationByAlias(organizationIdOrAlias, serviceSpecificationAliasOrId);
+        ServiceSpecificationEntry serviceSpecification = getServiceSpecificationByAlias(organizationIdOrAlias, serviceSpecificationIdOrAlias);
         assertCommandContext(commandJSON, serviceSpecification.getServiceSpecificationId());
         
         sendAndWait(contentType, queryCommandName, commandJSON,
@@ -294,13 +295,13 @@ public class OrganizationResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("org/{organizationIdOrAlias}/ss/{serviceSpecificationAliasOrId}")
+    @Path("org/{organizationIdOrAlias}/ss/{serviceSpecificationIdOrAlias}")
     public ServiceSpecificationEntry getServiceSpecificationByAlias(
             @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
-            @PathParam("serviceSpecificationAliasOrId") String serviceSpecificationAliasOrId
+            @PathParam("serviceSpecificationIdOrAlias") String serviceSpecificationIdOrAlias
     ) {
         String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
-        return resolveServiceSpecification(organizationId, serviceSpecificationAliasOrId);
+        return resolveServiceSpecification(organizationId, serviceSpecificationIdOrAlias);
     }
 
     // ------------------------------------------------------------------------
@@ -319,16 +320,30 @@ public class OrganizationResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("org/{organizationIdOrAlias}/si/{serviceInstanceAliasOrId}")
+    @Path("org/{organizationIdOrAlias}/si/{serviceInstanceIdOrAlias}")
     public ServiceInstanceEntry getServiceInstanceByAlias(
             @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
-            @PathParam("serviceInstanceAliasOrId") String serviceInstanceAliasOrId
+            @PathParam("serviceInstanceIdOrAlias") String serviceInstanceIdOrAlias
     ) {
         // TODO: move to almanac api as list aliases ...or something
         System.out.println("ALL: " + ApplicationServiceRegistry.aliasRegistryQueryRepository().findAll());
 
         String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
-        return resolveServiceInstance(organizationId, serviceInstanceAliasOrId);
+        return resolveServiceInstance(organizationId, serviceInstanceIdOrAlias);
     }
 
+    private static AliasRegistryEntry lookupAlias(String groupId, Class type, String alias) {
+        return ApplicationServiceRegistry.aliasRegistryQueryRepository().findByGroupIdAndTypeNameAndAlias(groupId, type.getName(), alias);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("org/{organizationIdOrAlias}/si/{serviceInstanceIdOrAlias}/alias")
+    public List<AliasRegistryEntry> queryServiceInstanceAliases(
+            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
+            @PathParam("serviceInstanceIdOrAlias") String serviceInstanceIdOrAlias
+    ) {
+        return ResourceResolver.queryServiceinstanceAliases(getServiceInstanceByAlias(organizationIdOrAlias, serviceInstanceIdOrAlias));
+    }     
+    
 }

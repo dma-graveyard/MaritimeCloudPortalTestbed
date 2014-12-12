@@ -28,7 +28,7 @@
                 <div ng-controller="ServiceInstanceDetailsController">
                     <h4>
                         <span>{{service.name}} - {{service.specification.serviceType}}</span>
-                        <a ng-if="userHasWriteAccess()" class="edit-gear" href="#/orgs/{{organization.organizationId}}/{{service.serviceInstanceId}}/edit" data-tooltip="Service instance settings" data-tooltip-placement="right">
+                        <a ng-if="userHasWriteAccess()" class="edit-gear" href="#/orgs/{{organization.organizationId}}/{{service.primaryAlias || service.serviceInstanceId}}/edit" data-tooltip="Service instance settings" data-tooltip-placement="right">
                             <span class="fa fa-gear"></span>
                         </a>
                         <span class="pull-right text-right"><small>({{service.primaryAlias}})</small></span>

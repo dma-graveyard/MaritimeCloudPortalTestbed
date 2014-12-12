@@ -147,20 +147,33 @@ angular.module('mcp.organizations.services', [])
 
             $scope.service.specificationId = $scope.selection.specification.serviceSpecificationId;
             // Create instance
-            ServiceInstanceService.create($scope.service, function (result) {
+            ServiceInstanceService.create($scope.service, function () {
 
               // add endpoints  
               $scope.service.endpoints.forEach(function (endpoint) {
 
                 // add endpoint 
                 ServiceInstanceService.addEndpoint($scope.service, endpoint.uri, function () {
+                  // report endpoint added
                 }, function (error) {
                   console.log("Error adding endpoint", protocol + newEndpointUri, error);
                   $scope.alertMessages = ["Error adding endpoint", protocol + newEndpointUri, error];
                 });
+
+                // add primary alias
+                ServiceInstanceService.addAlias($scope.service, $scope.service.primaryAlias, function () {
+                  // alias created
+                  console.log("alias created", $scope.service.primaryAlias);
+                  $scope.message = "Created alias " + $scope.service.primaryAlias;
+                  
+                }, function (error) {
+                  console.log("Oh shoot - failed to create the alias for this service instance :-( ", $scope.service.primaryAlias, error);
+                  $scope.alertMessages = ["Oh shoot - failed to create the alias for this service instance :-( "+$scope.service.primaryAlias, error];
+                });
+
+                $scope.close();
               });
 
-              $scope.close();
             }, reportError);
           }
         });
@@ -175,10 +188,9 @@ angular.module('mcp.organizations.services', [])
 
       }])
 
-    .controller('EditServiceInstanceController', ['$scope', '$location', '$modal', '$stateParams', '$state', 'UUID',
-      'AlmanacOperationalServiceService', 'AlmanacServiceSpecificationService', 'ServiceInstanceService',
-      function ($scope, $location, $modal, $stateParams, $state, UUID,
-          AlmanacOperationalServiceService, AlmanacServiceSpecificationService, ServiceInstanceService) {
+    .controller('EditServiceInstanceController', [
+      '$scope', '$location', '$modal', '$stateParams', 'AlmanacServiceSpecificationService', 'ServiceInstanceService',
+      function ($scope, $location, $modal, $stateParams, AlmanacServiceSpecificationService, ServiceInstanceService) {
 
         var reportError = function (error) {
           $scope.message = null;

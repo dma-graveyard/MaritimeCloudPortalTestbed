@@ -14,6 +14,7 @@
  */
 package net.maritimecloud.portal.resource;
 
+import java.util.List;
 import javax.ws.rs.WebApplicationException;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
@@ -22,6 +23,8 @@ import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpe
 import net.maritimecloud.serviceregistry.query.AliasRegistryEntry;
 import net.maritimecloud.serviceregistry.query.ServiceInstanceEntry;
 import net.maritimecloud.serviceregistry.query.ServiceSpecificationEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper class to assist with resolving resources based on id or aliases
@@ -29,10 +32,11 @@ import net.maritimecloud.serviceregistry.query.ServiceSpecificationEntry;
  * @author Christoffer Børrild
  */
 public class ResourceResolver {
+    private static final Logger LOG = LoggerFactory.getLogger(ResourceResolver.class);
 
     public static String resolveOrganizationIdOrFail(String organizationAliasOrId) {
         String organizationId = resolveOrganizationId(organizationAliasOrId);
-        throwResourceNotFoundExceptionIfNull(organizationId, "Unable to find Organization based on key=" + organizationAliasOrId);
+        assertNotNull(organizationId, "Unable to find Organization based on key=" + organizationAliasOrId);
         return organizationAliasOrId;
     }
 
@@ -57,13 +61,13 @@ public class ResourceResolver {
 
     public static ServiceInstanceEntry lookupServiceInstance(String serviceInstanceId) {
         final ServiceInstanceEntry entry = ApplicationServiceRegistry.serviceInstanceQueryRepository().findOne(serviceInstanceId);
-        throwResourceNotFoundExceptionIfNull(entry, "Unable to find service instance based on serviceInstanceId=" + serviceInstanceId);
+        assertNotNull(entry, "Unable to find service instance based on serviceInstanceId=" + serviceInstanceId);
         return entry;
     }
 
     private static ServiceSpecificationEntry lookupServiceSpecification(String serviceSpecificationId) {
         final ServiceSpecificationEntry entry = ApplicationServiceRegistry.serviceSpecificationQueryRepository().findOne(serviceSpecificationId);
-        throwResourceNotFoundExceptionIfNull(entry, "Unable to find service specification based on serviceInstanceId=" + serviceSpecificationId);
+        assertNotNull(entry, "Unable to find service specification based on serviceInstanceId=" + serviceSpecificationId);
         return entry;
     }
 
@@ -99,20 +103,25 @@ public class ResourceResolver {
 
     private static void assertBelongsToOrganization(String organizationId, ServiceInstanceEntry serviceInstance) {
         if (!serviceInstance.getProviderId().equals(organizationId)) {
-            throwResourceNotFoundExceptionIfNull(null, "service instance is not own by organization");
+            assertNotNull(null, "service instance is not own by organization");
         }
     }
 
     private static void assertBelongsToOrganization(String organizationId, ServiceSpecificationEntry serviceSpecificationEntry) {
         if (!serviceSpecificationEntry.getOwnerId().equals(organizationId)) {
-            throwResourceNotFoundExceptionIfNull(null, "service specification is not own by organization");
+            assertNotNull(null, "service specification is not own by organization");
         }
     }
 
-    private static void throwResourceNotFoundExceptionIfNull(Object objectToTestForNull, String message) throws WebApplicationException {
+    private static void assertNotNull(Object objectToTestForNull, String message) throws WebApplicationException {
         if (objectToTestForNull == null) {
+            LOG.warn("Objct not found. {}", message);
             throw new WebApplicationException(message, 404);
         }
+    }
+
+    static List<AliasRegistryEntry> queryServiceinstanceAliases(ServiceInstanceEntry sie) {
+        return ApplicationServiceRegistry.aliasRegistryQueryRepository().findByGroupIdAndTypeNameAndTargetId(sie.getProviderId(), ServiceInstanceId.class.getName(), sie.getServiceInstanceId());
     }
 
 }

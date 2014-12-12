@@ -35,6 +35,12 @@ function ChangeServiceInstanceCoverageCommand(serviceInstanceId, coverage) {
   this.coverage = coverage;
 }
 
+function AddServiceInstanceAliasCommand(organizationId, serviceInstanceId, alias) {
+  this.organizationId = {identifier: organizationId};
+  this.serviceInstanceId = {identifier: serviceInstanceId};
+  this.alias = alias;
+}
+
 function AddServiceInstanceEndpointCommand(serviceInstanceId, endpointUri) {
   this.serviceInstanceId = {identifier: serviceInstanceId};
   this.serviceEndpoint = {uri: endpointUri};
@@ -138,6 +144,11 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 
         resource.changeCoverage = function (serviceInstance, succes, error) {
           return this.put({organizationId: serviceInstance.providerId}, new ChangeServiceInstanceCoverageCommand(serviceInstance.serviceInstanceId, serviceInstance.coverage), succes, error);
+        };
+
+        resource.addAlias = function (serviceInstance, alias, succes, error) {
+          console.log('serviceInstance',serviceInstance,alias);
+          return this.put({organizationId: serviceInstance.providerId}, new AddServiceInstanceAliasCommand(serviceInstance.providerId, serviceInstance.serviceInstanceId, alias), succes, error);
         };
 
         resource.addEndpoint = function (serviceInstance, endpointUri, succes, error) {
