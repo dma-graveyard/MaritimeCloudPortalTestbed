@@ -34,6 +34,7 @@ import net.maritimecloud.serviceregistry.command.servicespecification.ServiceTyp
  * enrichment.
  * <p>
  * <p>
+ * @see CommandEventSourceGenerator
  * @author Christoffer Børrild
  */
 public interface ServiceRegistryContract extends CqrsContract {
@@ -104,6 +105,10 @@ public interface ServiceRegistryContract extends CqrsContract {
 
     @Event
     void serviceInstanceAliasAdded(OrganizationId organizationId, ServiceInstanceId serviceInstanceId, String alias);
+
+    /** this one is emitted only on the first creation of an alias on a target */
+    @Event(extend="ServiceInstanceAliasAdded")
+    void serviceInstancePrimaryAliasAdded(OrganizationId organizationId, ServiceInstanceId serviceInstanceId, String alias);
 
     @Event
     void serviceInstanceAliasRegistrationDenied(OrganizationId organizationId, ServiceInstanceId serviceInstanceId, String alias);

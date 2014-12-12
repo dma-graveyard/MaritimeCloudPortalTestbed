@@ -21,6 +21,7 @@ import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointAdde
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceEndpointRemoved;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceNameAndSummaryChanged;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstancePrimaryAliasAdded;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +84,13 @@ public class ServiceInstanceListener {
     public void on(ServiceInstanceEndpointRemoved event) {
         ServiceInstanceEntry instance = getInstanceWith(event.getServiceInstanceId());
         instance.removeEndpoint(event.getServiceEndpoint());
+        save(instance);
+    }
+
+    @EventHandler
+    public void on(ServiceInstancePrimaryAliasAdded event) {
+        ServiceInstanceEntry instance = getInstanceWith(event.getServiceInstanceId());
+        instance.setPrimaryAlias(event.getAlias());
         save(instance);
     }
 

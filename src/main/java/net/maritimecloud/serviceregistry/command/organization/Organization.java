@@ -23,6 +23,7 @@ import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAdded;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasRegistrationDenied;
+import net.maritimecloud.serviceregistry.command.api.ServiceInstancePrimaryAliasAdded;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
@@ -75,19 +76,21 @@ public class Organization extends AbstractAnnotatedAggregateRoot<OrganizationId>
         ServiceInstanceId serviceInstanceId = aliases.get(command.getAlias());
         if (serviceInstanceId != null) {
             if (serviceInstanceId != command.getServiceInstanceId()) {
+                // alias already in use by other target -> action denied
                 apply(new ServiceInstanceAliasRegistrationDenied(command.getOrganizationId(), command.getServiceInstanceId(), command.getAlias()));
             }
             // idempotent, ok to register same alias and instance twice
             return;
         }
-
-// MOVE this check to client, that is, to validation or interface layer, ie. REST call
-//        // TODO: tjek if SI is owned by this aggregate and ignore command if so
-//         if(!isProvidingThisServiceInstance(command.getServiceInstanceId()))
-//             return;
-        apply(new ServiceInstanceAliasAdded(command.getOrganizationId(), command.getServiceInstanceId(), command.getAlias()));
+        if (true) {
+            // there's a first time for everything
+            apply(new ServiceInstancePrimaryAliasAdded(command.getOrganizationId(), command.getServiceInstanceId(), command.getAlias()));
+        } else {
+            apply(new ServiceInstanceAliasAdded(command.getOrganizationId(), command.getServiceInstanceId(), command.getAlias()));
+        }
     }
 
+    // Remove alias should ignore/fail on remove of last alias, as this one is locked for removal (primary alias)!
     @EventSourcingHandler
     public void on(OrganizationCreated event) {
         this.organizationId = event.getOrganizationId();

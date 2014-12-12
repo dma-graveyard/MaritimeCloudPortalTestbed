@@ -41,6 +41,7 @@ public class ServiceInstanceEntry implements Serializable {
     private String serviceInstanceId;
     private String providerId;
     private String specificationId;
+    private String primaryAlias;
     private String name;
     @Column(length = 1000)
     private String summary;
@@ -77,6 +78,14 @@ public class ServiceInstanceEntry implements Serializable {
 
     public void setSpecificationId(String specificationId) {
         this.specificationId = specificationId;
+    }
+
+    public String getPrimaryAlias() {
+        return primaryAlias;
+    }
+
+    public void setPrimaryAlias(String primaryAlias) {
+        this.primaryAlias = primaryAlias;
     }
 
     public String getName() {
@@ -138,5 +147,5 @@ public class ServiceInstanceEntry implements Serializable {
     void removeEndpoint(ServiceEndpoint serviceEndpoint) {
         getEndpoints().remove(serviceEndpoint);
     }
-
+    
 }
