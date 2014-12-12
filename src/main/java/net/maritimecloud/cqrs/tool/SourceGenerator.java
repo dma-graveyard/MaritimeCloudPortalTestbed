@@ -161,7 +161,7 @@ public class SourceGenerator {
             if (isEvent()) {
                 osw.write("@Event" + EOL);
             }
-            osw.write("public class " + className + (isCommand ? " implements Command" : "") + " {" + EOL);
+            osw.write("public class " + className + (isCommand ? " implements Command" : getExtendsSentenceIfAny()) + " {" + EOL);
             osw.write(EOL);
             writeProperties();
             if (isEvent() && writeSetters) {
@@ -171,6 +171,15 @@ public class SourceGenerator {
             writeAccessors();
             osw.write("}" + EOL);
             osw.write(EOL);
+        }
+
+        private String getExtendsSentenceIfAny() {
+            return hasSuper() ? " extends " + declaredMethod.getAnnotation(Event.class).extend()[0] : "";
+        }
+
+        private boolean hasSuper() {
+            return declaredMethod.getAnnotation(Event.class) != null
+                    && declaredMethod.getAnnotation(Event.class).extend().length > 0;
         }
 
         private void writeProperties() throws IOException {
@@ -220,26 +229,40 @@ public class SourceGenerator {
             if (isCommand) {
                 writeAssertions();
             }
+            if (hasSuper()) {
+                writeCallToSuper();
+            }
             writeAssignments();
             osw.write("    }" + EOL);
         }
 
         private void writeParameters() throws IOException {
+            writeParameters(true);
+        }
+
+        private void writeParameters(boolean includeType) throws IOException {
             for (int i = 0; i < declaredMethod.getParameters().length; i++) {
                 Parameter parameter = declaredMethod.getParameters()[i];
                 boolean isLast = i == declaredMethod.getParameters().length - 1;
-                writeParameter(parameter, isLast);
+                writeParameter(parameter, isLast, includeType);
             }
         }
 
         private void writeParameter(Parameter parameter, boolean isLast) throws IOException {
-            if (isCommand) {
-                osw.write("            @JsonProperty(\"" + parameter.getName() + "\") ");
-                writeAnnotations(parameter);
-                osw.write(parameter.getType().getSimpleName() + " " + parameter.getName());
-            } else {
-                osw.write("            " + parameter.getType().getSimpleName() + " " + parameter.getName());
+            writeParameter(parameter, isLast, true);
+        }
+
+        private void writeParameter(Parameter parameter, boolean isLast, boolean includeType) throws IOException {
+            osw.write("            ");
+            if (includeType) {
+                if (isCommand) {
+                    osw.write("@JsonProperty(\"" + parameter.getName() + "\") ");
+                    writeAnnotations(parameter);
+                }
+                osw.write(parameter.getType().getSimpleName() + " ");
             }
+            osw.write(parameter.getName());
+
             if (!isLast) {
                 osw.write(",");
             }
@@ -267,6 +290,12 @@ public class SourceGenerator {
 
         private void writeAssertion(Parameter parameter) throws IOException {
             osw.write("        Assert.notNull(" + parameter.getName() + ", \"The " + parameter.getName() + " must be provided\");" + EOL);
+        }
+
+        private void writeCallToSuper() throws IOException {
+            osw.write("        super(" + EOL);
+            writeParameters(false);
+            osw.write("        );" + EOL);
         }
 
         private void writeAssignments() throws IOException {
