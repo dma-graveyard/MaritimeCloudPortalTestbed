@@ -17,7 +17,7 @@
                         ng-mouseover="highlightService(service)" 
                         ng-mouseleave="unhighlightService(service)"
                         > 
-                        {{service.name}} <span class="pull-right" style="font-size: smaller">({{service.serviceInstanceId}})</span>
+                        {{service.name}} <span class="pull-right" style="font-size: smaller">({{service.primaryAlias}})</span>
                     </li>
                     <li ng-if="services.length > 10"> ... {{services.length - 10}} more ...</li>
                 </ul>
@@ -30,6 +30,7 @@
                 </div>
                 <hr>
                 <dl class="dl-horizontal">
+                    <dt>primary alias</dt>   <dd>{{selectedService.primaryAlias}}</dd>
                     <dt>id</dt>              <dd>{{selectedService.serviceInstanceId}}</dd>
                     <dt>specification</dt>   <dd>{{!selectedService.specification.$resolved ? 'loading...' : selectedService.specification.name}}</dd>
                     <dt>service type</dt>    <dd>{{!selectedService.specification.$resolved ? 'loading...' : selectedService.specification.serviceType}}</dd>

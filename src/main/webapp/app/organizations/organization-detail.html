@@ -31,7 +31,7 @@
                         <a ng-if="userHasWriteAccess()" class="edit-gear" href="#/orgs/{{organization.organizationId}}/{{service.serviceInstanceId}}/edit" data-tooltip="Service instance settings" data-tooltip-placement="right">
                             <span class="fa fa-gear"></span>
                         </a>
-                        <span class="pull-right text-right"><small>({{service.serviceInstanceId}})</small></span>
+                        <span class="pull-right text-right"><small>({{service.primaryAlias}})</small></span>
                     </h4>
                     <div class="row">
                         <div class="col-sm-7 col-lg-5" >
@@ -46,7 +46,8 @@
                             <h5 ng-click="toggleDetails()">{{details.isCollapsed ? '(more...)' : 'Service details:'}} </h5>
                             <div collapse="details.isCollapsed">
                                 <dl class="dl-horizontal">
-                                    <dt>Service Id</dt><dd>{{service.serviceInstanceId}}</dd>
+                                    <dt>Primary alias</dt><dd>{{service.primaryAlias}}</dd>
+                                    <dt>Unique ID</dt><dd>{{service.serviceInstanceId}}</dd>
                                     <dt>Endpoints:</dt>
                                     <dt ng-repeat-start="endpoint in service.endpoints"></dt>
                                     <dd ng-repeat-end class="truncated"><a target="_blank" href="{{endpoint.uri}}">{{endpoint.uri}}</a></dd>
