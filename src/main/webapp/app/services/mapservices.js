@@ -264,12 +264,14 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
         if (featureGroupCallback) {
           featureGroupCallback(featureGroup);
         }
-        if (!service.coverage)
-          service.coverage = [];
-        service.coverage.forEach(function (shape) {
-          featureGroup.addLayer(shapeToLayer(shape));
-        });
-        servicesLayers.push(featureGroup);
+        
+        // NOTICE: only services with defined shapes are added to layers!!!
+        if (service.coverage && service.coverage.length > 0) {
+          service.coverage.forEach(function (shape) {
+            featureGroup.addLayer(shapeToLayer(shape));
+          });
+          servicesLayers.push(featureGroup);
+        }
       });
 
       return servicesLayers;
