@@ -46,6 +46,9 @@ public interface ServiceRegistryContract extends CqrsContract {
     void changeOrganizationNameAndSummary(OrganizationId organizationId, String name, String summary);
 
     @Command
+    void changeOrganizationWebsiteUrl(OrganizationId organizationId, String url);
+
+    @Command
     void prepareServiceSpecification(
             OrganizationId ownerId,
             @TargetAggregateIdentifier
@@ -91,6 +94,9 @@ public interface ServiceRegistryContract extends CqrsContract {
 
     @Event
     void serviceSpecificationNameAndSummaryChanged(ServiceSpecificationId serviceSpecificationId, String name, String summary);
+    
+    @Event
+    void organizationWebsiteUrlChanged(OrganizationId organizationId, String url);
 
     @Event
     void organizationNameAndSummaryChanged(OrganizationId organizationId, String name, String summary);

@@ -17,10 +17,12 @@ package net.maritimecloud.serviceregistry.command.organization;
 import net.maritimecloud.serviceregistry.command.api.OrganizationNameAndSummaryChanged;
 import net.maritimecloud.serviceregistry.command.api.OrganizationCreated;
 import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
-import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
 import net.maritimecloud.common.infrastructure.axon.CommonFixture;
 import static net.maritimecloud.common.infrastructure.axon.CommonFixture.AN_ALIAS;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
+import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
+import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationWebsiteUrl;
+import net.maritimecloud.serviceregistry.command.api.OrganizationWebsiteUrlChanged;
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceAlias;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAdded;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasRegistrationDenied;
@@ -47,15 +49,22 @@ public class OrganizationTest extends CommonFixture {
     @Test
     public void createOrganization() throws Exception {
         fixture.givenNoPriorActivity()
-                .when(new CreateOrganization(new OrganizationId("an organization id"), "a name", "a summary ...", A_URL))
-                .expectEvents(new OrganizationCreated(new OrganizationId("an organization id"), "a name", "a summary ...", A_URL));
+                .when(new CreateOrganization(anOrganizationId, A_NAME, A_SUMMARY, A_URL))
+                .expectEvents(new OrganizationCreated(anOrganizationId, A_NAME, A_SUMMARY, A_URL));
     }
 
     @Test
     public void changeOrganizationNameAndSummary() throws Exception {
-        fixture.given(new OrganizationCreated(new OrganizationId("an organization id"), "a name", "a summary ...", A_URL))
-                .when(new ChangeOrganizationNameAndSummary(new OrganizationId("an organization id"), "a new name", "a new summary ..."))
-                .expectEvents(new OrganizationNameAndSummaryChanged(new OrganizationId("an organization id"), "a new name", "a new summary ..."));
+        fixture.given(new OrganizationCreated(anOrganizationId, A_NAME, A_SUMMARY, A_URL))
+                .when(new ChangeOrganizationNameAndSummary(anOrganizationId, A_NAME, A_SUMMARY))
+                .expectEvents(new OrganizationNameAndSummaryChanged(anOrganizationId, A_NAME, A_SUMMARY));
+    }
+
+    @Test
+    public void changeOrganizationWebsiteUrl() throws Exception {
+        fixture.given(new OrganizationCreated(anOrganizationId, A_NAME, A_SUMMARY, A_URL))
+                .when(new ChangeOrganizationWebsiteUrl(anOrganizationId, A_URL))
+                .expectEvents(new OrganizationWebsiteUrlChanged(anOrganizationId, A_URL));
     }
 
     @Test

@@ -21,6 +21,8 @@ import net.maritimecloud.serviceregistry.command.api.OrganizationNameAndSummaryC
 import net.maritimecloud.serviceregistry.command.api.OrganizationCreated;
 import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
+import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationWebsiteUrl;
+import net.maritimecloud.serviceregistry.command.api.OrganizationWebsiteUrlChanged;
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceAlias;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAdded;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasRegistrationDenied;
@@ -71,6 +73,11 @@ public class Organization extends AbstractAnnotatedAggregateRoot<OrganizationId>
     @CommandHandler
     public void handle(ChangeOrganizationNameAndSummary command) {
         apply(new OrganizationNameAndSummaryChanged(command.getOrganizationId(), command.getName(), command.getSummary()));
+    }
+
+    @CommandHandler
+    public void handle(ChangeOrganizationWebsiteUrl command) {
+        apply(new OrganizationWebsiteUrlChanged(command.getOrganizationId(), command.getUrl()));
     }
 
     @CommandHandler

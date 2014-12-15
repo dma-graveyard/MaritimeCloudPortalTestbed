@@ -5,15 +5,13 @@
             <label>Organization ID:</label> {{organization.organizationId}} <br/>
             <label>Primary alias:</label> {{organization.primaryAlias}} <br/>
         </i>
-        <!--<p>Fill out the form below to register a new organization.</p>-->
-
         <!--MESSAGES-->
         <div ng-show="alertMessages" class="alert alert-danger">
             <span ng-repeat="msg in alertMessages">{{msg}}<br /></span>
         </div>
         <div ng-show="message" class="alert alert-info">{{message}}</div>
         <hr>
-        <!--FORM-->
+        <!--FORMS-->
         <form role="form" name="nameAndSummaryForm">
             <!--            <div class="form-group">
                             <label for="orgId">Identifier</label>
@@ -31,10 +29,23 @@
                 <p class="help-block">The summary is usually presented together with the name and should capture the essence of the organization in a few words.</p>
             </div>
             <div>
-            <button type="submit" class="btn btn-success center" ng-disabled="nameAndSummaryForm.$pristine || nameAndSummaryForm.$invalid" ng-click="submitNameAndSummary()">Submit</button>
-            <!--<button type="submit" class="btn btn-success center" ng-disabled=" !nameAndSummaryIsSubmitable()" ng-click="submitNameAndSummary()">Submit</button>-->
+                <button type="submit" class="btn btn-success center" ng-disabled="nameAndSummaryForm.$pristine || nameAndSummaryForm.$invalid" ng-click="submitNameAndSummary()">Submit</button>
+                <!--<button type="submit" class="btn btn-success center" ng-disabled=" !nameAndSummaryIsSubmitable()" ng-click="submitNameAndSummary()">Submit</button>-->
             </div>
-            <hr>
+        </form>
+        <hr>
+        <form role="form" name="urlForm">
+            <div class="form-group">
+                <label for="url">Website URL</label>
+                <input type="text" class="form-control" id="url" name="url" placeholder="Enter a URL" ng-model="organization.url">
+                <p class="help-block">The Organization website.</p>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-success center" ng-disabled="urlForm.$pristine || urlForm.$invalid" ng-click="submitUrl()">Submit</button>
+            </div>
+        </form>
+        <!--hr>
+        <form role="form" name="avatarForm">
             <div class="form-group">
                 <label for="orgAvatar">Logo</label>
                 <input type="file" id="orgAvatar">
@@ -43,39 +54,11 @@
             <div>
                 <button type="submit" class="btn btn-success center" ng-disabled="!formIsSubmitable()" ng-click="submitLogo()">Submit</button>
             </div>
-        </form>
-        <form role="form" name="formAlias" novalidate>
-            <hr>
-            <div class="form-group">
-                <label>Secondary Aliases</label>
-                <div>
-                    <ul>
-                        <li ng-if="organization.aliases.length === 0"><i>No secondary aliases - use the field below to add one!</i></li>
-                        <li  ng-repeat="alias in organization.aliases">{{alias.alias}}
-                            <button ng-click="removeAlias(alias.alias);" class="btn btn-default btn-sm">
-                                <span class="fa fa-trash-o"></span>
-                            </button>
-                        </li>
-                        <li>
-                            <input type="text" id="newAlias" placeholder="Enter an alias" ng-model="newAlias" 
-                                   ng-pattern="/^[a-zA-Z]+[a-zA-Z0-9-]*$/"
-                                   ng-minlength="2"
-                                   Xng-class="formAlias.newAlias.$valid && formAlias.newAlias.$dirty && aliasAlreadyExist ? 'mcp-invalid-input' : '' "
-                                   ng-class="aliasAlreadyExist ? 'mcp-invalid-input' : '' "
-                                   >
-                            <span>
-                                <button ng-click="addAlias(newAlias);" ng-disabled="aliasAlreadyExist" class="btn btn-success">
-                                    <span class="fa fa-plus">Add</span>
-                                </button>
-                            </span>
-                        </li>
-                        <div class="text-danger" ng-show="aliasAlreadyExist">
-                            Sorry, but this alias is already taken : (
-                        </div>
-                    </ul>
-                </div>
-                <p class="help-block">Aliases may be used as an optional way to reference and locate the organization. </p>
-            </div>
-        </form>
+        </form-->
+        <hr>
+        <div>
+            <button class="btn btn-grey center" ng-click="close()">Close</button>
+        </div>
+        <br>
     </div>
 </div>

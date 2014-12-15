@@ -41,6 +41,7 @@ import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSu
 import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import net.maritimecloud.serviceregistry.command.api.ProvideServiceInstance;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpoint;
+import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationWebsiteUrl;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceCoverage;
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
@@ -101,7 +102,8 @@ public class OrganizationResource {
         LOG.info("Organization PUT command");
         assertCommandContext(commandJSON, organizationIdOrAlias);
         sendAndWait(contentType, queryCommandName, commandJSON,
-                ChangeOrganizationNameAndSummary.class
+                ChangeOrganizationNameAndSummary.class,
+                ChangeOrganizationWebsiteUrl.class
         );
     }
 

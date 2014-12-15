@@ -21,6 +21,11 @@ function ChangeOrganizationNameAndSummaryCommand(organizationId, name, summary) 
   this.summary = summary;
 }
 
+function ChangeOrganizationWebsiteUrlCommand(organizationId, url) {
+  this.organizationId = {identifier: organizationId};
+  this.url = url;
+}
+
 function ProvideServiceInstanceCommand(providerId, specificationId, serviceInstanceId, name, summary, coverage) {
   this.providerId = {identifier: providerId};
   this.specificationId = {identifier: specificationId};
@@ -107,6 +112,10 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         
         resource.changeNameAndSummary = function (organization, succes, error) {
           return this.put(new ChangeOrganizationNameAndSummaryCommand(organization.organizationId, organization.name, organization.summary), succes, error);
+        };
+
+        resource.changeWebsiteUrl = function (organization, succes, error) {
+          return this.put(new ChangeOrganizationWebsiteUrlCommand(organization.organizationId, organization.url), succes, error);
         };
 
         return resource;

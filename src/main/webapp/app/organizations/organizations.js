@@ -114,6 +114,22 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
                   $scope.alertMessages = ["Error on the serverside :( ", error];
                 }
             );
+          },
+          submitUrl: function () {
+            $scope.message = "Sending request to change organization website URL...";
+            $scope.alertMessages = null;
+            $scope.busyPromise = OrganizationService.changeWebsiteUrl($scope.organization,
+                function () {
+                  $scope.message = ["Website URL changed!"];
+                },
+                function (error) {
+                  $scope.message = null;
+                  $scope.alertMessages = ["Error on the serverside :( ", error];
+                }
+            );
+          },
+          close: function () {
+            $location.path('/orgs/' + $scope.organization.organizationId).replace();
           }
         });
       }])
