@@ -15,6 +15,12 @@ function CreateOrganizationCommand(organizationId, name, summary, url) {
   this.url = url;
 }
 
+function ChangeOrganizationNameAndSummaryCommand(organizationId, name, summary) {
+  this.organizationId = {identifier: organizationId};
+  this.name = name;
+  this.summary = summary;
+}
+
 function ProvideServiceInstanceCommand(providerId, specificationId, serviceInstanceId, name, summary, coverage) {
   this.providerId = {identifier: providerId};
   this.specificationId = {identifier: specificationId};
@@ -92,10 +98,15 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 
         var resource = $resource(serviceBaseUrl + '/rest/api/org/:organizationId', {}, {
           post: {method: 'POST'},
+          put: {method: 'PUT', params: {organizationId: '@organizationId.identifier'}},
         });
 
         resource.create = function (organization, succes, error) {
           return this.post(new CreateOrganizationCommand(organization.organizationId, organization.name, organization.summary, organization.url), succes, error);
+        };
+        
+        resource.changeNameAndSummary = function (organization, succes, error) {
+          return this.put(new ChangeOrganizationNameAndSummaryCommand(organization.organizationId, organization.name, organization.summary), succes, error);
         };
 
         return resource;

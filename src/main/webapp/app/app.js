@@ -163,6 +163,12 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
           controller: 'OrganizationDetailsController',
         },
         {
+          name: 'organizationSettings',
+          url: "/orgs/{organizationId}/settings",
+          templateUrl: 'organizations/organization-edit.html',
+          controller: 'OrganizationEditController',
+        },
+        {
           name: 'serviceInstanceCreate',
           url: "/orgs/{organizationId}/createServiceInstance",
           templateUrl: 'organizations/service-instances/service-instance-create.html',

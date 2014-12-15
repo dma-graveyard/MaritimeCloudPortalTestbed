@@ -32,7 +32,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
         $scope.$watch('$stateParams.organizationId', function (newOrganizationId) {
           // (HACK: needed to get list updated after organization created)
           $scope.organizations = OrganizationContext.list;
-          
+
           OrganizationContext.setCurrentOrganization(newOrganizationId);
           $scope.currentOrganization = OrganizationContext.currentOrganization;
         });
@@ -41,7 +41,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
     .controller('OrganizationDetailsController', ['$scope', '$stateParams', 'OrganizationService', 'ServiceSpecificationService', 'ServiceInstanceService',
       function ($scope, $stateParams, OrganizationService, ServiceSpecificationService, ServiceInstanceService) {
-        
+
         $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId});
         $scope.specifications = ServiceSpecificationService.query({organizationId: $stateParams.organizationId}, function (specifications) {
         });
@@ -59,50 +59,63 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
     .controller('OrganizationCreateController', ['$scope', '$location', 'OrganizationService', 'OrganizationContext',
       function ($scope, $location, OrganizationService, OrganizationContext) {
-        $scope.organization = {organizationId: null, name: null, url: "http://hardcoded.bwah.org"};
-        $scope.message = null;
-        $scope.alertMessages = null;
-        //$("#rPreferredLogin").focus();
-        $scope.isTrue = true;
+        angular.extend($scope, {
+          organization: {organizationId: null, name: null, url: "http://hardcoded.bwah.org"},
+          /**
+           * @returns true when there is enough data in the form 
+           * to try to submit it. This is not to say that data is
+           * valid. pressing submit will cause a series of 
+           * validator to be evaluated
+           */
+          formIsSubmitable: function () {
+            return ($scope.organization.organizationId && $scope.organization.name);
+          },
+          submit: function () {
+            $scope.alertMessages = null;
+            $scope.message = "Sending request to create organization...";
 
-        /**
-         * @returns true when there is enough data in the form 
-         * to try to submit it. This is not to say that data is
-         * valid. pressing submit will cause a series of 
-         * validator to be evaluated
-         */
-        $scope.formIsSubmitable = function () {
-          return ($scope.organization.organizationId && $scope.organization.name);
-        };
-
-        $scope.submit = function () {
-          $scope.message = null;
-          $scope.alertMessages = null;
-
-          // validate input values
-          if ($scope.organization.organizationId) {
-            if ($scope.organization.organizationId === "test") {
-              $scope.alertMessages = ["Test!? Really? ...You have to be more visionary than that!"];
-              return;
-            }
+            // validate input values
+            // ...todo...
+            
+            $scope.busyPromise = OrganizationService.create($scope.organization,
+                function (data) {
+                  $location.path('/orgs/' + $scope.organization.organizationId).replace();
+                  $scope.message = ["Organization created: " + data];
+                  OrganizationContext.list = $scope.currentUser ? OrganizationService.query({member: $scope.currentUser.name}) : [];
+                },
+                function (error) {
+                  $scope.message = null;
+                  $scope.alertMessages = ["Error on the serverside :( ", error];
+                }
+            );
           }
+        });
+      }])
 
-          // Send request
-          $scope.message = "Sending request to create organization...";
+    .controller('OrganizationEditController', ['$scope', '$stateParams', '$location', 'OrganizationService', 'OrganizationContext',
+      function ($scope, $stateParams, $location, OrganizationService, OrganizationContext) {
 
-          $scope.busyPromise = OrganizationService.create($scope.organization,
-              function (data) {
-                $location.path('/orgs/' + $scope.organization.organizationId).replace();
-                $scope.message = ["Organization created: " + data];
-                OrganizationContext.list = $scope.currentUser ? OrganizationService.query({member: $scope.currentUser.name}) : [];
-              },
-              function (error) {
-                $scope.message = null;
-                $scope.alertMessages = ["Error on the serverside :( ", error];
-              }
-          );
-      
-        };
+        angular.extend($scope, {
+          organization: OrganizationService.get({organizationId: $stateParams.organizationId}),
+          nameAndSummaryIsSubmitable: function () {
+            return ($scope.organization.name);
+          },
+          submitNameAndSummary: function () {
+            $scope.message = "Sending request to change organization...";
+            $scope.alertMessages = null;
+            $scope.busyPromise = OrganizationService.changeNameAndSummary($scope.organization,
+                function () {
+                  $scope.message = ["Name and summary changed!"];
+                  // todo: propagate changes to organization context list
+                  // ...
+                },
+                function (error) {
+                  $scope.message = null;
+                  $scope.alertMessages = ["Error on the serverside :( ", error];
+                }
+            );
+          }
+        });
       }])
 
     // OrganizationContext

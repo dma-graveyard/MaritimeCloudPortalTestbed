@@ -225,7 +225,7 @@ public class OrganizationResource {
     private void assertCommandContext(String commandJSON, String organizationIdOrAlias) {
         
         // FIXME: testing with "string contains" is really not a sufficient test - we MUST check that the command object targets the right
-        // object. (in many command sit would be easy to mention the "thingsToMention" in the summary for instance, hence allowing a completely 
+        // object. (in many commands it would be easy to mention the "thingsToMention" in the summary for instance, hence allowing a completely 
         // other target to be affected!!!!
 
         String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
