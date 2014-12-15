@@ -19,8 +19,18 @@ import java.util.List;
 import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
 import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
+import static net.maritimecloud.common.infrastructure.axon.CommonFixture.A_COVERAGE;
+import static net.maritimecloud.common.infrastructure.axon.CommonFixture.A_NAME;
+import static net.maritimecloud.common.infrastructure.axon.CommonFixture.A_SUMMARY;
+import static net.maritimecloud.common.infrastructure.axon.CommonFixture.aPrepareServiceSpecificationCommand;
+import static net.maritimecloud.common.infrastructure.axon.CommonFixture.generateServiceInstanceId;
+import static net.maritimecloud.common.infrastructure.axon.CommonFixture.generateServiceSpecificationId;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
+import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationWebsiteUrl;
+import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
+import net.maritimecloud.serviceregistry.command.api.ProvideServiceInstance;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
+import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
 import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.repository.AggregateNotFoundException;
@@ -40,6 +50,10 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
     private CreateOrganization createOrganizationCommand;
     private OrganizationId organizationId;
     private OrganizationId organizationId2;
+    private ServiceSpecificationId serviceSpecificationId;
+    private PrepareServiceSpecification prepareServiceSpecificationCommand;
+    private ProvideServiceInstance provideServiceInstanceCommand;
+    private ServiceInstanceId serviceInstanceId;
 
     @Before
     public void setUp() {
@@ -47,6 +61,19 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
         createOrganizationCommand = generateCreateOrganizationCommand(generateIdentity());
         organizationId = createOrganizationCommand.getOrganizationId();
         organizationId2 = generateOrganizationId();
+
+        // prepare a service specification
+        serviceSpecificationId = generateServiceSpecificationId();
+        prepareServiceSpecificationCommand = aPrepareServiceSpecificationCommand(organizationId, serviceSpecificationId);
+        // Prepare a service instance 
+        serviceInstanceId = generateServiceInstanceId();
+        provideServiceInstanceCommand = new ProvideServiceInstance(
+                organizationId,
+                serviceSpecificationId,
+                serviceInstanceId,
+                A_NAME,
+                A_SUMMARY,
+                A_COVERAGE);
     }
 
     @Test
@@ -84,33 +111,33 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
 
         // Given an organization (with a Service Specification and a provided Service Instance)
         commandGateway().sendAndWait(createOrganizationCommand);
-        
+
         // as we are currently not guarding that the target service instance 
         // in fact belongs to the organization or even exists, we skip to 
         // create them in this test (...for now)
         //
-        //commandGateway().sendAndWait(aPrepareServiceSpecificationCommand());
-        //commandGateway().sendAndWait(provideServiceInstanceCommand);
+        commandGateway().sendAndWait(prepareServiceSpecificationCommand);
+        commandGateway().sendAndWait(provideServiceInstanceCommand);
 
         // When
-        commandGateway().sendAndWait(new AddServiceInstanceAlias(createOrganizationCommand.getOrganizationId(), aServiceInstanceId, AN_ALIAS));
+        commandGateway().sendAndWait(new AddServiceInstanceAlias(organizationId, serviceInstanceId, AN_ALIAS));
 
         // Then
         AliasRegistryEntry instance = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndAlias(
-                createOrganizationCommand.getOrganizationId().identifier(),
+                organizationId.identifier(),
                 ServiceInstanceId.class.getName(),
                 AN_ALIAS);
         assertNotNull(instance);
-        assertEquals(aServiceInstanceId.identifier(), instance.getTargetId());
+        assertEquals(serviceInstanceId.identifier(), instance.getTargetId());
         assertEquals(AN_ALIAS, instance.getAlias());
 
-        commandGateway().sendAndWait(new AddServiceInstanceAlias(createOrganizationCommand.getOrganizationId(), aServiceInstanceId, ANOTHER_ALIAS));
+        commandGateway().sendAndWait(new AddServiceInstanceAlias(organizationId, serviceInstanceId, ANOTHER_ALIAS));
         List<AliasRegistryEntry> instances = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndTargetId(
-                createOrganizationCommand.getOrganizationId().identifier(),
+                organizationId.identifier(),
                 ServiceInstanceId.class.getName(),
-                aServiceInstanceId.identifier());
+                serviceInstanceId.identifier());
 
-        assertEquals(aServiceInstanceId.identifier(), instance.getTargetId());
+        assertEquals(serviceInstanceId.identifier(), instance.getTargetId());
         assertEquals(AN_ALIAS, instance.getAlias());
         assertEquals(2, instances.size());
     }
