@@ -26,7 +26,6 @@ import static net.maritimecloud.common.infrastructure.axon.CommonFixture.aPrepar
 import static net.maritimecloud.common.infrastructure.axon.CommonFixture.generateServiceInstanceId;
 import static net.maritimecloud.common.infrastructure.axon.CommonFixture.generateServiceSpecificationId;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
-import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationWebsiteUrl;
 import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
 import net.maritimecloud.serviceregistry.command.api.ProvideServiceInstance;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
@@ -106,6 +105,15 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
         }
     }
 
+//    @Test
+//    public void changeOrganization() throws Throwable {
+//        commandGateway().sendAndWait(new ChangeOrganizationNameAndSummary(organizationId, ANOTHER_NAME, ANOTHER_ALIAS));
+//        commandGateway().sendAndWait(new ChangeOrganizationWebsiteUrl(organizationId, ANOTHER_URL));
+//        OrganizationEntry entry = organizationQueryRepository.findOne(organizationId.identifier());
+//        assertEquals(ANOTHER_NAME, entry.getName());
+//        assertEquals(ANOTHER_SUMMARY, entry.getSummary());
+//        assertEquals(ANOTHER_URL, entry.getUrl());
+//    }
     @Test
     public void addAlias() {
 
