@@ -30,6 +30,7 @@ public class OrganizationEntry implements Serializable {
     private String name;
     @Column(length = 1000)
     private String summary;
+    private String primaryAlias;
     @Column(length = 300)
     private String url;
 
@@ -57,9 +58,12 @@ public class OrganizationEntry implements Serializable {
         this.summary = summary;
     }
 
-    @Override
-    public String toString() {
-        return "OrganizationEntry{" + "organizationId=" + organizationId + ", name=" + name + ", summary=" + summary + ", url=" + url + '}';
+    public String getPrimaryAlias() {
+        return primaryAlias;
+    }
+
+    public void setPrimaryAlias(String primaryAlias) {
+        this.primaryAlias = primaryAlias;
     }
 
     public String getUrl() {
@@ -69,5 +73,10 @@ public class OrganizationEntry implements Serializable {
     public void setUrl(String url) {
         this.url = url;
     }
-    
+
+    @Override
+    public String toString() {
+        return "OrganizationEntry{" + "organizationId=" + organizationId + ", name=" + name + ", summary=" + summary + ", url=" + url + '}';
+    }
+
 }

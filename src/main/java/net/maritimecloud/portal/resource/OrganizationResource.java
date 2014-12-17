@@ -36,6 +36,7 @@ import static net.maritimecloud.portal.resource.ResourceResolver.resolveServiceI
 import static net.maritimecloud.portal.resource.ResourceResolver.resolveServiceSpecification;
 import static net.maritimecloud.portal.resource.GenericCommandResource.APPLICATION_JSON_CQRS_COMMAND;
 import net.maritimecloud.serviceregistry.command.CommandRegistry;
+import net.maritimecloud.serviceregistry.command.api.AddOrganizationAlias;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
@@ -46,9 +47,12 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceIn
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
+import net.maritimecloud.serviceregistry.command.api.RemoveOrganizationAlias;
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceAlias;
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
+import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
+import net.maritimecloud.serviceregistry.domain.service.AliasGroups;
 import net.maritimecloud.serviceregistry.query.AliasRegistryEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
@@ -103,7 +107,9 @@ public class OrganizationResource {
         assertCommandContext(commandJSON, organizationIdOrAlias);
         sendAndWait(contentType, queryCommandName, commandJSON,
                 ChangeOrganizationNameAndSummary.class,
-                ChangeOrganizationWebsiteUrl.class
+                ChangeOrganizationWebsiteUrl.class,
+                AddOrganizationAlias.class,
+                RemoveOrganizationAlias.class
         );
     }
 
@@ -184,7 +190,7 @@ public class OrganizationResource {
 
         // assert that instance exists and belongs to organization
         ServiceInstanceEntry serviceInstance = getServiceInstanceByAlias(organizationIdOrAlias, serviceInstanceIdOrAlias);
-        assertCommandContext(commandJSON, serviceInstance.getServiceInstanceId());
+        assertCommandContext(commandJSON, serviceInstance.getProviderId());
 
         sendAndWait(contentType, queryCommandName, commandJSON,
                 ChangeServiceInstanceNameAndSummary.class,
@@ -279,11 +285,33 @@ public class OrganizationResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("org/{organizationId}")
-    public OrganizationEntry getOrganization(@PathParam("organizationId") String organizationId) {
+    @Path("org/{organizationIdOrAlias}")
+    public OrganizationEntry getOrganization(@PathParam("organizationIdOrAlias") String organizationIdOrAlias) {
+        String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
         return ApplicationServiceRegistry.organizationQueryRepository().findOne(organizationId);
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("org/{organizationIdOrAlias}/alias")
+    public List<AliasRegistryEntry> queryOrganizationAliases(
+            @PathParam("organizationIdOrAlias") String organizationIdOrAlias
+    ) {
+        String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
+        return ResourceResolver.queryOrganizationAliases(organizationId);
+    }     
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("org/{organizationIdOrAlias}/alias/{alias}")
+    public AliasRegistryEntry getOrganizationAlias(
+            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
+            @PathParam("alias") String alias
+    ) {
+        final AliasRegistryEntry lookupAlias = lookupAlias(AliasGroups.USERS_AND_ORGANIZATIONS.name(), OrganizationId.class, alias);
+        return lookupAlias;
+    }     
+    
     // ------------------------------------------------------------------------
     // SERVICE SPECIFICATIONS
     // ------------------------------------------------------------------------
@@ -354,7 +382,7 @@ public class OrganizationResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("org/{organizationIdOrAlias}/si/{serviceInstanceIdOrAlias}/alias/{alias}")
-    public AliasRegistryEntry getAlias(
+    public AliasRegistryEntry getServiceInstanceAlias(
             @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
             @PathParam("alias") String alias
     ) {

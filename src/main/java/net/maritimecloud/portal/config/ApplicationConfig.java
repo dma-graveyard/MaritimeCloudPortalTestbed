@@ -17,6 +17,8 @@ import net.maritimecloud.portal.infrastructure.persistence.JpaUserRepository;
 import net.maritimecloud.portal.infrastructure.service.SHA512EncryptionService;
 import net.maritimecloud.portal.resource.LogService;
 import net.maritimecloud.portal.resource.SimpleCORSFilter;
+import net.maritimecloud.serviceregistry.domain.service.AliasService;
+import net.maritimecloud.serviceregistry.infrastructure.service.JpaAliasService;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.apache.velocity.app.VelocityEngine;
@@ -185,6 +187,11 @@ public class ApplicationConfig {
     @Bean
     public MailService mailService() throws IOException {
         return new MailService(new VelocityMessageComposer(velocityEngine()), mailAdapter());
+    }
+
+    @Bean
+    public AliasService aliasService() throws IOException {
+        return new JpaAliasService();
     }
 
     private String unObfuscate(String property) {

@@ -49,10 +49,15 @@ public interface ServiceRegistryContract extends CqrsContract {
     void changeOrganizationWebsiteUrl(OrganizationId organizationId, String url);
 
     @Command
+    void addOrganizationAlias(OrganizationId organizationId, String alias);
+
+    @Command
+    void removeOrganizationAlias(OrganizationId organizationId, String alias);
+
+    @Command
     void prepareServiceSpecification(
             OrganizationId ownerId,
-            @TargetAggregateIdentifier
-            ServiceSpecificationId serviceSpecificationId,
+            @TargetAggregateIdentifier ServiceSpecificationId serviceSpecificationId,
             ServiceType serviceType,
             String name,
             String summary
@@ -66,7 +71,6 @@ public interface ServiceRegistryContract extends CqrsContract {
 //            String name,
 //            String summary,
 //            Coverage coverage);
-
     @Command
     void addServiceInstanceAlias(OrganizationId organizationId, ServiceInstanceId serviceInstanceId, String alias);
 
@@ -75,7 +79,7 @@ public interface ServiceRegistryContract extends CqrsContract {
 
     @Command
     void changeServiceSpecificationNameAndSummary(ServiceSpecificationId serviceSpecificationId, String name, String summary);
-    
+
     @Command
     void addServiceInstanceEndpoint(ServiceInstanceId serviceInstanceId, ServiceEndpoint serviceEndpoint);
 
@@ -88,13 +92,13 @@ public interface ServiceRegistryContract extends CqrsContract {
     // ------------------------------------------------------------------------
     // EVENTS
     // ------------------------------------------------------------------------
-    
+
     @Event
     void organizationCreated(OrganizationId organizationId, String name, String summary, String url);
 
     @Event
     void serviceSpecificationNameAndSummaryChanged(ServiceSpecificationId serviceSpecificationId, String name, String summary);
-    
+
     @Event
     void organizationWebsiteUrlChanged(OrganizationId organizationId, String url);
 
@@ -102,10 +106,21 @@ public interface ServiceRegistryContract extends CqrsContract {
     void organizationNameAndSummaryChanged(OrganizationId organizationId, String name, String summary);
 
     @Event
+    void organizationAliasAdded(OrganizationId organizationId, String alias);
+
+    @Event(extend = "OrganizationAliasAdded")
+    void organizationPrimaryAliasAdded(OrganizationId organizationId, String alias);
+
+    @Event
+    void organizationAliasRegistrationDenied(OrganizationId organizationId, String alias);
+
+    @Event
+    void organizationAliasRemoved(OrganizationId organizationId, String alias);
+    
+    @Event
     void serviceSpecificationCreated(
             OrganizationId ownerId,
-            @TargetAggregateIdentifier
-            ServiceSpecificationId serviceSpecificationId,
+            @TargetAggregateIdentifier ServiceSpecificationId serviceSpecificationId,
             ServiceType serviceType,
             String name,
             String summary
@@ -114,8 +129,10 @@ public interface ServiceRegistryContract extends CqrsContract {
     @Event
     void serviceInstanceAliasAdded(OrganizationId organizationId, ServiceInstanceId serviceInstanceId, String alias);
 
-    /** this one is emitted only on the first creation of an alias on a target */
-    @Event(extend="ServiceInstanceAliasAdded")
+    /**
+     * this one is emitted only on the first creation of an alias on a target
+     */
+    @Event(extend = "ServiceInstanceAliasAdded")
     void serviceInstancePrimaryAliasAdded(OrganizationId organizationId, ServiceInstanceId serviceInstanceId, String alias);
 
     @Event

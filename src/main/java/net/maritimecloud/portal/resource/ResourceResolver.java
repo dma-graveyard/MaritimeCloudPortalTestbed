@@ -20,7 +20,9 @@ import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
+import net.maritimecloud.serviceregistry.domain.service.AliasGroups;
 import net.maritimecloud.serviceregistry.query.AliasRegistryEntry;
+import net.maritimecloud.serviceregistry.query.OrganizationEntry;
 import net.maritimecloud.serviceregistry.query.ServiceInstanceEntry;
 import net.maritimecloud.serviceregistry.query.ServiceSpecificationEntry;
 import org.slf4j.Logger;
@@ -36,8 +38,9 @@ public class ResourceResolver {
 
     public static String resolveOrganizationIdOrFail(String organizationAliasOrId) {
         String organizationId = resolveOrganizationId(organizationAliasOrId);
-        assertNotNull(organizationId, "Unable to find Organization based on key=" + organizationAliasOrId);
-        return organizationAliasOrId;
+        OrganizationEntry entry = ApplicationServiceRegistry.organizationQueryRepository().findOne(organizationId);
+        assertNotNull(entry, "Unable to find Organization based on key=" + organizationAliasOrId);
+        return organizationId;
     }
 
     public static ServiceSpecificationEntry resolveServiceSpecification(String organizationId, String serviceSpecificationAliasOrId) {
@@ -82,7 +85,7 @@ public class ResourceResolver {
     }
 
     private static AliasRegistryEntry lookupOrganizationAliasEntry(String organizationAliasOrId) {
-        return lookupAlias(AliasRegistryEntry.USER_ORGANIZATION_GROUP, OrganizationId.class, organizationAliasOrId);
+        return lookupAlias(AliasGroups.USERS_AND_ORGANIZATIONS.name(), OrganizationId.class, organizationAliasOrId);
     }
 
     private static AliasRegistryEntry lookupServiceInstanceAliasEntry(String organizationId, String serviceInstanceAliasOrId) {
@@ -122,6 +125,11 @@ public class ResourceResolver {
 
     static List<AliasRegistryEntry> queryServiceinstanceAliases(ServiceInstanceEntry sie) {
         return ApplicationServiceRegistry.aliasRegistryQueryRepository().findByGroupIdAndTypeNameAndTargetId(sie.getProviderId(), ServiceInstanceId.class.getName(), sie.getServiceInstanceId());
+    }
+
+    static List<AliasRegistryEntry> queryOrganizationAliases(String organizationId) {
+        return ApplicationServiceRegistry.aliasRegistryQueryRepository().findByGroupIdAndTypeNameAndTargetId(
+                AliasGroups.USERS_AND_ORGANIZATIONS.name(), OrganizationId.class.getName(), organizationId);
     }
 
 }

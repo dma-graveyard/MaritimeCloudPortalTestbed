@@ -26,10 +26,6 @@
         <div>
             <button type="submit" class="btn btn-success center" ng-disabled="!form.$valid || !formIsSubmitable()" ng-click="submit()">Commit</button>
         </div>
-
-
-
-
         <hr>
         <div class="form-group">
             <label>Endpoints</label>
@@ -80,14 +76,17 @@
                         </button>
                     </li>
                     <li>
-                        <input type="text" id="newAlias" placeholder="Enter an alias" ng-model="newAlias" 
+                        <input type="text" id="newAlias" name="newAlias" placeholder="Enter an alias" ng-model="newAlias" 
+                               required
                                ng-pattern="/^[a-zA-Z]+[a-zA-Z0-9-]*$/"
                                ng-minlength="2"
-                               Xng-class="formAlias.newAlias.$valid && formAlias.newAlias.$dirty && aliasAlreadyExist ? 'mcp-invalid-input' : '' "
-                               ng-class="aliasAlreadyExist ? 'mcp-invalid-input' : '' "
+                               ng-class="formAlias.newAlias.$valid && formAlias.newAlias.$dirty && aliasAlreadyExist ? 'mcp-invalid-input' : '' "
                                >
                         <span>
-                            <button ng-click="addAlias(newAlias);" ng-disabled="aliasAlreadyExist" class="btn btn-success">
+                            <button class="btn btn-success"
+                                    ng-click="addAlias(newAlias);" 
+                                    ng-disabled="formAlias.newAlias.$invalid || formAlias.newAlias.$pristine || aliasAlreadyExist" 
+                                    >
                                 <span class="fa fa-plus">Add</span>
                             </button>
                         </span>

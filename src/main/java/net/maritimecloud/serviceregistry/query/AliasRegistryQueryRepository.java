@@ -26,5 +26,9 @@ public interface AliasRegistryQueryRepository extends PagingAndSortingRepository
     AliasRegistryEntry findByGroupIdAndTypeNameAndAlias(String groupId, String typeName, String alias);
 
     List<AliasRegistryEntry> findByGroupIdAndTypeNameAndTargetId(String groupId, String typeName, String targetId);
+
+    AliasRegistryEntry findByGroupIdAndAlias(String aliasGroupId, String alias);
+
+    List<AliasRegistryEntry> findByGroupIdAndTargetId(String aliasGroupId, String targetIdentifier);
     
 }

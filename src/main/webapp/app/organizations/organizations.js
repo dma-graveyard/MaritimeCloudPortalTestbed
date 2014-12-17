@@ -76,7 +76,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
             // validate input values
             // ...todo...
-            
+
             $scope.busyPromise = OrganizationService.create($scope.organization,
                 function (data) {
                   $location.path('/orgs/' + $scope.organization.organizationId).replace();
@@ -95,8 +95,32 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
     .controller('OrganizationEditController', ['$scope', '$stateParams', '$location', 'OrganizationService', 'OrganizationContext',
       function ($scope, $stateParams, $location, OrganizationService, OrganizationContext) {
 
+        var reportError = function (error) {
+          $scope.message = null;
+          $scope.alertMessages = ["Error on the serverside :( ", error];
+        };
+        var getHydratedOrganization = function () {
+
+          OrganizationService.get({organizationId: $stateParams.organizationId}, function (organization) {
+            $scope.organization = organization;
+
+            //hydrate organization
+            // add list of aliases
+            OrganizationService.aliases({organizationId: $stateParams.organizationId}, function (aliases) {
+              // ...but remove the primary alias from the list
+              var list = [];
+              aliases.forEach(function (alias) {
+                if (alias.alias !== organization.primaryAlias)
+                  list.push(alias);
+              });
+              organization.aliases = list;
+            });
+          });
+
+        };
+
         angular.extend($scope, {
-          organization: OrganizationService.get({organizationId: $stateParams.organizationId}),
+          organization: getHydratedOrganization(),
           nameAndSummaryIsSubmitable: function () {
             return ($scope.organization.name);
           },
@@ -108,12 +132,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
                   $scope.message = ["Name and summary changed!"];
                   // todo: propagate changes to organization context list
                   // ...
-                },
-                function (error) {
-                  $scope.message = null;
-                  $scope.alertMessages = ["Error on the serverside :( ", error];
-                }
-            );
+                }, reportError);
           },
           submitUrl: function () {
             $scope.message = "Sending request to change organization website URL...";
@@ -121,17 +140,56 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
             $scope.busyPromise = OrganizationService.changeWebsiteUrl($scope.organization,
                 function () {
                   $scope.message = ["Website URL changed!"];
-                },
-                function (error) {
-                  $scope.message = null;
-                  $scope.alertMessages = ["Error on the serverside :( ", error];
-                }
-            );
+                }, reportError);
+          },
+          addAlias: function (newAlias) {
+            console.log("$scope.ORG ---- ", $scope);
+
+            OrganizationService.addAlias($scope.organization, newAlias, function () {
+
+              // reload serviceInstance
+              $scope.service = getHydratedOrganization();
+              $scope.message = "Alias added!";
+              $scope.newAlias = "";
+
+            }, reportError);
+          },
+          removeAlias: function (alias) {
+            OrganizationService.removeAlias($scope.organization, alias, function () {
+
+              // reload serviceInstance
+              $scope.service = getHydratedOrganization();
+              $scope.message = "Alias removed!";
+              $scope.newAlias = "";
+
+            }, reportError);
           },
           close: function () {
             $location.path('/orgs/' + $scope.organization.organizationId).replace();
           }
         });
+
+        $scope.resolveUniqueAlias = function () {
+          if (!angular.isDefined($scope.newAlias)) {
+            $scope.aliasAlreadyExist = false;
+            $scope.aliasNotDefined = true;
+            return;
+          }
+
+          OrganizationService.alias({alias: $scope.newAlias}, function (aliasEntry) {
+            $scope.aliasAlreadyExist = angular.isDefined(aliasEntry.alias);
+          });
+        };
+
+        $scope.$watch("newAlias",
+            function (newValue, oldValue, scope) {
+              if (newValue !== oldValue) {
+                //console.log(newValue, oldValue);
+                scope.resolveUniqueAlias();
+              }
+            }
+        );
+
       }])
 
     // OrganizationContext

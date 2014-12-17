@@ -26,6 +26,16 @@ function ChangeOrganizationWebsiteUrlCommand(organizationId, url) {
   this.url = url;
 }
 
+function AddOrganizationAliasCommand(organizationId, alias) {
+  this.organizationId = {identifier: organizationId};
+  this.alias = alias;
+}
+
+function RemoveOrganizationAliasCommand(organizationId, alias) {
+  this.organizationId = {identifier: organizationId};
+  this.alias = alias;
+}
+
 function ProvideServiceInstanceCommand(providerId, specificationId, serviceInstanceId, name, summary, coverage) {
   this.providerId = {identifier: providerId};
   this.specificationId = {identifier: specificationId};
@@ -104,18 +114,33 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         var resource = $resource(serviceBaseUrl + '/rest/api/org/:organizationId', {}, {
           post: {method: 'POST'},
           put: {method: 'PUT', params: {organizationId: '@organizationId.identifier'}},
+          aliases: {method: 'GET', params: {serviceInstanceId: '@organizationId.identifier'},
+            url: serviceBaseUrl + '/rest/api/org/:organizationId/alias',
+            isArray: true
+          },
+          alias: {method: 'GET', params: {},
+            url: serviceBaseUrl + '/rest/api/org/exist/alias/:alias'
+          }
         });
 
         resource.create = function (organization, succes, error) {
           return this.post(new CreateOrganizationCommand(organization.organizationId, organization.name, organization.summary, organization.url), succes, error);
         };
-        
+
         resource.changeNameAndSummary = function (organization, succes, error) {
           return this.put(new ChangeOrganizationNameAndSummaryCommand(organization.organizationId, organization.name, organization.summary), succes, error);
         };
 
         resource.changeWebsiteUrl = function (organization, succes, error) {
           return this.put(new ChangeOrganizationWebsiteUrlCommand(organization.organizationId, organization.url), succes, error);
+        };
+
+        resource.addAlias = function (organization, alias, succes, error) {
+          return this.put(new AddOrganizationAliasCommand(organization.organizationId, alias), succes, error);
+        };
+
+        resource.removeAlias = function (organization, alias, succes, error) {
+          return this.put(new RemoveOrganizationAliasCommand(organization.organizationId, alias), succes, error);
         };
 
         return resource;
@@ -184,7 +209,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         };
 
         resource.removeAlias = function (serviceInstance, alias, succes, error) {
-          return this.put({organizationId: serviceInstance.providerId, serviceInstanceId:serviceInstance.serviceInstanceId}, new RemoveServiceInstanceAliasCommand(serviceInstance.providerId, serviceInstance.serviceInstanceId, alias), succes, error);
+          return this.put({organizationId: serviceInstance.providerId, serviceInstanceId: serviceInstance.serviceInstanceId}, new RemoveServiceInstanceAliasCommand(serviceInstance.providerId, serviceInstance.serviceInstanceId, alias), succes, error);
         };
 
         resource.addEndpoint = function (serviceInstance, endpointUri, succes, error) {

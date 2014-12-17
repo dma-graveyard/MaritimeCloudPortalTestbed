@@ -256,6 +256,7 @@ angular.module('mcp.organizations.services', [])
               // reload serviceInstance
               $scope.service = getHydratedServiceInstance();
               $scope.message = "Alias added!";
+              $scope.newAlias = "";
 
             }, reportError);
           },
@@ -265,6 +266,7 @@ angular.module('mcp.organizations.services', [])
               // reload serviceInstance
               $scope.service = getHydratedServiceInstance();
               $scope.message = "Alias removed!";
+              $scope.newAlias = "";
 
             }, reportError);
           },
@@ -332,12 +334,12 @@ angular.module('mcp.organizations.services', [])
 
         $scope.resolveUniqueAlias = function () {
           if (!angular.isDefined($scope.newAlias)) {
-            $scope.aliasAlreadyExist = true;
+            $scope.aliasNotDefined = true;
+            $scope.aliasAlreadyExist = false;
             return;
           }
 
           ServiceInstanceService.alias({organizationId: $stateParams.organizationId, alias: $scope.newAlias}, function (aliasEntry) {
-            console.log('alias result', aliasEntry);
             $scope.aliasAlreadyExist = angular.isDefined(aliasEntry.alias);
           });
         };

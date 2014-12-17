@@ -19,19 +19,28 @@ import net.maritimecloud.serviceregistry.command.api.OrganizationCreated;
 import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import net.maritimecloud.common.infrastructure.axon.CommonFixture;
 import static net.maritimecloud.common.infrastructure.axon.CommonFixture.AN_ALIAS;
+import net.maritimecloud.portal.application.SpringContextBasedRegistry;
+import net.maritimecloud.serviceregistry.command.api.AddOrganizationAlias;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationWebsiteUrl;
+import net.maritimecloud.serviceregistry.command.api.OrganizationAliasAdded;
+import net.maritimecloud.serviceregistry.command.api.OrganizationPrimaryAliasAdded;
 import net.maritimecloud.serviceregistry.command.api.OrganizationWebsiteUrlChanged;
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceAlias;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAdded;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasRegistrationDenied;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasRemoved;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstancePrimaryAliasAdded;
+import net.maritimecloud.serviceregistry.domain.service.AliasGroups;
+import net.maritimecloud.serviceregistry.domain.service.AliasService;
 import org.axonframework.test.FixtureConfiguration;
 import org.axonframework.test.Fixtures;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.when;
+import org.springframework.context.ApplicationContext;
 
 /**
  *
@@ -40,10 +49,18 @@ import org.junit.Test;
 public class OrganizationTest extends CommonFixture {
 
     private FixtureConfiguration<Organization> fixture;
+    private AliasService mockedAliasService;
 
     @Before
     public void setUp() throws Exception {
         fixture = Fixtures.newGivenWhenThenFixture(Organization.class);
+
+        // just some ugly mocking for the organization alias test : (
+        ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
+        mockedAliasService = Mockito.mock(AliasService.class);
+        new SpringContextBasedRegistry().setApplicationContext(applicationContext);
+        when(applicationContext.getBean("aliasService")).thenReturn(mockedAliasService);
+
     }
 
     @Test
@@ -65,6 +82,62 @@ public class OrganizationTest extends CommonFixture {
         fixture.given(new OrganizationCreated(anOrganizationId, A_NAME, A_SUMMARY, A_URL))
                 .when(new ChangeOrganizationWebsiteUrl(anOrganizationId, A_URL))
                 .expectEvents(new OrganizationWebsiteUrlChanged(anOrganizationId, A_URL));
+    }
+
+    @Test
+    public void firstAddOrganizationAlias() {
+
+        // Given no existing aliases on target
+        when(mockedAliasService.isDefined(AliasGroups.USERS_AND_ORGANIZATIONS.name(), AN_ALIAS)).thenReturn(false);
+        when(mockedAliasService.hasTarget(AliasGroups.USERS_AND_ORGANIZATIONS.name(), AN_ORG_ID)).thenReturn(false);
+
+        fixture.given(
+                organizationCreatedEvent()
+        )
+                .when(new AddOrganizationAlias(anOrganizationId, AN_ALIAS))
+                .expectEvents(new OrganizationPrimaryAliasAdded(anOrganizationId, AN_ALIAS));
+    }
+
+    @Test
+    public void secondAddOrganizationAlias() {
+
+        // Given existing aliases on target
+        when(mockedAliasService.isDefined(AliasGroups.USERS_AND_ORGANIZATIONS.name(), AN_ALIAS)).thenReturn(false);
+        when(mockedAliasService.hasTarget(AliasGroups.USERS_AND_ORGANIZATIONS.name(), AN_ORG_ID)).thenReturn(true);
+
+        fixture.given(
+                organizationCreatedEvent()
+        )
+                .when(new AddOrganizationAlias(anOrganizationId, AN_ALIAS))
+                .expectEvents(new OrganizationAliasAdded(anOrganizationId, AN_ALIAS));
+    }
+
+    @Test
+    public void addOrganizationAliasIsIdempotent() {
+
+        // Given alias already defined on same target 
+        when(mockedAliasService.isDefined(AliasGroups.USERS_AND_ORGANIZATIONS.name(), AN_ALIAS)).thenReturn(true);
+        when(mockedAliasService.isIdentical(AliasGroups.USERS_AND_ORGANIZATIONS.name(), AN_ALIAS, AN_ORG_ID)).thenReturn(true);
+
+        fixture.given(
+                organizationCreatedEvent()
+        )
+                .when(new AddOrganizationAlias(anOrganizationId, AN_ALIAS))
+                .expectEvents();
+    }
+
+    @Test
+    public void addOrganizationAliasAlreadyUsedShouldBeDenied() {
+
+        // Given alias already defined on other target 
+        when(mockedAliasService.isDefined(AliasGroups.USERS_AND_ORGANIZATIONS.name(), AN_ALIAS)).thenReturn(true);
+        when(mockedAliasService.isIdentical(AliasGroups.USERS_AND_ORGANIZATIONS.name(), AN_ALIAS, AN_ORG_ID)).thenReturn(false);
+
+        fixture.given(
+                organizationCreatedEvent()
+        )
+                .when(new AddOrganizationAlias(anOrganizationId, AN_ALIAS))
+                .expectEvents(/*new OrganizationAliasRegistrationDenied(anOrganizationId, AN_ALIAS)*/);
     }
 
     @Test

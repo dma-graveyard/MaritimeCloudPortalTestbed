@@ -17,17 +17,17 @@ package net.maritimecloud.serviceregistry.query;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  *
  * @author Christoffer Børrild
  */
 @Entity
+@Table(uniqueConstraints={@UniqueConstraint(columnNames = {"groupId" , "typeName", "alias"})})
 public class AliasRegistryEntry {
     
-    /** Key for the unique aliases group that governs Organizations and Users aliases */
-    public static final String USER_ORGANIZATION_GROUP = "USER_ORGANIZATION_GROUP";
-
     @Id
     @GeneratedValue
     private long id;

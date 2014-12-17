@@ -15,9 +15,13 @@
 package net.maritimecloud.serviceregistry.query;
 
 import javax.annotation.Resource;
+import net.maritimecloud.serviceregistry.command.api.OrganizationAliasAdded;
+import net.maritimecloud.serviceregistry.command.api.OrganizationAliasRemoved;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAdded;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasRemoved;
+import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
+import net.maritimecloud.serviceregistry.domain.service.AliasGroups;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +62,34 @@ public class AliasRegistryListener {
         AliasRegistryEntry aliasEntry = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndAlias(
                 event.getOrganizationId().identifier(),
                 ServiceInstanceId.class.getName(),
+                event.getAlias()
+        );
+        aliasRegistryQueryRepository.delete(aliasEntry);
+    }
+
+    @EventHandler
+    public void on(OrganizationAliasAdded event) {
+        AliasRegistryEntry entry = new AliasRegistryEntry(
+                AliasGroups.USERS_AND_ORGANIZATIONS.name(),
+                OrganizationId.class.getName(),
+                event.getAlias(),
+                event.getOrganizationId().identifier()
+        );
+        save(entry);
+    }
+
+    @EventHandler
+    public void on(OrganizationAliasRemoved event) {
+
+        Iterable<AliasRegistryEntry> findAll = aliasRegistryQueryRepository.findAll();
+        for (AliasRegistryEntry entry : findAll) {
+            System.out.println("" + entry);
+
+        }
+
+        AliasRegistryEntry aliasEntry = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndAlias(
+                AliasGroups.USERS_AND_ORGANIZATIONS.name(),
+                OrganizationId.class.getName(),
                 event.getAlias()
         );
         aliasRegistryQueryRepository.delete(aliasEntry);

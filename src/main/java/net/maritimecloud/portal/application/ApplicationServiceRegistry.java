@@ -14,10 +14,10 @@
  */
 package net.maritimecloud.portal.application;
 
-import javax.annotation.Resource;
 import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
 import net.maritimecloud.portal.infrastructure.mail.MailService;
 import net.maritimecloud.portal.resource.LogService;
+import net.maritimecloud.serviceregistry.domain.service.AliasService;
 import net.maritimecloud.serviceregistry.query.AliasRegistryQueryRepository;
 import net.maritimecloud.serviceregistry.query.OperationalServiceQueryRepository;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
@@ -30,9 +30,12 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
  */
 public class ApplicationServiceRegistry extends SpringContextBasedRegistry {
 
-
     public static IdentityApplicationService identityApplicationService() {
         return (IdentityApplicationService) get("identityApplicationService");
+    }
+
+    public static AliasService aliasService() {
+        return (AliasService) get("aliasService");
     }
 
     public static AuthenticationUtil authenticationUtil() {
@@ -42,7 +45,7 @@ public class ApplicationServiceRegistry extends SpringContextBasedRegistry {
     public static LogService logService() {
         return (LogService) get("logService");
     }
-    
+
     public static MailService mailService() {
         return (MailService) get("mailService");
     }
@@ -50,8 +53,7 @@ public class ApplicationServiceRegistry extends SpringContextBasedRegistry {
     // ------------------------------------------------------------------------------------------
     // FIXME: should not live in a service registry - move to somewhere else!!!
     // ------------------------------------------------------------------------------------------
-    
-    public static CommandGateway commandGateway () {
+    public static CommandGateway commandGateway() {
         return (CommandGateway) get("commandGateway");
     }
 
@@ -70,9 +72,9 @@ public class ApplicationServiceRegistry extends SpringContextBasedRegistry {
     public static ServiceInstanceQueryRepository serviceInstanceQueryRepository() {
         return (ServiceInstanceQueryRepository) get("serviceInstanceQueryRepository");
     }
-    
+
     public static AliasRegistryQueryRepository aliasRegistryQueryRepository() {
         return (AliasRegistryQueryRepository) get("aliasRegistryQueryRepository");
     }
-    
+
 }

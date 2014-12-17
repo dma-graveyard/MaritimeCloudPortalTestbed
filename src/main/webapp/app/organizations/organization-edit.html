@@ -56,6 +56,42 @@
             </div>
         </form-->
         <hr>
+        <form role="form" name="formAlias" novalidate>
+            <div class="form-group">
+                <label>Secondary Aliases</label>
+                <div>
+                    <ul>
+                        <li ng-if="organization.aliases.length === 0"><i>No secondary aliases - use the field below to add one!</i></li>
+                        <li  ng-repeat="alias in organization.aliases">{{alias.alias}}
+                            <button ng-click="removeAlias(alias.alias);" class="btn btn-default btn-sm">
+                                <span class="fa fa-trash-o"></span>
+                            </button>
+                        </li>
+                        <li>
+                            <input type="text" id="newAlias" name="newAlias" placeholder="Enter an alias" ng-model="newAlias" 
+                                   required
+                                   ng-pattern="/^[a-zA-Z]+[a-zA-Z0-9-]*$/"
+                                   ng-minlength="2"
+                                   ng-class="formAlias.newAlias.$valid && formAlias.newAlias.$dirty && aliasAlreadyExist ? 'mcp-invalid-input' : '' "
+                                   >
+                            <span>
+                                <button class="btn btn-success"
+                                        ng-click="addAlias(newAlias);" 
+                                        ng-disabled="formAlias.newAlias.$invalid || formAlias.newAlias.$pristine || aliasNotDefined || aliasAlreadyExist" 
+                                        >
+                                    <span class="fa fa-plus">Add</span>
+                                </button>
+                            </span>
+                        </li>
+                        <div class="text-danger" ng-show="aliasAlreadyExist">
+                            Sorry, but this alias is already taken : (
+                        </div>
+                    </ul>
+                </div>
+                <p class="help-block">Aliases may be used as an optional way to reference and locate the organization. </p>
+            </div>
+        </form>
+        <hr>
         <div>
             <button class="btn btn-grey center" ng-click="close()">Close</button>
         </div>
