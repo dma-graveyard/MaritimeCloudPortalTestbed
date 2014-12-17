@@ -177,6 +177,24 @@ angular.module('mcp.organizations.services', [])
             }, reportError);
           }
         });
+        
+        $scope.resolveUniqueAlias = function () {
+          if (!angular.isDefined($scope.service.primaryAlias)) {
+            $scope.aliasAlreadyExist = false;
+            $scope.aliasNotDefined = true;
+            return;
+          }
+          ServiceInstanceService.alias({organizationId: $stateParams.organizationId, alias: $scope.service.primaryAlias}, function (aliasEntry) {
+            $scope.aliasAlreadyExist = angular.isDefined(aliasEntry.alias);
+          });
+        };
+        $scope.$watch("service.primaryAlias",
+            function (newValue, oldValue, scope) {
+              if (newValue !== oldValue) {
+                scope.resolveUniqueAlias();
+              }
+            }
+        );
 
         // this property is referenced by the "thumbnail-map"-directive!!!
         $scope.services = [$scope.service];

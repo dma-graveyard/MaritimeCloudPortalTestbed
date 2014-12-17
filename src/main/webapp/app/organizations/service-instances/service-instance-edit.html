@@ -85,7 +85,7 @@
                         <span>
                             <button class="btn btn-success"
                                     ng-click="addAlias(newAlias);" 
-                                    ng-disabled="formAlias.newAlias.$invalid || formAlias.newAlias.$pristine || aliasAlreadyExist" 
+                                    ng-disabled="formAlias.newAlias.$invalid || formAlias.newAlias.$pristine || aliasNotDefined || aliasAlreadyExist" 
                                     >
                                 <span class="fa fa-plus">Add</span>
                             </button>

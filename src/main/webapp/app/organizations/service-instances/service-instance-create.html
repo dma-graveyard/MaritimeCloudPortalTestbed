@@ -33,8 +33,15 @@
             <p class="help-block">The name will be presented on result lists when searching for services. It should distinguish this service from others offered by the organization.</p>
         </div>
         <div class="form-group">
-            <label for="serviceId">Primary alias</label>
-            <input type="text" required class="form-control" id="serviceId" placeholder="Enter a short id" ng-model="service.primaryAlias" >
+            <label for="primaryAlias">Primary alias</label>
+            <input 
+                type="text" required class="form-control" id="serviceId" name="primaryAlias" placeholder="Enter a short id" 
+                ng-class="form.primaryAlias.$valid && form.primaryAlias.$dirty && aliasAlreadyExist ? 'mcp-invalid-input' : '' "
+                ng-model="service.primaryAlias" 
+                >
+            <div class="text-danger" ng-show="aliasAlreadyExist">
+                Sorry, but this alias is already taken : (
+            </div>
             <p class="help-block">This will be the id of the service instance and cannot be changed once created. It must be 
                 unique within the organization. You may choose to specify other aliases later on</p>
         </div>
@@ -78,7 +85,7 @@
             <p class="help-block">Select the geographical extend of the provided service. That is, specify the area where this service should be visible to consumers.</p>
         </div>
         <div>
-            <button type="submit" class="btn btn-success center" ng-disabled="!form.$valid || !formIsSubmitable()" ng-click="submit()">Register service</button>
+            <button type="submit" class="btn btn-success center" ng-disabled="!form.$valid || !formIsSubmitable() || aliasAlreadyExist" ng-click="submit()">Register service</button>
             <button class="btn btn-grey center" ng-click="close()">Cancel</button>
         </div>
         <br>
