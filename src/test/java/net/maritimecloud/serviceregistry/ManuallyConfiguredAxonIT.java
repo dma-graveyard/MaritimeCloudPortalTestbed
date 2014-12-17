@@ -46,7 +46,7 @@ public class ManuallyConfiguredAxonIT extends AbstractManuallyComnfiguredAxonCqr
     private final ServiceSpecificationId serviceSpecificationId1 = new ServiceSpecificationId(UUID.randomUUID().toString());
     private final ServiceSpecificationId serviceSpecificationId2 = new ServiceSpecificationId(UUID.randomUUID().toString());
     private final ServiceSpecificationId serviceSpecificationId3 = new ServiceSpecificationId(UUID.randomUUID().toString());
-    private final CreateOrganization CREATE_ORGANIZATION_COMMAND = new CreateOrganization(organizationId, A_NAME, A_SUMMARY, A_URL);
+    private final CreateOrganization CREATE_ORGANIZATION_COMMAND = new CreateOrganization(organizationId, AN_ALIAS, A_NAME, A_SUMMARY, A_URL);
 
     @BeforeClass
     public static void setUpClass() {

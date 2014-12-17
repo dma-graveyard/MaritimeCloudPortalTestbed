@@ -40,7 +40,7 @@ import net.maritimecloud.serviceregistry.command.servicespecification.ServiceTyp
 public interface ServiceRegistryContract extends CqrsContract {
 
     @Command
-    void createOrganization(OrganizationId organizationId, String name, String summary, String url);
+    void createOrganization(OrganizationId organizationId, String primaryAlias, String name, String summary, String url);
 
     @Command
     void changeOrganizationNameAndSummary(OrganizationId organizationId, String name, String summary);
@@ -94,7 +94,7 @@ public interface ServiceRegistryContract extends CqrsContract {
     // ------------------------------------------------------------------------
 
     @Event
-    void organizationCreated(OrganizationId organizationId, String name, String summary, String url);
+    void organizationCreated(OrganizationId organizationId, String primaryAlias, String name, String summary, String url);
 
     @Event
     void serviceSpecificationNameAndSummaryChanged(ServiceSpecificationId serviceSpecificationId, String name, String summary);

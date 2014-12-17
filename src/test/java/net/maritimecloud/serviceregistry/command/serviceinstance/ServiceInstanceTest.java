@@ -54,7 +54,7 @@ public class ServiceInstanceTest extends CommonFixture {
         // setup predefined events
         serviceInstanceCreatedEvent = new ServiceInstanceCreated(anOrganizationId, serviceSpecificationId, serviceInstanceId, A_NAME, A_SUMMARY, A_COVERAGE, A_SERVICE_TYPE);
         serviceSpecificationCreatedEvent = new ServiceSpecificationCreated(anOrganizationId, serviceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY);
-        organizationCreatedEvent = new OrganizationCreated(anOrganizationId, A_NAME, A_SUMMARY, A_URL);
+        organizationCreatedEvent = new OrganizationCreated(anOrganizationId, AN_ALIAS, A_NAME, A_SUMMARY, A_URL);
 
         // Setup a fixture with an OrganizationCommandHandler with mocked 
         // organization- and serviceSpecification repositories and aggregates

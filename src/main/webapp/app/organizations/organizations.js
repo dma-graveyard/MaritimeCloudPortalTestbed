@@ -57,8 +57,8 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
         };
       }])
 
-    .controller('OrganizationCreateController', ['$scope', '$location', 'OrganizationService', 'OrganizationContext',
-      function ($scope, $location, OrganizationService, OrganizationContext) {
+    .controller('OrganizationCreateController', ['$scope', '$location', 'UUID', 'OrganizationService', 'OrganizationContext',
+      function ($scope, $location, UUID, OrganizationService, OrganizationContext) {
         angular.extend($scope, {
           organization: {organizationId: null, name: null, url: "http://hardcoded.bwah.org"},
           /**
@@ -90,6 +90,29 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
             );
           }
         });
+        $scope.resolveUniqueAlias = function () {
+          if (!angular.isDefined($scope.service.primaryAlias)) {
+            $scope.aliasAlreadyExist = false;
+            $scope.aliasNotDefined = true;
+            return;
+          }
+          OrganizationService.alias({alias: $scope.service.primaryAlias}, function (aliasEntry) {
+            $scope.aliasAlreadyExist = angular.isDefined(aliasEntry.alias);
+          });
+        };
+        $scope.$watch("service.primaryAlias",
+            function (newValue, oldValue, scope) {
+              if (newValue !== oldValue) {
+                scope.resolveUniqueAlias();
+              }
+            }
+        );
+    
+        // Fetch and assign a new UUID from the server
+        UUID.get({name: "identifier"}, function (newUuid) {
+          $scope.organization.organizationId = newUuid.identifier;
+        });
+
       }])
 
     .controller('OrganizationEditController', ['$scope', '$stateParams', '$location', 'OrganizationService', 'OrganizationContext',

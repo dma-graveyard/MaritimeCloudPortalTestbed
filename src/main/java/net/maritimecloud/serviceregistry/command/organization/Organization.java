@@ -76,7 +76,7 @@ public class Organization extends AbstractAnnotatedAggregateRoot<OrganizationId>
     @CommandHandler
     public Organization(CreateOrganization command) {
         this();
-        apply(new OrganizationCreated(command.getOrganizationId(), command.getName(), command.getSummary(), command.getUrl()));
+        apply(new OrganizationCreated(command.getOrganizationId(), command.getPrimaryAlias(), command.getName(), command.getSummary(), command.getUrl()));
     }
 
     @CommandHandler

@@ -15,7 +15,11 @@
 package net.maritimecloud.portal.config;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import net.maritimecloud.portal.domain.infrastructure.axon.NoReplayedEvents;
 import net.maritimecloud.portal.domain.infrastructure.axon.ReplayableFileSystemEventStore;
+import net.maritimecloud.serviceregistry.command.organization.AttachOrganizationAliasSaga;
 import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.commandhandling.SimpleCommandBus;
 import org.axonframework.commandhandling.gateway.CommandGatewayFactoryBean;
@@ -32,12 +36,23 @@ import org.springframework.context.annotation.Configuration;
 import net.maritimecloud.serviceregistry.command.organization.Organization;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
+import org.axonframework.eventhandling.AnnotationClusterSelector;
+import org.axonframework.eventhandling.ClusterSelector;
 import org.axonframework.eventhandling.ClusteringEventBus;
+import org.axonframework.eventhandling.CompositeClusterSelector;
 import org.axonframework.eventhandling.DefaultClusterSelector;
 import org.axonframework.eventhandling.SimpleCluster;
 import org.axonframework.eventhandling.replay.BackloggingIncomingMessageHandler;
 import org.axonframework.eventhandling.replay.ReplayingCluster;
 import org.axonframework.eventstore.management.EventStoreManagement;
+import org.axonframework.saga.GenericSagaFactory;
+import org.axonframework.saga.ResourceInjector;
+import org.axonframework.saga.SagaFactory;
+import org.axonframework.saga.SagaManager;
+import org.axonframework.saga.SagaRepository;
+import org.axonframework.saga.annotation.AnnotatedSagaManager;
+import org.axonframework.saga.repository.inmemory.InMemorySagaRepository;
+import org.axonframework.saga.spring.SpringResourceInjector;
 import org.axonframework.unitofwork.SpringTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -57,7 +72,15 @@ public class AxonConfig {
     @Bean
     public EventBus eventBus() {
 //        return new SimpleEventBus();
-        return new ClusteringEventBus(new DefaultClusterSelector(simpleCluster()));
+        List<ClusterSelector> clusterSelectors = new ArrayList<>();
+        clusterSelectors.add(new AnnotationClusterSelector(NoReplayedEvents.class, sagaCluster()));
+        clusterSelectors.add(new DefaultClusterSelector(simpleCluster()));
+
+        final ClusteringEventBus eventBus = new ClusteringEventBus(new CompositeClusterSelector(clusterSelectors));
+
+        eventBus.subscribe(sagaManager());
+
+        return eventBus;
     }
 
     @Bean
@@ -69,6 +92,11 @@ public class AxonConfig {
     @Bean
     public SimpleCluster simpleCluster() {
         return new SimpleCluster("defaultCluster");
+    }
+
+    @Bean
+    public SimpleCluster sagaCluster() {
+        return new SimpleCluster("sagaCluster");
     }
 
     @Bean
@@ -91,6 +119,31 @@ public class AxonConfig {
         CommandGatewayFactoryBean factory = new CommandGatewayFactoryBean();
         factory.setCommandBus(commandBus());
         return factory;
+    }
+
+    @Bean
+    public SagaRepository sagaRepository() {
+        return new InMemorySagaRepository();
+    }
+
+    @Bean
+    public ResourceInjector resourceInjector() {
+        return new SpringResourceInjector();
+    }
+
+    @Bean
+    public SagaFactory sagaFactory() {
+        GenericSagaFactory sagaFactory = new GenericSagaFactory();
+        sagaFactory.setResourceInjector(resourceInjector());
+        return sagaFactory;
+    }
+
+    @Bean
+    public SagaManager sagaManager() {
+        AnnotatedSagaManager sagaManager = new AnnotatedSagaManager(sagaRepository(), sagaFactory(),
+                AttachOrganizationAliasSaga.class
+        );
+        return sagaManager;
     }
 
 //    @Bean

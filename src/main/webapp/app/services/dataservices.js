@@ -8,8 +8,9 @@
 // ----------------------------------------------------------------------------
 // Remote API Commands
 // ----------------------------------------------------------------------------
-function CreateOrganizationCommand(organizationId, name, summary, url) {
+function CreateOrganizationCommand(organizationId, primaryAlias, name, summary, url) {
   this.organizationId = {identifier: organizationId};
+  this.primaryAlias = primaryAlias;
   this.name = name;
   this.summary = summary;
   this.url = url;
@@ -124,7 +125,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         });
 
         resource.create = function (organization, succes, error) {
-          return this.post(new CreateOrganizationCommand(organization.organizationId, organization.name, organization.summary, organization.url), succes, error);
+          return this.post(new CreateOrganizationCommand(organization.organizationId, organization.primaryAlias, organization.name, organization.summary, organization.url), succes, error);
         };
 
         resource.changeNameAndSummary = function (organization, succes, error) {

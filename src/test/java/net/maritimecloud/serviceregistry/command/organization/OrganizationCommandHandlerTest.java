@@ -80,7 +80,7 @@ public class OrganizationCommandHandlerTest extends CommonFixture {
 
     @Test
     public void prepareServiceSpecification() {
-        fixtureServiceSpecification.given(new OrganizationCreated(anOrganizationId, A_NAME, A_SUMMARY, A_URL))
+        fixtureServiceSpecification.given(new OrganizationCreated(anOrganizationId, AN_ALIAS, A_NAME, A_SUMMARY, A_URL))
                 .when(aPrepareServiceSpecificationCommand(anOrganizationId, serviceSpecificationId))
                 .expectEvents(new ServiceSpecificationCreated(
                                 anOrganizationId,
@@ -92,7 +92,7 @@ public class OrganizationCommandHandlerTest extends CommonFixture {
     @Test
     public void prepareServiceSpecificationOnDeletedOrganization() {
         mockDeleted = true;
-        fixtureServiceSpecification.given(new OrganizationCreated(anOrganizationId, A_NAME, A_SUMMARY, A_URL))
+        fixtureServiceSpecification.given(new OrganizationCreated(anOrganizationId, AN_ALIAS, A_NAME, A_SUMMARY, A_URL))
                 .when(aPrepareServiceSpecificationCommand(anOrganizationId, serviceSpecificationId))
                 .expectException(IllegalArgumentException.class);
     }
@@ -113,7 +113,7 @@ public class OrganizationCommandHandlerTest extends CommonFixture {
 
         final ServiceInstanceId serviceInstanceId = new ServiceInstanceId(AN_INSTANCE_ID);
 
-        fixtureServiceInstance.given(new OrganizationCreated(anOrganizationId, A_NAME, A_SUMMARY, A_URL),
+        fixtureServiceInstance.given(new OrganizationCreated(anOrganizationId, AN_ALIAS, A_NAME, A_SUMMARY, A_URL),
                 new ServiceSpecificationCreated(anOrganizationId, serviceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY)
         )
                 .when(new ProvideServiceInstance(anOrganizationId, serviceSpecificationId, serviceInstanceId, A_NAME, A_SUMMARY, A_COVERAGE))

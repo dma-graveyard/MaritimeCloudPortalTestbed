@@ -16,17 +16,20 @@ public class OrganizationCreated {
 
     @TargetAggregateIdentifier
     private final OrganizationId organizationId;
+    private final String primaryAlias;
     private final String name;
     private final String summary;
     private final String url;
 
     public OrganizationCreated(
             OrganizationId organizationId,
+            String primaryAlias,
             String name,
             String summary,
             String url
     ) {
         this.organizationId = organizationId;
+        this.primaryAlias = primaryAlias;
         this.name = name;
         this.summary = summary;
         this.url = url;
@@ -34,6 +37,10 @@ public class OrganizationCreated {
 
     public OrganizationId getOrganizationId() {
         return organizationId;
+    }
+
+    public String getPrimaryAlias() {
+        return primaryAlias;
     }
 
     public String getName() {

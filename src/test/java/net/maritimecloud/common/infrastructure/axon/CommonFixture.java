@@ -59,7 +59,7 @@ public class CommonFixture {
     public static final ServiceInstanceId anotherServiceInstanceId = new ServiceInstanceId(ANOTHER_INSTANCE_ID);
 
     public static OrganizationCreated organizationCreatedEvent() {
-        return new OrganizationCreated(anOrganizationId, A_NAME, A_SUMMARY, A_URL);
+        return new OrganizationCreated(anOrganizationId, AN_ALIAS, A_NAME, A_SUMMARY, A_URL);
     }
 
     public static ServiceSpecificationCreated serviceSpecificationCreatedEvent() {
@@ -95,7 +95,7 @@ public class CommonFixture {
     }
 
     public static CreateOrganization generateCreateOrganizationCommand(String organizationIdentity) {
-        return new CreateOrganization(generateOrganizationId(organizationIdentity), A_NAME, A_SUMMARY, A_URL);
+        return new CreateOrganization(generateOrganizationId(organizationIdentity), AN_ALIAS, A_NAME, A_SUMMARY, A_URL);
     }
 
     public static PrepareServiceSpecification aPrepareServiceSpecificationCommand(

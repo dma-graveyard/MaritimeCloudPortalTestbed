@@ -66,20 +66,20 @@ public class OrganizationTest extends CommonFixture {
     @Test
     public void createOrganization() throws Exception {
         fixture.givenNoPriorActivity()
-                .when(new CreateOrganization(anOrganizationId, A_NAME, A_SUMMARY, A_URL))
-                .expectEvents(new OrganizationCreated(anOrganizationId, A_NAME, A_SUMMARY, A_URL));
+                .when(new CreateOrganization(anOrganizationId, AN_ALIAS, A_NAME, A_SUMMARY, A_URL))
+                .expectEvents(new OrganizationCreated(anOrganizationId, AN_ALIAS, A_NAME, A_SUMMARY, A_URL));
     }
 
     @Test
     public void changeOrganizationNameAndSummary() throws Exception {
-        fixture.given(new OrganizationCreated(anOrganizationId, A_NAME, A_SUMMARY, A_URL))
+        fixture.given(new OrganizationCreated(anOrganizationId, AN_ALIAS, A_NAME, A_SUMMARY, A_URL))
                 .when(new ChangeOrganizationNameAndSummary(anOrganizationId, A_NAME, A_SUMMARY))
                 .expectEvents(new OrganizationNameAndSummaryChanged(anOrganizationId, A_NAME, A_SUMMARY));
     }
 
     @Test
     public void changeOrganizationWebsiteUrl() throws Exception {
-        fixture.given(new OrganizationCreated(anOrganizationId, A_NAME, A_SUMMARY, A_URL))
+        fixture.given(new OrganizationCreated(anOrganizationId, AN_ALIAS, A_NAME, A_SUMMARY, A_URL))
                 .when(new ChangeOrganizationWebsiteUrl(anOrganizationId, A_URL))
                 .expectEvents(new OrganizationWebsiteUrlChanged(anOrganizationId, A_URL));
     }

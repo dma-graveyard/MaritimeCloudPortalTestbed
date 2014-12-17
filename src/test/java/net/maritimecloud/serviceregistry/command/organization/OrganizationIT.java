@@ -96,7 +96,7 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
         assertEquals(ANOTHER_NAME, entry.getName());
         assertEquals(ANOTHER_SUMMARY, entry.getSummary());
 
-        commandGateway().send(new CreateOrganization(organizationId2, A_NAME, A_SUMMARY, A_URL));
+        commandGateway().send(new CreateOrganization(organizationId2, AN_ALIAS, A_NAME, A_SUMMARY, A_URL));
         assertEquals(2, organizationQueryRepository.count());
     }
 
@@ -125,21 +125,23 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
 
         // Given an organization (with a Service Specification and a provided Service Instance)
         commandGateway().sendAndWait(createOrganizationCommand);
+        
+        // NOTE: we expect the primary alias to have been denied, since it is used in another test!!! (FIXME)
 
         // When
-        commandGateway().sendAndWait(new AddOrganizationAlias(organizationId, AN_ALIAS));
+        commandGateway().sendAndWait(new AddOrganizationAlias(organizationId, AN_ALIAS+organizationId.identifier()));
 
         // Then
         AliasRegistryEntry instance = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndAlias(
                 AliasGroups.USERS_AND_ORGANIZATIONS.name(),
                 OrganizationId.class.getName(),
-                AN_ALIAS);
+                AN_ALIAS+organizationId.identifier());
         assertNotNull(instance);
         assertEquals(organizationId.identifier(), instance.getTargetId());
-        assertEquals(AN_ALIAS, instance.getAlias());
+        assertEquals(AN_ALIAS+organizationId.identifier(), instance.getAlias());
 
         // When add another
-        commandGateway().sendAndWait(new AddOrganizationAlias(organizationId, ANOTHER_ALIAS));
+        commandGateway().sendAndWait(new AddOrganizationAlias(organizationId, ANOTHER_ALIAS+organizationId.identifier()));
 
         // then
         List<AliasRegistryEntry> instances = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndTargetId(
@@ -149,7 +151,7 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
         assertEquals(2, instances.size());
 
         // when add again
-        commandGateway().sendAndWait(new AddOrganizationAlias(organizationId, ANOTHER_ALIAS));
+        commandGateway().sendAndWait(new AddOrganizationAlias(organizationId, ANOTHER_ALIAS+organizationId.identifier()));
 
         // then still
         instances = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndTargetId(
@@ -161,8 +163,8 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
         // given another organization 
         commandGateway().sendAndWait(generateCreateOrganizationCommand(organizationId2.identifier()));
 
-        // when add same alias to another organization  
-        commandGateway().sendAndWait(new AddOrganizationAlias(organizationId2, AN_ALIAS));
+        // when add same alias to another organization (it should be denied) 
+        commandGateway().sendAndWait(new AddOrganizationAlias(organizationId2, AN_ALIAS+organizationId.identifier()));
 
         // then still (...and an denied-event is emitted)
         instances = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndTargetId(
@@ -172,7 +174,7 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
         assertEquals(2, instances.size());
 
         // when remove alias
-        commandGateway().sendAndWait(new RemoveOrganizationAlias(organizationId, AN_ALIAS));
+        commandGateway().sendAndWait(new RemoveOrganizationAlias(organizationId, AN_ALIAS+organizationId.identifier()));
 
         // then
         instances = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndTargetId(
@@ -186,7 +188,7 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
         // inconsistent)
         
         // when remove alias
-        commandGateway().sendAndWait(new RemoveOrganizationAlias(organizationId, ANOTHER_ALIAS));
+        commandGateway().sendAndWait(new RemoveOrganizationAlias(organizationId, ANOTHER_ALIAS+organizationId.identifier()));
 
         // then
         instances = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndTargetId(

@@ -55,7 +55,7 @@ public class GenericCommandResourceTest extends CommonFixture {
     @Test
     public void deserialize() throws JsonProcessingException, IOException {
 
-        String commandAsJSON = "{\"organizationId\":{\"identifier\":\"AN_ORG_ID\"},\"name\":\"A_NAME\",\"summary\":\"A_SUMMARY\",\"url\":\"http://a.url\"}";
+        String commandAsJSON = "{\"organizationId\":{\"identifier\":\"AN_ORG_ID\"},\"primaryAlias\":\"AN_ALIAS\",\"name\":\"A_NAME\",\"summary\":\"A_SUMMARY\",\"url\":\"http://a.url\"}";
         Map<String, Class> commandRegistry = new HashMap<>();
         commandRegistry.put(CreateOrganization.class.getCanonicalName(), CreateOrganization.class);
         commandRegistry.put(CreateOrganization.class.getSimpleName(), CreateOrganization.class);
@@ -66,7 +66,7 @@ public class GenericCommandResourceTest extends CommonFixture {
     @Test
     public void serialize() throws JsonProcessingException, IOException {
         CreateOrganization createOrganizationCommand
-                = new CreateOrganization(new OrganizationId(AN_ORG_ID), A_NAME, A_SUMMARY, A_URL);
+                = new CreateOrganization(new OrganizationId(AN_ORG_ID), AN_ALIAS, A_NAME, A_SUMMARY, A_URL);
         String commandAsJSON = mapper.writeValueAsString(createOrganizationCommand);
         //System.out.println(commandAsJSON);
     }
@@ -76,6 +76,7 @@ public class GenericCommandResourceTest extends CommonFixture {
         CreateOrganization command
                 = serializeAndDeserializeCommand(new CreateOrganization(
                                 new OrganizationId(AN_ORG_ID),
+                                AN_ALIAS,
                                 A_NAME,
                                 A_SUMMARY,
                                 A_URL
