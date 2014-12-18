@@ -28,7 +28,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import static net.maritimecloud.portal.resource.ResourceResolver.resolveOrganizationIdOrFail;
@@ -104,7 +103,8 @@ public class OrganizationResource {
             String commandJSON
     ) {
         LOG.info("Organization PUT command");
-        assertCommandContext(commandJSON, organizationIdOrAlias);
+        String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
+        commandJSON = overwriteIdentity(commandJSON, "organizationId", organizationId);
         sendAndWait(contentType, queryCommandName, commandJSON,
                 ChangeOrganizationNameAndSummary.class,
                 ChangeOrganizationWebsiteUrl.class,
@@ -127,7 +127,8 @@ public class OrganizationResource {
             String commandJSON
     ) {
         LOG.info("Service Instance POST command");
-        assertCommandContext(commandJSON, organizationIdOrAlias);
+        String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
+        commandJSON = overwriteIdentity(commandJSON, "ownerId", organizationId);
         sendAndWait(contentType, queryCommandName, commandJSON,
                 PrepareServiceSpecification.class
         );
@@ -145,11 +146,8 @@ public class OrganizationResource {
             String commandJSON
     ) {
         LOG.info("Service Instance PUT command");
-
-        // assert that specification exists and belongs to organization
         ServiceSpecificationEntry serviceSpecification = getServiceSpecificationByAlias(organizationIdOrAlias, serviceSpecificationIdOrAlias);
-        assertCommandContext(commandJSON, serviceSpecification.getServiceSpecificationId());
-        
+        commandJSON = overwriteIdentity(commandJSON, "serviceSpecificationId", serviceSpecification.getServiceSpecificationId());
         sendAndWait(contentType, queryCommandName, commandJSON,
                 ChangeServiceSpecificationNameAndSummary.class
         );
@@ -169,7 +167,8 @@ public class OrganizationResource {
             String commandJSON
     ) {
         LOG.info("Service Instance POST command");
-        assertCommandContext(commandJSON, organizationIdOrAlias);
+        String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
+        commandJSON = overwriteIdentity(commandJSON, "providerId", organizationId);
         sendAndWait(contentType, queryCommandName, commandJSON,
                 ProvideServiceInstance.class
         );
@@ -190,8 +189,18 @@ public class OrganizationResource {
 
         // assert that instance exists and belongs to organization
         ServiceInstanceEntry serviceInstance = getServiceInstanceByAlias(organizationIdOrAlias, serviceInstanceIdOrAlias);
-        assertCommandContext(commandJSON, serviceInstance.getProviderId());
-
+        
+        // enrich command with mandatory identifiers (those of the path)
+        // ...
+        // ( todo: add any missing identifier properties
+        //   need to know which based on commandName !?! )
+        
+        // rewrite command to contain the identifiers of the path
+        //System.out.println("commandJSON: "+commandJSON);
+        commandJSON = overwriteIdentity(commandJSON, "serviceInstanceId", serviceInstance.getServiceInstanceId());
+        commandJSON = overwriteIdentity(commandJSON, "organizationId", serviceInstance.getProviderId());
+        commandJSON = overwriteIdentity(commandJSON, "providerId", serviceInstance.getProviderId());
+        
         sendAndWait(contentType, queryCommandName, commandJSON,
                 ChangeServiceInstanceNameAndSummary.class,
                 ChangeServiceInstanceCoverage.class,
@@ -201,7 +210,7 @@ public class OrganizationResource {
                 RemoveServiceInstanceEndpoint.class
         );
     }
-
+    
     @DELETE
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
@@ -210,43 +219,15 @@ public class OrganizationResource {
             @HeaderParam("Content-type") String contentType,
             @QueryParam("command") @DefaultValue("") String queryCommandName,
             @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
+            @PathParam("serviceInstanceIdOrAlias") String serviceInstanceIdOrAlias,
             String commandJSON
     ) {
         LOG.info("Service Instance DELETE command");
-
-        // TODO: we do not test that instance is owned by org!
-        assertCommandContext(commandJSON, organizationIdOrAlias);
+        ServiceInstanceEntry serviceInstance = getServiceInstanceByAlias(organizationIdOrAlias, serviceInstanceIdOrAlias);
+        commandJSON = overwriteIdentity(commandJSON, "serviceInstanceId", serviceInstance.getServiceInstanceId());
         sendAndWait(contentType, queryCommandName, commandJSON,
                 RemoveServiceInstanceEndpoint.class
         );
-    }
-
-    /**
-     * Will resolve the organizationId and check that it is mentioned in the command.
-     * <p>
-     * Security test to make sure that the command is in context of the current organization. It is presumed that only legal users are
-     * capable of submitting (POST) to the organization (a concern managed elsewhere)
-     * <p>
-     * @param commandJSON
-     * @param organizationIdOrAlias
-     */
-    private void assertCommandContext(String commandJSON, String organizationIdOrAlias) {
-        
-        // FIXME: testing with "string contains" is really not a sufficient test - we MUST check that the command object targets the right
-        // object. (in many commands it would be easy to mention the "thingsToMention" in the summary for instance, hence allowing a completely 
-        // other target to be affected!!!!
-
-        String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
-        assertCommandMentions(commandJSON, organizationId);
-    }
-
-    private void assertCommandMentions(String commandJSON, String... thingsToMention) {
-        for (String thingToMention : thingsToMention) {
-            if (!commandJSON.contains(thingToMention)) {
-                LOG.warn("Command does not contain expected strings {} {}", commandJSON, thingsToMention);
-                throw new WebApplicationException("Invalid context", 403);
-            }
-        }
     }
 
     private void sendAndWait(String contentType, String queryCommandName, String commandJSON, Class... classes) {
@@ -389,5 +370,9 @@ public class OrganizationResource {
         String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
         return lookupAlias(organizationId, ServiceInstanceId.class, alias);
     }     
+
+    private String overwriteIdentity(String commandJSON, String propertyName, String value) {
+        return JsonCommandHelper.overwriteIdentity(commandJSON, propertyName, value);
+    }
     
 }

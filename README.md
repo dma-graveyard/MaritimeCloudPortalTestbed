@@ -289,7 +289,7 @@ Examples:
     curl http://localhost:8080/rest/api/command
 
     # Create an Organization
-    curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=CreateOrganizationCommand" -d '{"organizationId":{"identifier":"AN_ORG_ID"},"name":"A_NAME","summary":"A_SUMMARY"}' -X POST
+    curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=CreateOrganizationCommand" -d '{"organizationId":{"identifier":"AN_ORG_ID"},"primarAlias":"AN_ALIAS","name":"A_NAME","summary":"A_SUMMARY"}' -X POST
 
     # Rename organization and change summary 
     curl http://localhost:8080/rest/api/command -H "Content-Type: application/json;domain-model=ChangeOrganizationNameAndSummaryCommand" -d '{"organizationId":{"identifier":"AN_ORG_ID"},"name":"ANOTHER_NAME","summary":"ANOTHER_SUMMARY"}' -X PUT
@@ -358,5 +358,3 @@ Examples:
 
     # Details service instance
     curl http://localhost:8080/rest/api/almanac/service-instance/an-instance
-
-
