@@ -29,6 +29,9 @@
     "ui-view": {
       "context": "div"
     },
-    "collapse": {}
+    "collapse": {},
+    "ui-sref": {
+      "context": "a"
+    }
   }
 }

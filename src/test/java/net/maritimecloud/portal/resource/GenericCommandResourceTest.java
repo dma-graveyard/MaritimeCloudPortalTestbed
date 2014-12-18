@@ -39,7 +39,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Tests JSON serilization and deserialization of command objects
+ * Tests JSON serialization and deserialization of command objects
  * <p>
  * @author Christoffer Børrild
  */

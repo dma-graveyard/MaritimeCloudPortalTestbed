@@ -159,31 +159,32 @@ angular.module('mcp.organizations.services', [])
                   console.log("Error adding endpoint", protocol + newEndpointUri, error);
                   $scope.alertMessages = ["Error adding endpoint", protocol + newEndpointUri, error];
                 });
-
-                // add primary alias
-                ServiceInstanceService.addAlias($scope.service, $scope.service.primaryAlias, function () {
-                  // alias created
-                  console.log("alias created", $scope.service.primaryAlias);
-                  $scope.message = "Created alias " + $scope.service.primaryAlias;
-
-                }, function (error) {
-                  console.log("Oh shoot - failed to create the alias for this service instance :-( ", $scope.service.primaryAlias, error);
-                  $scope.alertMessages = ["Oh shoot - failed to create the alias for this service instance :-( " + $scope.service.primaryAlias, error];
-                });
-
-                $scope.close();
               });
+
+              // add primary alias
+              ServiceInstanceService.addAlias($scope.service, $scope.service.primaryAlias, function () {
+                // alias created
+                console.log("alias created", $scope.service.primaryAlias);
+                $scope.message = "Created alias " + $scope.service.primaryAlias;
+
+              }, function (error) {
+                console.log("Oh shoot - failed to create the alias for this service instance :-( ", $scope.service.primaryAlias, error);
+                $scope.alertMessages = ["Oh shoot - failed to create the alias for this service instance :-( " + $scope.service.primaryAlias, error];
+              });
+
+              $scope.close();
 
             }, reportError);
           }
         });
-        
+
         $scope.resolveUniqueAlias = function () {
           if (!angular.isDefined($scope.service.primaryAlias)) {
             $scope.aliasAlreadyExist = false;
             $scope.aliasNotDefined = true;
             return;
           }
+          $scope.aliasNotDefined = false;
           ServiceInstanceService.alias({organizationId: $stateParams.organizationId, alias: $scope.service.primaryAlias}, function (aliasEntry) {
             $scope.aliasAlreadyExist = angular.isDefined(aliasEntry.alias);
           });
@@ -352,11 +353,11 @@ angular.module('mcp.organizations.services', [])
 
         $scope.resolveUniqueAlias = function () {
           if (!angular.isDefined($scope.newAlias)) {
-            $scope.aliasNotDefined = true;
             $scope.aliasAlreadyExist = false;
+            $scope.aliasNotDefined = true;
             return;
           }
-
+          $scope.aliasNotDefined = false;
           ServiceInstanceService.alias({organizationId: $stateParams.organizationId, alias: $scope.newAlias}, function (aliasEntry) {
             $scope.aliasAlreadyExist = angular.isDefined(aliasEntry.alias);
           });

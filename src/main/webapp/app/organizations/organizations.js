@@ -68,7 +68,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
            * validator to be evaluated
            */
           formIsSubmitable: function () {
-            return ($scope.organization.organizationId && $scope.organization.name);
+            return ($scope.organization.organizationId && $scope.organization.name && $scope.organization.primaryAlias && !$scope.aliasAlreadyExist);
           },
           submit: function () {
             $scope.alertMessages = null;
@@ -91,16 +91,17 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
           }
         });
         $scope.resolveUniqueAlias = function () {
-          if (!angular.isDefined($scope.service.primaryAlias)) {
+          if (!angular.isDefined($scope.organization.primaryAlias)) {
             $scope.aliasAlreadyExist = false;
             $scope.aliasNotDefined = true;
             return;
           }
-          OrganizationService.alias({alias: $scope.service.primaryAlias}, function (aliasEntry) {
+          $scope.aliasNotDefined = false;
+          OrganizationService.alias({alias: $scope.organization.primaryAlias}, function (aliasEntry) {
             $scope.aliasAlreadyExist = angular.isDefined(aliasEntry.alias);
           });
         };
-        $scope.$watch("service.primaryAlias",
+        $scope.$watch("organization.primaryAlias",
             function (newValue, oldValue, scope) {
               if (newValue !== oldValue) {
                 scope.resolveUniqueAlias();
@@ -186,9 +187,6 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
               $scope.newAlias = "";
 
             }, reportError);
-          },
-          close: function () {
-            $location.path('/orgs/' + $scope.organization.organizationId).replace();
           }
         });
 
@@ -198,6 +196,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
             $scope.aliasNotDefined = true;
             return;
           }
+          $scope.aliasNotDefined = false;
 
           OrganizationService.alias({alias: $scope.newAlias}, function (aliasEntry) {
             $scope.aliasAlreadyExist = angular.isDefined(aliasEntry.alias);

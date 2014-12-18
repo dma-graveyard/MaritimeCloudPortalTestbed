@@ -34,7 +34,7 @@
                     <dt>id</dt>              <dd>{{selectedService.serviceInstanceId}}</dd>
                     <dt>specification</dt>   <dd>{{!selectedService.specification.$resolved ? 'loading...' : selectedService.specification.name}}</dd>
                     <dt>service type</dt>    <dd>{{!selectedService.specification.$resolved ? 'loading...' : selectedService.specification.serviceType}}</dd>
-                    <dt>provider</dt>        <dd class="truncated"><a ui-sref="restricted.organizationDetails({organizationId:selectedService.provider.organizationId})">{{!selectedService.provider.$resolved ? 'loading...' : selectedService.provider.name }}</a></dd>
+                    <dt>provider</dt>        <dd class="truncated"><a ui-sref="restricted.organizationDetails({organizationId:(selectedService.provider.primaryAlias || selectedService.provider.organizationId)})">{{!selectedService.provider.$resolved ? 'loading...' : selectedService.provider.name }}</a></dd>
                     <dt>provider website</dt><dd class="truncated"><a target="_blank" href="{{selectedService.provider.url}}">{{!selectedService.provider.$resolved ? 'loading...' :selectedService.provider.url}}</a></dd>
                     <dt>summary</dt>         <dd>{{selectedService.summary}}</dd>
                     <dt>Endpoints:</dt>

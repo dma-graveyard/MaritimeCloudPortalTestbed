@@ -23,11 +23,11 @@
                 </div>
                 <p class="help-block">This chosen string will be the identifier of the organization and cannot be changed once created. It must be unique amongst both users and organizations. You may choose to specify other aliases later on</p>
             </div>
-<!--            <div class="form-group">
-                <label for="orgId">Identifier</label>
-                <input type="text" required class="form-control" id="orgId" placeholder="Enter a unique organization identifier" ng-model="organization.organizationId" mcp-focus-me >
-                <p class="help-block">This chosen string will be the id of the organization and cannot be changed once created. It must be unique amongst both users and organizations.</p>
-            </div>-->
+            <!--            <div class="form-group">
+                            <label for="orgId">Identifier</label>
+                            <input type="text" required class="form-control" id="orgId" placeholder="Enter a unique organization identifier" ng-model="organization.organizationId" mcp-focus-me >
+                            <p class="help-block">This chosen string will be the id of the organization and cannot be changed once created. It must be unique amongst both users and organizations.</p>
+                        </div>-->
             <div class="form-group">
                 <label for="orgName">Name</label>
                 <input type="text" required class="form-control" id="orgName" placeholder="Enter the organization name" ng-model="organization.name">
@@ -45,6 +45,7 @@
             </div>
             <div>
                 <button type="submit" class="btn btn-success center" ng-disabled="!formIsSubmitable()" ng-click="submit()">Create organization</button>
+                <button class="btn btn-grey center" ui-sref='restricted.organizations'>Close</button>
             </div>
         </form>
     </div>
