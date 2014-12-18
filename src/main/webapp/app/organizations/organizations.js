@@ -39,6 +39,15 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
       }])
 
+    .controller('AlmanacOrganizationListController', ['$scope', '$stateParams', 'AlmanacOrganizationService',
+      function ($scope, $stateParams, AlmanacOrganizationService) {
+
+        $scope.organizations = AlmanacOrganizationService.query();
+        $scope.orderProp = 'name';
+        $scope.$stateParams = $stateParams;
+
+      }])
+
     .controller('OrganizationDetailsController', ['$scope', '$stateParams', 'OrganizationService', 'ServiceSpecificationService', 'ServiceInstanceService',
       function ($scope, $stateParams, OrganizationService, ServiceSpecificationService, ServiceInstanceService) {
 
