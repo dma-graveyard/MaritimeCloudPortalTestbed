@@ -47,8 +47,8 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
       }])
 
-    .controller('OrganizationDetailsController', ['$scope', '$stateParams', 'OrganizationService', 'ServiceSpecificationService', 'ServiceInstanceService',
-      function ($scope, $stateParams, OrganizationService, ServiceSpecificationService, ServiceInstanceService) {
+    .controller('OrganizationDetailsController', ['$scope', '$stateParams', 'OrganizationService', 'ServiceSpecificationService', 'ServiceInstanceService', 'OrganizationContext',
+      function ($scope, $stateParams, OrganizationService, ServiceSpecificationService, ServiceInstanceService, OrganizationContext) {
 
         $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId});
         $scope.specifications = ServiceSpecificationService.query({organizationId: $stateParams.organizationId}, function (specifications) {
@@ -58,10 +58,11 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
         $scope.userHasWriteAccess = function () {
 
+
 // FIXME: rewrite to use a list of organizations the user is a member of  
           //return UserService.isAdminMemberOf($scope.organization.organizationId);
 //          return $scope.organization.teams[0].members[0] === $scope.currentUser.name;
-          return true;
+          return OrganizationContext.containsOrganization($scope.organization.organizationId);
         };
       }])
 
@@ -256,10 +257,15 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
               return this.list[i];
             }
           }
+          return null;
         };
 
         this.containsOrganization = function (organization) {
-          return this.list.indexOf(organization) > -1;
+          if (angular.isString(organization)) {
+            return this.getOrganizationById(organization);
+          } else {
+            return this.list.indexOf(organization) > -1;
+          }
         };
 
       }])

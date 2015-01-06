@@ -1,7 +1,7 @@
 <div class="org-header">
     <h1>
         <span>{{organization.name}}</span>
-        <a class="edit-org" href="#/orgs/{{organization.primaryAlias || organization.organizationId}}/settings" data-tooltip="Organization settings" data-tooltip-placement="right">
+        <a ng-if="userHasWriteAccess()" class="edit-org" href="#/orgs/{{organization.primaryAlias || organization.organizationId}}/settings" data-tooltip="Organization settings" data-tooltip-placement="right">
             <span class="fa fa-gear"></span>
         </a>
     </h1>
