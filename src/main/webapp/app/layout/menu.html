@@ -21,21 +21,29 @@
                 <li><a href="#/users"> <i class="fa fa-user" style="vertical-align: middle; margin-bottom: 4px"></i> Users </a></li>
                 <li><a href="#/log"> <i class="fa fa-fire" style="vertical-align: middle; margin-bottom: 4px"></i> Log </a></li>
             </ul-->
-            
+
             <ul class="nav navbar-nav navbar-left" ng-if="isAuthorized([userRoles.user, userRoles.admin])" >
-                
+
                 <!-- ORGANIZATIONS -->
                 <li class="dropdown" ng-controller="OrganizationListController">
-                    <a class="dropdown-toggle" href="#/orgs">
-                        <i class="menu-icon fa fa-university"></i>
-                        <span class="menu-text"> {{currentOrganization.name}}</span>
+                    <a ng-if='organizations.length > 0' class="dropdown-toggle" href="#/orgs">
+                        <i class="menu-icon fa fa-user" ng-if="isCurrent(null)"></i>
+                        <i class="menu-icon fa fa-university" ng-if="!isCurrent(null)"></i>
+                        <span class="menu-text"> {{currentOrganization.name|| currentUser.name}}</span>
                         <i class="fa fa-caret-down"></i>
                     </a>
-                    <ul class="dropdown-menu" >
+                    <ul ng-if='organizations.length > 0' class="dropdown-menu" >
                         <li class="menu-item-lead"> Switch dashboard context: </li>
+                        <li>
+                            <a ui-sref="restricted.dashboard" ng-click="setUserAsDashboardContext()">
+                                <span class="menu-item-check" ng-class="{'selected' : isCurrent(null)}">&#x2713;</span>
+                                <i class="menu-icon fa fa-user"></i> {{currentUser.name}}
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
                         <li ng-repeat="organization in organizations | orderBy:orderProp">
-                            
-                            <a href="#/orgs/{{organization.organizationId}}">
+
+                            <a href="#/orgs/{{organization.primaryAlias|| organization.organizationId}}" ng-click="setDashboardContext(organization)">
                                 <span class="menu-item-check" ng-class="{'selected' : isCurrent(organization)}">&#x2713;</span>
                                 <i class="menu-icon fa fa-university"></i> {{organization.name}}
                             </a>
@@ -73,9 +81,11 @@
                         <i class='fa fa-user' style='vertical-align: middle; margin-bottom: 4px'></i> {{currentUser.name}} 
                         <i class="fa fa-caret-down"></i>
                     </a>
-                    <ul style="width: 70px;" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                    <ul class="dropdown-menu">
                         <li><a href="#"><i class="fa fa-cog"></i> Settings </a></li>
                         <li><a data-ui-sref="restricted.userProfile({username : currentUser.name})"><i class="fa fa-user"></i> Profile </a></li>
+                        <li class="divider"></li>
+                        <li><a href="#/orgs/new"><i class="menu-icon fa fa-plus"></i> Create organization</a><b class="arrow"></b></li>
                         <li class="divider"></li>
                         <li><a href="#" ng-click="logout($event)"><i class="fa fa-power-off"></i> Logout </a></li>
                     </ul>

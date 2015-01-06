@@ -28,15 +28,14 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
         $scope.isCurrent = function (organization) {
           return organization === $scope.currentOrganization;
         };
-
-        $scope.$watch('$stateParams.organizationId', function (newOrganizationId) {
-          // (HACK: needed to get list updated after organization created)
-          $scope.organizations = OrganizationContext.list;
-
-          OrganizationContext.setCurrentOrganization(newOrganizationId);
+        $scope.setDashboardContext = function (organization) {
+          OrganizationContext.setCurrentOrganization(organization);
           $scope.currentOrganization = OrganizationContext.currentOrganization;
-        });
-
+        };
+        $scope.setUserAsDashboardContext = function () {
+          OrganizationContext.resetCurrentOrganization();
+          $scope.currentOrganization = OrganizationContext.currentOrganization;
+        };
       }])
 
     .controller('AlmanacOrganizationListController', ['$scope', '$stateParams', 'AlmanacOrganizationService',
@@ -117,7 +116,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
               }
             }
         );
-    
+
         // Fetch and assign a new UUID from the server
         UUID.get({name: "identifier"}, function (newUuid) {
           $scope.organization.organizationId = newUuid.identifier;
@@ -224,8 +223,9 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
       }])
 
     // OrganizationContext
+    // (revisting this code I realise that this service could also be named "DashboardContext") 
     // - the list of organizations the user is a member of
-    // - the currently selected organization
+    // - the currently selected organization, if any. When empty, the User is considered to be the dashboard context
     .service("OrganizationContext", [function () {
 
         // Organizations that the current user is a member of
@@ -244,6 +244,10 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
               this.currentOrganization = target;
             }
           }
+        };
+
+        this.resetCurrentOrganization = function () {
+          this.currentOrganization = null;
         };
 
         this.getOrganizationById = function (organizationId) {
