@@ -116,7 +116,7 @@ public class ApplicationConfig {
      * <p>
      * This will allow our client to be hosted elsewhere, e.g. from another port.
      * <p>
-     * (See http://spring.io/guides/gs/rest-service-cors/)
+     * (See http://spring.io/guides/gs/rest-service-cors/ )
      */
     @Bean
     public SimpleCORSFilter simpleCORSFilter() {
