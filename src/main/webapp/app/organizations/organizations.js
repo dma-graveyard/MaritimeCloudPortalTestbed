@@ -25,8 +25,14 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
         $scope.orderProp = 'name';
         $scope.$stateParams = $stateParams;
 
-        $scope.isCurrent = function (organization) {
-          return organization === $scope.currentOrganization;
+        $scope.isCurrentContext = function (organization) {
+          return organization === OrganizationContext.currentOrganization;
+        };
+        $scope.currentContext = function () {
+          return OrganizationContext.currentOrganization;
+        };
+        $scope.hasOrganizations = function () {
+          return OrganizationContext.list.length > 0;
         };
         $scope.setDashboardContext = function (organization) {
           OrganizationContext.setCurrentOrganization(organization);
@@ -224,7 +230,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
       }])
 
     // OrganizationContext
-    // (revisting this code I realise that this service could also be named "DashboardContext") 
+    // (revisiting this code I realise that this service could also be named "DashboardContext") 
     // - the list of organizations the user is a member of
     // - the currently selected organization, if any. When empty, the User is considered to be the dashboard context
     .service("OrganizationContext", [function () {
@@ -235,6 +241,11 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
         this.setUsersOrganizations = function (organizations) {
           this.list = organizations;
+          
+          // reset currentOrganization if no longer on list
+          if (this.currentOrganization !== null) {
+            this.setCurrentOrganization(this.getOrganizationById(this.currentOrganization.organizationId));
+          }
         };
 
         this.setCurrentOrganization = function (target) {

@@ -97,7 +97,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
           $location.path('/').replace();
         }
         // Set users organization context
-        OrganizationContext.list = $scope.currentUser ? OrganizationService.query({member: $scope.currentUser.name}) : [];
+        OrganizationContext.setUsersOrganizations($scope.currentUser ? OrganizationService.query({member: $scope.currentUser.name}) : []);
       }, true);
 
       // Login listener that binds the login session to current user upon login success
@@ -130,7 +130,8 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
         $scope.currentUser = Session.user;
 
         // Clear organization context
-        OrganizationContext.list = [];
+        OrganizationContext.setUsersOrganizations([]);
+        OrganizationContext.resetCurrentOrganization();
 
         $scope.navigationTarget = null;
         $location.path('/').replace();
