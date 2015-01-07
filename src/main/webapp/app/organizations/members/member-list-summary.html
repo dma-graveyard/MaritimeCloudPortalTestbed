@@ -1,13 +1,13 @@
 <div class="simple-box">
     <div class="container-fluid">
         <div>
-            <h3>Members</h3>
+            <h3><a href="#/orgs/{{organization.primaryAlias || organization.organizationId}}/members"> Members </a></h3>
         </div>
         <div >
             Search member: <input ng-model="filter_query"> 
         </div>
         <div class="team" ng-repeat="member in organization.members| filter:filter_query">
-            <h5><a ng-class="'fa fa-user'" href="#/users/{{member}}"> {{member}}</a></h5>
+            <a ng-class="'fa fa-user'" href="#/users/{{member.userName}}"> {{member.userName}}</a>
         </div>
     </div>
 </div>

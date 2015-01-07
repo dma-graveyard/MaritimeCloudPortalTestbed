@@ -53,21 +53,20 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
       }])
 
-    .controller('OrganizationDetailsController', ['$scope', '$stateParams', 'OrganizationService', 'ServiceSpecificationService', 'ServiceInstanceService', 'OrganizationContext',
-      function ($scope, $stateParams, OrganizationService, ServiceSpecificationService, ServiceInstanceService, OrganizationContext) {
+    .controller('OrganizationDetailsController', ['$scope', '$stateParams', 'OrganizationService', 'AlmanacOrganizationMemberService', 'ServiceSpecificationService', 'ServiceInstanceService', 'OrganizationContext',
+      function ($scope, $stateParams, OrganizationService, AlmanacOrganizationMemberService, ServiceSpecificationService, ServiceInstanceService, OrganizationContext) {
 
-        $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId});
+        $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId}, function (organization) {
+          $scope.organization.members = AlmanacOrganizationMemberService.query({organizationId: organization.organizationId});
+        });
+
         $scope.specifications = ServiceSpecificationService.query({organizationId: $stateParams.organizationId}, function (specifications) {
         });
         $scope.serviceInstances = ServiceInstanceService.query({organizationId: $stateParams.organizationId}, function (serviceInstances) {
         });
-
         $scope.userHasWriteAccess = function () {
-
-
-// FIXME: rewrite to use a list of organizations the user is a member of  
+          // FIXME: rewrite to use a list of organizations the user is a member of  
           //return UserService.isAdminMemberOf($scope.organization.organizationId);
-//          return $scope.organization.teams[0].members[0] === $scope.currentUser.name;
           return OrganizationContext.containsOrganization($scope.organization.organizationId);
         };
       }])
@@ -241,7 +240,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
         this.setUsersOrganizations = function (organizations) {
           this.list = organizations;
-          
+
           // reset currentOrganization if no longer on list
           if (this.currentOrganization !== null) {
             this.setCurrentOrganization(this.getOrganizationById(this.currentOrganization.organizationId));

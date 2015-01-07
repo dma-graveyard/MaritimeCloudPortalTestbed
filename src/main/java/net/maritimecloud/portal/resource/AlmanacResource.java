@@ -14,6 +14,7 @@
  */
 package net.maritimecloud.portal.resource;
 
+import net.maritimecloud.serviceregistry.query.OrganizationMemberEntry;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.DefaultValue;
@@ -104,6 +105,33 @@ public class AlmanacResource {
     public OrganizationEntry getOrganization(@PathParam("organizationId") String organizationId) {
         simulateLack(50);
         return ApplicationServiceRegistry.organizationQueryRepository().findOne(organizationId);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("organization/{organizationId}/member")
+    public Iterable<OrganizationMemberEntry> getOrganizationMembers(@PathParam("organizationId") String organizationId) {
+        //return ApplicationServiceRegistry.organizationMemberQueryRepository().findByOrganizationId(organizationId);
+
+        // FIXME: HACK: Hardcoded members:
+        List<OrganizationMemberEntry> organizationMemberEntries = new ArrayList<>() ;
+        
+        organizationMemberEntries.add(new OrganizationMemberEntry());
+        organizationMemberEntries.add(new OrganizationMemberEntry());
+        organizationMemberEntries.add(new OrganizationMemberEntry());
+        organizationMemberEntries.add(new OrganizationMemberEntry());
+        
+        organizationMemberEntries.get(0).setOrganizationId(organizationId);
+        organizationMemberEntries.get(1).setOrganizationId(organizationId);
+        organizationMemberEntries.get(2).setOrganizationId(organizationId);
+        organizationMemberEntries.get(3).setOrganizationId(organizationId);
+        
+        organizationMemberEntries.get(0).setUserName("admin");
+        organizationMemberEntries.get(1).setUserName("Tintin");
+        organizationMemberEntries.get(2).setUserName("Haddock");
+        organizationMemberEntries.get(3).setUserName("test");
+        
+        return organizationMemberEntries;
     }
 
     @GET
