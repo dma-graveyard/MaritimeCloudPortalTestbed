@@ -7,10 +7,9 @@
         <ul class="boxed-group-list standalone">
             <li ng-repeat="member in organization.members| filter:filter_query | orderBy:orderProp">
                 <!--<img alt="Danish Maritime Authority" class=" js-avatar" data-user="2655913" height="20" src="https://avatars3.githubusercontent.com/u/2655913?s=140" width="20">-->
-                <a href="#/users/{{member.userName}}">{{member.userName}} [<i>{{member.fullName}}</i>]</a>
+                <a href="#/users/{{member.userName}}">{{member.userName}} <i>{{member.fullName}}</i></a>
                 <a href="/orgs/{{organization.primaryAlias|| organization.organizationId}}/member/{{member.userName}}/remove" class="minibutton btn btn-xs btn-round" data-confirm="Are you POSITIVE you want to leave {{organization.name}}? You'll lose access to all services and teams." data-method="post"><i class="fa fa-times"></i> Remove</a>
             </li>
         </ul>
     </div>
 </div>
-Augustin van Kuifkje
