@@ -78,7 +78,7 @@
                 <!-- User -->
                 <li ng-if="currentUser" class="dropdown open">
                     <a class='dropdown-toggle' href='#'>
-                        <i class='fa fa-gears' style='vertical-align: middle; margin-bottom: 4px'></i> {{isCurrentContext(null) ? "" : currentUser.name}} 
+                        <i class='fa fa-gears' style='vertical-align: middle; margin-bottom: 4px'></i> {{isCurrentContext(null) && hasOrganizations() ? "" : currentUser.name}} 
                         <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
