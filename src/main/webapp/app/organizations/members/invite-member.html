@@ -1,0 +1,21 @@
+<div ng-show="viewState === 'invite'" class="boxed-group">
+    <div class="boxed-group-action" > 
+        <input ng-model="filter_query">
+    </div>
+    <h3>Invite someone to <a href="#/orgs/{{organization.primaryAlias|| organization.organizationId}}">{{organization.name}}</a>  </h3>
+    <div class="boxed-group-inner">
+        <ul class="boxed-group-list standalone">
+            <li ng-repeat="someone in people| filter:filter_query | orderBy:orderProp">
+                {{someone.username}} <a ng-click="invite(someone.username)" class="minibutton btn btn-xs btn-round"><i class="fa fa-plus"></i></a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<panel ng-show="viewState === 'confirm'" category="primary" icon="user" title="Member invited" offset="3">
+    <p>
+        An invitation to join {{organization.name}} has been sent to {{invitedMember}}.
+    </p>
+    <panel-button btn-type="primary" ng-click="inviteMore()">Invite some more</panel-button>
+    <panel-button btn-type="default" ui-sref="restricted.organizationDetails({organizationId: organization.primaryAlias|| organization.organizationId})">Close</panel-button>
+</panel>

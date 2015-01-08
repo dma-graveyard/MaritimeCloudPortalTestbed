@@ -94,6 +94,7 @@ public class AlmanacResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("organization")
     public Iterable<OrganizationEntry> queryOrganizations(
+            @QueryParam("member") @DefaultValue("") String member,
             @QueryParam("anyTextPattern") @DefaultValue("") String anyTextPattern
     ) {
         return ApplicationServiceRegistry.organizationQueryRepository().findAll();
@@ -126,10 +127,10 @@ public class AlmanacResource {
         organizationMemberEntries.get(2).setOrganizationId(organizationId);
         organizationMemberEntries.get(3).setOrganizationId(organizationId);
         
-        organizationMemberEntries.get(0).setUserName("admin");
-        organizationMemberEntries.get(1).setUserName("Tintin");
-        organizationMemberEntries.get(2).setUserName("Haddock");
-        organizationMemberEntries.get(3).setUserName("test");
+        organizationMemberEntries.get(0).setUsername("admin");
+        organizationMemberEntries.get(1).setUsername("Tintin");
+        organizationMemberEntries.get(2).setUsername("Haddock");
+        organizationMemberEntries.get(3).setUsername("test");
         
         return organizationMemberEntries;
     }

@@ -105,6 +105,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           query: {method: 'GET', params: {username: ''}, isArray: true},
           signUp: {method: 'POST', params: {}, isArray: false},
           activateAccount: {method: 'POST', url: '/rest/users/:username/activate/:activationId', isArray: false},
+          queryOrganizationMeberships: {method: 'GET', url: '/rest/users/:username/orgs', isArray: true},
           isUnique: {method: 'GET', url: '/rest/users/:username/exist', isArray: false}
         });
       }])

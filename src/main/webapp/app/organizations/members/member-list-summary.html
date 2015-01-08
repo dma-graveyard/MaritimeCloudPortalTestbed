@@ -7,7 +7,7 @@
             Search member: <input ng-model="filter_query"> 
         </div>
         <div class="team" ng-repeat="member in organization.members| filter:filter_query">
-            <a ng-class="'fa fa-user'" href="#/users/{{member.userName}}"> {{member.userName}}</a>
+            <a ng-class="'fa fa-user'" href="#/users/{{member.username}}"> {{member.username}}</a>
         </div>
     </div>
 </div>

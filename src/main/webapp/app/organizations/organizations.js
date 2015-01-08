@@ -7,7 +7,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
     .controller('OrganizationMenuController', ['$scope', 'OrganizationContext',
       function ($scope, OrganizationContext) {
 
-        $scope.organizations = OrganizationContext.list;
+        $scope.organizations = OrganizationContext.usersOrganizations;
         $scope.currentOrganization = OrganizationContext.currentOrganization;
         $scope.OrganizationContext = OrganizationContext;
 
@@ -20,7 +20,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
     .controller('OrganizationListController', ['$scope', '$stateParams', 'OrganizationContext',
       function ($scope, $stateParams, OrganizationContext) {
 
-        $scope.organizations = OrganizationContext.list;
+        $scope.organizations = OrganizationContext.usersOrganizations;
         $scope.currentOrganization = OrganizationContext.currentOrganization;
         $scope.orderProp = 'name';
         $scope.$stateParams = $stateParams;
@@ -32,7 +32,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
           return OrganizationContext.currentOrganization;
         };
         $scope.hasOrganizations = function () {
-          return OrganizationContext.list.length > 0;
+          return OrganizationContext.usersOrganizations.length > 0;
         };
         $scope.setDashboardContext = function (organization) {
           OrganizationContext.setCurrentOrganization(organization);
@@ -53,21 +53,44 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
       }])
 
-    .controller('OrganizationDetailsController', ['$scope', '$stateParams', 'OrganizationService', 'AlmanacOrganizationMemberService', 'ServiceSpecificationService', 'ServiceInstanceService', 'OrganizationContext',
-      function ($scope, $stateParams, OrganizationService, AlmanacOrganizationMemberService, ServiceSpecificationService, ServiceInstanceService, OrganizationContext) {
+    .controller('OrganizationDetailsController', ['$scope', '$stateParams', 'OrganizationService', 'UserContext',
+      'AlmanacOrganizationMemberService', 'ServiceSpecificationService', 'ServiceInstanceService',
+      function ($scope, $stateParams, OrganizationService, UserContext, AlmanacOrganizationMemberService, ServiceSpecificationService,
+          ServiceInstanceService) {
 
         $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId}, function (organization) {
           $scope.organization.members = AlmanacOrganizationMemberService.query({organizationId: organization.organizationId});
+          $scope.userHasWriteAccess = UserContext.isAdminMemberOf($scope.organization.organizationId);
         });
 
-        $scope.specifications = ServiceSpecificationService.query({organizationId: $stateParams.organizationId}, function (specifications) {
+        $scope.specifications = ServiceSpecificationService.query({organizationId: $stateParams.organizationId});
+        $scope.serviceInstances = ServiceInstanceService.query({organizationId: $stateParams.organizationId});
+      }])
+
+    .controller('OrganizationInviteMemberController', ['$scope', '$stateParams', 'UserService', 'UserContext', 'OrganizationService', 'AlmanacOrganizationMemberService',
+      function ($scope, $stateParams, UserService, UserContext, OrganizationService, AlmanacOrganizationMemberService) {
+
+        $scope.viewState = 'invite';
+        
+        $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId}, function (organization) {
+          $scope.organization.members = AlmanacOrganizationMemberService.query({organizationId: organization.organizationId});
+          $scope.userHasWriteAccess = UserContext.isAdminMemberOf($scope.organization.organizationId);
         });
-        $scope.serviceInstances = ServiceInstanceService.query({organizationId: $stateParams.organizationId}, function (serviceInstances) {
-        });
-        $scope.userHasWriteAccess = function () {
-          // FIXME: rewrite to use a list of organizations the user is a member of  
-          //return UserService.isAdminMemberOf($scope.organization.organizationId);
-          return OrganizationContext.containsOrganization($scope.organization.organizationId);
+
+        // TODO: use searchfield value before quering!   
+        $scope.people = UserService.query();
+        $scope.orderProp = 'username';
+        
+        $scope.invite = function (member) {
+          $scope.invitedMember = member;
+          $scope.viewState = 'confirm';
+          
+          // FIXME call server with an invite-request !
+          
+        };
+  
+        $scope.inviteMore = function () {
+          $scope.viewState = 'invite';
         };
       }])
 
@@ -95,7 +118,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
                 function (data) {
                   $location.path('/orgs/' + $scope.organization.organizationId).replace();
                   $scope.message = ["Organization created: " + data];
-                  OrganizationContext.list = $scope.currentUser ? OrganizationService.query({member: $scope.currentUser.name}) : [];
+                  OrganizationContext.updateUserOrganizationsList($scope.currentUser);
                 },
                 function (error) {
                   $scope.message = null;
@@ -130,8 +153,8 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
       }])
 
-    .controller('OrganizationEditController', ['$scope', '$stateParams', '$location', 'OrganizationService', 'OrganizationContext',
-      function ($scope, $stateParams, $location, OrganizationService, OrganizationContext) {
+    .controller('OrganizationEditController', ['$scope', '$stateParams', '$location', 'OrganizationService',
+      function ($scope, $stateParams, $location, OrganizationService) {
 
         var reportError = function (error) {
           $scope.message = null;
@@ -232,19 +255,24 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
     // (revisiting this code I realise that this service could also be named "DashboardContext") 
     // - the list of organizations the user is a member of
     // - the currently selected organization, if any. When empty, the User is considered to be the dashboard context
-    .service("OrganizationContext", [function () {
+    .service("OrganizationContext", ["OrganizationService", function (OrganizationService) {
 
         // Organizations that the current user is a member of
-        this.list = [];
+        this.usersOrganizations = [];
         this.currentOrganization = null;
 
         this.setUsersOrganizations = function (organizations) {
-          this.list = organizations;
+          this.usersOrganizations = organizations;
 
           // reset currentOrganization if no longer on list
           if (this.currentOrganization !== null) {
             this.setCurrentOrganization(this.getOrganizationById(this.currentOrganization.organizationId));
           }
+        };
+
+        this.updateUserOrganizationsList = function (currentUser) {
+//          this.setUsersOrganizations(currentUser ? AlmanacOrganizationMemberService.query({member: currentUser.name}) : []);
+          this.setUsersOrganizations(currentUser ? OrganizationService.query({member: currentUser.name}) : []);
         };
 
         this.setCurrentOrganization = function (target) {
@@ -262,9 +290,9 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
         };
 
         this.getOrganizationById = function (organizationId) {
-          for (var i = 0; i < this.list.length; i++) {
-            if (organizationId === this.list[i].organizationId) {
-              return this.list[i];
+          for (var i = 0; i < this.usersOrganizations.length; i++) {
+            if (organizationId === this.usersOrganizations[i].organizationId) {
+              return this.usersOrganizations[i];
             }
           }
           return null;
@@ -274,7 +302,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
           if (angular.isString(organization)) {
             return this.getOrganizationById(organization);
           } else {
-            return this.list.indexOf(organization) > -1;
+            return this.usersOrganizations.indexOf(organization) > -1;
           }
         };
 

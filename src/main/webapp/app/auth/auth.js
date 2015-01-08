@@ -47,9 +47,8 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
     /* Controllers */
 
     // A container for global application logic
-    .controller('ApplicationController', function (
-        $rootScope, $scope, $modal, $location, $localStorage,
-        USER_ROLES, AUTH_EVENTS, AuthService, httpAuthInterceptorService, Session, OrganizationContext, OrganizationService) {
+    .controller('ApplicationController', function ($rootScope, $scope, $modal, $location, $localStorage,
+        USER_ROLES, AUTH_EVENTS, AuthService, httpAuthInterceptorService, Session, UserContext, OrganizationContext) {
       $scope.sidebar = {isMinified: false};
       $scope.userRoles = USER_ROLES;
       $scope.isAuthorized = AuthService.isAuthorized;
@@ -68,6 +67,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       // Import user session from local storage (...if any)
       $scope.$storage = $localStorage.$default({userSession: {}});
       $scope.currentUser = Session.user;
+      UserContext.setCurrentUser($scope.currentUser);
 
       // Watch the storage for changes that origins from other instances running 
       // in other windows or tabs
@@ -92,18 +92,22 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
         }
         // load storage user
         $scope.currentUser = $scope.$storage.userSession.user;
+        UserContext.setCurrentUser($scope.currentUser);
+
         // should reset to landingpage?
         if (userHasLoggedOut() || userHasChanged()) {
           $location.path('/').replace();
         }
         // Set users organization context
-        OrganizationContext.setUsersOrganizations($scope.currentUser ? OrganizationService.query({member: $scope.currentUser.name}) : []);
+        OrganizationContext.updateUserOrganizationsList($scope.currentUser);
       }, true);
 
       // Login listener that binds the login session to current user upon login success
       $scope.$on(AUTH_EVENTS.loginSuccess, function () {
         console.log("EVENT: User logged in! ", Session.user, "Session: ", Session);
         $scope.currentUser = Session.user;
+        UserContext.setCurrentUser($scope.currentUser);
+
         if (!$scope.$storage.userSession)
           $scope.$storage.userSession = {};
 
@@ -128,9 +132,10 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
         $scope.$storage.$reset({userSession: {}});
         Session.importFrom($scope.$storage.userSession);
         $scope.currentUser = Session.user;
+        UserContext.setCurrentUser($scope.currentUser);
 
         // Clear organization context
-        OrganizationContext.setUsersOrganizations([]);
+        OrganizationContext.updateUserOrganizationsList(null);
         OrganizationContext.resetCurrentOrganization();
 
         $scope.navigationTarget = null;

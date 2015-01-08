@@ -1,7 +1,7 @@
 <div class="org-header">
     <h1>
         <span>{{organization.name}}</span>
-        <a ng-if="userHasWriteAccess()" class="edit-org" href="#/orgs/{{organization.primaryAlias || organization.organizationId}}/settings" data-tooltip="Organization settings" data-tooltip-placement="right">
+        <a ng-if="userHasWriteAccess" class="edit-org" href="#/orgs/{{organization.primaryAlias || organization.organizationId}}/settings" data-tooltip="Organization settings" data-tooltip-placement="right">
             <span class="fa fa-gear"></span>
         </a>
     </h1>
@@ -28,7 +28,7 @@
                 <div ng-controller="ServiceInstanceDetailsController">
                     <h4>
                         <span>{{service.name}} - {{service.specification.serviceType}}</span>
-                        <a ng-if="userHasWriteAccess()" class="edit-gear" href="#/orgs/{{organization.primaryAlias || organization.organizationId}}/{{service.primaryAlias || service.serviceInstanceId}}/edit" data-tooltip="Service instance settings" data-tooltip-placement="right">
+                        <a ng-if="userHasWriteAccess" class="edit-gear" href="#/orgs/{{organization.primaryAlias || organization.organizationId}}/{{service.primaryAlias || service.serviceInstanceId}}/edit" data-tooltip="Service instance settings" data-tooltip-placement="right">
                             <span class="fa fa-gear"></span>
                         </a>
                         <span class="pull-right text-right"><small>({{service.primaryAlias}})</small></span>
@@ -63,7 +63,7 @@
                 </div>
             </div>
             <div ng-if="serviceInstances.length > 20" class="container-fluid serviceInstanceListItem"> <br> ... and {{serviceInstances.length - 20}} more ...</div>
-            <div ng-if="userHasWriteAccess()">
+            <div ng-if="userHasWriteAccess">
                 <br>
                 <a class="btn btn-minier btn-info" href="#/orgs/{{organization.primaryAlias || organization.organizationId}}/createServiceInstance">+ Register a service</a>
             </div>
