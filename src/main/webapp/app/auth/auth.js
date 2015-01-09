@@ -64,6 +64,10 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
         return typeof (window.protractorE2EtestIsRunning) !== 'undefined';
       };
 
+      $scope.organizationRef = function (organization) {
+        return organization ? organization.primaryAlias || organization.organizationId : "_undefined_";
+      };
+
       // Import user session from local storage (...if any)
       $scope.$storage = $localStorage.$default({userSession: {}});
       $scope.currentUser = Session.user;
@@ -98,8 +102,6 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
         if (userHasLoggedOut() || userHasChanged()) {
           $location.path('/').replace();
         }
-        // Set users organization context
-        OrganizationContext.updateUserOrganizationsList($scope.currentUser);
       }, true);
 
       // Login listener that binds the login session to current user upon login success
@@ -132,10 +134,9 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
         $scope.$storage.$reset({userSession: {}});
         Session.importFrom($scope.$storage.userSession);
         $scope.currentUser = Session.user;
-        UserContext.setCurrentUser($scope.currentUser);
 
-        // Clear organization context
-        OrganizationContext.updateUserOrganizationsList(null);
+        // Clear user- and organization context
+        UserContext.reset();
         OrganizationContext.resetCurrentOrganization();
 
         $scope.navigationTarget = null;

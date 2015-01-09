@@ -55,6 +55,9 @@ public interface ServiceRegistryContract extends CqrsContract {
     void removeOrganizationAlias(OrganizationId organizationId, String alias);
 
     @Command
+    void inviteUserToOrganization(OrganizationId organizationId, String username);
+
+    @Command
     void prepareServiceSpecification(
             OrganizationId ownerId,
             @TargetAggregateIdentifier ServiceSpecificationId serviceSpecificationId,
@@ -116,6 +119,9 @@ public interface ServiceRegistryContract extends CqrsContract {
 
     @Event
     void organizationAliasRemoved(OrganizationId organizationId, String alias);
+    
+    @Event
+    void UserInvitedToOrganization(OrganizationId organizationId, String username);    
     
     @Event
     void serviceSpecificationCreated(

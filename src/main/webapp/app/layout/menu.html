@@ -24,16 +24,18 @@
 
             <ul class="nav navbar-nav navbar-left" ng-if="isAuthorized([userRoles.user, userRoles.admin])" >
 
-                <!-- ORGANIZATIONS -->
-                <li class="dropdown" ng-controller="OrganizationListController">
+                <!-- DASHBOARD CONTEXT SWITCH -->
+                <li class="dropdown" ng-controller="DashboardContextController">
+                    <!-- title -->
                     <a ng-if='hasOrganizations()' class="dropdown-toggle" href="#/orgs">
                         <i class="menu-icon fa fa-user" ng-if="isCurrentContext(null)"></i>
                         <i class="menu-icon fa fa-university" ng-if="!isCurrentContext(null)"></i>
-                        <span class="menu-text"> {{currentContext().name|| currentUser.name}}</span>
+                        <span class="menu-text"> {{currentOrganization.name|| currentUser.name}}</span>
                         <i class="fa fa-caret-down"></i>
                     </a>
                     <ul ng-if='hasOrganizations()' class="dropdown-menu" >
                         <li class="menu-item-lead"> Switch dashboard context: </li>
+                        <!-- ITEM: Current USER -->
                         <li>
                             <a ui-sref="restricted.dashboard" ng-click="setUserAsDashboardContext()">
                                 <span class="menu-item-check" ng-class="{'selected' : isCurrentContext(null)}">&#x2713;</span>
@@ -41,11 +43,12 @@
                             </a>
                             <b class="arrow"></b>
                         </li>
-                        <li ng-repeat="organization in organizations | orderBy:orderProp">
+                        <!-- ITEM: Users ORGANIZATIONS -->
+                        <li ng-repeat="membership in organizationMemberships| orderBy:orderProp">
 
-                            <a href="#/orgs/{{organization.primaryAlias|| organization.organizationId}}" ng-click="setDashboardContext(organization)">
-                                <span class="menu-item-check" ng-class="{'selected' : isCurrentContext(organization)}">&#x2713;</span>
-                                <i class="menu-icon fa fa-university"></i> {{organization.name}}
+                            <a href="#/orgs/{{organizationRef(membership.organization)}}" ng-click="setDashboardContext(membership.organization)">
+                                <span class="menu-item-check" ng-class="{'selected' : isCurrentContext(membership.organization)}">&#x2713;</span>
+                                <i class="menu-icon fa fa-university"></i> {{membership.organization.name}}
                             </a>
                             <b class="arrow"></b>
                         </li>
@@ -62,7 +65,7 @@
             </ul>
 
             <!--  navigation bar right --> 
-            <ul class="nav navbar-nav navbar-right" ng-controller="OrganizationListController">
+            <ul class="nav navbar-nav navbar-right" ng-controller="DashboardContextController">
 
                 <!-- About -->
                 <!--li class="dropdown">

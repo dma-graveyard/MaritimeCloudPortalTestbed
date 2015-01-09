@@ -20,6 +20,7 @@ import net.maritimecloud.portal.resource.LogService;
 import net.maritimecloud.serviceregistry.domain.service.AliasService;
 import net.maritimecloud.serviceregistry.query.AliasRegistryQueryRepository;
 import net.maritimecloud.serviceregistry.query.OperationalServiceQueryRepository;
+import net.maritimecloud.serviceregistry.query.OrganizationMemberQueryRepository;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import net.maritimecloud.serviceregistry.query.ServiceInstanceQueryRepository;
 import net.maritimecloud.serviceregistry.query.ServiceSpecificationQueryRepository;
@@ -59,6 +60,10 @@ public class ApplicationServiceRegistry extends SpringContextBasedRegistry {
 
     public static OrganizationQueryRepository organizationQueryRepository() {
         return (OrganizationQueryRepository) get("organizationQueryRepository");
+    }
+
+    public static OrganizationMemberQueryRepository organizationMemberQueryRepository() {
+        return (OrganizationMemberQueryRepository) get("organizationMemberQueryRepository");
     }
 
     public static OperationalServiceQueryRepository operationalServiceQueryRepository() {

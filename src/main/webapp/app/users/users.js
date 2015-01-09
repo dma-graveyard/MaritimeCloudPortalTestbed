@@ -156,7 +156,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
               $scope.viewState = data.accountActivated ? 'accountActivated' : 'accountNotActivated';
             },
             function (error) {
-              //console.log(error);
+              console.log(error);
               $scope.viewState = 'error';
             });
 
@@ -168,9 +168,8 @@ angular.module('mcp.users', ['ui.bootstrap'])
     // holds info about: 
     // - the current logged in user 
     // - the users list of organization memberships
-    .service("UserContext", ["UserService", function (UserService) {
+    .service('UserContext', ['UserService', 'OrganizationService', function (UserService, OrganizationService) {
 
-        // current user
         var currentUser = null;
 
         // Organizations that the current user is a member of
@@ -178,7 +177,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
 
         this.reset = function () {
           currentUser = null;
-          organizationMemberships = null;
+          organizationMemberships = [];
         };
 
         this.refresh = function () {
@@ -186,11 +185,8 @@ angular.module('mcp.users', ['ui.bootstrap'])
         };
 
         this.setCurrentUser = function (aUser) {
-          //console.trace();
-          //console.log('Current user:', aUser );
           currentUser = aUser;
           this.refresh();
-          console.log('Current organizationMemberships:', organizationMemberships);
         };
 
         this.currentUser = function () {
@@ -211,15 +207,27 @@ angular.module('mcp.users', ['ui.bootstrap'])
         };
 
         var updateOrganizationMemberships = function () {
-          organizationMemberships = currentUser ? UserService.queryOrganizationMeberships({username: currentUser.name}) : [];
-          
-//          // reset currentOrganization if no longer on list
-//          if (this.currentOrganization !== null) {
-//            this.setCurrentOrganization(this.getOrganizationById(this.currentOrganization.organizationId));
-//          }
+          organizationMemberships = !currentUser ? [] : UserService.queryOrganizationMeberships({username: currentUser.name}, function (memberships) {
+            memberships.forEach(function (membership) {
+              // hydrate with organization
+              membership.organization = OrganizationService.get({organizationId: membership.organizationId});
+            });
+          });
         };
 
+        this.isOwnerOf = function (organization) {
+          var membership = findMembership(organization.organizationId);
+          return membership; //fixme: && membership.isOwner();
+        };
 
+        var findMembership = function (organizationId) {
+          for (var i = 0; i < organizationMemberships.length; i++) {
+            if (organizationId === organizationMemberships[i].organizationId) {
+              return organizationMemberships[i];
+            }
+          }
+          return null;
+        };
 
       }])
 

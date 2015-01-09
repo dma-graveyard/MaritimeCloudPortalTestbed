@@ -30,7 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * The test of OrganizationCommandHandler is a bit more involved that the average AxonTest. The reason is that the fixture is only
+ * The test of OrganizationCommandHandler is a bit more involved than the average AxonTest. The reason is that the fixture is only
  * supporting a single repository and we need three different Aggregates to perform all tests (Organization need a ServiceSpecification to
  * create a ServiceInstance. Hence the setup of to "Mocked" repositories that are used for handing us the prerequisites. 
  * <p>

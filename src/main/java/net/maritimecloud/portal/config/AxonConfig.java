@@ -34,6 +34,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import net.maritimecloud.serviceregistry.command.organization.Organization;
+import net.maritimecloud.serviceregistry.command.organization.SetupOrganizationOwnerMemberSaga;
+import net.maritimecloud.serviceregistry.command.organization.membership.Membership;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
 import org.axonframework.eventhandling.AnnotationClusterSelector;
@@ -141,7 +143,8 @@ public class AxonConfig {
     @Bean
     public SagaManager sagaManager() {
         AnnotatedSagaManager sagaManager = new AnnotatedSagaManager(sagaRepository(), sagaFactory(),
-                AttachOrganizationAliasSaga.class
+                AttachOrganizationAliasSaga.class,
+                SetupOrganizationOwnerMemberSaga.class
         );
         return sagaManager;
     }
@@ -172,6 +175,13 @@ public class AxonConfig {
     @Bean
     public Repository<ServiceInstance> serviceInstanceRepository() {
         EventSourcingRepository repository = new EventSourcingRepository<>(ServiceInstance.class, eventStore());
+        repository.setEventBus(eventBus());
+        return repository;
+    }
+
+    @Bean
+    public Repository<Membership> organizationMembershipRepository() {
+        EventSourcingRepository repository = new EventSourcingRepository<>(Membership.class, eventStore());
         repository.setEventBus(eventBus());
         return repository;
     }

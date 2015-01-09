@@ -45,6 +45,7 @@ import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationWebsiteUr
 import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceCoverage;
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
+import net.maritimecloud.serviceregistry.command.api.InviteUserToOrganization;
 import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
 import net.maritimecloud.serviceregistry.command.api.RemoveOrganizationAlias;
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceAlias;
@@ -113,6 +114,43 @@ public class OrganizationResource {
         );
     }
 
+    // ------------------------------------------------------------------------
+    // SERVICE SPECIFICATIONS
+    // ------------------------------------------------------------------------
+    @POST
+    @Consumes(APPLICATION_JSON_CQRS_COMMAND)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("org/{organizationIdOrAlias}/member")
+    public void memberPostCommand(
+            @HeaderParam("Content-type") String contentType,
+            @QueryParam("command") @DefaultValue("") String queryCommandName,
+            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
+            String commandJSON
+    ) {
+        String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
+        commandJSON = overwriteIdentity(commandJSON, "organizationId", organizationId);
+        sendAndWait(contentType, queryCommandName, commandJSON,
+                InviteUserToOrganization.class
+        );
+    }
+
+//    @PUT
+//    @Consumes(APPLICATION_JSON_CQRS_COMMAND)
+//    @Produces(MediaType.APPLICATION_JSON)
+//    @Path("org/{organizationIdOrAlias}/member/{serviceSpecificationIdOrAlias}")
+//    public void memberPutCommand(
+//            @HeaderParam("Content-type") String contentType,
+//            @QueryParam("command") @DefaultValue("") String queryCommandName,
+//            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
+//            @PathParam("serviceSpecificationIdOrAlias") String serviceSpecificationIdOrAlias,
+//            String commandJSON
+//    ) {
+//        ServiceSpecificationEntry serviceSpecification = getServiceSpecificationByAlias(organizationIdOrAlias, serviceSpecificationIdOrAlias);
+//        commandJSON = overwriteIdentity(commandJSON, "serviceSpecificationId", serviceSpecification.getServiceSpecificationId());
+//        sendAndWait(contentType, queryCommandName, commandJSON,
+//                ChangeServiceSpecificationNameAndSummary.class
+//        );
+//    }
     // ------------------------------------------------------------------------
     // SERVICE SPECIFICATIONS
     // ------------------------------------------------------------------------
@@ -189,18 +227,17 @@ public class OrganizationResource {
 
         // assert that instance exists and belongs to organization
         ServiceInstanceEntry serviceInstance = getServiceInstanceByAlias(organizationIdOrAlias, serviceInstanceIdOrAlias);
-        
+
         // enrich command with mandatory identifiers (those of the path)
         // ...
         // ( todo: add any missing identifier properties
         //   need to know which based on commandName !?! )
-        
         // rewrite command to contain the identifiers of the path
         //System.out.println("commandJSON: "+commandJSON);
         commandJSON = overwriteIdentity(commandJSON, "serviceInstanceId", serviceInstance.getServiceInstanceId());
         commandJSON = overwriteIdentity(commandJSON, "organizationId", serviceInstance.getProviderId());
         commandJSON = overwriteIdentity(commandJSON, "providerId", serviceInstance.getProviderId());
-        
+
         sendAndWait(contentType, queryCommandName, commandJSON,
                 ChangeServiceInstanceNameAndSummary.class,
                 ChangeServiceInstanceCoverage.class,
@@ -210,7 +247,7 @@ public class OrganizationResource {
                 RemoveServiceInstanceEndpoint.class
         );
     }
-    
+
     @DELETE
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
@@ -280,7 +317,7 @@ public class OrganizationResource {
     ) {
         String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
         return ResourceResolver.queryOrganizationAliases(organizationId);
-    }     
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -291,8 +328,8 @@ public class OrganizationResource {
     ) {
         final AliasRegistryEntry lookupAlias = lookupAlias(AliasGroups.USERS_AND_ORGANIZATIONS.name(), OrganizationId.class, alias);
         return lookupAlias;
-    }     
-    
+    }
+
     // ------------------------------------------------------------------------
     // SERVICE SPECIFICATIONS
     // ------------------------------------------------------------------------
@@ -358,7 +395,7 @@ public class OrganizationResource {
             @PathParam("serviceInstanceIdOrAlias") String serviceInstanceIdOrAlias
     ) {
         return ResourceResolver.queryServiceinstanceAliases(getServiceInstanceByAlias(organizationIdOrAlias, serviceInstanceIdOrAlias));
-    }     
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -369,10 +406,10 @@ public class OrganizationResource {
     ) {
         String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
         return lookupAlias(organizationId, ServiceInstanceId.class, alias);
-    }     
+    }
 
     private String overwriteIdentity(String commandJSON, String propertyName, String value) {
         return JsonCommandHelper.overwriteIdentity(commandJSON, propertyName, value);
     }
-    
+
 }

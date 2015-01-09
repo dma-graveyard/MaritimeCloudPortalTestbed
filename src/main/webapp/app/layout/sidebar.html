@@ -123,7 +123,7 @@
         <!----------------------------------------------------->
         <!-- CURRENT ORGANIZATION MENU --> 
         <!----------------------------------------------------->
-        <div ng-controller="OrganizationMenuController" >
+        <div ng-controller="OrganizationContextSidebarController" >
 
             <accordion-group ng-if="currentOrganization" is-open="isOpen.organization">
                 <accordion-heading>
@@ -134,14 +134,18 @@
                 <accordion close-others="true">
                     <accordion-group is-open="isOpen.organizationSub">
                         <accordion-heading>
-                            <a ui-sref="restricted.organizationDetails({organizationId:currentOrganization.organizationId})"><i class="fa fa-wifi"></i> Services
+                            <a ui-sref="restricted.organizationDetails({organizationId: organizationRef(currentOrganization)})"><i class="fa fa-wifi"></i> Services
                                 <i class="pull-right fa" ng-class="{'fa-angle-down': isOpen.organizationSub, 'fa-angle-right': !isOpen.organizationSub}"></i>
                             </a>
                         </accordion-heading>
-                        <ul class="nav nav-list" ng-if="isAuthorized(userRoles.admin)">
+                        <!--<ul class="nav nav-list" ng-if="isAuthorized(userRoles.admin)">-->
+                        <ul class="nav nav-list" ng-if="isOwnerOf(currentOrganization)">
                             <!--<li><a href="#/orgs/{{currentOrganization.organizationId}}"> <i class="fa fa-user" style=""></i> Show </a></li>-->
-                            <li><a ui-sref="restricted.serviceInstanceCreate({organizationId:currentOrganization.organizationId})"> 
-                                    <i class="fa fa-plus" style=""></i> Add </a></li>
+                            <li>
+                                <a ui-sref="restricted.serviceInstanceCreate({organizationId: organizationRef(currentOrganization)})"> 
+                                    <i class="fa fa-plus"></i> Add 
+                                </a>
+                            </li>
                         </ul>
                     </accordion-group>
                 </accordion>

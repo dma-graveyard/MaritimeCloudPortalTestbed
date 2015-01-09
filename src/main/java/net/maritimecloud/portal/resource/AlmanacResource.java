@@ -112,27 +112,7 @@ public class AlmanacResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("organization/{organizationId}/member")
     public Iterable<OrganizationMemberEntry> getOrganizationMembers(@PathParam("organizationId") String organizationId) {
-        //return ApplicationServiceRegistry.organizationMemberQueryRepository().findByOrganizationId(organizationId);
-
-        // FIXME: HACK: Hardcoded members:
-        List<OrganizationMemberEntry> organizationMemberEntries = new ArrayList<>() ;
-        
-        organizationMemberEntries.add(new OrganizationMemberEntry());
-        organizationMemberEntries.add(new OrganizationMemberEntry());
-        organizationMemberEntries.add(new OrganizationMemberEntry());
-        organizationMemberEntries.add(new OrganizationMemberEntry());
-        
-        organizationMemberEntries.get(0).setOrganizationId(organizationId);
-        organizationMemberEntries.get(1).setOrganizationId(organizationId);
-        organizationMemberEntries.get(2).setOrganizationId(organizationId);
-        organizationMemberEntries.get(3).setOrganizationId(organizationId);
-        
-        organizationMemberEntries.get(0).setUsername("admin");
-        organizationMemberEntries.get(1).setUsername("Tintin");
-        organizationMemberEntries.get(2).setUsername("Haddock");
-        organizationMemberEntries.get(3).setUsername("test");
-        
-        return organizationMemberEntries;
+        return ApplicationServiceRegistry.organizationMemberQueryRepository().findByOrganizationId(organizationId);
     }
 
     @GET

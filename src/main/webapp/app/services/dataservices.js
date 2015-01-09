@@ -27,6 +27,11 @@ function ChangeOrganizationWebsiteUrlCommand(organizationId, url) {
   this.url = url;
 }
 
+function InviteUserToOrganization(organizationId, username) {
+  this.organizationId = {identifier: organizationId};
+  this.username = username;
+}
+
 function AddOrganizationAliasCommand(organizationId, alias) {
   this.organizationId = {identifier: organizationId};
   this.alias = alias;
@@ -116,13 +121,16 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         var resource = $resource(serviceBaseUrl + '/rest/api/org/:organizationId', {}, {
           post: {method: 'POST'},
           put: {method: 'PUT', params: {organizationId: '@organizationId.identifier'}},
+          invite: {method: 'POST', params: {},
+            url: serviceBaseUrl + '/rest/api/org/:organizationId/member'
+          },
           aliases: {method: 'GET', params: {serviceInstanceId: '@organizationId.identifier'},
             url: serviceBaseUrl + '/rest/api/org/:organizationId/alias',
             isArray: true
           },
           alias: {method: 'GET', params: {},
             url: serviceBaseUrl + '/rest/api/org/exist/alias/:alias'
-          }
+          }          
         });
 
         resource.create = function (organization, succes, error) {
@@ -135,6 +143,10 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 
         resource.changeWebsiteUrl = function (organization, succes, error) {
           return this.put(new ChangeOrganizationWebsiteUrlCommand(organization.organizationId, organization.url), succes, error);
+        };
+
+        resource.InviteUserToOrganization = function (organization, username, succes, error) {
+          return this.invite({organizationId: organization.organizationId}, new InviteUserToOrganization(organization.organizationId, username), succes, error);
         };
 
         resource.addAlias = function (organization, alias, succes, error) {

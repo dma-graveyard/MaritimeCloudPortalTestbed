@@ -148,7 +148,7 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
           name: 'organizations',
           url: "/orgs",
           templateUrl: 'organizations/manage-organizations.html',
-          controller: 'OrganizationListController',
+          controller: 'DashboardContextController',
         },
         {
           name: 'searchOrganizations',

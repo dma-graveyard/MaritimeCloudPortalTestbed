@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OrganizationListener {
 
-    private final static Logger logger = LoggerFactory.getLogger(OrganizationQueryRepository.class);
+    private final static Logger logger = LoggerFactory.getLogger(OrganizationListener.class);
 
     @Resource
     private OrganizationQueryRepository organizationQueryRepository;

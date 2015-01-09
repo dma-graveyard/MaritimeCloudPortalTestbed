@@ -4,43 +4,40 @@
 
 angular.module('mcp.organizations', ['ui.bootstrap'])
 
-    .controller('OrganizationMenuController', ['$scope', 'OrganizationContext',
-      function ($scope, OrganizationContext) {
+    .controller('OrganizationContextSidebarController', ['$scope', 'OrganizationContext', 'UserContext',
+      function ($scope, OrganizationContext, UserContext) {
 
-        $scope.organizations = OrganizationContext.usersOrganizations;
-        $scope.currentOrganization = OrganizationContext.currentOrganization;
+        $scope.currentOrganization = OrganizationContext.currentOrganization();
+        $scope.isOwnerOf = UserContext.isOwnerOf;
+
         $scope.OrganizationContext = OrganizationContext;
-
-        $scope.$watch('OrganizationContext.currentOrganization', function () {
-          $scope.currentOrganization = OrganizationContext.currentOrganization;
+        $scope.$watch('OrganizationContext.currentOrganization()', function (val) {
+          $scope.currentOrganization = OrganizationContext.currentOrganization();
         });
 
       }])
 
-    .controller('OrganizationListController', ['$scope', '$stateParams', 'OrganizationContext',
-      function ($scope, $stateParams, OrganizationContext) {
+    .controller('DashboardContextController', ['$scope', '$stateParams', 'OrganizationContext', 'UserContext',
+      function ($scope, $stateParams, OrganizationContext, UserContext) {
 
-        $scope.organizations = OrganizationContext.usersOrganizations;
-        $scope.currentOrganization = OrganizationContext.currentOrganization;
-        $scope.orderProp = 'name';
+        $scope.organizationMemberships = UserContext.organizationMemberships();
+        $scope.currentOrganization = OrganizationContext.currentOrganization();
         $scope.$stateParams = $stateParams;
+        $scope.orderProp = 'organization.name';
 
         $scope.isCurrentContext = function (organization) {
-          return organization === OrganizationContext.currentOrganization;
-        };
-        $scope.currentContext = function () {
-          return OrganizationContext.currentOrganization;
+          return organization === OrganizationContext.currentOrganization();
         };
         $scope.hasOrganizations = function () {
-          return OrganizationContext.usersOrganizations.length > 0;
+          return $scope.organizationMemberships.length > 0;
         };
         $scope.setDashboardContext = function (organization) {
           OrganizationContext.setCurrentOrganization(organization);
-          $scope.currentOrganization = OrganizationContext.currentOrganization;
+          $scope.currentOrganization = organization;
         };
         $scope.setUserAsDashboardContext = function () {
           OrganizationContext.resetCurrentOrganization();
-          $scope.currentOrganization = OrganizationContext.currentOrganization;
+          $scope.currentOrganization = null;
         };
       }])
 
@@ -71,7 +68,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
       function ($scope, $stateParams, UserService, UserContext, OrganizationService, AlmanacOrganizationMemberService) {
 
         $scope.viewState = 'invite';
-        
+
         $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId}, function (organization) {
           $scope.organization.members = AlmanacOrganizationMemberService.query({organizationId: organization.organizationId});
           $scope.userHasWriteAccess = UserContext.isAdminMemberOf($scope.organization.organizationId);
@@ -80,15 +77,20 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
         // TODO: use searchfield value before quering!   
         $scope.people = UserService.query();
         $scope.orderProp = 'username';
-        
+
         $scope.invite = function (member) {
           $scope.invitedMember = member;
-          $scope.viewState = 'confirm';
-          
-          // FIXME call server with an invite-request !
-          
+
+          // call server with an invite-request !
+          $scope.busyPromise = OrganizationService.InviteUserToOrganization($scope.organization, member, function () {
+            $scope.viewState = 'confirm';
+          }, function (error) { /*reportError*/
+            console.log("Error damnit", error);
+            //$scope.viewState = 'error';
+          });
+
         };
-  
+
         $scope.inviteMore = function () {
           $scope.viewState = 'invite';
         };
@@ -252,58 +254,22 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
       }])
 
     // OrganizationContext
-    // (revisiting this code I realise that this service could also be named "DashboardContext") 
-    // - the list of organizations the user is a member of
     // - the currently selected organization, if any. When empty, the User is considered to be the dashboard context
-    .service("OrganizationContext", ["OrganizationService", function (OrganizationService) {
+    .service("OrganizationContext", [function () {
 
-        // Organizations that the current user is a member of
-        this.usersOrganizations = [];
-        this.currentOrganization = null;
+        // The currently selected Organization of the user. (When 'null' the user is the context)
+        var currentOrganization = null;
 
-        this.setUsersOrganizations = function (organizations) {
-          this.usersOrganizations = organizations;
-
-          // reset currentOrganization if no longer on list
-          if (this.currentOrganization !== null) {
-            this.setCurrentOrganization(this.getOrganizationById(this.currentOrganization.organizationId));
-          }
-        };
-
-        this.updateUserOrganizationsList = function (currentUser) {
-//          this.setUsersOrganizations(currentUser ? AlmanacOrganizationMemberService.query({member: currentUser.name}) : []);
-          this.setUsersOrganizations(currentUser ? OrganizationService.query({member: currentUser.name}) : []);
+        this.currentOrganization = function () {
+          return currentOrganization;
         };
 
         this.setCurrentOrganization = function (target) {
-          if (angular.isString(target)) {
-            this.currentOrganization = this.getOrganizationById(target);
-          } else {
-            if (this.containsOrganization(target)) {
-              this.currentOrganization = target;
-            }
-          }
+          currentOrganization = target;
         };
 
         this.resetCurrentOrganization = function () {
-          this.currentOrganization = null;
-        };
-
-        this.getOrganizationById = function (organizationId) {
-          for (var i = 0; i < this.usersOrganizations.length; i++) {
-            if (organizationId === this.usersOrganizations[i].organizationId) {
-              return this.usersOrganizations[i];
-            }
-          }
-          return null;
-        };
-
-        this.containsOrganization = function (organization) {
-          if (angular.isString(organization)) {
-            return this.getOrganizationById(organization);
-          } else {
-            return this.usersOrganizations.indexOf(organization) > -1;
-          }
+          currentOrganization = null;
         };
 
       }])

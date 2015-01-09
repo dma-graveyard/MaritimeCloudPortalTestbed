@@ -1,14 +1,14 @@
 <div class="boxed-group">
     <div class="boxed-group-action" > 
-        Search: <input ng-model="filter_query"> <a ng-if="userHasWriteAccess" href="#/orgs/{{organization.primaryAlias|| organization.organizationId}}/members/invite" class="btn btn-xs btn-primary">+ Invite someone</a>
+        Search: <input ng-model="filter_query"> <a ng-if="userHasWriteAccess" href="#/orgs/{{organizationRef(organization)}}/members/invite" class="btn btn-xs btn-primary">+ Invite someone</a>
     </div>
-    <h3>Members of <a href="#/orgs/{{organization.primaryAlias|| organization.organizationId}}">{{organization.name}}</a></h3>
+    <h3>Members of <a href="#/orgs/{{organizationRef(organization)}}">{{organization.name}}</a></h3>
     <div class="boxed-group-inner">
         <ul class="boxed-group-list standalone">
             <li ng-repeat="member in organization.members| filter:filter_query | orderBy:orderProp">
                 <!--<img alt="Danish Maritime Authority" class=" js-avatar" data-user="2655913" height="20" src="https://avatars3.githubusercontent.com/u/2655913?s=140" width="20">-->
                 <a href="#/users/{{member.username}}">{{member.username}} <i>{{member.fullName}}</i></a>
-                <a ng-if="userHasWriteAccess" href="/orgs/{{organization.primaryAlias|| organization.organizationId}}/member/{{member.username}}/remove" class="minibutton btn btn-xs btn-round" data-confirm="Are you POSITIVE you want to leave {{organization.name}}? You'll lose access to all services and teams." data-method="post"><i class="fa fa-times"></i> Remove</a>
+                <a ng-if="userHasWriteAccess" href="/orgs/{{organizationRef(organization)}}/member/{{member.username}}/remove" class="minibutton btn btn-xs btn-round" data-confirm="Are you POSITIVE you want to leave {{organization.name}}? You'll lose access to all services and teams." data-method="post"><i class="fa fa-times"></i> Remove</a>
             </li>
         </ul>
     </div>

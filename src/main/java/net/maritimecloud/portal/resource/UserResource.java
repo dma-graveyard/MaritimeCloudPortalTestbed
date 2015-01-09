@@ -77,39 +77,15 @@ public class UserResource {
         return new UserAccountActivatedDTO(activated);
     }
 
-
     /**
      * @param aUsername
-     * @param member
-     * @return A list of memberships of the organizations that the user is a member of containing priviledges of the organization (admin, editor, reader) 
+     * @return A list of memberships of the organizations that the user is a member of
      */
     @GET
     @Path("{username}/orgs")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Iterable<OrganizationMemberEntry> queryOrganizationMemberships(@PathParam("username") String aUsername,
-            @QueryParam("organizationId") @DefaultValue("") String member
-    ) {
-        // FIXME: HACK: Hardcoded members:
-        List<OrganizationMemberEntry> organizationMemberEntries = new ArrayList<>() ;
-        
-        organizationMemberEntries.add(new OrganizationMemberEntry());
-        organizationMemberEntries.add(new OrganizationMemberEntry());
-        organizationMemberEntries.add(new OrganizationMemberEntry());
-        organizationMemberEntries.add(new OrganizationMemberEntry());
-        
-        organizationMemberEntries.get(0).setOrganizationId("041f829c-8409-44a0-96f0-87595e9d4a81");
-        organizationMemberEntries.get(1).setOrganizationId("083e857d-f54a-49ae-851a-97cf698e69aa");
-        organizationMemberEntries.get(2).setOrganizationId("2849b835-3cdb-42c2-82e5-218f0d049638");
-        organizationMemberEntries.get(3).setOrganizationId("2cb175af-a483-410a-bf71-1e99cea947a0");
-        
-        organizationMemberEntries.get(0).setUsername(aUsername);
-        organizationMemberEntries.get(1).setUsername(aUsername);
-        organizationMemberEntries.get(2).setUsername(aUsername);
-        organizationMemberEntries.get(3).setUsername(aUsername);
-        
-        return organizationMemberEntries;
-        
-//        return ApplicationServiceRegistry.organizationMemberQueryRepository().findByOrganizationId(organizationId);
+    public Iterable<OrganizationMemberEntry> queryOrganizationMemberships(@PathParam("username") String aUsername) {
+        return ApplicationServiceRegistry.organizationMemberQueryRepository().findByUsername(aUsername);
     }
 
     @GET

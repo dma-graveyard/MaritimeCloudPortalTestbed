@@ -17,6 +17,8 @@ package net.maritimecloud.serviceregistry.command.organization;
 import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
 import net.maritimecloud.serviceregistry.command.api.ProvideServiceInstance;
 import javax.annotation.Resource;
+import net.maritimecloud.serviceregistry.command.api.InviteUserToOrganization;
+import net.maritimecloud.serviceregistry.command.organization.membership.Membership;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
 import org.axonframework.commandhandling.annotation.CommandHandler;
@@ -46,6 +48,8 @@ public class OrganizationCommandHandler {
     private Repository<ServiceSpecification> serviceSpecificationRepository;
     @Resource
     private Repository<ServiceInstance> serviceInstanceRepository;
+    @Resource
+    private Repository<Membership> membershipRepository;
 
     public void setOrganizationRepository(Repository<Organization> organizationRepository) {
         this.repository = organizationRepository;
@@ -57,6 +61,19 @@ public class OrganizationCommandHandler {
 
     public void setServiceInstanceRepository(Repository<ServiceInstance> serviceInstanceRepository) {
         this.serviceInstanceRepository = serviceInstanceRepository;
+    }
+    
+    @CommandHandler
+    public void handle(InviteUserToOrganization command) {
+
+        Organization organization = repository.load(command.getOrganizationId());
+
+        if (organization.isDeleted()) {
+            throw new IllegalArgumentException("Organization exists no more. " + command.getOrganizationId());
+        }
+        
+        Membership membership = new Membership(command.getOrganizationId(), command.getUsername());
+        membershipRepository.add(membership);
     }
 
     @CommandHandler
