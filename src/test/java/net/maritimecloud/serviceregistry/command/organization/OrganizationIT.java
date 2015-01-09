@@ -133,11 +133,16 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
 
     @Test
     public void addOrganizationAlias() {
-
+        
         // Given an organization (with a Service Specification and a provided Service Instance)
         commandGateway().sendAndWait(createOrganizationCommand);
         
-        // NOTE: we expect the primary alias to have been denied, since it is used in another test!!! (FIXME)
+        // NOTE: we expect the primary alias to have been denied, since it is used in another test, but we better check: (FIXME)
+        List<AliasRegistryEntry> aliasesAfterInit = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndTargetId(
+                AliasGroups.USERS_AND_ORGANIZATIONS.name(),
+                OrganizationId.class.getName(),
+                organizationId.identifier());
+        int aliasCount = aliasesAfterInit.size();
 
         // When
         commandGateway().sendAndWait(new AddOrganizationAlias(organizationId, AN_ALIAS+organizationId.identifier()));
@@ -159,7 +164,7 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
                 AliasGroups.USERS_AND_ORGANIZATIONS.name(),
                 OrganizationId.class.getName(),
                 organizationId.identifier());
-        assertEquals(2, instances.size());
+        assertEquals(aliasCount + 2, instances.size());
 
         // when add again
         commandGateway().sendAndWait(new AddOrganizationAlias(organizationId, ANOTHER_ALIAS+organizationId.identifier()));
@@ -169,7 +174,7 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
                 AliasGroups.USERS_AND_ORGANIZATIONS.name(),
                 OrganizationId.class.getName(),
                 organizationId.identifier());
-        assertEquals(2, instances.size());
+        assertEquals(aliasCount + 2, instances.size());
 
         // given another organization 
         commandGateway().sendAndWait(generateCreateOrganizationCommand(organizationId2.identifier()));
@@ -182,7 +187,7 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
                 AliasGroups.USERS_AND_ORGANIZATIONS.name(),
                 OrganizationId.class.getName(),
                 organizationId.identifier());
-        assertEquals(2, instances.size());
+        assertEquals(aliasCount + 2, instances.size());
 
         // when remove alias
         commandGateway().sendAndWait(new RemoveOrganizationAlias(organizationId, AN_ALIAS+organizationId.identifier()));
@@ -192,7 +197,7 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
                 AliasGroups.USERS_AND_ORGANIZATIONS.name(),
                 OrganizationId.class.getName(),
                 organizationId.identifier());
-        assertEquals(1, instances.size());
+        assertEquals(aliasCount + 1, instances.size());
 
         // Clean up - because otherwise we leave inconsistency in the eventstore 
         // (this test did not replay all existing events, hence we might leave it 
@@ -206,7 +211,7 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
                 AliasGroups.USERS_AND_ORGANIZATIONS.name(),
                 OrganizationId.class.getName(),
                 organizationId.identifier());
-        assertEquals(0, instances.size());
+        assertEquals(aliasCount + 0, instances.size());
 
     }
 
