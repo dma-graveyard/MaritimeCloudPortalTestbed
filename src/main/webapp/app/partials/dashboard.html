@@ -2,7 +2,108 @@
     <div class="col-xs-12">
         <h1>Maritime Cloud Dashboard</h1>
         <div >
+
             <div> 
+                <p>Organizations: 74 . Services: 244 . Specifications: 37 . Users: 4.253</p>
+            </div> 
+
+            <div> 
+                <p>
+                    <b>Welcome, {{currentUser.name}}</b>
+                </p>
+            </div> 
+
+            <br/>
+            <div> 
+                <h4>
+                    Organizations
+                </h4>
+                <p>
+                    You have the following memberships:
+                </p>
+                <ul>
+                    <li>
+                        Danish Maritime Authority
+                    </li>
+                </ul>
+            </div> 
+
+            <br/>
+            <div> 
+                <h4>
+                    Assets
+                </h4>
+                <p>
+                    You have registered the following assets:
+                </p>
+                <ul>
+                    <li>
+                        Kiva, (træskib)
+                    </li>
+                </ul>
+            </div> 
+
+            <br/>
+            <div> 
+                <h4>
+                    Achievements
+                </h4>
+                <p>
+                    You have the following Certificates/Memberships/Roles:
+                </p>
+                <ul>
+                    <li>
+                        Member of the Royal Fleet of Denmark
+                    </li>
+                    <li>
+                        Class A Vessel Officer
+                    </li>
+                </ul>
+            </div> 
+
+            <br/>
+            <div> 
+                <h4>
+                    Activity Feeds 
+                </h4>
+                <p>
+                    This were your last actions:
+                </p>
+                <ul>
+                    <li>
+                        <i>Two days ago</i>: Added new asset: Kiva, (træskib)
+                    </li>
+                    <li>
+                        <i>Three Weeks ago</i>: Accepted to join "Danish Maritime Authority"
+                    </li>
+                </ul>
+                This has happened in your organizations:
+                <ul>
+                    <li>
+                        <i>A few minutes ago</i> Tintin invited Haddock to join "Danish Maritime Authority"
+                    </li>
+                    <li>
+                        <i>Yesterday</i> Tintin created new Service Specification "Weather Reporting via MMS"
+                    </li>
+                    <li>
+                        ...1024 more the last month...
+                    </li>
+                </ul>
+                Other public events:
+                <ul>
+                    <li>
+                        <i>A few minutes ago</i> "Asian Trade Company" published a new service "IMO Route Exchange on MMS" 
+                    </li>
+                    <li>
+                        <i>A few minutes ago</i> IMO published a new Role "Flagstate"
+                    </li>
+                    <li>
+                        ...1024 more the last month...
+                    </li>
+                </ul>
+            </div> 
+
+<!--            <div> 
                 <p><strong>Session status:</strong> Id: {{$id}} <br>
                     Current User: {{currentUser}}<br>
                     Storage: {{$storage}} 
@@ -34,7 +135,7 @@
 
             <div class="btn-group">
                 <button class="btn btn-large btn-round btn-grey" ng-click="logout()">Log out</button>
-            </div>
+            </div>-->
         </div>
     </div>
 </div>
