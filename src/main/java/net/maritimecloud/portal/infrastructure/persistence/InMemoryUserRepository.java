@@ -79,7 +79,7 @@ public class InMemoryUserRepository implements UserRepository, CleanableStore {
     @Override
     public List<User> usersWithUsernameMatching(String usernamePattern) {
         List<User> users = new ArrayList<>();
-        repository().values().stream().filter((user) -> (user.username().matches(".*"+usernamePattern+".*"))).forEach((user) -> {
+        repository().values().stream().filter((user) -> (user.username().matches("(?iu).*"+usernamePattern+".*"))).forEach((user) -> {
             users.add(user);
         });
         return users;

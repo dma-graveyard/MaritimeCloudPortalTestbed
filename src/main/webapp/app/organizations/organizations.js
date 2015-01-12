@@ -56,44 +56,11 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
           ServiceInstanceService) {
 
         $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId}, function (organization) {
-          $scope.organization.members = AlmanacOrganizationMemberService.query({organizationId: organization.organizationId});
           $scope.userHasWriteAccess = UserContext.isAdminMemberOf($scope.organization.organizationId);
         });
 
         $scope.specifications = ServiceSpecificationService.query({organizationId: $stateParams.organizationId});
         $scope.serviceInstances = ServiceInstanceService.query({organizationId: $stateParams.organizationId});
-      }])
-
-    .controller('OrganizationInviteMemberController', ['$scope', '$stateParams', 'UserService', 'UserContext', 'OrganizationService', 'AlmanacOrganizationMemberService',
-      function ($scope, $stateParams, UserService, UserContext, OrganizationService, AlmanacOrganizationMemberService) {
-
-        $scope.viewState = 'invite';
-
-        $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId}, function (organization) {
-          $scope.organization.members = AlmanacOrganizationMemberService.query({organizationId: organization.organizationId});
-          $scope.userHasWriteAccess = UserContext.isAdminMemberOf($scope.organization.organizationId);
-        });
-
-        // TODO: use searchfield value before quering!   
-        $scope.people = UserService.query();
-        $scope.orderProp = 'username';
-
-        $scope.invite = function (member) {
-          $scope.invitedMember = member;
-
-          // call server with an invite-request !
-          $scope.busyPromise = OrganizationService.InviteUserToOrganization($scope.organization, member, function () {
-            $scope.viewState = 'confirm';
-          }, function (error) { /*reportError*/
-            console.log("Error damnit", error);
-            //$scope.viewState = 'error';
-          });
-
-        };
-
-        $scope.inviteMore = function () {
-          $scope.viewState = 'invite';
-        };
       }])
 
     .controller('OrganizationCreateController', ['$scope', '$location', 'UUID', 'OrganizationService', 'OrganizationContext',

@@ -1,15 +1,23 @@
 <div ng-show="viewState === 'invite'" class="boxed-group">
     <div class="boxed-group-action" > 
-        <input ng-model="filter_query">
+        <input id='search' ng-model="filter_query" ng-change="updateSearch(filter_query)" placeholder="Search by username" mcp-focus-me>
     </div>
-    <h3>Invite someone to <a href="#/orgs/{{organizationRef(organization)}}">{{organization.name}}</a>  </h3>
-    <div class="boxed-group-inner">
+    <h3>Invite a new member to <a href="#/orgs/{{organizationRef(organization)}}">{{organization.name}}</a>  </h3>
+    <div class="boxed-group-inner" cg-busy="{promise:busyPromise,delay:100}">
         <ul class="boxed-group-list standalone">
-            <li ng-repeat="someone in people| filter:filter_query | orderBy:orderProp">
+            <li ng-repeat="someone in filteredPeople = (people | filter:filter_query | filter:isNewMember | orderBy:orderProp)">
                 {{someone.username}} <a ng-click="invite(someone.username)" class="minibutton btn btn-xs btn-round"><i class="fa fa-plus"></i></a>
+            </li>
+            <li ng-if="!filter_query" ng-cloak>
+                <p class="text-muted">Write a username in the field above</p>
+            </li>
+            <li ng-if="filter_query && !filteredPeople.length" class="text-muted" ng-cloak>
+                <p class="text-muted">Found no usernames containing '{{filter_query}}'</p>                
             </li>
         </ul>
     </div>
+    <br>
+    <panel-button btn-type="default" ui-sref="restricted.organizationMembers({organizationId: organizationRef(organization)})">Back</panel-button>
 </div>
 
 <panel ng-show="viewState === 'confirm'" category="primary" icon="user" title="Member invited" offset="3">

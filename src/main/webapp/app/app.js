@@ -15,6 +15,7 @@ var mcpApp = angular.module('mcpApp', [
   'mcp.layout',
   'mcp.mapservices',
   'mcp.organizations',
+  'mcp.organizations.members',
   'mcp.organizations.services',
   'mcp.search.services',
   'mcp.users',
@@ -178,7 +179,7 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
           name: 'organizationMembers',
           url: "/orgs/{organizationId}/members",
           templateUrl: 'organizations/members/member-list.html',
-          controller: 'OrganizationDetailsController',
+          controller: 'OrganizationMembersController',
         },
         {
           name: 'organizationMembersInvite',
