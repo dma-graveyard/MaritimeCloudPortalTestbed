@@ -13,9 +13,9 @@ import net.maritimecloud.serviceregistry.command.organization.membership.Members
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#inviteUserToOrganization
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#authorizeMembershipToOrganizationCreator
  */
-public class InviteUserToOrganization implements Command {
+public class AuthorizeMembershipToOrganizationCreator implements Command {
 
     @TargetAggregateIdentifier
     private final OrganizationId organizationId;
@@ -23,7 +23,7 @@ public class InviteUserToOrganization implements Command {
     private final String username;
 
     @JsonCreator
-    public InviteUserToOrganization(
+    public AuthorizeMembershipToOrganizationCreator(
             @JsonProperty("organizationId") OrganizationId organizationId,
             @JsonProperty("membershipId") MembershipId membershipId,
             @JsonProperty("username") String username

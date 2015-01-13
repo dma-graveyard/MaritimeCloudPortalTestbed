@@ -20,11 +20,11 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 /**
  * @author Christoffer Børrild
  */
-public interface OrganizationMemberQueryRepository extends PagingAndSortingRepository<OrganizationMemberEntry, String> {
+public interface OrganizationMembershipQueryRepository extends PagingAndSortingRepository<OrganizationMembershipEntry, String> {
 
-    public OrganizationMemberEntry findByOrganizationIdAndUsername(String anOrganizationId, String aUsername);
+    public OrganizationMembershipEntry findByOrganizationIdAndUsername(String anOrganizationId, String aUsername);
 
-    public Iterable<OrganizationMemberEntry> findByUsername(String aUsername);
+    public Iterable<OrganizationMembershipEntry> findByUsername(String aUsername);
 
-    public Iterable<OrganizationMemberEntry> findByOrganizationId(String organizationId);
+    public Iterable<OrganizationMembershipEntry> findByOrganizationId(String organizationId);
 }

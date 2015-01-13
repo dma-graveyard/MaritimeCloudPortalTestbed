@@ -34,7 +34,7 @@ import javax.ws.rs.core.UriInfo;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import net.maritimecloud.portal.application.IdentityApplicationService;
 import net.maritimecloud.portal.domain.model.identity.User;
-import net.maritimecloud.serviceregistry.query.OrganizationMemberEntry;
+import net.maritimecloud.serviceregistry.query.OrganizationMembershipEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,8 +84,8 @@ public class UserResource {
     @GET
     @Path("{username}/orgs")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Iterable<OrganizationMemberEntry> queryOrganizationMemberships(@PathParam("username") String aUsername) {
-        return ApplicationServiceRegistry.organizationMemberQueryRepository().findByUsername(aUsername);
+    public Iterable<OrganizationMembershipEntry> queryOrganizationMemberships(@PathParam("username") String aUsername) {
+        return ApplicationServiceRegistry.organizationMembershipQueryRepository().findByUsername(aUsername);
     }
 
     @GET

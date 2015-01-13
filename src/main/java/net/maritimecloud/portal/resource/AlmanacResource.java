@@ -14,7 +14,7 @@
  */
 package net.maritimecloud.portal.resource;
 
-import net.maritimecloud.serviceregistry.query.OrganizationMemberEntry;
+import net.maritimecloud.serviceregistry.query.OrganizationMembershipEntry;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.DefaultValue;
@@ -111,8 +111,8 @@ public class AlmanacResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("organization/{organizationId}/member")
-    public Iterable<OrganizationMemberEntry> getOrganizationMembers(@PathParam("organizationId") String organizationId) {
-        return ApplicationServiceRegistry.organizationMemberQueryRepository().findByOrganizationId(organizationId);
+    public Iterable<OrganizationMembershipEntry> getOrganizationMembers(@PathParam("organizationId") String organizationId) {
+        return ApplicationServiceRegistry.organizationMembershipQueryRepository().findByOrganizationId(organizationId);
     }
 
     @GET

@@ -19,6 +19,7 @@ import net.maritimecloud.cqrs.tool.Event;
 import net.maritimecloud.cqrs.tool.Command;
 import net.maritimecloud.cqrs.tool.TargetAggregateIdentifier;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
+import net.maritimecloud.serviceregistry.command.organization.membership.MembershipId;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceEndpoint;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
@@ -55,7 +56,13 @@ public interface ServiceRegistryContract extends CqrsContract {
     void removeOrganizationAlias(OrganizationId organizationId, String alias);
 
     @Command
-    void inviteUserToOrganization(OrganizationId organizationId, String username);
+    void authorizeMembershipToOrganizationCreator(OrganizationId organizationId, MembershipId membershipId, String username);
+
+    @Command
+    void inviteUserToOrganization(OrganizationId organizationId, MembershipId membershipId, String username);
+
+    @Command
+    void removeUserFromOrganization(MembershipId membershipId);
 
     @Command
     void prepareServiceSpecification(
@@ -121,7 +128,13 @@ public interface ServiceRegistryContract extends CqrsContract {
     void organizationAliasRemoved(OrganizationId organizationId, String alias);
     
     @Event
-    void UserInvitedToOrganization(OrganizationId organizationId, String username);    
+    void UserInvitedToOrganization(MembershipId membershipId, OrganizationId organizationId, String username);    
+    
+    @Event
+    void UserLeftOrganization(MembershipId membershipId, OrganizationId organizationId, String username);    
+    
+    @Event
+    void OrganizationRevokedUserMembership(MembershipId membershipId, OrganizationId organizationId, String username);    
     
     @Event
     void serviceSpecificationCreated(

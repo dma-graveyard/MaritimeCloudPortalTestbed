@@ -15,6 +15,7 @@
 package net.maritimecloud.serviceregistry.query;
 
 import javax.annotation.Resource;
+import net.maritimecloud.serviceregistry.command.api.OrganizationRevokedUserMembership;
 import net.maritimecloud.serviceregistry.command.api.UserInvitedToOrganization;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.slf4j.Logger;
@@ -25,31 +26,39 @@ import org.springframework.stereotype.Component;
  * @author Christoffer Børrild
  */
 @Component
-public class OrganizationMemberListener {
+public class OrganizationMembershipListener {
 
-    private final static Logger logger = LoggerFactory.getLogger(OrganizationMemberListener.class);
+    private final static Logger logger = LoggerFactory.getLogger(OrganizationMembershipListener.class);
 
     @Resource
-    private OrganizationMemberQueryRepository organizationMemberQueryRepository;
+    private OrganizationMembershipQueryRepository organizationMemberQueryRepository;
 
-    public OrganizationMemberListener() {
+    public OrganizationMembershipListener() {
     }
 
-    public OrganizationMemberListener(OrganizationMemberQueryRepository organizationMemberQueryRepository) {
+    public OrganizationMembershipListener(OrganizationMembershipQueryRepository organizationMemberQueryRepository) {
         this.organizationMemberQueryRepository = organizationMemberQueryRepository;
     }
 
-    public void setOrganizationQueryRepository(OrganizationMemberQueryRepository organizationMemberQueryRepository) {
+    public void setOrganizationQueryRepository(OrganizationMembershipQueryRepository organizationMemberQueryRepository) {
         this.organizationMemberQueryRepository = organizationMemberQueryRepository;
     }
     
     @EventHandler
     public void on(UserInvitedToOrganization event) {
         logger.debug("About to handle the UserInvitedToOrganization: {}", event);
-        OrganizationMemberEntry organizationMemberEntry = new OrganizationMemberEntry();
+        OrganizationMembershipEntry organizationMemberEntry = new OrganizationMembershipEntry();
+        organizationMemberEntry.setMembershipId(event.getMembershipId().identifier());
         organizationMemberEntry.setOrganizationId(event.getOrganizationId().identifier());
         organizationMemberEntry.setUsername(event.getUsername());
         organizationMemberQueryRepository.save(organizationMemberEntry);
+    }
+    
+    @EventHandler
+    public void on(OrganizationRevokedUserMembership event) {
+        logger.debug("About to handle the OrganizationRevokedUserMembership: {}", event);
+        OrganizationMembershipEntry entry = organizationMemberQueryRepository.findOne(event.getMembershipId().identifier());
+        organizationMemberQueryRepository.delete(entry);
     }
     
 }

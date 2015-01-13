@@ -50,6 +50,7 @@ import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification
 import net.maritimecloud.serviceregistry.command.api.RemoveOrganizationAlias;
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceAlias;
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
+import net.maritimecloud.serviceregistry.command.api.RemoveUserFromOrganization;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.domain.service.AliasGroups;
@@ -130,7 +131,8 @@ public class OrganizationResource {
         String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
         commandJSON = overwriteIdentity(commandJSON, "organizationId", organizationId);
         sendAndWait(contentType, queryCommandName, commandJSON,
-                InviteUserToOrganization.class
+                InviteUserToOrganization.class,
+                RemoveUserFromOrganization.class
         );
     }
 

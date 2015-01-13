@@ -1,4 +1,4 @@
-<div class="boxed-group">
+<div ng-show="viewState === 'list'" class="boxed-group">
     <div class="boxed-group-action" > 
         Search: <input ng-model="filter_query"> <a ng-if="userHasWriteAccess" href="#/orgs/{{organizationRef(organization)}}/members/invite" class="btn btn-xs btn-primary">+ Invite someone</a>
     </div>
@@ -8,8 +8,33 @@
             <li ng-repeat="member in organization.members| filter:filter_query | orderBy:orderProp">
                 <!--<img alt="Danish Maritime Authority" class=" js-avatar" data-user="2655913" height="20" src="https://avatars3.githubusercontent.com/u/2655913?s=140" width="20">-->
                 <a href="#/users/{{member.username}}">{{member.username}} <i>{{member.fullName}}</i></a>
-                <a ng-if="userHasWriteAccess" href="/orgs/{{organizationRef(organization)}}/member/{{member.username}}/remove" class="minibutton btn btn-xs btn-round" data-confirm="Are you POSITIVE you want to leave {{organization.name}}? You'll lose access to all services and teams." data-method="post"><i class="fa fa-times"></i> Remove</a>
+                <a ng-if="userHasWriteAccess" ng-click="confirmRemove(member)" class="minibutton btn btn-xs btn-round"><i class="fa fa-times"></i> Remove</a>
             </li>
         </ul>
     </div>
 </div>
+
+<panel ng-show="viewState === 'confirm-remove'" category="danger" icon="user" title="Remove member?" offset="3">
+    <p>
+        Are you positive you want to remove <b><i>{{selectedMember.username}}</i></b> from <i><b>{{organization.name}}</b></i>? 
+    </p>
+    <panel-button btn-type="danger" ng-click="remove(selectedMember)">Yes - remove {{selectedMember.username}}!</panel-button> 
+    <panel-button btn-type="default" ng-click="cancel()">No, just kidding!</panel-button>
+</panel>
+
+<panel ng-show="viewState === 'remove-success'" category="primary" icon="user" title="Member removed" offset="3">
+    <p>
+        {{selectedMember.username}} was successfully removed from the organization.
+    </p>
+    <panel-button btn-type="default" ui-sref="restricted.organizationDetails({organizationId: organizationRef(organization)})">Close</panel-button>
+</panel>
+
+<panel ng-show="viewState === 'remove-failed'" category="danger" icon="user" title="Remove failed!" offset="3">
+    <p>
+        Eh, That went haywire!!!? 
+    </p>
+    <p>
+        The member was probably NOT removed, Sorry! 
+    </p>
+    <panel-button btn-type="default" ng-click="cancel()">Oh, I understand!</panel-button>
+</panel>

@@ -27,8 +27,14 @@ function ChangeOrganizationWebsiteUrlCommand(organizationId, url) {
   this.url = url;
 }
 
-function InviteUserToOrganization(organizationId, username) {
+function InviteUserToOrganization(organizationId, membershipId, username) {
   this.organizationId = {identifier: organizationId};
+  this.membershipId = {identifier: membershipId};
+  this.username = username;
+}
+
+function RemoveUserFromOrganization(membershipId, username) {
+  this.membershipId = {identifier: membershipId};
   this.username = username;
 }
 
@@ -145,8 +151,12 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           return this.put(new ChangeOrganizationWebsiteUrlCommand(organization.organizationId, organization.url), succes, error);
         };
 
-        resource.InviteUserToOrganization = function (organization, username, succes, error) {
-          return this.invite({organizationId: organization.organizationId}, new InviteUserToOrganization(organization.organizationId, username), succes, error);
+        resource.InviteUserToOrganization = function (organization, membershipId, username, succes, error) {
+          return this.invite({organizationId: organization.organizationId}, new InviteUserToOrganization(organization.organizationId, membershipId, username), succes, error);
+        };
+
+        resource.RemoveUserFromOrganization = function (organization, membershipId, succes, error) {
+          return this.invite({organizationId: organization.organizationId, membershipId: membershipId}, new RemoveUserFromOrganization(membershipId), succes, error);
         };
 
         resource.addAlias = function (organization, alias, succes, error) {

@@ -197,6 +197,11 @@ public class AxonConfig {
     }
 
     @Bean
+    public AggregateAnnotationCommandHandler<Membership> organizationMembershipCommandHandler() {
+        return AggregateAnnotationCommandHandler.subscribe(Membership.class, organizationMembershipRepository(), commandBus());
+    }
+
+    @Bean
     public AggregateAnnotationCommandHandler<ServiceSpecification> serviceSpecificationAggregateCommandHandler() {
         return AggregateAnnotationCommandHandler.subscribe(ServiceSpecification.class, serviceSpecificationRepository(), commandBus());
     }

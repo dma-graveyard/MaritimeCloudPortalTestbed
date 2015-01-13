@@ -10,17 +10,17 @@ import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#UserInvitedToOrganization
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#OrganizationRevokedUserMembership
  */
 @Event
-public class UserInvitedToOrganization {
+public class OrganizationRevokedUserMembership {
 
     @TargetAggregateIdentifier
     private final MembershipId membershipId;
     private final OrganizationId organizationId;
     private final String username;
 
-    public UserInvitedToOrganization(
+    public OrganizationRevokedUserMembership(
             MembershipId membershipId,
             OrganizationId organizationId,
             String username

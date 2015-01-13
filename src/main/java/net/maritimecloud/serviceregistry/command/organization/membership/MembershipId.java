@@ -14,7 +14,6 @@
  */
 package net.maritimecloud.serviceregistry.command.organization.membership;
 
-import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.domain.DomainIdentifier;
 
 /**
@@ -31,10 +30,6 @@ public class MembershipId  extends DomainIdentifier<MembershipId> {
         this(membershipId.identifier());
     }
     
-    public MembershipId(OrganizationId organizationId, String username) {
-        super(organizationId.identifier() +"_"+ username);
-    }
-
     protected MembershipId() {
         super();
     }

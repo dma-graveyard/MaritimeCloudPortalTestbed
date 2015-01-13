@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import net.maritimecloud.portal.config.ApplicationTestConfig;
 import net.maritimecloud.serviceregistry.query.AliasRegistryQueryRepository;
-import net.maritimecloud.serviceregistry.query.OrganizationMemberQueryRepository;
+import net.maritimecloud.serviceregistry.query.OrganizationMembershipQueryRepository;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import net.maritimecloud.serviceregistry.query.ServiceInstanceQueryRepository;
 import net.maritimecloud.serviceregistry.query.ServiceSpecificationQueryRepository;
@@ -44,7 +44,7 @@ public abstract class AbstractAxonCqrsIT extends CommonFixture {
     protected OrganizationQueryRepository organizationQueryRepository;
     
     @Resource
-    protected OrganizationMemberQueryRepository organizationMemberQueryRepository;
+    protected OrganizationMembershipQueryRepository organizationMemberQueryRepository;
 
     @Resource
     protected ServiceSpecificationQueryRepository serviceSpecificationQueryRepository;

@@ -16,10 +16,12 @@ package net.maritimecloud.serviceregistry.command.organization;
 
 import javax.annotation.Resource;
 import net.maritimecloud.portal.domain.infrastructure.axon.NoReplayedEvents;
+import net.maritimecloud.serviceregistry.command.api.AuthorizeMembershipToOrganizationCreator;
 import net.maritimecloud.serviceregistry.command.api.InviteUserToOrganization;
 import net.maritimecloud.serviceregistry.command.api.OrganizationAliasAdded;
 import net.maritimecloud.serviceregistry.command.api.OrganizationCreated;
 import net.maritimecloud.serviceregistry.command.api.UserInvitedToOrganization;
+import net.maritimecloud.serviceregistry.command.organization.membership.MembershipId;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.saga.annotation.AbstractAnnotatedSaga;
 import org.axonframework.saga.annotation.EndSaga;
@@ -56,7 +58,7 @@ public class SetupOrganizationOwnerMemberSaga extends AbstractAnnotatedSaga {
 
         // FIXME: figure out how to get hand on the username of the creating user !!!
         System.out.println("SetupOrganizationSaga: FIXME: Hardcoding user 'admin' as admin-member for the organization " + event.getOrganizationId().identifier());
-        commandGateway.send(new InviteUserToOrganization(event.getOrganizationId(), "admin"));
+        commandGateway.send(new AuthorizeMembershipToOrganizationCreator(event.getOrganizationId(), new MembershipId(event.getOrganizationId().identifier()), "admin"));
     }
 
     @EndSaga

@@ -32,11 +32,12 @@ import net.maritimecloud.serviceregistry.command.api.InviteUserToOrganization;
 import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
 import net.maritimecloud.serviceregistry.command.api.ProvideServiceInstance;
 import net.maritimecloud.serviceregistry.command.api.RemoveOrganizationAlias;
+import net.maritimecloud.serviceregistry.command.organization.membership.MembershipId;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecificationId;
 import net.maritimecloud.serviceregistry.domain.service.AliasGroups;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
-import net.maritimecloud.serviceregistry.query.OrganizationMemberEntry;
+import net.maritimecloud.serviceregistry.query.OrganizationMembershipEntry;
 import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.repository.AggregateNotFoundException;
 import static org.junit.Assert.assertEquals;
@@ -125,8 +126,8 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
     @Test
     public void inviteUser() throws Throwable {
         commandGateway().sendAndWait(createOrganizationCommand);
-        commandGateway().sendAndWait(new InviteUserToOrganization(organizationId, "A_USER"));
-        OrganizationMemberEntry entry = organizationMemberQueryRepository.findByOrganizationIdAndUsername(organizationId.identifier(), "A_USER");
+        commandGateway().sendAndWait(new InviteUserToOrganization(organizationId, new MembershipId("A_MEMBERSHIP_ID"), "A_USER"));
+        OrganizationMembershipEntry entry = organizationMemberQueryRepository.findByOrganizationIdAndUsername(organizationId.identifier(), "A_USER");
         assertEquals(organizationId.identifier(), entry.getOrganizationId());
         assertEquals("A_USER", entry.getUsername());
     }
