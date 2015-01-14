@@ -18,12 +18,36 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
       }])
 
     .controller('DashboardContextController', ['$scope', '$stateParams', 'OrganizationContext', 'UserContext',
-      function ($scope, $stateParams, OrganizationContext, UserContext) {
+      'AlmanacOrganizationService', 'AlmanacOperationalServiceService', 'AlmanacServiceSpecificationService', 'AlmanacServiceInstanceService', 'UserService',
+      function ($scope, $stateParams, OrganizationContext, UserContext,
+          AlmanacOrganizationService, AlmanacOperationalServiceService, AlmanacServiceSpecificationService, AlmanacServiceInstanceService, UserService
+          ) {
 
         $scope.organizationMemberships = UserContext.organizationMemberships();
         $scope.currentOrganization = OrganizationContext.currentOrganization();
         $scope.$stateParams = $stateParams;
         $scope.orderProp = 'organization.name';
+
+        $scope.statistics = {
+        };
+
+        AlmanacOrganizationService.query(function (list) {
+          $scope.statistics.organizations = list.length;
+        });
+        AlmanacOperationalServiceService.query(function (list) {
+          $scope.statistics.operationalServices = list.length;
+        });
+        AlmanacServiceSpecificationService.query(function (list) {
+          $scope.statistics.servicesSpecifications = list.length;
+        });
+        AlmanacServiceInstanceService.query(function (list) {
+          $scope.statistics.services = list.length;
+        });
+        UserService.query(function (list) {
+          $scope.statistics.users = list.length;
+        });
+
+
 
         $scope.isCurrentContext = function (organization) {
           return organization === OrganizationContext.currentOrganization();
