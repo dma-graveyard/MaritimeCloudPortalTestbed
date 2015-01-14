@@ -22,6 +22,10 @@ angular.module('mcp.organizations.members', ['ui.bootstrap'])
           $scope.userHasWriteAccess = UserContext.isAdminMemberOf($scope.organization.organizationId);
         });
 
+        $scope.canBeRemoved= function(member){
+          return $scope.userHasWriteAccess && member.username !== UserContext.currentUser().name;
+        };
+
         $scope.viewState = 'list';
         $scope.remove = function (username) {
         };
@@ -51,7 +55,9 @@ angular.module('mcp.organizations.members', ['ui.bootstrap'])
     .controller('OrganizationInviteMemberController', ['$scope', '$stateParams', 'UserService', 'UserContext', 'OrganizationService', 'UUID', 'AlmanacOrganizationMemberService',
       function ($scope, $stateParams, UserService, UserContext, OrganizationService, UUID, AlmanacOrganizationMemberService) {
 
+        $scope.filter_query = '';
         $scope.viewState = 'invite';
+        $scope.orderProp = 'username';
 
         $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId}, function (organization) {
           $scope.organization.members = AlmanacOrganizationMemberService.query({organizationId: organization.organizationId});
@@ -69,38 +75,33 @@ angular.module('mcp.organizations.members', ['ui.bootstrap'])
 
         $scope.updateSearch = function (pattern) {
           if (pattern.trim().length > 0) {
-            $scope.busyPromise = UserService.query({usernamePattern: pattern}, function (users) {
+            $scope.busyPromiseSearch = UserService.query({usernamePattern: pattern}, function (users) {
               $scope.people = users;
             }).$promise;
           } else {
             $scope.people = [];
           }
-
         };
 
-        $scope.orderProp = 'username';
+        $scope.confirm = function (member) {
+          $scope.invitedMember = member;
+          $scope.viewState = 'confirm';
+        };
 
         $scope.invite = function (member) {
-          $scope.invitedMember = member;
 
-          // call server with an invite-request !
-
-          // Fetch and assign a new UUID from the server
+          // fetch and assign a new UUID from the server
           UUID.get({name: "identifier"}, function (newMembershipId) {
+
+            // call server with an invite-request !
             $scope.busyPromise = OrganizationService.InviteUserToOrganization($scope.organization, newMembershipId.identifier, member, function () {
-              $scope.viewState = 'confirm';
+              $scope.viewState = 'success';
             }, function (error) { /*reportError*/
               console.log("Error, dammit!", error);
-              //$scope.viewState = 'error';
+              $scope.viewState = 'error';
             });
           });
 
-        };
-
-        $scope.inviteMore = function () {
-          $scope.viewState = 'invite';
-          $scope.filter_query = '';
-          $scope.updateSearch('');
         };
       }])
 

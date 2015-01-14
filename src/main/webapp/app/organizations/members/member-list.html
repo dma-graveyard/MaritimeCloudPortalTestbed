@@ -8,7 +8,7 @@
             <li ng-repeat="member in organization.members| filter:filter_query | orderBy:orderProp">
                 <!--<img alt="Danish Maritime Authority" class=" js-avatar" data-user="2655913" height="20" src="https://avatars3.githubusercontent.com/u/2655913?s=140" width="20">-->
                 <a href="#/users/{{member.username}}">{{member.username}} <i>{{member.fullName}}</i></a>
-                <a ng-if="userHasWriteAccess" ng-click="confirmRemove(member)" class="minibutton btn btn-xs btn-round"><i class="fa fa-times"></i> Remove</a>
+                <a ng-if="canBeRemoved(member)" ng-click="confirmRemove(member)" class="minibutton btn btn-xs btn-round"><i class="fa fa-times"></i> Remove</a>
             </li>
         </ul>
     </div>
