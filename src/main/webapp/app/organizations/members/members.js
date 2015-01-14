@@ -23,7 +23,7 @@ angular.module('mcp.organizations.members', ['ui.bootstrap'])
         });
 
         $scope.canBeRemoved= function(member){
-          return $scope.userHasWriteAccess && member.username !== UserContext.currentUser().name;
+          return $scope.userHasWriteAccess && UserContext.currentUser() && member.username !== UserContext.currentUser().name;
         };
 
         $scope.viewState = 'list';
