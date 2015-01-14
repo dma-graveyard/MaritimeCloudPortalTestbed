@@ -127,7 +127,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         var resource = $resource(serviceBaseUrl + '/rest/api/org/:organizationId', {}, {
           post: {method: 'POST'},
           put: {method: 'PUT', params: {organizationId: '@organizationId.identifier'}},
-          invite: {method: 'POST', params: {},
+          membership: {method: 'POST', params: {},
             url: serviceBaseUrl + '/rest/api/org/:organizationId/member'
           },
           aliases: {method: 'GET', params: {serviceInstanceId: '@organizationId.identifier'},
@@ -152,11 +152,11 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         };
 
         resource.InviteUserToOrganization = function (organization, membershipId, username, succes, error) {
-          return this.invite({organizationId: organization.organizationId}, new InviteUserToOrganization(organization.organizationId, membershipId, username), succes, error);
+          return this.membership({organizationId: organization.organizationId}, new InviteUserToOrganization(organization.organizationId, membershipId, username), succes, error);
         };
 
         resource.RemoveUserFromOrganization = function (organization, membershipId, succes, error) {
-          return this.invite({organizationId: organization.organizationId, membershipId: membershipId}, new RemoveUserFromOrganization(membershipId), succes, error);
+          return this.membership({organizationId: organization.organizationId, membershipId: membershipId}, new RemoveUserFromOrganization(membershipId), succes, error);
         };
 
         resource.addAlias = function (organization, alias, succes, error) {
