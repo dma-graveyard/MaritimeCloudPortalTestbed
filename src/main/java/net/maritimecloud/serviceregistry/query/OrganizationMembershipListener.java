@@ -43,7 +43,7 @@ public class OrganizationMembershipListener {
     public void setOrganizationQueryRepository(OrganizationMembershipQueryRepository organizationMemberQueryRepository) {
         this.organizationMemberQueryRepository = organizationMemberQueryRepository;
     }
-    
+
     @EventHandler
     public void on(UserInvitedToOrganization event) {
         logger.debug("About to handle the UserInvitedToOrganization: {}", event);
@@ -53,12 +53,14 @@ public class OrganizationMembershipListener {
         organizationMemberEntry.setUsername(event.getUsername());
         organizationMemberQueryRepository.save(organizationMemberEntry);
     }
-    
+
     @EventHandler
     public void on(OrganizationRevokedUserMembership event) {
         logger.debug("About to handle the OrganizationRevokedUserMembership: {}", event);
         OrganizationMembershipEntry entry = organizationMemberQueryRepository.findOne(event.getMembershipId().identifier());
-        organizationMemberQueryRepository.delete(entry);
+        if (entry != null) {
+            organizationMemberQueryRepository.delete(entry);
+        }
     }
-    
+
 }

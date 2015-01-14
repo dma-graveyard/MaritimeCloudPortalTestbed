@@ -25,7 +25,20 @@ import org.axonframework.eventsourcing.annotation.EventSourcingHandler;
 import org.springframework.stereotype.Component;
 
 /**
- *
+ * A Membership represents the association between an Organization and a User.
+ * <p>
+ * The Membership is intended to hold the current membership status ranging from "Invited/Requested" to "Accepted" as well as the users role
+ * like being an "Owner" with admin privileges or e.g. a contributer with limited capacities.
+ * <p>
+ * In the future it is envisioned that this class should react to commands like:
+ * <ul>
+ * <li>AcceptOrganizationMembership</li>
+ * <li>RequestOrganizationMembership</li>
+ * <li>AcceptUserMembership</li>
+ * <li>ChangeMembershipRole</li>
+ * </ul>
+ * <p>
+ * <p>
  * @author Christoffer Børrild
  */
 @Component
@@ -38,20 +51,22 @@ public class Membership extends AbstractAnnotatedAggregateRoot<MembershipId> {
 
     protected Membership() {
     }
-    
+
     public Membership(MembershipId membershipId, OrganizationId organizationId, String username) {
-        this.membershipId = membershipId; 
+        this.membershipId = membershipId;
         this.organizationId = organizationId;
         this.username = username;
         apply(new UserInvitedToOrganization(membershipId, organizationId, username));
     }
-    
+
     @CommandHandler
     public void handle(RemoveUserFromOrganization command) {
-        markDeleted();
-        apply(new OrganizationRevokedUserMembership(membershipId, organizationId, username));
+        if (!isDeleted()) {
+            markDeleted();
+            apply(new OrganizationRevokedUserMembership(membershipId, organizationId, username));
+        }
     }
-    
+
     @EventSourcingHandler
     public void on(UserInvitedToOrganization event) {
         this.membershipId = new MembershipId(event.getMembershipId());

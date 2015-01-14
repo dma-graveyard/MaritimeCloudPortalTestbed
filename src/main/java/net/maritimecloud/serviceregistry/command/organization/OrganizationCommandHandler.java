@@ -22,6 +22,7 @@ import net.maritimecloud.serviceregistry.command.api.InviteUserToOrganization;
 import net.maritimecloud.serviceregistry.command.organization.membership.Membership;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
+import net.maritimecloud.serviceregistry.query.OrganizationMembershipQueryRepository;
 import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.repository.Repository;
 import org.springframework.stereotype.Component;
@@ -51,6 +52,10 @@ public class OrganizationCommandHandler {
     private Repository<ServiceInstance> serviceInstanceRepository;
     @Resource
     private Repository<Membership> membershipRepository;
+    
+    // HACK! TODO: probably should NOT be using a view-model from a command context!
+    @Resource
+    OrganizationMembershipQueryRepository membershipQueryRepository;
 
     public void setOrganizationRepository(Repository<Organization> organizationRepository) {
         this.repository = organizationRepository;
@@ -85,9 +90,19 @@ public class OrganizationCommandHandler {
         if (organization.isDeleted()) {
             throw new IllegalArgumentException("Organization exists no more. " + command.getOrganizationId());
         }
+        
+        if(isAlreadyAMember(command)){
+            // dublicate registration - just ignore
+            return;
+        }
 
         Membership membership = new Membership(command.getMembershipId(), command.getOrganizationId(), command.getUsername());
         membershipRepository.add(membership);
+    }
+
+    private boolean isAlreadyAMember(InviteUserToOrganization command) {
+        // (HACK: probably should NOT be using a public query-model for this verification)
+        return membershipQueryRepository.findByOrganizationIdAndUsername(command.getOrganizationId().identifier(), command.getUsername()) != null;
     }
 
     @CommandHandler
