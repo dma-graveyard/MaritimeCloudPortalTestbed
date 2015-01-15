@@ -15,17 +15,12 @@
 package net.maritimecloud.portal.infrastructure.security.shiro;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
-import net.maritimecloud.portal.infrastructure.security.shiro.Error.AuthCode;
-
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
 import org.apache.shiro.web.util.WebUtils;
-import org.eclipse.jetty.util.ByteArrayISO8859Writer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

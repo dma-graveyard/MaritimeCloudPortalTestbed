@@ -33,7 +33,7 @@ import org.apache.shiro.util.ByteSource;
 /**
  * Implementation of the Shiro Realm integrating into the MaritimeCloud identity repository.
  * <p>
- * The users in this realm uses password encryption. Shiro configuration must match this encryption algorithm.
+ * The users in this realm uses password encryption. Shiro configuration (shiro.ini) must match this encryption algorithm.
  * <p>
  * @author Christoffer Børrild
  * @see EncryptionService
@@ -68,7 +68,7 @@ public class MaritimeCloudIdentityRealm extends AuthorizingRealm {
 
             // Lookup user
             User user = identityApplicationService().user(username);
-            
+
             if (user == null || !user.isActive()) {
                 throw new UnknownAccountException("Could not authenticate with given credentials");
             }

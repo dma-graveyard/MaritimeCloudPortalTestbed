@@ -253,7 +253,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
             .then(function (respone) {
               var data = respone.data;
               console.log("Login response data: ", data);
-              Session.create(data.id, data.username, data.role);
+              Session.create(data.id, data.username, data.roles);
             });
       };
 
@@ -278,12 +278,53 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       this.isAuthenticated = function () {
         return !!Session.userId;
       };
+
+      /* finds the intersection of 
+       * two arrays in a simple fashion.  
+       *
+       * PARAMS
+       *  a - first array, must already be sorted
+       *  b - second array, must already be sorted
+       *
+       * NOTES
+       *
+       *  Should have O(n) operations, where n is 
+       *    n = MIN(a.length(), b.length())
+       */
+      var intersect_safe = function (a, b)
+      {
+        var ai = 0, bi = 0;
+        var result = new Array();
+
+        while (ai < a.length && bi < b.length)
+        {
+          if (a[ai] < b[bi]) {
+            ai++;
+          }
+          else if (a[ai] > b[bi]) {
+            bi++;
+          }
+          else /* they're equal */
+          {
+            result.push(a[ai]);
+            ai++;
+            bi++;
+          }
+        }
+
+        return result;
+      };
+
+      var intersects = function (set1, set2) {
+        return set1 && set2 && intersect_safe(set1, set2).length;
+      };
+
+      /* true, if user possess any of the menthioned roles */
       this.isAuthorized = function (authorizedRoles) {
         if (!angular.isArray(authorizedRoles)) {
           authorizedRoles = [authorizedRoles];
         }
-        return (self.isAuthenticated() &&
-            authorizedRoles.indexOf(Session.userRole) !== -1);
+        return self.isAuthenticated() && intersects(Session.userRoles, authorizedRoles);
       };
       this.logout = function () {
         console.log("Logging out...");
@@ -301,28 +342,28 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
     // Session
     // the user’s session information
     .service('Session', function () {
-      this.create = function (sessionId, userId, userRole) {
+      this.create = function (sessionId, userId, userRoles) {
         this.id = sessionId;
         this.userId = userId;
-        this.userRole = userRole;
-        this.user = {name: userId, role: userRole};
+        this.userRoles = userRoles;
+        this.user = {name: userId, role: userRoles};
       };
       this.importFrom = function (userSession) {
         this.id = userSession.id;
         this.userId = userSession.userId;
-        this.userRole = userSession.userRole;
+        this.userRoles = userSession.userRoles;
         this.user = userSession.user;
       };
       this.exportTo = function (userSession) {
         userSession.id = this.id;
         userSession.userId = this.userId;
-        userSession.userRole = this.userRole;
+        userSession.userRoles = this.userRoles;
         userSession.user = this.user;
       };
       this.destroy = function () {
         this.id = null;
         this.userId = null;
-        this.userRole = null;
+        this.userRoles = null;
         this.user = null;
       };
       return this;

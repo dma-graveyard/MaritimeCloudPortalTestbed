@@ -14,6 +14,8 @@
  */
 package net.maritimecloud.portal.resource;
 
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -89,7 +91,7 @@ public class AuthenticationResource {
         if (credentials == null) {
             throw new IllegalArgumentException();
         }
-        
+
         if (credentials.getUsername() == null) {
             throw new IllegalArgumentException();
         }
@@ -164,23 +166,12 @@ public class AuthenticationResource {
     }
 
     private SubjectDTO createSubject(User user) {
-        return new SubjectDTO(user.username(), extractOneRoleFromUserRolesHACK(user));
-//        if (subject.hasRole(SailorRole.class)) {
-//            SailorRole sailor = realmRepository.getSailor(subject.getUserId());
-//            subject.setShipMmsi("" + sailor.getVessel().getMmsi());
-//        }
-//        String[] rolesJson = new String[] { user.getRole().getLogicalName() };
-//        subject.setProjection("EPSG:900913");
-//        subject.setUserName(user.getUserName());
-//        subject.setPermissions(rolesJson);
-//        subject.setOsm(osm);
-//        logger.debug("details() : {}", subject);
+        return new SubjectDTO(user.username(), extractRolenamesAsArrayOfStrings(user));
     }
 
-    private String extractOneRoleFromUserRolesHACK(User user) {
-        LOG.debug("Only using single role from user roles !!!! TODO: fix this", new Exception());
-        String role = user.userRoles().all().iterator().next().toString();
-        return role;
+    private String[] extractRolenamesAsArrayOfStrings(User user) {
+        Set<String> roles = user.userRoles().all().stream().map(role -> role.name()).collect(Collectors.toSet());
+        return roles.toArray(new String[0]);
     }
 
     /**
@@ -189,14 +180,14 @@ public class AuthenticationResource {
     public static class SubjectDTO {
 
         private String username;
-        private String role;
+        private String[] roles;
 
         public SubjectDTO() {
         }
 
-        public SubjectDTO(String username, String role) {
+        public SubjectDTO(String username, String[] roles) {
             this.username = username;
-            this.role = role;
+            this.roles = roles;
         }
 
         public String getUsername() {
@@ -207,12 +198,12 @@ public class AuthenticationResource {
             this.username = username;
         }
 
-        public String getRole() {
-            return role;
+        public String[] getRoles() {
+            return roles;
         }
 
-        public void setRole(String role) {
-            this.role = role;
+        public void setRoles(String[] roles) {
+            this.roles = roles;
         }
     }
 

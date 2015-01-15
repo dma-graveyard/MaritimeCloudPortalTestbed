@@ -27,10 +27,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * TODO: move back into test sources once a durable persistence mechanism has been introduced
- * 
- * In Memory implementation of the UserRepository for test purposes and as demo 
- * until a durable persistence mechanism is introduced.
- * 
+ * <p>
+ * In Memory implementation of the UserRepository for test purposes and as demo until a durable persistence mechanism is introduced.
+ * <p>
  * @author Christoffer Børrild
  */
 public class InMemoryUserRepository implements UserRepository, CleanableStore {
@@ -42,13 +41,13 @@ public class InMemoryUserRepository implements UserRepository, CleanableStore {
     public InMemoryUserRepository() {
         repository = new HashMap<>();
         initWithDummyUsers();
-        LOG.warn("\n\n Using InMemoryUserRepository !!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n"+repository);
+        LOG.warn("\n\n Using InMemoryUserRepository !!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n" + repository);
     }
 
     private void initWithDummyUsers() {
-        add(activate(new User("admin", "test", "admin@dma.dk", Role.ADMIN/*, Role.USER*/)));
+        add(activate(new User("admin", "test", "admin@dma.dk", Role.ADMIN, Role.USER)));
         add(activate(new User("Tintin", "test", "tintin@dma.org")));
-        add(activate(new User("Haddock", "test", "hadock@dma.org")));
+        add(activate(new User("Haddock", "test", "haddock@dma.org")));
     }
 
     @Override
@@ -79,7 +78,7 @@ public class InMemoryUserRepository implements UserRepository, CleanableStore {
     @Override
     public List<User> usersWithUsernameMatching(String usernamePattern) {
         List<User> users = new ArrayList<>();
-        repository().values().stream().filter((user) -> (user.username().matches("(?iu).*"+usernamePattern+".*"))).forEach((user) -> {
+        repository().values().stream().filter((user) -> (user.username().matches("(?iu).*" + usernamePattern + ".*"))).forEach((user) -> {
             users.add(user);
         });
         return users;
@@ -107,7 +106,6 @@ public class InMemoryUserRepository implements UserRepository, CleanableStore {
 //        }
 //        return null;
 //    }
-    
     @Override
     public void clean() {
         repository().clear();
@@ -125,8 +123,9 @@ public class InMemoryUserRepository implements UserRepository, CleanableStore {
     @Override
     public User get(long userId) throws UnknownUserException {
         for (User user : repository().values()) {
-            if(user.id() == userId)
+            if (user.id() == userId) {
                 return user;
+            }
         }
         throw new UnknownUserException(userId);
     }
