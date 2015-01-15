@@ -16,6 +16,7 @@ package net.maritimecloud.serviceregistry.command.organization;
 
 import net.maritimecloud.serviceregistry.query.AliasRegistryEntry;
 import java.util.List;
+import javax.transaction.Transactional;
 import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
 import net.maritimecloud.common.infrastructure.axon.AbstractAxonCqrsIT;
@@ -126,13 +127,14 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
     @Test
     public void inviteUser() throws Throwable {
         commandGateway().sendAndWait(createOrganizationCommand);
-        commandGateway().sendAndWait(new InviteUserToOrganization(organizationId, new MembershipId("A_MEMBERSHIP_ID"), "A_USER"));
+        commandGateway().sendAndWait(new InviteUserToOrganization(organizationId, new MembershipId("A_MEMBERSHIP_ID_"+generateIdentity()), "A_USER"));
         OrganizationMembershipEntry entry = organizationMemberQueryRepository.findByOrganizationIdAndUsername(organizationId.identifier(), "A_USER");
         assertEquals(organizationId.identifier(), entry.getOrganizationId());
         assertEquals("A_USER", entry.getUsername());
     }
 
     @Test
+    @Transactional
     public void addOrganizationAlias() {
         
         // Given an organization (with a Service Specification and a provided Service Instance)
