@@ -15,6 +15,7 @@
 package net.maritimecloud.serviceregistry.query;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
 import net.maritimecloud.serviceregistry.command.api.OrganizationRevokedUserMembership;
 import net.maritimecloud.serviceregistry.command.api.UserInvitedToOrganization;
 import org.axonframework.eventhandling.annotation.EventHandler;
@@ -32,6 +33,9 @@ public class OrganizationMembershipListener {
 
     @Resource
     private OrganizationMembershipQueryRepository organizationMemberQueryRepository;
+
+    @Resource
+    private EntityManager entityManager;
 
     public OrganizationMembershipListener() {
     }
@@ -60,6 +64,13 @@ public class OrganizationMembershipListener {
         OrganizationMembershipEntry entry = organizationMemberQueryRepository.findOne(event.getMembershipId().identifier());
         if (entry != null) {
             organizationMemberQueryRepository.delete(entry);
+
+            // GOTCHA: one of the painful experiences that may take you a while to realize (as well as debug) is:
+            // Since this view has a unique key constraint, we need to flush now in order to avoid
+            // constraints violations later on in event-replaying scenarios where a similar entry
+            // is re-inserted before commit!!! If we do not flush the delete, the constraint may 
+            // still see the existing row and complaint.  
+            entityManager.flush();
         }
     }
 

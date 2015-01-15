@@ -15,6 +15,7 @@
 package net.maritimecloud.serviceregistry.query;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
 import net.maritimecloud.serviceregistry.command.api.OrganizationAliasAdded;
 import net.maritimecloud.serviceregistry.command.api.OrganizationAliasRemoved;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAdded;
@@ -38,6 +39,9 @@ public class AliasRegistryListener {
 
     @Resource
     private AliasRegistryQueryRepository aliasRegistryQueryRepository;
+
+    @Resource
+    private EntityManager entityManager;
 
     public AliasRegistryListener() {
     }
@@ -65,6 +69,7 @@ public class AliasRegistryListener {
                 event.getAlias()
         );
         aliasRegistryQueryRepository.delete(aliasEntry);
+        flushAfterDelete();
     }
 
     @EventHandler
@@ -93,10 +98,20 @@ public class AliasRegistryListener {
                 event.getAlias()
         );
         aliasRegistryQueryRepository.delete(aliasEntry);
+        flushAfterDelete();
     }
 
     private void save(AliasRegistryEntry entry) {
         aliasRegistryQueryRepository.save(entry);
+    }
+
+    private void flushAfterDelete() {
+        // GOTCHA: one of the painful experiences that may take you a while to realize (as well as debug) is:
+        // Since this view has a unique key constraint, we need to flush now in order to avoid
+        // constraints violations later on in event-replaying scenarios where a similar entry
+        // is re-inserted before commit!!! If we do not flush the delete, the constraint may 
+        // still see the existing row and complaint.  
+        entityManager.flush();
     }
 
 }
