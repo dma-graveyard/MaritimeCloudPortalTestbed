@@ -24,6 +24,7 @@ import net.maritimecloud.portal.domain.model.identity.UnknownUserException;
 import net.maritimecloud.portal.domain.model.identity.User;
 import net.maritimecloud.portal.domain.model.security.UserNotLoggedInException;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.subject.Subject;
 import org.axonframework.auditing.AuditDataProvider;
 import org.axonframework.commandhandling.CommandMessage;
@@ -50,6 +51,9 @@ public class ShiroAuditDataProvider implements AuditDataProvider {
             String userHost = subject.getSession().getHost();
             metaData.put(UserMetaData.USER_HOST, userHost);
 
+        } catch (UnavailableSecurityManagerException ex) {
+            Logger.getLogger(AxonConfig.class.getName()).log(Level.WARNING, null, ex);
+            throw ex;            
         } catch (UserNotLoggedInException | UnknownUserException ex) {
             Logger.getLogger(AxonConfig.class.getName()).log(Level.WARNING, null, ex);
         }

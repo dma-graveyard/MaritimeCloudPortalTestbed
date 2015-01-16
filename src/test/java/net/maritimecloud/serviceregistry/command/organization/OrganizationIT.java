@@ -84,9 +84,13 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
     }
 
     @Test
-    public void testOrganization() {
+    public void createOrganizationWithOwnerAndChangeName() {
 
         commandGateway().sendAndWait(createOrganizationCommand);
+        
+        OrganizationMembershipEntry membership = organizationMemberQueryRepository.findByOrganizationIdAndUsername(organizationId.identifier(), "integration-tester");
+        assertNotNull(membership);
+        
         commandGateway().sendAndWait(new ChangeOrganizationNameAndSummary(organizationId, ANOTHER_NAME, ANOTHER_SUMMARY));
 
         try {

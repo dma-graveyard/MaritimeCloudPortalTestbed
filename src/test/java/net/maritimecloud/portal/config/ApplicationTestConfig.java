@@ -16,11 +16,13 @@ package net.maritimecloud.portal.config;
 
 import java.io.IOException;
 import javax.annotation.Resource;
+import net.maritimecloud.portal.domain.infrastructure.axon.ShiroAuditDataProvider;
 import net.maritimecloud.portal.domain.model.identity.UserRepository;
 import net.maritimecloud.portal.infrastructure.mail.Mail;
 import net.maritimecloud.portal.infrastructure.mail.MailAdapter;
 import net.maritimecloud.portal.infrastructure.mail.SmtpMailAdapter;
 import net.maritimecloud.portal.infrastructure.persistence.InMemoryUserRepository;
+import org.axonframework.auditing.AuditDataProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -33,7 +35,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 @Configuration
 @Import(value = {ApplicationConfig.class})
 public class ApplicationTestConfig {
-    
+
     @Resource
     MailSender mailSender;
 
@@ -44,7 +46,7 @@ public class ApplicationTestConfig {
 
     @Bean
     public MailAdapter mailAdapter() throws IOException {
-        
+
         if (System.getenv("mail.smtp.password") != null) {
             return new SmtpMailAdapter((JavaMailSender) mailSender);
         } else {
@@ -53,6 +55,11 @@ public class ApplicationTestConfig {
                 System.out.println("Send (dummy mail adapter): " + mail);
             };
         }
+    }
+
+    @Bean
+    public AuditDataProvider auditDataProvider() {
+        return new IntergrationTestDummyAuditDataProvider();
     }
 
 }

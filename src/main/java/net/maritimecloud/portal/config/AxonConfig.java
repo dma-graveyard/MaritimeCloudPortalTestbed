@@ -38,6 +38,7 @@ import net.maritimecloud.serviceregistry.command.organization.SetupOrganizationO
 import net.maritimecloud.serviceregistry.command.organization.membership.Membership;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
+import org.axonframework.auditing.AuditDataProvider;
 import org.axonframework.auditing.AuditingInterceptor;
 import org.axonframework.commandhandling.CommandHandlerInterceptor;
 import org.axonframework.eventhandling.AnnotationClusterSelector;
@@ -81,13 +82,19 @@ public class AxonConfig {
         return commandHandlerInterceptors;
     }
 
-    private AuditingInterceptor auditingInterceptor() {
+    @Bean
+    public AuditingInterceptor auditingInterceptor() {
         final AuditingInterceptor auditingInterceptor = new AuditingInterceptor();
 
         // Attach user info to all events:
-        auditingInterceptor.setAuditDataProvider(new ShiroAuditDataProvider());
+        auditingInterceptor.setAuditDataProvider(auditDataProvider());
 
         return auditingInterceptor;
+    }
+    
+    @Bean
+    public AuditDataProvider auditDataProvider() {
+        return new ShiroAuditDataProvider();
     }
 
     @Bean
