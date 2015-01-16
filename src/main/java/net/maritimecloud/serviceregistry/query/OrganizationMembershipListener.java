@@ -70,7 +70,9 @@ public class OrganizationMembershipListener {
             // constraints violations later on in event-replaying scenarios where a similar entry
             // is re-inserted before commit!!! If we do not flush the delete, the constraint may 
             // still see the existing row and complaint.  
-            entityManager.flush();
+            if (entityManager.isJoinedToTransaction()) {
+                entityManager.flush();
+            }
         }
     }
 

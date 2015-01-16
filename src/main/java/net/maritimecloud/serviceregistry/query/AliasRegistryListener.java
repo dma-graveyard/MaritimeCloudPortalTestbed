@@ -24,8 +24,6 @@ import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.domain.service.AliasGroups;
 import org.axonframework.eventhandling.annotation.EventHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -34,8 +32,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class AliasRegistryListener {
-
-    private final static Logger logger = LoggerFactory.getLogger(AliasRegistryListener.class);
 
     @Resource
     private AliasRegistryQueryRepository aliasRegistryQueryRepository;
@@ -85,13 +81,6 @@ public class AliasRegistryListener {
 
     @EventHandler
     public void on(OrganizationAliasRemoved event) {
-
-        Iterable<AliasRegistryEntry> findAll = aliasRegistryQueryRepository.findAll();
-        for (AliasRegistryEntry entry : findAll) {
-            System.out.println("" + entry);
-
-        }
-
         AliasRegistryEntry aliasEntry = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndAlias(
                 AliasGroups.USERS_AND_ORGANIZATIONS.name(),
                 OrganizationId.class.getName(),
@@ -111,7 +100,9 @@ public class AliasRegistryListener {
         // constraints violations later on in event-replaying scenarios where a similar entry
         // is re-inserted before commit!!! If we do not flush the delete, the constraint may 
         // still see the existing row and complaint.  
-        entityManager.flush();
+        if (entityManager.isJoinedToTransaction()) {
+            entityManager.flush();
+        }
     }
 
 }
