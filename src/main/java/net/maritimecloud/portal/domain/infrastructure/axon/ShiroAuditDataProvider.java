@@ -41,14 +41,14 @@ public class ShiroAuditDataProvider implements AuditDataProvider {
         try {
             
             long userId = ApplicationServiceRegistry.authenticationUtil().getUserId();
-            metaData.put("USERID", userId);
+            metaData.put(UserMetaData.USERID, userId);
             
             User user = ApplicationServiceRegistry.identityApplicationService().user(userId);
-            metaData.put("USERNAME", user.username());
+            metaData.put(UserMetaData.USERNAME, user.username());
 
             final Subject subject = SecurityUtils.getSubject();
             String userHost = subject.getSession().getHost();
-            metaData.put("USERHOST", userHost);
+            metaData.put(UserMetaData.USER_HOST, userHost);
 
         } catch (UserNotLoggedInException | UnknownUserException ex) {
             Logger.getLogger(AxonConfig.class.getName()).log(Level.WARNING, null, ex);
