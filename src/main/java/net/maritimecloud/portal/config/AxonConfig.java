@@ -14,6 +14,7 @@
  */
 package net.maritimecloud.portal.config;
 
+import net.maritimecloud.portal.domain.infrastructure.axon.ShiroAuditDataProvider;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,6 @@ import org.axonframework.commandhandling.gateway.CommandGatewayFactoryBean;
 import org.axonframework.commandhandling.annotation.AggregateAnnotationCommandHandler;
 import org.axonframework.contextsupport.spring.AnnotationDriven;
 import org.axonframework.eventhandling.EventBus;
-import org.axonframework.eventhandling.SimpleEventBus;
 import org.axonframework.eventsourcing.EventSourcingRepository;
 import org.axonframework.eventstore.EventStore;
 import org.axonframework.repository.Repository;
@@ -38,6 +38,8 @@ import net.maritimecloud.serviceregistry.command.organization.SetupOrganizationO
 import net.maritimecloud.serviceregistry.command.organization.membership.Membership;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
+import org.axonframework.auditing.AuditingInterceptor;
+import org.axonframework.commandhandling.CommandHandlerInterceptor;
 import org.axonframework.eventhandling.AnnotationClusterSelector;
 import org.axonframework.eventhandling.ClusterSelector;
 import org.axonframework.eventhandling.ClusteringEventBus;
@@ -68,7 +70,24 @@ public class AxonConfig {
 
     @Bean
     public CommandBus commandBus() {
-        return new SimpleCommandBus();
+        final SimpleCommandBus commandBus = new SimpleCommandBus();
+        commandBus.setHandlerInterceptors(commandHandlerInterceptors());
+        return commandBus;
+    }
+
+    private List<CommandHandlerInterceptor> commandHandlerInterceptors() {
+        List<CommandHandlerInterceptor> commandHandlerInterceptors = new ArrayList<>();
+        commandHandlerInterceptors.add(auditingInterceptor());
+        return commandHandlerInterceptors;
+    }
+
+    private AuditingInterceptor auditingInterceptor() {
+        final AuditingInterceptor auditingInterceptor = new AuditingInterceptor();
+
+        // Attach user info to all events:
+        auditingInterceptor.setAuditDataProvider(new ShiroAuditDataProvider());
+
+        return auditingInterceptor;
     }
 
     @Bean
