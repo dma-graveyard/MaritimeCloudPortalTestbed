@@ -17,7 +17,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
       }])
 
-    .controller('DashboardContextController', ['$scope', '$stateParams', 'OrganizationContext', 'UserContext',
+    .controller('DashboardController', ['$scope', '$stateParams', 'OrganizationContext', 'UserContext',
       'AlmanacOrganizationService', 'AlmanacOperationalServiceService', 'AlmanacServiceSpecificationService', 'AlmanacServiceInstanceService', 'UserService',
       function ($scope, $stateParams, OrganizationContext, UserContext,
           AlmanacOrganizationService, AlmanacOperationalServiceService, AlmanacServiceSpecificationService, AlmanacServiceInstanceService, UserService
@@ -25,7 +25,6 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
         $scope.organizationMemberships = UserContext.organizationMemberships();
         $scope.currentOrganization = OrganizationContext.currentOrganization();
-        $scope.$stateParams = $stateParams;
         $scope.orderProp = 'organization.name';
 
         $scope.statistics = {
@@ -47,7 +46,23 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
           $scope.statistics.users = list.length;
         });
 
+        $scope.isCurrentContext = function (organization) {
+          return organization === OrganizationContext.currentOrganization();
+        };
+        $scope.hasOrganizations = function () {
+          return $scope.organizationMemberships.length > 0;
+        };
 
+      }])
+
+    .controller('DashboardContextController', ['$scope', '$stateParams', 'OrganizationContext', 'UserContext',
+      function ($scope, $stateParams, OrganizationContext, UserContext
+          ) {
+
+        $scope.organizationMemberships = UserContext.organizationMemberships();
+        $scope.currentOrganization = OrganizationContext.currentOrganization();
+        $scope.$stateParams = $stateParams;
+        $scope.orderProp = 'organization.name';
 
         $scope.isCurrentContext = function (organization) {
           return organization === OrganizationContext.currentOrganization();
@@ -111,6 +126,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
                 function (data) {
                   $location.path('/orgs/' + $scope.organization.organizationId).replace();
                   $scope.message = ["Organization created: " + data];
+//FIXME: update users org-list some other how                  
                   OrganizationContext.updateUserOrganizationsList($scope.currentUser);
                 },
                 function (error) {

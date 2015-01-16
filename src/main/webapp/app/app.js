@@ -126,7 +126,7 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
           name: 'dashboard',
           url: "/dashboard",
           templateUrl: 'partials/dashboard.html',
-          controller: 'DashboardContextController',
+          controller: 'DashboardController',
         },
         {
           name: 'users',
