@@ -52,7 +52,7 @@ public class CommonFixture {
     public static final Coverage ANOTHER_COVERAGE = new Coverage("[{\"type\":\"rectangle\",\"topLeftLatitude\":56.05976947910657,\"topLeftLongitude\":9.38232421875,\"buttomRightLatitude\":55.429013452407396,\"buttomRightLongitude\":11.1181640625},{\"type\":\"circle\",\"center-latitude\":55.29162848682989,\"center-longitude\":11.074218749999998,\"radius\":49552.58124628375}]");
     public static final String A_URL = "http://a-url.com";
     public static final String ANOTHER_URL = "http://another-url.com";
-    
+
     public static final OrganizationId anOrganizationId = new OrganizationId(AN_ORG_ID);
     public static final ServiceSpecificationId aServiceSpecificationId = new ServiceSpecificationId(A_SPEC_ID);
     public static final ServiceInstanceId aServiceInstanceId = new ServiceInstanceId(AN_INSTANCE_ID);
@@ -69,7 +69,7 @@ public class CommonFixture {
     public static ServiceInstanceCreated serviceInstanceCreatedEvent() {
         return new ServiceInstanceCreated(anOrganizationId, aServiceSpecificationId, aServiceInstanceId, A_NAME, A_SUMMARY, A_COVERAGE, A_SERVICE_TYPE);
     }
-    
+
     public static String generateIdentity() {
         return UUID.randomUUID().toString();
     }
@@ -95,7 +95,7 @@ public class CommonFixture {
     }
 
     public static CreateOrganization generateCreateOrganizationCommand(String organizationIdentity) {
-        return new CreateOrganization(generateOrganizationId(organizationIdentity), AN_ALIAS, A_NAME, A_SUMMARY, A_URL);
+        return new CreateOrganization(generateOrganizationId(organizationIdentity), AN_ALIAS + organizationIdentity, A_NAME, A_SUMMARY, A_URL);
     }
 
     public static PrepareServiceSpecification aPrepareServiceSpecificationCommand(

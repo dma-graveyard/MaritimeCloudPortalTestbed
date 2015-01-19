@@ -104,7 +104,7 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
         assertEquals(ANOTHER_NAME, entry.getName());
         assertEquals(ANOTHER_SUMMARY, entry.getSummary());
 
-        commandGateway().send(new CreateOrganization(organizationId2, AN_ALIAS, A_NAME, A_SUMMARY, A_URL));
+        commandGateway().send(new CreateOrganization(organizationId2, AN_ALIAS+organizationId2.identifier(), A_NAME, A_SUMMARY, A_URL));
         assertEquals(2, organizationQueryRepository.count());
     }
 
@@ -141,6 +141,8 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
     @Transactional
     public void addOrganizationAlias() {
         
+        // TODO: clean up this terribly messy test some day
+        
         // Given an organization (with a Service Specification and a provided Service Instance)
         commandGateway().sendAndWait(createOrganizationCommand);
         
@@ -150,28 +152,37 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
                 OrganizationId.class.getName(),
                 organizationId.identifier());
         int aliasCount = aliasesAfterInit.size();
+        System.out.println("aliasesAfterInit: \n"+aliasesAfterInit);
 
         // When
-        commandGateway().sendAndWait(new AddOrganizationAlias(organizationId, AN_ALIAS+organizationId.identifier()));
+        commandGateway().sendAndWait(new AddOrganizationAlias(organizationId, AN_ALIAS+"_2_"+organizationId.identifier()));
 
         // Then
         AliasRegistryEntry instance = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndAlias(
                 AliasGroups.USERS_AND_ORGANIZATIONS.name(),
                 OrganizationId.class.getName(),
-                AN_ALIAS+organizationId.identifier());
+                AN_ALIAS+"_2_"+organizationId.identifier());
         assertNotNull(instance);
         assertEquals(organizationId.identifier(), instance.getTargetId());
-        assertEquals(AN_ALIAS+organizationId.identifier(), instance.getAlias());
+        assertEquals(AN_ALIAS+"_2_"+organizationId.identifier(), instance.getAlias());
+        // And
+        List<AliasRegistryEntry> instances = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndTargetId(
+                AliasGroups.USERS_AND_ORGANIZATIONS.name(),
+                OrganizationId.class.getName(),
+                organizationId.identifier());
+        System.out.println("aliasesAfterInsert: \n"+instances);
+        assertEquals(aliasCount + 1, instances.size());
 
         // When add another
         commandGateway().sendAndWait(new AddOrganizationAlias(organizationId, ANOTHER_ALIAS+organizationId.identifier()));
 
         // then
-        List<AliasRegistryEntry> instances = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndTargetId(
+        List<AliasRegistryEntry> instances2 = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndTargetId(
                 AliasGroups.USERS_AND_ORGANIZATIONS.name(),
                 OrganizationId.class.getName(),
                 organizationId.identifier());
-        assertEquals(aliasCount + 2, instances.size());
+        System.out.println("aliasesAfterAnotherInsert: \n"+instances2);
+        assertEquals(aliasCount + 2, instances2.size());
 
         // when add again
         commandGateway().sendAndWait(new AddOrganizationAlias(organizationId, ANOTHER_ALIAS+organizationId.identifier()));
@@ -231,18 +242,18 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
         commandGateway().sendAndWait(provideServiceInstanceCommand);
 
         // When
-        commandGateway().sendAndWait(new AddServiceInstanceAlias(organizationId, serviceInstanceId, AN_ALIAS));
+        commandGateway().sendAndWait(new AddServiceInstanceAlias(organizationId, serviceInstanceId, AN_ALIAS + serviceInstanceId.identifier()));
 
         // Then
         AliasRegistryEntry instance = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndAlias(
                 organizationId.identifier(),
                 ServiceInstanceId.class.getName(),
-                AN_ALIAS);
+                AN_ALIAS + serviceInstanceId.identifier());
         assertNotNull(instance);
         assertEquals(serviceInstanceId.identifier(), instance.getTargetId());
-        assertEquals(AN_ALIAS, instance.getAlias());
+        assertEquals(AN_ALIAS + serviceInstanceId.identifier(), instance.getAlias());
 
-        commandGateway().sendAndWait(new AddServiceInstanceAlias(organizationId, serviceInstanceId, ANOTHER_ALIAS));
+        commandGateway().sendAndWait(new AddServiceInstanceAlias(organizationId, serviceInstanceId, ANOTHER_ALIAS + serviceInstanceId.identifier()));
         List<AliasRegistryEntry> instances = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndTargetId(
                 organizationId.identifier(),
                 ServiceInstanceId.class.getName(),
