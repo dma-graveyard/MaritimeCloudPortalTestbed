@@ -170,6 +170,11 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         return resource;
       }])
 
+    .factory('ActivityService', ['$resource', 'serviceBaseUrl',
+      function ($resource, serviceBaseUrl) {
+        return $resource(serviceBaseUrl + '/rest/api/activity');
+      }])
+
     .factory('AlmanacOrganizationService', ['$resource', 'serviceBaseUrl',
       function ($resource, serviceBaseUrl) {
         return $resource(serviceBaseUrl + '/rest/api/almanac/organization/:organizationId');

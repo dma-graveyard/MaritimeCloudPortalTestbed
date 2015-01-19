@@ -75,13 +75,19 @@
                     This were your last actions:
                 </p>
                 <ul>
+                    <!-- ITEM: Users ORGANIZATIONS -->
+                    <li ng-repeat="userActivity in userActivities| orderBy:orderProp">
+                        {{userActivity.date}}: {{userActivity.summary}}
+                    </li>
+                </ul>
+<!--                <ul>
                     <li>
                         <i>Two days ago</i>: Added new asset: Kiva, (træskib)
                     </li>
                     <li>
                         <i>Three Weeks ago</i>: Accepted to join "Danish Maritime Authority"
                     </li>
-                </ul>
+                </ul>-->
                 This has happened in your organizations:
                 <ul>
                     <li>
