@@ -14,6 +14,7 @@
  */
 package net.maritimecloud.portal;
 
+import net.maritimecloud.portal.resource.ActivityResource;
 import net.maritimecloud.portal.resource.AlmanacResource;
 import net.maritimecloud.portal.resource.OrganizationResource;
 import net.maritimecloud.portal.resource.AuthenticationResource;
@@ -36,6 +37,7 @@ public class JerseyConfig extends ResourceConfig {
         // TODO: scanning does not appear to work with java jar launcher (as opposed to 'mvn springboot:run' which does) !?
         //       Explicitly register all resources here instead :-(
         //packages("net.maritimecloud.portal.resource");
+        register(ActivityResource.class);
         register(AlmanacResource.class);
         register(AuthenticationResource.class);
         register(GenericCommandResource.class);
