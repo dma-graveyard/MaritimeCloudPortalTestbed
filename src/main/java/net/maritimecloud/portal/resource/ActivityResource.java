@@ -15,15 +15,20 @@
 package net.maritimecloud.portal.resource;
 
 import java.util.Date;
+import java.util.List;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
-import net.maritimecloud.serviceregistry.query.ActivityEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 /**
  * The AlmanacResource resembles the publicly available API part of the RegistryService.
@@ -40,18 +45,21 @@ public class ActivityResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/")
-    public Iterable<ActivityEntry> getOrganizationMembers(
+    public Page getActivities(
             @QueryParam("username") String username,
-            @QueryParam("organizationId") String organizationId,
-            @QueryParam("dateTime") Date dateTime
+            @QueryParam("organizationIds") List<String> organizationIds,
+            @QueryParam("dateTime") long dateTime,
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("10") int size
     ) {
-        if (!username.isEmpty()) {
-            return ApplicationServiceRegistry.activityEntryQueryRepository().findByUsername(username);
+        Pageable pageable = new PageRequest(page, size, new Sort(Sort.Direction.DESC, "dateTime"));
+        if (username != null && !username.isEmpty()) {
+            return ApplicationServiceRegistry.activityEntryQueryRepository().findByUsername(username, pageable);
         }
-        if (!organizationId.isEmpty()) {
-            return ApplicationServiceRegistry.activityEntryQueryRepository().findByOrganizationId(organizationId);
+        if (organizationIds != null && !organizationIds.isEmpty()) {
+            return ApplicationServiceRegistry.activityEntryQueryRepository().findByOrganizationIdIn(organizationIds, pageable);
         }
-        return ApplicationServiceRegistry.activityEntryQueryRepository().findByDateTime(dateTime);
+        return ApplicationServiceRegistry.activityEntryQueryRepository().findByIsPublicTrueAndDateTimeAfter(new Date(dateTime), pageable);
     }
 
 }

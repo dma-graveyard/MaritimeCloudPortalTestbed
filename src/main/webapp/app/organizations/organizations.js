@@ -45,9 +45,6 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
         UserService.query(function (list) {
           $scope.statistics.users = list.length;
         });
-        ActivityService.query({username: UserContext.currentUser().name}, function (list) {
-          $scope.userActivities = list;
-        });
 
         $scope.isCurrentContext = function (organization) {
           return organization === OrganizationContext.currentOrganization();
@@ -55,6 +52,85 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
         $scope.hasOrganizations = function () {
           return $scope.organizationMemberships.length > 0;
         };
+
+      }])
+
+    .controller('UserActivitiesController', ['$scope', '$stateParams', 'OrganizationContext', 'UserContext', 'ActivityService',
+      function ($scope, $stateParams, OrganizationContext, UserContext, ActivityService
+          ) {
+
+        $scope.orderProp = 'dateTime';
+        $scope.pageSize = 10;
+        ActivityService.get({username: UserContext.currentUser().name, page: 0, size: $scope.pageSize}, function (page) {
+          //console.log(page);
+          /* page format example: {
+           content: Array[10],
+           first: true,
+           firstPage: true,
+           last: false,
+           lastPage: false,
+           number: 0,
+           numberOfElements: 10,
+           size: 10,
+           sort: Array[1],
+           totalElements: 26,
+           totalPages: 3,
+           $promise: Object,
+           $resolved: true
+           } */
+          $scope.userActivities = page.content;
+          $scope.userActivitiesPage = page;
+        });
+
+        var organizationIds = [];
+        UserContext.organizationMemberships().$promise.then(
+            function (memberships) {
+              memberships.forEach(function (membership) {
+                organizationIds.push(membership.organizationId);
+              });
+              ActivityService.get({organizationIds: organizationIds, page: 0, size: $scope.pageSize}, function (page) {
+                $scope.userOrgsActivities = page.content;
+                $scope.userOrgsActivitiesPage = page;
+                console.log("Orgs:", page);
+              });
+            }
+        );
+    
+        var periodOf30Days = 1000*60*60*24*30;
+        var dateLast30Days = Date.now() - periodOf30Days;    
+        ActivityService.get({dateTime: dateLast30Days, page: 0, size: $scope.pageSize}, function (page) {
+          $scope.publicActivities = page.content;
+          $scope.publicActivitiesPage = page;
+        });
+
+      }])
+
+    .controller('ActivityController', ['$scope', '$stateParams', 'OrganizationContext', 'UserContext', 'ActivityService',
+      'AlmanacOrganizationService', 'AlmanacOperationalServiceService', 'AlmanacServiceSpecificationService', 'AlmanacServiceInstanceService',
+      function ($scope, $stateParams, OrganizationContext, UserContext, ActivityService,
+          AlmanacOrganizationService, AlmanacOperationalServiceService, AlmanacServiceSpecificationService, AlmanacServiceInstanceService
+
+          ) {
+
+//        console.log($scope.userActivity);
+
+        if ($scope.activity.targetType === 'ServiceInstanceId') {
+          $scope.serviceInstance = AlmanacServiceInstanceService.get({serviceInstanceId: $scope.activity.targetId}, function (si) {
+            $scope.serviceInstance = si;
+          });
+        }
+
+        if ($scope.activity.targetType === 'ServiceSpecificationId') {
+          $scope.serviceSpecification = AlmanacServiceInstanceService.get({serviceSpecificationId: $scope.activity.targetId}, function (ss) {
+            $scope.serviceSpecification = ss;
+          });
+        }
+
+        if ($scope.activity.targetType === 'OrganizationId') {
+          $scope.organization = AlmanacOrganizationService.get({organizationId: $scope.activity.targetId}, function (organization) {
+            $scope.organization = organization;
+          });
+        }
 
       }])
 

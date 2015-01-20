@@ -67,50 +67,50 @@
             </div> 
 
             <br/>
-            <div> 
+            <div ng-controller="UserActivitiesController"> 
                 <h4>
                     Activity Feeds 
                 </h4>
-                <p>
-                    This were your last actions:
-                </p>
+                This were your last actions:
                 <ul>
-                    <!-- ITEM: Users ORGANIZATIONS -->
-                    <li ng-repeat="userActivity in userActivities| orderBy:orderProp">
-                        {{userActivity.date}}: {{userActivity.summary}}
+                    <li ng-repeat="activity in userActivities| orderBy:orderProp:true" ng-controller="ActivityController">
+                        <i><span am-time-ago="activity.dateTime"></span></i>: {{activity.summary}}
+                        <span ng-if="activity.targetType === 'OrganizationId'">
+                            <a href="#/orgs/{{organizationRef(organization)}}">{{organization.name}}</a>
+                        </span>
+                        <span ng-if="activity.targetType === 'ServiceInstanceId'"> '{{serviceInstance.name}}' </span>
                     </li>
+                    <li>
+                        <i>two days ago</i>: Added new asset: 'Kiva, (træskib)'
+                    </li>
+                    <li>
+                        <i>three weeks ago</i>: Accepted to join 'Danish Maritime Authority'
+                    </li>
+                    <span ng-if='userActivitiesPage.totalElements - pageSize > 0' >...and {{userActivitiesPage.totalElements - pageSize}} more</span>
                 </ul>
-<!--                <ul>
-                    <li>
-                        <i>Two days ago</i>: Added new asset: Kiva, (træskib)
-                    </li>
-                    <li>
-                        <i>Three Weeks ago</i>: Accepted to join "Danish Maritime Authority"
-                    </li>
-                </ul>-->
+
                 This has happened in your organizations:
                 <ul>
-                    <li>
-                        <i>A few minutes ago</i> Tintin invited Haddock to join "Danish Maritime Authority"
+                    <li ng-repeat="activity in userOrgsActivities| orderBy:orderProp:true" ng-controller="ActivityController">
+                        <i><span am-time-ago="activity.dateTime"></span></i>: <b>{{activity.username}}</b> {{activity.summary}}
+                        <span ng-if="activity.targetType === 'OrganizationId'">
+                            <a href="#/orgs/{{organizationRef(organization)}}">{{organization.name}}</a>
+                        </span>
+                        <span ng-if="activity.targetType === 'ServiceInstanceId'"> '{{serviceInstance.name}}' </span>
                     </li>
-                    <li>
-                        <i>Yesterday</i> Tintin created new Service Specification "Weather Reporting via MMS"
-                    </li>
-                    <li>
-                        ...1024 more the last month...
-                    </li>
+                    <span ng-if='userOrgsActivitiesPage.totalElements - pageSize > 0' >...and {{userOrgsActivitiesPage.totalElements - pageSize}} more</span>
                 </ul>
-                Other public events:
+
+                Public events the last 30 days:
                 <ul>
-                    <li>
-                        <i>A few minutes ago</i> "Asian Trade Company" published a new service "IMO Route Exchange on MMS" 
+                    <li ng-repeat="activity in publicActivities| orderBy:orderProp:true" ng-controller="ActivityController">
+                        <i><span am-time-ago="activity.dateTime"></span></i>: <b>{{activity.username}}</b> {{activity.summary}}
+                        <span ng-if="activity.targetType === 'OrganizationId'">
+                            <a href="#/orgs/{{organizationRef(organization)}}">{{organization.name}}</a>
+                        </span>
+                        <span ng-if="activity.targetType === 'ServiceInstanceId'"> '{{serviceInstance.name}}' </span>
                     </li>
-                    <li>
-                        <i>A few minutes ago</i> IMO published a new Role "Flagstate"
-                    </li>
-                    <li>
-                        ...1024 more the last month...
-                    </li>
+                    <span ng-if='publicActivitiesPage.totalElements - pageSize > 0' >...and {{publicActivitiesPage.totalElements - pageSize}} more</span>
                 </ul>
             </div> 
 

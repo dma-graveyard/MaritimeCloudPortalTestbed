@@ -12,10 +12,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package net.maritimecloud.serviceregistry.query;
 
 import java.util.Date;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**
@@ -23,10 +25,10 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  */
 public interface ActivityEntryQueryRepository extends PagingAndSortingRepository<ActivityEntry, Long> {
 
-    public Iterable<ActivityEntry> findByOrganizationId(String organizationId);
+    public Page findByUsername(String username, Pageable pageable);
 
-    public Iterable<ActivityEntry> findByUsername(String username);
+    public Page findByOrganizationIdIn(List<String> organizationIds, Pageable pageable);
 
-    public Iterable<ActivityEntry> findByDateTime(Date dateTime);
-    
+    public Page findByIsPublicTrueAndDateTimeAfter(Date date, Pageable pageable);
+
 }

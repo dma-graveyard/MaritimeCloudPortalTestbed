@@ -33,16 +33,65 @@ public class ActivityEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long activityId;
-    private String organizationId;
     private String username;
-    private String eventType;
-//    @Type(type="org.joda.time.contrib.hibernate.PersistentDateTime")
-    @Temporal(javax.persistence.TemporalType.DATE)
+    private String organizationId;
+    private boolean isPublic;
+    //@Type(type="org.joda.time.contrib.hibernate.PersistentDateTime")
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateTime;
+    private String eventType;
+    private String eventSimpleType;
     private String title;
     private String summary;
+    private String targetType;
+    private String targetId;
 
     public ActivityEntry() {
+    }
+
+    public ActivityEntry(String username, String organizationId, boolean isPublic, Date dateTime, String eventType, String eventSimpleType, String title, String summary, String targetType, String targetId) {
+        this.username = username;
+        this.organizationId = organizationId;
+        this.isPublic = isPublic;
+        this.dateTime = dateTime;
+        this.eventType = eventType;
+        this.eventSimpleType = eventSimpleType;
+        this.title = title;
+        this.summary = summary;
+        this.targetType = targetType;
+        this.targetId = targetId;
+    }
+
+    public boolean isIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    public String getEventSimpleType() {
+        return eventSimpleType;
+    }
+
+    public void setEventSimpleType(String eventSimpleType) {
+        this.eventSimpleType = eventSimpleType;
+    }
+
+    public String getTargetType() {
+        return targetType;
+    }
+
+    public void setTargetType(String targetType) {
+        this.targetType = targetType;
+    }
+
+    public String getTargetId() {
+        return targetId;
+    }
+
+    public void setTargetId(String targetId) {
+        this.targetId = targetId;
     }
 
     public ActivityEntry(String organizationId, String username, String eventType, String title, String summary) {
@@ -86,12 +135,12 @@ public class ActivityEntry {
         this.eventType = eventType;
     }
 
-    public Date getDate() {
+    public Date getDateTime() {
         return dateTime;
     }
 
-    public void setDate(Date date) {
-        this.dateTime = date;
+    public void setDateTime(Date dateTime) {
+        this.dateTime = dateTime;
     }
 
     public String getTitle() {
@@ -112,7 +161,7 @@ public class ActivityEntry {
 
     @Override
     public String toString() {
-        return "ActivityEntry{" + "activityId=" + activityId + ", organizationId=" + organizationId + ", username=" + username + ", eventType=" + eventType + ", dateTime=" + dateTime + ", title=" + title + ", summary=" + summary + '}';
+        return "ActivityEntry{" + "activityId=" + activityId + ", username=" + username + ", organizationId=" + organizationId + ", isPublic=" + isPublic + ", dateTime=" + dateTime + ", eventType=" + eventType + ", eventSimpleType=" + eventSimpleType + ", title=" + title + ", summary=" + summary + ", targetType=" + targetType + ", targetId=" + targetId + '}';
     }
-
+    
 }
