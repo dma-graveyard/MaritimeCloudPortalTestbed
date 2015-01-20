@@ -8,6 +8,7 @@ var mcpApp = angular.module('mcpApp', [
   'ui.select',
   'ngSanitize',
   'cgBusy',
+  'angularMoment',
   'mcp.auth',
   'mcp.dataservices',
   'mcp.directives',
