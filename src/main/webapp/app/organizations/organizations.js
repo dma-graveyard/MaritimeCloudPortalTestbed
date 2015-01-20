@@ -91,7 +91,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
               ActivityService.get({organizationIds: organizationIds, page: 0, size: $scope.pageSize}, function (page) {
                 $scope.userOrgsActivities = page.content;
                 $scope.userOrgsActivitiesPage = page;
-                console.log("Orgs:", page);
+                //console.log("Orgs:", page);
               });
             }
         );
@@ -121,7 +121,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
         }
 
         if ($scope.activity.targetType === 'ServiceSpecificationId') {
-          $scope.serviceSpecification = AlmanacServiceInstanceService.get({serviceSpecificationId: $scope.activity.targetId}, function (ss) {
+          $scope.serviceSpecification = AlmanacServiceSpecificationService.get({serviceSpecificationId: $scope.activity.targetId}, function (ss) {
             $scope.serviceSpecification = ss;
           });
         }
