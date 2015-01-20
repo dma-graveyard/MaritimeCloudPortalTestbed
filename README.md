@@ -29,14 +29,32 @@ On the server side we use:
 * Java 8
 * Maven (for building)
 * JPA(Hibernate) (for persistence)
+* SpringBoot (for packaging single jar service)
 * SpringFramework (for dependency injection)
+* SpringData (for query data repositories)
+* Axon framework (for CQRS and Event Sourcing)
 * Jersey (for JSON-webservices)
 * Shiro (for security)
 * JUnit (for unit-test)
 * Mockito (for mocking)
 
 
-## Client Architecture Structure
+### Server Architecture
+
+The main part of the server architecture is based on the principles of Command Query Responsibility Segregation (CQRS) and Event Sourcing (ES).
+The reason for this choice is that CQRS/ES is said to be suitable for collaboration systems with limited write operations and massive read operations.
+
+All events, which are the result of processing commands, are stored in an Event Store. 
+
+In the current configuration, the event store is based on plain files; one folder per aggregate type, and one file per aggregate. In a
+productional environment this is likely to be changed to something more durable like a RDB or some NoSQL store.
+
+Query data is kept in a relational persistence store, which is currently memory-based. This implies that in order to populate the query 
+model, the entire event store has to be replayed upon re-launching the system. From a developing perspective, this has the interesting 
+side-effect of easing the development iterations as new queries which are based on existing events (a.k.a. Projections) can be build and 
+changed without much maintenance effort.
+
+### Client Architecture Structure
 
 The client application structure tend to organize resources based on features rather than their types in line 
 with the Google recommendations for Angular Applications (as outlined in: [Googles 
@@ -278,6 +296,19 @@ Choose to suppress warnings from the menu by choosing the folder level that enca
 
 http://stackoverflow.com/questions/7102299/eclipse-javascript-validation-disabled-but-still-generating-errors
 
+
+# The state of the solution
+The solution is a prototype which implies that it is incomplete in many ways. For instance, when inviting a user to join an organization, 
+the user is actually joined right away. Below is a (non-exhaustive) list of loose ends.
+
+## A (non-exhaustive) list of loose ends and known problems
+- When inviting a user to join an organization, the user is actually joined right away. There is no process for accepting the invite.
+- The API is not properly protected - any organization may for instance send a command to invite a user to some other organization.
+- Emails are not currently send out.
+- The system lacks caching 
+- In many queries the full result list is returned which may lead to a poor visual experience as well as poor performance
+- the client is probably more 'chatty' than need be, as references are in many cases resolved on the client side. Caching and more rich 
+events could solve some of this. Also, see Udi Dahans notes on request batching.
 
 # REST API
 
