@@ -14,7 +14,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.1.9.RELEASE</version>
+        <version>1.2.1.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <dependencyManagement>
@@ -41,7 +41,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.182</version>
+            <version>1.4.185</version>
             <scope>runtime</scope>
         </dependency>
         
@@ -111,7 +111,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
-            <version>4.0.7.RELEASE</version>
+            <version>4.1.4.RELEASE</version>
         </dependency>        
         <dependency>
             <groupId>javax.mail</groupId>
@@ -156,12 +156,12 @@
         <dependency>
             <groupId>org.axonframework</groupId>
             <artifactId>axon-core</artifactId>
-            <version>2.3.2</version>
+            <version>2.4</version>
         </dependency>        
         <dependency>
             <groupId>org.axonframework</groupId>
             <artifactId>axon-test</artifactId>
-            <version>2.3.2</version>
+            <version>2.4</version>
         </dependency>        
         <dependency>
             <!-- added this one because axon serializer warned that it would ignore something when it was missing - not sure what it helped though!??! -->
@@ -176,7 +176,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <start-class>net.maritimecloud.portal.Application</start-class>
         <java.version>1.8</java.version>
-        <jersey.version>2.13</jersey.version>        
+        <jersey.version>2.15</jersey.version>        
         <shiro.version>1.2.3</shiro.version>
     </properties>
 
@@ -203,7 +203,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.5</version>
+                <version>2.6</version>
                 <configuration>
                     <webResources>
                         <resource>

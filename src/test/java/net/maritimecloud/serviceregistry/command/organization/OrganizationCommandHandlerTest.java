@@ -80,7 +80,13 @@ public class OrganizationCommandHandlerTest extends CommonFixture {
 
     @Test
     public void prepareServiceSpecification() {
-        fixtureServiceSpecification.given(new OrganizationCreated(anOrganizationId, AN_ALIAS, A_NAME, A_SUMMARY, A_URL))
+        fixtureServiceSpecification.given(
+                
+                // (see comment in provideServiceInstance()-method)
+                //
+                // new OrganizationCreated(anOrganizationId, AN_ALIAS, A_NAME, A_SUMMARY, A_URL)
+                
+        )
                 .when(aPrepareServiceSpecificationCommand(anOrganizationId, serviceSpecificationId))
                 .expectEvents(new ServiceSpecificationCreated(
                                 anOrganizationId,
@@ -113,10 +119,20 @@ public class OrganizationCommandHandlerTest extends CommonFixture {
 
         final ServiceInstanceId serviceInstanceId = new ServiceInstanceId(AN_INSTANCE_ID);
 
-        fixtureServiceInstance.given(new OrganizationCreated(anOrganizationId, AN_ALIAS, A_NAME, A_SUMMARY, A_URL),
-                new ServiceSpecificationCreated(anOrganizationId, serviceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY)
+        fixtureServiceInstance.given(
+                
+                // since Axon 2.4:
+                //   the fixture expects all events to be related to the aggregate under test (for some reason not yet understood!?)
+                //   so we no longer need to (or can do) pass the events in the GIVEN-phase. Instead, since we need the organization 
+                //   and service specification to be knwon by the command handler in advance it suffice to create them and add them 
+                //   to our mocked repositories and feed them to the command handler, as already done in the setUp-method
+                //                
+                //new OrganizationCreated(anOrganizationId, AN_ALIAS, A_NAME, A_SUMMARY, A_URL),
+                //new ServiceSpecificationCreated(anOrganizationId, serviceSpecificationId, A_SERVICE_TYPE, A_NAME, A_SUMMARY)
         )
-                .when(new ProvideServiceInstance(anOrganizationId, serviceSpecificationId, serviceInstanceId, A_NAME, A_SUMMARY, A_COVERAGE))
+                .when(
+                        new ProvideServiceInstance(anOrganizationId, serviceSpecificationId, serviceInstanceId, A_NAME, A_SUMMARY, A_COVERAGE)
+                )
                 .expectEvents(new ServiceInstanceCreated(
                                 anOrganizationId,
                                 serviceSpecificationId,

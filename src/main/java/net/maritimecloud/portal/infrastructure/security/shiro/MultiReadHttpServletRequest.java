@@ -18,6 +18,7 @@ package net.maritimecloud.portal.infrastructure.security.shiro;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import javax.servlet.ReadListener;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -65,6 +66,21 @@ public class MultiReadHttpServletRequest extends HttpServletRequestWrapper {
         @Override
         public int read() throws IOException {
             return input.read();
+        }
+
+        @Override
+        public boolean isFinished() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public boolean isReady() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void setReadListener(ReadListener readListener) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
 }
