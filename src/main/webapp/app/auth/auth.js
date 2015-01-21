@@ -176,17 +176,23 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       });
 
       $scope.openLoginDialog = function () {
-        $modal.open({
-          templateUrl: 'auth/loginDialog.html',
-          controller: 'LoginController',
-          size: 'sm',
-          backdrop: 'static'
-        }).result.then(function () {
-          // Login dialog closed
-        }, function () {
-          // Login dialog dismissed (user pressed CANCEL or ESCAPE)
-          $rootScope.$broadcast(AUTH_EVENTS.loginCancelled);
-        });
+
+        if (!$scope.loginDialogOpen) {
+          $scope.loginDialogOpen = true;
+          $modal.open({
+            templateUrl: 'auth/loginDialog.html',
+            controller: 'LoginController',
+            size: 'sm',
+            backdrop: 'static'
+          }).result.then(function () {
+            // Login dialog closed
+            $scope.loginDialogOpen = false;
+          }, function () {
+            $scope.loginDialogOpen = false;
+            // Login dialog dismissed (user pressed CANCEL or ESCAPE)
+            $rootScope.$broadcast(AUTH_EVENTS.loginCancelled);
+          });
+        }
       };
 
       $scope.logout = function () {
