@@ -3,5 +3,5 @@
     <leaflet id="coverageEditorMap" center="center" width="100%" controls="controls"></leaflet>
     <p class="help-block"> Select the geographical extend of the provided service. That is, specify the area where this service should be visible to consumers.</p>
     <button class="btn btn-grey pull-right" ng-click="$dismiss('aborted')">Cancel</button>
-    <button class="btn btn-success pull-right" ng-disabled="!formIsSubmitable()" ng-click="submit()">Submit</button>
+    <button id="submitCoverageButton" class="btn btn-success pull-right" ng-disabled="!formIsSubmitable()" ng-click="submit()">Submit</button>
 </div>

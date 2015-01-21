@@ -4,9 +4,28 @@
 //   https://github.com/angular/protractor/issues/156
 //   http://www.thoughtworks.com/insights/blog/using-page-objects-overcome-protractors-shortcomings
 
+// Prerequesite:
+//   The tests expect a clean system that is then loaded with the "data.sh" testdata in advance of each run
+//   
+//   Start the webdriver (once!) with:   
+//   
+//      ./node_modules/.bin/protractor
+//      
+//   use:
+//   
+//      rm -rf ./target/events/
+//      
+//   to clean out durty data. Then launch application with:
+//   
+//      mvn spring-boot:run 
+//   
+//   and start protractor with   
+//   
+//      ./node_modules/protractor/bin/webdriver-manager start    
+//   
 // TIP:
 //   Add an extra 'd' to 'descripe(...)' to test only those senarios!
-//   Also, be aware that many scenarios need to the log-in scenario to have run 
+//   Also, be aware that many scenarios need for the log-in scenario to have run 
 //   in advance, so remember to also enable that.  
 
 // ----------------------------------------------------------------------------
@@ -193,12 +212,15 @@ var ResetPasswordPage = function () {
 var CreateServiceInstancePage = function () {
   browser.get('app/index.html#/orgs/dmi/createServiceInstance');
 
-  this.operationalService = element(by.model('selectedOperationalService'));
-  this.specification = element(by.model('selectedSpecification'));
-  this.id = element(by.model('service.id'));
+  this.operationalService = element(by.model('selection.operationalService'));
+  this.specification = element(by.model('selection.specification'));
+//  this.id = element(by.model('service.id'));
   this.name = element(by.model('service.name'));
-  this.description = element(by.model('service.description'));
+  this.primaryAlias = element(by.model('service.primaryAlias'));
+  this.description = element(by.model('service.summary'));
   this.submitButton = element(by.css('.btn-success'));
+  this.openCoverageEditorButton = element(by.id('openCoverageEditorButton'));
+  this.submitCoverageButton = element(by.id('submitCoverageButton'));
   this.map = element(by.css('.angular-leaflet-map'));
   
   // (on services page) 
@@ -488,10 +510,14 @@ describe('create service instance', function () {
     
     page.operationalService.sendKeys('M');
     page.specification.sendKeys('M');
-    page.id.sendKeys('id1');
+//    page.id.sendKeys('id1');
     page.name.sendKeys('A Service Name');
+    page.primaryAlias.sendKeys('id1');
     page.description.sendKeys('a very long description');
     
+    // openCoverageEditorButton
+    page.openCoverageEditorButton.click();
+    browser.sleep(1000);
     // Draw circle on map
     element(by.css('.leaflet-draw-draw-circle')).click();
     browser.actions().mouseDown(page.map).mouseMove({x: 30, y:30}).mouseUp().perform();
@@ -507,6 +533,7 @@ describe('create service instance', function () {
         .mouseDown(page.map).mouseUp()
         .perform();
     //browser.sleep(5000);
+    page.submitCoverageButton.click();
     
     expect(page.submitButton.isEnabled()).toBe(true);
     expect(browser.getLocationAbsUrl()).toMatch("orgs/dmi/createServiceInstance");
@@ -518,7 +545,7 @@ describe('create service instance', function () {
     
     // should see service on list
     expect(page.serviceInstanceList.count()).toBe(6);
-    expect(page.serviceInstanceList.get(5).element(by.css('h4')).getText()).toEqual('A Service Name - REST');
+    expect(page.serviceInstanceList.get(5).element(by.css('h4')).getText()).toContain('A Service Name - WWW');
     
     //browser.sleep(10000);
   });
@@ -579,21 +606,21 @@ describe('search on map', function () {
     expect(page.providerList.count()).toBeGreaterThan(3);
 
     // when I start to enter something (as 'meteoroligical')
-    page.provider.sendKeys('me');
+    page.provider.sendKeys('dan');
     // then the list should be reduced
     expect(page.providerList.count()).toBe(3);
-    page.provider.sendKeys('t');
+    page.provider.sendKeys('ish me');
     // ... reduced to 'Danish Meteoroligical Institute'
     expect(page.providerList.count()).toBe(1);
 
     // when I click the only item on the list
     page.providerList.first().click();
-    // then the number of visible services on the map should be reduced to 6
-    expect(page.svgPathElements.count()).toBe(6);
+    // then the number of visible services on the map should be reduced to 9
+    expect(page.svgPathElements.count()).toBe(9);
 
     // when I click the reset button
     page.reset.click();
-    expect(page.svgPathElements.count()).toBeGreaterThan(6);
+    expect(page.svgPathElements.count()).toBeGreaterThan(9);
   });
 
   it('should filter list by any text', function () {
@@ -603,11 +630,11 @@ describe('search on map', function () {
     page.anyText.click();
     expect(page.svgPathElements.count()).toBeGreaterThan(1);
 
-    page.anyText.sendKeys('-888');
-    expect(page.svgPathElements.count()).toBe(1);
+    page.anyText.sendKeys('id1');
+    expect(page.svgPathElements.count()).toBe(3);
 
     page.reset.click();
-    expect(page.svgPathElements.count()).toBeGreaterThan(1);
+    expect(page.svgPathElements.count()).toBeGreaterThan(3);
   });
 
 });
