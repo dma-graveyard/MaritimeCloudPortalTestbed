@@ -42,6 +42,8 @@
 #    # Remove an Endpoint:
 #    curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/org/dma/si/dma-AN_INSTANCE_ID -H "Content-Type: application/json;domain-model=RemoveServiceInstanceEndpoint" -d '{"serviceInstanceId":{"identifier":"dma-AN_INSTANCE_ID"},"serviceEndpoint":{"uri":"http://a-uri.org"}}' -X PUT
 
+# Start timer
+d1=`date +%s` 
 
 # Create organizations
 set host="http://localhost:8080"
@@ -123,3 +125,7 @@ curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/org/demo
 
 # Rename service specification and change summary 
 curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/org/imo/ss/imo-mis-rest -H "Content-Type: application/json;domain-model=ChangeServiceSpecificationNameAndSummary" -d '{"serviceSpecificationId":{"identifier":"path"},"name":"METOC en route (rest)","summary":"Meteorological services provided as a REST api operational services: mis (changed)"}' -X PUT
+
+# Echo time diff in seconds
+d2=`date +%s` 
+echo "completed in $(((d2-d1))) seconds"
