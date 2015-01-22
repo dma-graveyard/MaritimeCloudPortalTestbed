@@ -43,7 +43,6 @@ public class IdentityApplicationService extends AssertionConcern {
 
     @Transactional
     public User registerUser(String username, String password, String emailAddress) {
-        // TODO HACK: Using hardcoded password
         User newUser = new User(username, password, emailAddress);
         newUser.generateActivationId();
         userRepository().add(newUser);

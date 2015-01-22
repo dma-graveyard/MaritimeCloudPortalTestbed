@@ -22,9 +22,11 @@ import net.maritimecloud.portal.infrastructure.mail.Mail;
 import net.maritimecloud.portal.infrastructure.mail.MailAdapter;
 import net.maritimecloud.portal.infrastructure.mail.SmtpMailAdapter;
 import net.maritimecloud.portal.infrastructure.persistence.InMemoryUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSender;
 
@@ -34,6 +36,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 @Configuration
 @Import(value = {ApplicationConfig.class})
 public class ApplicationInMemoryDemoConfig {
+    
+    @Autowired
+    Environment env;
     
     @Resource
     MailSender mailSender;
@@ -46,7 +51,7 @@ public class ApplicationInMemoryDemoConfig {
     @Bean
     public MailAdapter mailAdapter() throws IOException {
         
-        if (System.getenv("mail.smtp.password") != null) {
+        if (hasSmtpPassword()) {
             return new SmtpMailAdapter((JavaMailSender) mailSender);
         } else {
             // Fallback when no smtp password has been supplied
@@ -54,6 +59,10 @@ public class ApplicationInMemoryDemoConfig {
                 System.out.println("Send (dummy mail adapter): " + mail);
             };
         }
+    }
+
+    private boolean hasSmtpPassword() {
+        return env.getProperty("mail.smtp.password") != null;
     }
 
 }
