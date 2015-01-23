@@ -137,14 +137,35 @@ Currently the solution uses a preconfigured GMAIL account as SMTP-server when
 sending out notifications. In order to use this account you must supply the 
 password in the system variable called:
 
-    mail.smtp.password=<my_secret>
+    spring.mail.password=<my_secret>
 
 When running in context of the test configuration () and this variable is unset 
-the system will fallback to echoing the mail messages to the console, which may 
-come in handy on buildservers and when testing locally
+or equals "false" the system will fallback to echoing the mail messages to the 
+console, which may come in handy on buildservers and when testing locally.
 
 To change the configuration to another mail account please refer to the settings 
-file "src/main/resources/application.properties".
+file "src/main/resources/application.properties". 
+
+The most effective way to override these settings is to create a new file called 
+"applications.properties" with those properties that should be overridden in it and 
+place the file relative to the working directory, like this:
+
+    <work_dir>/config/applications.properties
+
+If the password should be kept secret to other users, consider to protect the 
+"/config"-folder for reads and launch you application as a user with 
+read-permissions.
+
+Alternatively, or additionally, if you only need to supply the password, you 
+could supply it on the command line when launching the app:
+
+    mvn spring-boot:run -Drun.arguments="--spring.mail.password=my_secret"
+
+WARNING: Just keep in mind that this will render the password visible to anyone 
+with access to th machine with e.g. "ps -ef".
+
+See [Spring Boot configuration - Apllication property files] (http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-external-config-application-property-files)
+for further possibilities.
 
 ## Building ##
 

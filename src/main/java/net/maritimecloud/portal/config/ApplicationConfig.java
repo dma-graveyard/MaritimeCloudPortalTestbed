@@ -2,6 +2,7 @@ package net.maritimecloud.portal.config;
 
 import java.io.IOException;
 import java.util.Properties;
+import javax.annotation.Resource;
 import javax.servlet.DispatcherType;
 import net.maritimecloud.portal.*;
 import net.maritimecloud.portal.application.IdentityApplicationService;
@@ -26,7 +27,6 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.glassfish.jersey.servlet.ServletProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.embedded.ServletListenerRegistrationBean;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
@@ -35,20 +35,22 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 
 @Configuration
 @Import(value = {AxonConfig.class, JpaConfig.class})
 public class ApplicationConfig {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LogService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ApplicationConfig.class);
 
-    @Autowired
-    Environment env;
+    @Resource
+    private Environment env;
     
-    @Autowired
-    ApplicationContextSetup applicationContextSetup;
+    @Resource
+    private ApplicationContextSetup applicationContextSetup;
+    
+    @Resource
+    private JavaMailSender mailSender;
 
     @Bean
     public ApplicationContextSetup applicationContextSetup() {
@@ -117,55 +119,11 @@ public class ApplicationConfig {
      * This will allow our client to be hosted elsewhere, e.g. from another port.
      * <p>
      * (See http://spring.io/guides/gs/rest-service-cors/ )
+     * @return a SimpleCORSFilter
      */
     @Bean
     public SimpleCORSFilter simpleCORSFilter() {
         return new SimpleCORSFilter();
-    }
-
-    @Bean
-    public JavaMailSender mailSender() throws IOException {
-        Properties props = filterProperties(loadPropertiesFromClasspath("/application.properties"), "mail.");
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setJavaMailProperties(props);
-        mailSender.setPassword(getMailPassword(props));
-        return mailSender;
-    }
-
-    /**
-     * <code>
-     * NOTE (for Mac Os X users): 
-     * Set the system environment variable from a terminal with 'launchctl':
-     * --------------------------
-     *   > launchctl
-     *   >> setenv mail.smtp.password mySecret
-     *   >> exit
-     * --------------------------
-     * (remember to restart your IDE and terminals for the change to be applied)
-     * <code>
-     */
-    private String getMailPassword(Properties props) {
-        return unObfuscate(env.getProperty("mail.smtp.password", props.getProperty("mail.smtp.secret")));
-    }
-
-    private Properties loadPropertiesFromClasspath(String file) throws IOException {
-        LOG.info("Loading properties from classpath: " + file);
-        Properties props = new Properties();
-        props.load(this.getClass().getResourceAsStream(file));
-        return props;
-    }
-
-    private Properties filterProperties(Properties props, String filterString) {
-        Properties mailProps = new Properties();
-        props.forEach((key, value) -> {
-            if (key.toString().startsWith(filterString)) {
-                mailProps.put(key, value);
-            }
-        });
-        if (LOG.isDebugEnabled()) {
-            props.list(System.out);
-        }
-        return mailProps;
     }
 
     @Bean
@@ -181,7 +139,8 @@ public class ApplicationConfig {
 
     @Bean
     public MailAdapter mailAdapter() throws IOException {
-        return new SmtpMailAdapter(mailSender());
+        LOG.info("Using Mail sender with host '"+env.getProperty("spring.mail.host")+"' and user '"+env.getProperty("spring.mail.user")+"'");
+        return new SmtpMailAdapter(mailSender);
     }
 
     @Bean
@@ -192,11 +151,6 @@ public class ApplicationConfig {
     @Bean
     public AliasService aliasService() throws IOException {
         return new JpaAliasService();
-    }
-
-    private String unObfuscate(String property) {
-        // TODO: not using any obfuscation, please implement. Use e.g. Acegy
-        return property;
     }
 
 }

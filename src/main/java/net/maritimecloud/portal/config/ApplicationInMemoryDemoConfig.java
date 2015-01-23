@@ -14,7 +14,6 @@
  */
 package net.maritimecloud.portal.config;
 
-import net.maritimecloud.portal.config.*;
 import java.io.IOException;
 import javax.annotation.Resource;
 import net.maritimecloud.portal.domain.model.identity.UserRepository;
@@ -22,12 +21,14 @@ import net.maritimecloud.portal.infrastructure.mail.Mail;
 import net.maritimecloud.portal.infrastructure.mail.MailAdapter;
 import net.maritimecloud.portal.infrastructure.mail.SmtpMailAdapter;
 import net.maritimecloud.portal.infrastructure.persistence.InMemoryUserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSender;
 
 /**
@@ -36,12 +37,14 @@ import org.springframework.mail.javamail.JavaMailSender;
 @Configuration
 @Import(value = {ApplicationConfig.class})
 public class ApplicationInMemoryDemoConfig {
-    
-    @Autowired
-    Environment env;
-    
+
+    private static final Logger LOG = LoggerFactory.getLogger(ApplicationInMemoryDemoConfig.class);
+
     @Resource
-    MailSender mailSender;
+    Environment env;
+
+    @Resource
+    JavaMailSender mailSender;
 
     @Bean
     public UserRepository userRepository() {
@@ -49,20 +52,12 @@ public class ApplicationInMemoryDemoConfig {
     }
 
     @Bean
+    @ConditionalOnProperty(prefix = "spring.mail", name = "password", havingValue = "false", matchIfMissing = true)
     public MailAdapter mailAdapter() throws IOException {
-        
-        if (hasSmtpPassword()) {
-            return new SmtpMailAdapter((JavaMailSender) mailSender);
-        } else {
-            // Fallback when no smtp password has been supplied
-            return (Mail mail) -> {
-                System.out.println("Send (dummy mail adapter): " + mail);
-            };
-        }
+        LOG.info("No Mail sender configured - echoing to console. Make sure spring.mail.password is set "/*+ env.getProperty("spring.mail.password")*/);
+        return (Mail mail) -> {
+            System.out.println("Send (dummy mail adapter): " + mail);
+        };
     }
-
-    private boolean hasSmtpPassword() {
-        return env.getProperty("mail.smtp.password") != null;
-    }
-
+    
 }
