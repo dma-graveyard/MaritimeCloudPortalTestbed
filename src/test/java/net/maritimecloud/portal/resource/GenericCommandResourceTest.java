@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import net.maritimecloud.common.infrastructure.axon.CommonFixture;
-import net.maritimecloud.serviceregistry.command.Command;
+import net.maritimecloud.common.cqrs.Command;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;

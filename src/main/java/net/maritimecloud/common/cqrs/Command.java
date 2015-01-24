@@ -12,7 +12,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.command;
+package net.maritimecloud.common.cqrs;
 
 /**
  * Marker interface that makes it easier to identify CQRS Commands in the mist of classes.

@@ -7,7 +7,7 @@ import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
 import org.axonframework.common.Assert;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.maritimecloud.serviceregistry.command.Command;
+import net.maritimecloud.common.cqrs.Command;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceEndpoint;
 

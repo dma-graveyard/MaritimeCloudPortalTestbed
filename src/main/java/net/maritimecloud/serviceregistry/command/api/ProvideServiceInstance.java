@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import net.maritimecloud.serviceregistry.infrastructure.jackson.CoverageDeserializer;
 import net.maritimecloud.serviceregistry.infrastructure.jackson.CoverageSerializer;
-import net.maritimecloud.serviceregistry.command.Command;
+import net.maritimecloud.common.cqrs.Command;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;

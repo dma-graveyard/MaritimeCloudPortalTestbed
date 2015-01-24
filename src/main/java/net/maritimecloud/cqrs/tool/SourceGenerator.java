@@ -130,20 +130,24 @@ public class SourceGenerator {
         }
 
         private void writeImports() throws IOException {
-            osw.write("import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;" + EOL);
+            writeImport(org.axonframework.commandhandling.annotation.TargetAggregateIdentifier.class);
 
             if (isCommand) {
-                osw.write("import org.axonframework.common.Assert;" + EOL);
-                osw.write("import com.fasterxml.jackson.annotation.JsonCreator;" + EOL);
-                osw.write("import com.fasterxml.jackson.annotation.JsonProperty;" + EOL);
-                osw.write("import net.maritimecloud.serviceregistry.command.Command;" + EOL);
+                writeImport(org.axonframework.common.Assert.class);
+                writeImport(com.fasterxml.jackson.annotation.JsonCreator.class);
+                writeImport(com.fasterxml.jackson.annotation.JsonProperty.class);
+                writeImport(net.maritimecloud.common.cqrs.Command.class);
             } else {
-                osw.write("import net.maritimecloud.cqrs.tool.Event;" + EOL);
+                writeImport(Event.class);
             }
             for (Parameter parameter : declaredMethod.getParameters()) {
                 writeImport(parameter);
             }
             osw.write(EOL);
+        }
+
+        private void writeImport(Class aClass) throws IOException {
+            osw.write("import "+ aClass.getCanonicalName()+";" + EOL);
         }
 
         private void writeImport(Parameter parameter) throws IOException {
