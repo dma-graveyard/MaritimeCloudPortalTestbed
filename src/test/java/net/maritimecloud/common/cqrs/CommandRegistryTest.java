@@ -12,9 +12,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.command;
+package net.maritimecloud.common.cqrs;
 
-import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -24,19 +23,22 @@ import static org.junit.Assert.*;
  */
 public class CommandRegistryTest {
 
-    private final CommandRegistry putCommandsRegistry = new CommandRegistry(false, ChangeOrganizationNameAndSummary.class);
-    
+    private static class KnownCommand implements Command {
+    };
+
+    private final CommandRegistry putCommandsRegistry = new CommandRegistry(false, KnownCommand.class);
+
     public CommandRegistryTest() {
     }
-    
+
     @Test(expected = RuntimeException.class)
     public void notRegisteredShouldReturnNull() {
-        assertNull("Expected to be null", putCommandsRegistry.resolve("CreateOrganization"));
+        assertNull("Expected to be null", putCommandsRegistry.resolve("UnknownCommand"));
     }
 
     @Test
     public void shouldFindRegistered() {
-        assertEquals(ChangeOrganizationNameAndSummary.class, putCommandsRegistry.resolve("ChangeOrganizationNameAndSummary"));
+        assertEquals(KnownCommand.class, putCommandsRegistry.resolve("KnownCommand"));
     }
-    
+
 }

@@ -12,46 +12,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.command;
+package net.maritimecloud.portal.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import javax.ws.rs.core.MediaType;
-import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
-import org.axonframework.common.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Utility class to work with a JSON representation of a CQRS Command.
+ * <p>
  * @author Christoffer Børrild
  */
-public class RestCommandUtil {
+class RestCommandUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(RestCommandUtil.class);
-    
-    public static final Map<String, Class> commandRegistry = new HashMap<>();
-
-    static {
-        commandRegistry.put(CreateOrganization.class.getCanonicalName(), CreateOrganization.class);
-        commandRegistry.put(CreateOrganization.class.getSimpleName(), CreateOrganization.class);
-
-        commandRegistry.put(CreateOrganization.class.getCanonicalName(), CreateOrganization.class);
-        commandRegistry.put(CreateOrganization.class.getSimpleName(), CreateOrganization.class);
-    }
-    
-
-    public static Class resolveCommandClass(String contentType, String queryCommandName) {
-        return resolveCommandClass(resolveCommandName(contentType, queryCommandName));
-    }
-
-    private static Class resolveCommandClass(String commandName) {
-        Class commandClass = commandRegistry.get(commandName);
-        Assert.notNull(commandName, "Unable to resolve name to a command-class: " + commandName);
-        return commandClass;
-    }
 
     public static String resolveCommandName(String contentType, String queryCommandName) {
 

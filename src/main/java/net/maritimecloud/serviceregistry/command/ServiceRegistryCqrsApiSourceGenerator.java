@@ -32,7 +32,7 @@ import net.maritimecloud.cqrs.tool.SourceGenerator;
  * <p>
  * @author Christoffer Børrild
  */
-public class CommandEventSourceGenerator {
+public class ServiceRegistryCqrsApiSourceGenerator {
 
     public static void main(String[] args) throws IOException {
 

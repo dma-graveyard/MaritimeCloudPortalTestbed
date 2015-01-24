@@ -34,7 +34,7 @@ import static net.maritimecloud.portal.resource.ResourceResolver.resolveOrganiza
 import static net.maritimecloud.portal.resource.ResourceResolver.resolveServiceInstance;
 import static net.maritimecloud.portal.resource.ResourceResolver.resolveServiceSpecification;
 import static net.maritimecloud.portal.resource.GenericCommandResource.APPLICATION_JSON_CQRS_COMMAND;
-import net.maritimecloud.serviceregistry.command.CommandRegistry;
+import net.maritimecloud.common.cqrs.CommandRegistry;
 import net.maritimecloud.serviceregistry.command.api.AddOrganizationAlias;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;

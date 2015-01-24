@@ -14,7 +14,7 @@
  */
 package net.maritimecloud.portal.resource;
 
-import net.maritimecloud.serviceregistry.command.CommandRegistry;
+import net.maritimecloud.common.cqrs.CommandRegistry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -30,8 +30,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
-import static net.maritimecloud.serviceregistry.command.RestCommandUtil.readCommand;
-import static net.maritimecloud.serviceregistry.command.RestCommandUtil.resolveCommandName;
+import static net.maritimecloud.portal.resource.RestCommandUtil.readCommand;
+import static net.maritimecloud.portal.resource.RestCommandUtil.resolveCommandName;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
