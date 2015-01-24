@@ -12,7 +12,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.cqrs.tool;
+package net.maritimecloud.common.cqrs.contract;
 
 /**
  * This interface describes the interface to the ServiceRegitry in terms of Commands and Events. Whereas the commands are explicitly being

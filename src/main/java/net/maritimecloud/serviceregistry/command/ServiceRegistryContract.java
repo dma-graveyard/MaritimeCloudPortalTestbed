@@ -14,10 +14,10 @@
  */
 package net.maritimecloud.serviceregistry.command;
 
-import net.maritimecloud.cqrs.tool.CqrsContract;
-import net.maritimecloud.cqrs.tool.Event;
-import net.maritimecloud.cqrs.tool.Command;
-import net.maritimecloud.cqrs.tool.TargetAggregateIdentifier;
+import net.maritimecloud.common.cqrs.contract.CqrsContract;
+import net.maritimecloud.common.cqrs.contract.Event;
+import net.maritimecloud.common.cqrs.contract.Command;
+import net.maritimecloud.common.cqrs.contract.TargetAggregateIdentifier;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.serviceregistry.command.organization.membership.MembershipId;
 import net.maritimecloud.serviceregistry.command.serviceinstance.Coverage;
@@ -73,9 +73,11 @@ public interface ServiceRegistryContract extends CqrsContract {
             String summary
     );
 
+    // (commented out since the coverage property needs specialised @JsonSerialize and Deserializer!!!)
 //    @Command
 //    void provideServiceInstance(
 //            OrganizationId providerId,
+//            @TargetAggregateIdentifier ServiceSpecificationId serviceSpecificationId,
 //            ServiceSpecificationId specificationId,
 //            ServiceInstanceId serviceInstanceId,
 //            String name,

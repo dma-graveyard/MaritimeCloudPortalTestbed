@@ -15,7 +15,7 @@
 package net.maritimecloud.serviceregistry.command;
 
 import java.io.IOException;
-import net.maritimecloud.cqrs.tool.SourceGenerator;
+import net.maritimecloud.common.cqrs.contract.SourceGenerator;
 
 /**
  * Run the Main method of this class in order to re-build Command and Events specified in CqrsContracts. This generator will generate source

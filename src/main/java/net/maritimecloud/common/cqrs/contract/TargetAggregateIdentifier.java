@@ -12,7 +12,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.cqrs.tool;
+package net.maritimecloud.common.cqrs.contract;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -20,15 +20,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marker annotation that marks an interface method as an DSL specification of a CQRS Command
+ * Marker annotation that marks a parameter as being the identifier of the target aggregate. 
  * 
- * Methods marked with this annotation will be used as templates for generating a corresponding
- * CQRS Command Value Object.
+ * Using this annotation on a parameter in a method the Contract interface will make this 
+ * parameter marked with the AXON TargetAggregateIdentifier in the resulting event or command 
+ * class. If omitting this annotation, the first parameter of the method will be used as default.
  *
  * @author Christoffer Børrild
+ * @see org.axonframework.commandhandling.annotation.TargetAggregateIdentifier
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value = { ElementType.METHOD, ElementType.TYPE})
-public @interface Command {
+@Target(value = { ElementType.PARAMETER})
+public @interface TargetAggregateIdentifier {
     
 }
