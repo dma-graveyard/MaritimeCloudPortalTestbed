@@ -18,7 +18,7 @@ import net.maritimecloud.portal.domain.model.DomainRegistry;
 import net.maritimecloud.portal.domain.model.identity.UnknownUserException;
 import java.util.List;
 import javax.transaction.Transactional;
-import net.maritimecloud.portal.domain.model.AssertionConcern;
+import net.maritimecloud.common.ddd.AssertionConcern;
 import net.maritimecloud.portal.domain.model.identity.User;
 import net.maritimecloud.portal.domain.model.identity.UserRepository;
 import net.maritimecloud.portal.infrastructure.mail.MailService;

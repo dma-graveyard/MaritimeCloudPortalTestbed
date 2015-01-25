@@ -14,6 +14,7 @@
  */
 package net.maritimecloud.portal.domain.model;
 
+import net.maritimecloud.common.ddd.AssertionConcern;
 import java.io.Serializable;
 
 /**

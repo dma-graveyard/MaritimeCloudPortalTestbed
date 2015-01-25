@@ -14,7 +14,7 @@
  */
 package net.maritimecloud.serviceregistry.command.organization.membership;
 
-import net.maritimecloud.serviceregistry.domain.DomainIdentifier;
+import net.maritimecloud.common.ddd.DomainIdentifier;
 
 /**
  *

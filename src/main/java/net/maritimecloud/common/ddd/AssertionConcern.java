@@ -12,7 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-package net.maritimecloud.portal.domain.model;
+package net.maritimecloud.common.ddd;
 
 /**
  * snatched from https://github.com/VaughnVernon/IDDD_Samples/blob/master/iddd_common/src/main/java/com/saasovation/common/AssertionConcern.java

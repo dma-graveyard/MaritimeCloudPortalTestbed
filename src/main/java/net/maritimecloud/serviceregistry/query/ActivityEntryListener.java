@@ -40,7 +40,7 @@ import net.maritimecloud.serviceregistry.command.api.ServiceSpecificationNameAnd
 import net.maritimecloud.serviceregistry.command.api.UserInvitedToOrganization;
 import net.maritimecloud.serviceregistry.command.api.UserLeftOrganization;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
-import net.maritimecloud.serviceregistry.domain.DomainIdentifier;
+import net.maritimecloud.common.ddd.DomainIdentifier;
 import org.axonframework.common.annotation.MetaData;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.axonframework.eventhandling.annotation.Timestamp;

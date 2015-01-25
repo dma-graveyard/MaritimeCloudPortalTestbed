@@ -12,11 +12,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.serviceregistry.domain;
+package net.maritimecloud.common.ddd;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.maritimecloud.portal.domain.model.ValueObject;
 
 /**
  * Abstract, generic, JSON serializable (with Jackson) class that constitutes a string based indentifier of a domain object.
