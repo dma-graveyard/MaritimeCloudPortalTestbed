@@ -69,6 +69,11 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
         assertValidUsername(command.getPrefferedUsername());
         assertPasswordComply(command.getPrefferedUsername(), command.getPassword());
         String emailVerificationCode = new UnconfirmedEmailAddress(command.getEmailAddress()).activationCode().toString();
+        // HACK: FIXME: TODO: 
+        // supply hardcoded code in odrer to auto-create users for test and demo without reading mails
+        if(command.getEmailAddress().endsWith("@boerrild.dk"))
+            emailVerificationCode = "94b389dd-e50e-48c1-b0fc-6840289a647e";
+        
         apply(new UserRegistered(
                 command.getUserId(),
                 command.getPrefferedUsername(),

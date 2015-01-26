@@ -18,6 +18,7 @@ import net.maritimecloud.portal.domain.infrastructure.axon.ShiroAuditDataProvide
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import net.maritimecloud.identityregistry.command.user.User;
 import net.maritimecloud.portal.domain.infrastructure.axon.NoReplayedEvents;
 import net.maritimecloud.portal.domain.infrastructure.axon.ReplayableFileSystemEventStore;
 import net.maritimecloud.serviceregistry.command.organization.AttachOrganizationAliasSaga;
@@ -65,7 +66,7 @@ import org.springframework.transaction.PlatformTransactionManager;
  * @author Christoffer Børrild
  */
 @Configuration
-@ComponentScan(basePackages = "net.maritimecloud.serviceregistry")
+@ComponentScan(basePackages = {"net.maritimecloud.serviceregistry", "net.maritimecloud.identityregistry"})
 @AnnotationDriven
 public class AxonConfig {
 
@@ -185,6 +186,13 @@ public class AxonConfig {
 //        return new AnnotationEventListenerBeanPostProcessor();
 //    }
     @Bean
+    public Repository<User> userAggregateRepository() {
+        EventSourcingRepository repository = new EventSourcingRepository<>(User.class, eventStore());
+        repository.setEventBus(eventBus());
+        return repository;
+    }
+
+    @Bean
     public Repository<Organization> organizationRepository() {
         EventSourcingRepository repository = new EventSourcingRepository<>(Organization.class, eventStore());
         repository.setEventBus(eventBus());
@@ -217,6 +225,11 @@ public class AxonConfig {
     // command handlers on Aggregates, so we have to subscribe them 
     // manually:
     // ------------------------------------------------------------------------ 
+    @Bean
+    public AggregateAnnotationCommandHandler<User> userAggregateCommandHandler() {
+        return AggregateAnnotationCommandHandler.subscribe(User.class, userAggregateRepository(), commandBus());
+    }
+
     @Bean
     public AggregateAnnotationCommandHandler<Organization> organizationAggregateCommandHandler() {
         return AggregateAnnotationCommandHandler.subscribe(Organization.class, organizationRepository(), commandBus());

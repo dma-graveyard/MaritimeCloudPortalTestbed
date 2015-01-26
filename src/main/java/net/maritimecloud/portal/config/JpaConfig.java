@@ -14,6 +14,7 @@
  */
 package net.maritimecloud.portal.config;
 
+import net.maritimecloud.identityregistry.query.UserQueryRepository;
 import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.orm.jpa.EntityScan;
@@ -25,8 +26,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * @author Christoffer Børrild
  */
 @Configuration
-@EnableJpaRepositories(basePackageClasses = OrganizationQueryRepository.class)
-@EntityScan(basePackageClasses = {OrganizationQueryRepository.class}) //todo: replace with marker interfaces
+@EnableJpaRepositories(basePackageClasses = {OrganizationQueryRepository.class, UserQueryRepository.class})
+@EntityScan(basePackageClasses = {OrganizationQueryRepository.class, UserQueryRepository.class}) //todo: replace with marker interfaces
 @EnableAutoConfiguration
 public class JpaConfig {
     

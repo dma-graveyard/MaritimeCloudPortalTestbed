@@ -14,6 +14,7 @@
  */
 package net.maritimecloud.portal.application;
 
+import net.maritimecloud.identityregistry.query.UserQueryRepository;
 import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
 import net.maritimecloud.portal.infrastructure.mail.MailService;
 import net.maritimecloud.portal.resource.LogService;
@@ -57,6 +58,10 @@ public class ApplicationServiceRegistry extends SpringContextBasedRegistry {
     // ------------------------------------------------------------------------------------------
     public static CommandGateway commandGateway() {
         return (CommandGateway) get("commandGateway");
+    }
+
+    public static UserQueryRepository userQueryRepository() {
+        return (UserQueryRepository) get("userQueryRepository");
     }
 
     public static OrganizationQueryRepository organizationQueryRepository() {

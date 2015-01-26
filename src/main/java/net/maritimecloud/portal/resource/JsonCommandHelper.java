@@ -30,7 +30,7 @@ public final class JsonCommandHelper {
     }
 
     /**
-     * Rewrites an indentity property value in a JSON command string
+     * Rewrites an identity property value in a JSON command string
      * <p>
      * @param commandJSON the json command string
      * @param propertyName the name of the identity property, eg. "OrganizationId"

@@ -40,6 +40,9 @@ public class ShiroAuditDataProvider implements AuditDataProvider {
         Map<String, Object> metaData = new HashMap<>();
 
         try {
+            final Subject subject = SecurityUtils.getSubject();
+            String userHost = subject.getSession().getHost();
+            metaData.put(UserMetaData.USER_HOST, userHost);
             
             long userId = ApplicationServiceRegistry.authenticationUtil().getUserId();
             metaData.put(UserMetaData.USERID, userId);
@@ -47,15 +50,15 @@ public class ShiroAuditDataProvider implements AuditDataProvider {
             User user = ApplicationServiceRegistry.identityApplicationService().user(userId);
             metaData.put(UserMetaData.USERNAME, user.username());
 
-            final Subject subject = SecurityUtils.getSubject();
-            String userHost = subject.getSession().getHost();
-            metaData.put(UserMetaData.USER_HOST, userHost);
-
         } catch (UnavailableSecurityManagerException ex) {
             Logger.getLogger(AxonConfig.class.getName()).log(Level.WARNING, null, ex);
             throw ex;            
-        } catch (UserNotLoggedInException | UnknownUserException ex) {
-            Logger.getLogger(AxonConfig.class.getName()).log(Level.WARNING, null, ex);
+        } catch (UserNotLoggedInException ex) {
+            Logger.getLogger(AxonConfig.class.getName()).log(Level.FINE, "Anonymous access from host {}", metaData.get(UserMetaData.USER_HOST));
+            metaData.put(UserMetaData.USERNAME, "Anonymous");
+        } catch (UnknownUserException ex) {
+            Logger.getLogger(AxonConfig.class.getName()).log(Level.WARNING, "Unknown user with userId {} from host " + metaData.get(UserMetaData.USER_HOST), metaData.get(UserMetaData.USERID));
+            metaData.put(UserMetaData.USERNAME, "Anonymous");
         }
 
         return metaData;

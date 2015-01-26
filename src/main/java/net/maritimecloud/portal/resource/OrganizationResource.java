@@ -16,7 +16,6 @@ package net.maritimecloud.portal.resource;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Resource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -56,10 +55,8 @@ import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance
 import net.maritimecloud.serviceregistry.domain.service.AliasGroups;
 import net.maritimecloud.serviceregistry.query.AliasRegistryEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
-import net.maritimecloud.serviceregistry.query.OrganizationQueryRepository;
 import net.maritimecloud.serviceregistry.query.ServiceInstanceEntry;
 import net.maritimecloud.serviceregistry.query.ServiceSpecificationEntry;
-import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,12 +68,6 @@ import org.slf4j.LoggerFactory;
 public class OrganizationResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(OrganizationResource.class);
-
-    @Resource
-    protected OrganizationQueryRepository organizationQueryRepository;
-
-    @Resource
-    protected CommandGateway commandGateway;
 
     // -------------------------------------------------------
     // -------------------------------------------------------

@@ -29,6 +29,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import net.maritimecloud.common.cqrs.Command;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import static net.maritimecloud.portal.resource.RestCommandUtil.readCommand;
 import static net.maritimecloud.portal.resource.RestCommandUtil.resolveCommandName;
@@ -75,9 +76,18 @@ public class GenericCommandResource {
             LOG.info("JSON: {}", commandJSON);
             Class commandClass = commandRegistry.resolve(resolveCommandName(contentType, queryCommandName));
             Object command = readCommand(commandJSON, commandClass);
-            ApplicationServiceRegistry.commandGateway().sendAndWait(command);
+            sendAndWait((Command) command);
         } catch (Throwable ex) {
             LOG.error("Error occured when reading command!", ex);
+            throw new WebApplicationException("Error occured when reading command!", ex);
+        }
+    }
+
+    public static void sendAndWait(Command command) throws WebApplicationException {
+        try {
+            ApplicationServiceRegistry.commandGateway().sendAndWait(command);
+        } catch (Throwable ex) {
+            LOG.error("Error occured when executing command!", ex);
             throw new WebApplicationException("Error occured when reading command!", ex);
         }
     }

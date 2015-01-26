@@ -44,6 +44,7 @@ public class JerseyConfig extends ResourceConfig {
         register(OrganizationResource.class);
         register(UniqueIdResource.class);
         register(UserResource.class);
+        register(net.maritimecloud.identityregistry.resource.UserResource.class);
         register(LoggingFilter.class);
     }
 }
