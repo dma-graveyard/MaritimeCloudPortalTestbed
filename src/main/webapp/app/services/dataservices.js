@@ -6,6 +6,16 @@
 //var data = demoData();
 
 // ----------------------------------------------------------------------------
+// Remote API Commands : User
+// ----------------------------------------------------------------------------
+function RegisterUser(userId, prefferedUsername, emailAddress, password) {
+  this.userId = {identifier: userId};
+  this.prefferedUsername = prefferedUsername;
+  this.emailAddress = emailAddress;
+  this.password = password;
+}
+
+// ----------------------------------------------------------------------------
 // Remote API Commands
 // ----------------------------------------------------------------------------
 function CreateOrganizationCommand(organizationId, primaryAlias, name, summary, url) {
@@ -112,13 +122,19 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 
     .factory('UserService', ['$resource', 'serviceBaseUrl',
       function ($resource, serviceBaseUrl) {
-        return $resource(serviceBaseUrl + '/rest/users/:username', {}, {
+        var resource = $resource(serviceBaseUrl + '/rest/api/users/:username', {}, {
           query: {method: 'GET', params: {username: ''}, isArray: true},
-          signUp: {method: 'POST', params: {}, isArray: false},
-          activateAccount: {method: 'POST', url: '/rest/users/:username/activate/:activationId', isArray: false},
-          queryOrganizationMeberships: {method: 'GET', url: '/rest/users/:username/orgs', isArray: true},
-          isUnique: {method: 'GET', url: '/rest/users/:username/exist', isArray: false}
+          post: {method: 'POST', params: {}, isArray: false},
+          activateAccount: {method: 'POST', url: '/rest/api/users/:username/activate/:activationId', isArray: false},
+          queryOrganizationMeberships: {method: 'GET', url: '/rest/api/users/:username/orgs', isArray: true},
+          isUnique: {method: 'GET', url: '/rest/api/users/:username/exist', isArray: false}
         });
+        
+        resource.signUp = function (user, succes, error) {
+          return this.post({}, new RegisterUser(user.userId, user.username, user.emailAddress, user.password), succes, error);
+        };
+        
+        return resource;
       }])
 
     .factory('OrganizationService', ['$resource', 'serviceBaseUrl',

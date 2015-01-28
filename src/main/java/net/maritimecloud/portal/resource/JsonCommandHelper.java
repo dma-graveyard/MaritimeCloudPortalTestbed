@@ -44,4 +44,11 @@ public final class JsonCommandHelper {
                 "\"" + propertyName + "\":\\{\"identifier\":\"" + value + "\"\\}");
     }
 
+    public static boolean identityIsEmpty(String commandJSON, String propertyName) {
+
+        return commandJSON.replaceAll(
+                aQuote + propertyName + aQuote + aColon + aLeftCurlyBracket + aQuote + "identifier" + aQuote + aColon + aQuote + anyvalue + aQuote + aRightCurlyBracket,
+                "\"" + propertyName + "\":\\{\"identifier\":\"" + "" + "\"\\}").equals(commandJSON);
+    }
+
 }

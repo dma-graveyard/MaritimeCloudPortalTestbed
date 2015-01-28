@@ -14,6 +14,7 @@
  */
 package net.maritimecloud.identityregistry.resource;
 
+import java.util.UUID;
 import net.maritimecloud.portal.resource.*;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -41,6 +42,7 @@ import net.maritimecloud.identityregistry.query.UserEntry;
 import net.maritimecloud.identityregistry.query.UserQueryRepository;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import net.maritimecloud.portal.application.IdentityApplicationService;
+import static net.maritimecloud.portal.resource.JsonCommandHelper.identityIsEmpty;
 import net.maritimecloud.serviceregistry.query.OrganizationMembershipEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,6 +116,11 @@ public class UserResource {
     //@Path("register")
     public void registerUserPostCommand(@HeaderParam("Content-type") String contentType, @QueryParam("command") @DefaultValue("") String queryCommandName, String commandJSON) {
         LOG.info("User POST command");
+        if (identityIsEmpty(commandJSON, contentType)) {
+            LOG.info("Empty userId -> AUTO creating UUID. Got:");
+            LOG.info("JSON: "+ commandJSON);
+            commandJSON = overwriteIdentity(commandJSON, "userId", UUID.randomUUID().toString());
+        }
         sendAndWait(contentType, queryCommandName, commandJSON,
                 RegisterUser.class
         );
@@ -246,8 +253,8 @@ public class UserResource {
     @GET
     @Path("{username}/exist")
     @Produces(MediaType.APPLICATION_JSON)
-    public UserDTO getUsernameExist(@PathParam("username") String username) {
-        return usernameExist(username) ? UserDTO.USERNAME_EXIST : UserDTO.USERNAME_IS_UNKNOWN;
+    public String getUsernameExist(@PathParam("username") String username) {
+        return "{\"usernameExist\":" + (usernameExist(username) ? "true" : "false") + "}";
     }
 
     private boolean usernameExist(String username) {

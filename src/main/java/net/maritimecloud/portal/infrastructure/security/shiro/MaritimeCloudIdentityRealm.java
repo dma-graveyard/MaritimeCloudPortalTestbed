@@ -16,8 +16,6 @@ package net.maritimecloud.portal.infrastructure.security.shiro;
 
 import net.maritimecloud.identityregistry.query.internal.InternalUserEntry;
 import net.maritimecloud.identityregistry.query.internal.InternalUserQueryRepository;
-import net.maritimecloud.portal.application.ApplicationServiceRegistry;
-import net.maritimecloud.portal.application.IdentityApplicationService;
 import net.maritimecloud.portal.domain.model.DomainRegistry;
 import net.maritimecloud.portal.domain.model.identity.EncryptionService;
 import net.maritimecloud.portal.domain.model.identity.Role;

@@ -74,7 +74,6 @@ angular.module('mcp.users', ['ui.bootstrap'])
             return;
           }
           return UserService.isUnique({username: $scope.user.username}, function (data) {
-            //console.log(data, $scope.usernameAlreadyExist);
             $scope.usernameAlreadyExist = data.usernameExist;
           });
         };
@@ -90,6 +89,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
 
         $scope.sendRequest = function () {
           $scope.alert = null;
+          $scope.user.userId = "";
           $scope.message = "Sending request for access.";
           delete $scope.user.repeatedPassword;
           $scope.signUpPromise = UserService.signUp($scope.user, function (data) {
