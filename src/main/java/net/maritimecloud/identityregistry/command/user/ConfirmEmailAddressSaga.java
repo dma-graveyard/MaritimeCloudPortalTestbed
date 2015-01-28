@@ -77,7 +77,7 @@ public class ConfirmEmailAddressSaga extends AbstractAnnotatedSaga {
     private String autoConfirmTestUsersEmailAddress_HACK(UserId userId, String emailAddress, String emailVerificationCode) {
         // HACK: FIXME: TODO:
         // supply hardcoded code in odrer to auto-create users for test and demo without reading mails
-        if (emailAddress.endsWith("@boerrild.dk")) {
+        if (emailAddress.endsWith("@auto.demo.dma.dk")) {
             commandGateway.send(new VerifyEmailAddress(userId, emailVerificationCode));
         }
         return emailVerificationCode;

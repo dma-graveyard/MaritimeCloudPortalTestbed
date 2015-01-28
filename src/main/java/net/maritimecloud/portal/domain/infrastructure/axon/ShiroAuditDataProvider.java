@@ -20,10 +20,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.maritimecloud.identityregistry.query.internal.InternalUserEntry;
 import net.maritimecloud.identityregistry.query.internal.InternalUserQueryRepository;
-import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import net.maritimecloud.portal.config.AxonConfig;
 import net.maritimecloud.portal.domain.model.DomainRegistry;
-import net.maritimecloud.portal.domain.model.security.UserNotLoggedInException;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.subject.Subject;
@@ -31,7 +29,7 @@ import org.axonframework.auditing.AuditDataProvider;
 import org.axonframework.commandhandling.CommandMessage;
 
 /**
- * AuditDataProvider that provides user-information obtained from Shiro
+ * AuditDataProvider that provides user-information obtained mainly from Shiro
  * <p>
  * @author Christoffer Børrild
  */
@@ -50,23 +48,27 @@ public class ShiroAuditDataProvider implements AuditDataProvider {
             String userHost = subject.getSession().getHost();
             metaData.put(UserMetaData.USER_HOST, userHost);
 
-            String userId = (String) ApplicationServiceRegistry.authenticationUtil().getUserId();
-            metaData.put(UserMetaData.USERID, userId);
+            if (subject.isAuthenticated()) {
 
-            //User user = ApplicationServiceRegistry.identityApplicationService().user(userId);
-            InternalUserEntry user = internalUserQueryRepository().findByUsername(userId);
-            if (user != null) {
-                metaData.put(UserMetaData.USERNAME, user.getUsername());
+                String userId = (String) subject.getPrincipal();
+                metaData.put(UserMetaData.USERID, userId);
+
+                InternalUserEntry user = internalUserQueryRepository().findOne(userId);
+                if (user != null) {
+                    metaData.put(UserMetaData.USERNAME, user.getUsername());
+                } else {
+                    Logger.getLogger(AxonConfig.class.getName()).log(Level.WARNING, "Unknown user with userId {0} from host " + metaData.get(UserMetaData.USER_HOST), metaData.get(UserMetaData.USERID));
+                    metaData.put(UserMetaData.USERNAME, "Anonymous");
+                }
+
             } else {
-                Logger.getLogger(AxonConfig.class.getName()).log(Level.WARNING, "Unknown user with userId {} from host " + metaData.get(UserMetaData.USER_HOST), metaData.get(UserMetaData.USERID));
+                Logger.getLogger(AxonConfig.class.getName()).log(Level.FINE, "Anonymous access from host {0}", metaData.get(UserMetaData.USER_HOST));
                 metaData.put(UserMetaData.USERNAME, "Anonymous");
             }
+
         } catch (UnavailableSecurityManagerException ex) {
-            Logger.getLogger(AxonConfig.class.getName()).log(Level.WARNING, null, ex);
+            Logger.getLogger(AxonConfig.class.getName()).log(Level.WARNING, "UnavailableSecurityManagerException",ex);
             throw ex;
-        } catch (UserNotLoggedInException ex) {
-            Logger.getLogger(AxonConfig.class.getName()).log(Level.FINE, "Anonymous access from host {}", metaData.get(UserMetaData.USER_HOST));
-            metaData.put(UserMetaData.USERNAME, "Anonymous");
         }
 
         return metaData;

@@ -72,7 +72,7 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
 
         // HACK: FIXME: TODO: 
         // supply hardcoded code in odrer to auto-create users for test and demo without reading mails
-        emailVerificationCode = aHACK_FIXME_TEST_FEATURE(command.getEmailAddress(), emailVerificationCode);
+        emailVerificationCode = a_HACK_TEST_useStaticVerificationCode(command.getEmailAddress(), emailVerificationCode);
 
         apply(new UserRegistered(
                 command.getUserId(),
@@ -91,17 +91,17 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
 
             // HACK: FIXME: TODO: 
             // supply hardcoded code in odrer to auto-create users for test and demo without reading mails
-            emailVerificationCode = aHACK_FIXME_TEST_FEATURE(command.getEmailAddress(), emailVerificationCode);
+            emailVerificationCode = a_HACK_TEST_useStaticVerificationCode(command.getEmailAddress(), emailVerificationCode);
 
             apply(new UnconfirmedUserEmailAddressSupplied(command.getUserId(), this.username(), command.getEmailAddress(), emailVerificationCode));
         }
     }
 
-    private String aHACK_FIXME_TEST_FEATURE(String emailAddress, String emailVerificationCode) {
+    private String a_HACK_TEST_useStaticVerificationCode(String emailAddress, String emailVerificationCode) {
         // HACK: FIXME: TODO:
         // supply hardcoded code in odrer to auto-create users for test and demo without reading mails
-        if (emailAddress.endsWith("@boerrild.dk")) {
-            emailVerificationCode = "94b389dd-e50e-48c1-b0fc-6840289a647e";
+        if (emailAddress.contains("@static.demo.dma.dk")) {
+            emailVerificationCode = emailAddress.replace("@static.demo.dma.dk", "");
         }
         return emailVerificationCode;
     }
