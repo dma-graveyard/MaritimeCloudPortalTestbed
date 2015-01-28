@@ -44,7 +44,20 @@ public class ReplayableFileSystemEventStore extends FileSystemEventStore impleme
 
     private final SortedSet<DomainEventMessage> domainEventMessagesCache = new ConcurrentSkipListSet<>((DomainEventMessage m1, DomainEventMessage m2) -> {
         long r = m1.getTimestamp().getMillis() - m2.getTimestamp().getMillis();
-        return r < 0 ? -1 : r == 0 ? 0 : 1;
+        int i = r < 0 ? -1 : r == 0 ? 0 : 1;
+        
+        if(i == 0){
+            if(m1.getAggregateIdentifier().equals(m2.getAggregateIdentifier())){
+                // same aggregaste at same time are ordered by sequence number
+               long r2 = m1.getSequenceNumber() - m2.getSequenceNumber();
+               return r2 < 0 ? -1 : r2 == 0 ? 0 : 1;
+            } else {
+               // some arbitrary but conscequent ordering
+               long r2 = m1.getIdentifier().compareTo(m2.getIdentifier());
+            };
+        }
+        
+        return i;
     });
 
     public ReplayableFileSystemEventStore(File baseDir) {
