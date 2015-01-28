@@ -127,7 +127,7 @@ public class InMemoryUserRepository implements UserRepository, CleanableStore {
                 return user;
             }
         }
-        throw new UnknownUserException(userId);
+        throw new UnknownUserException(""+userId);
     }
 
     private User activate(User u) {

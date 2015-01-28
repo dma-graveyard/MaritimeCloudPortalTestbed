@@ -43,13 +43,8 @@ public class UserListener {
         this.userQueryRepository = userQueryRepository;
     }
 
-    public void setOrganizationQueryRepository(UserQueryRepository userQueryRepository) {
-        this.userQueryRepository = userQueryRepository;
-    }
-
     @EventHandler
     public void on(UserRegistered event) {
-        System.out.println("USER REGISTERED !!!!!!!!!!!!!!!!!!!!!! "+event);
         UserEntry userEntry = new UserEntry();
         userEntry.setUserId(event.getUserId().identifier());
         userEntry.setUsername(event.getPrefferedUsername());

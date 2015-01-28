@@ -14,16 +14,11 @@
  */
 package net.maritimecloud.portal.infrastructure.security.shiro;
 
-import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
-import org.apache.shiro.authc.credential.PasswordService;
 import org.apache.shiro.crypto.hash.DefaultHashService;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * @author Christoffer Børrild
@@ -41,8 +36,6 @@ public class MaritimeCloudIdentityRealmTest {
     @Test
     public void testSomeMethod() {
         // ApplicationServiceRegistry.identityApplicationService();
-
-        MaritimeCloudIdentityRealm realm = new MaritimeCloudIdentityRealm();
 
         String submittedPlaintextPassword = "secret";
 

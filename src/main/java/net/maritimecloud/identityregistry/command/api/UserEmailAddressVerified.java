@@ -16,16 +16,16 @@ public class UserEmailAddressVerified {
 
     @TargetAggregateIdentifier
     private final UserId userId;
-    private final String prefferedUsername;
+    private final String username;
     private final String emailAddress;
 
     public UserEmailAddressVerified(
             UserId userId,
-            String prefferedUsername,
+            String username,
             String emailAddress
     ) {
         this.userId = userId;
-        this.prefferedUsername = prefferedUsername;
+        this.username = username;
         this.emailAddress = emailAddress;
     }
 
@@ -33,8 +33,8 @@ public class UserEmailAddressVerified {
         return userId;
     }
 
-    public String getPrefferedUsername() {
-        return prefferedUsername;
+    public String getUsername() {
+        return username;
     }
 
     public String getEmailAddress() {

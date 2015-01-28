@@ -41,13 +41,13 @@ public interface IdentityRegistryContract extends CqrsContract {
     void RegisterUser(UserId userId, String prefferedUsername, String emailAddress, String password);
 
     @Command
+    void ChangeUserEmailAddress(UserId userId, String emailAddress);
+
+    @Command
     void VerifyEmailAddress(UserId userId, String emailAddressVerificationId);
 
     @Command
     void ChangeUserPassword(UserId userId, String currentPassword, String changedPassword);
-
-    @Command
-    void ChangeUserEmailAddress(UserId userId, String emailAddress);
 
 //    @Command
 //    void ChangeUserContactName(UserId userId, String firstname, String lastname);
@@ -59,15 +59,15 @@ public interface IdentityRegistryContract extends CqrsContract {
     void UserRegistered(UserId userId, String prefferedUsername, String emailAddress, String obfuscatedPassword, String emailVerificationCode);
 
     @Event
-    void UserEmailAddressVerified(UserId userId, String prefferedUsername, String emailAddress);
+    void UnconfirmedUserEmailAddressSupplied(UserId userId, String username, String unconfirmedEmailAddress, String emailVerificationCode);
 
     @Event
-    void UserAccountActivated(UserId userId, String prefferedUsername);
+    void UserEmailAddressVerified(UserId userId, String username, String emailAddress);
+
+    @Event
+    void UserAccountActivated(UserId userId, String username);
 
     @Event
     void UserPasswordChanged(UserId userId, String username, String obfuscatedChangedPassword);
-
-    @Event
-    void UnconfirmedUserEmailAddressSupplied(UserId userId, String username, String unconfirmedEmailAddress, String emailVerificationCode);
 
 }

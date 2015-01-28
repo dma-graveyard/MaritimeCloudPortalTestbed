@@ -14,8 +14,6 @@
  */
 package net.maritimecloud.portal.resource;
 
-import java.util.Set;
-import java.util.stream.Collectors;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -24,10 +22,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import net.maritimecloud.identityregistry.query.internal.InternalUserEntry;
+import net.maritimecloud.identityregistry.query.internal.InternalUserQueryRepository;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import net.maritimecloud.portal.application.IdentityApplicationService;
+import net.maritimecloud.portal.domain.model.DomainRegistry;
+import net.maritimecloud.portal.domain.model.identity.Role;
 import net.maritimecloud.portal.domain.model.identity.UnknownUserException;
-import net.maritimecloud.portal.domain.model.identity.User;
 import net.maritimecloud.portal.domain.model.security.AuthenticationException;
 import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
 import net.maritimecloud.portal.domain.model.security.UserNotLoggedInException;
@@ -48,11 +49,15 @@ public class AuthenticationResource {
         return ApplicationServiceRegistry.authenticationUtil();
     }
 
-    protected IdentityApplicationService identityApplicationService() {
+    private IdentityApplicationService identityApplicationService() {
         return ApplicationServiceRegistry.identityApplicationService();
     }
 
-    protected LogService logService() {
+    private InternalUserQueryRepository internalUserQueryRepository() {
+        return DomainRegistry.internalUserQueryRepository();
+    }
+
+    private LogService logService() {
         return ApplicationServiceRegistry.logService();
     }
 
@@ -156,8 +161,9 @@ public class AuthenticationResource {
     public SubjectDTO currentSubject() {
 
         try {
-            long userId = authenticationUtil().getUserId();
-            User user = identityApplicationService().user(userId);
+            String userIdentifier = authenticationUtil().getUserId();
+            InternalUserEntry user = internalUserQueryRepository().findOne(userIdentifier);
+            assertUserFound(user);
             return createSubject(user);
         } catch (UserNotLoggedInException | UnknownUserException e) {
             reportCurrentSubjectNotAuthenticated(e);
@@ -165,13 +171,20 @@ public class AuthenticationResource {
         }
     }
 
-    private SubjectDTO createSubject(User user) {
-        return new SubjectDTO(user.username(), extractRolenamesAsArrayOfStrings(user));
+    private void assertUserFound(InternalUserEntry user) throws UnknownUserException {
+        if (user == null) {
+            throw new UnknownUserException(user.getUserId());
+        }
     }
 
-    private String[] extractRolenamesAsArrayOfStrings(User user) {
-        Set<String> roles = user.userRoles().all().stream().map(role -> role.name()).collect(Collectors.toSet());
-        return roles.toArray(new String[0]);
+    private SubjectDTO createSubject(InternalUserEntry user) {
+        return new SubjectDTO(user.getUsername(), extractRolenamesAsArrayOfStrings(user));
+    }
+
+    private String[] extractRolenamesAsArrayOfStrings(InternalUserEntry user) {
+        return user.getUsername().equalsIgnoreCase("admin")
+                ? new String[]{Role.USER.name(), Role.ADMIN.name()}
+                : new String[]{Role.USER.name()};
     }
 
     /**

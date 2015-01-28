@@ -43,6 +43,7 @@ public class ReplayableFileSystemEventStore extends FileSystemEventStore impleme
     private final File baseDir;
 
     private final SortedSet<DomainEventMessage> domainEventMessagesCache = new ConcurrentSkipListSet<>((DomainEventMessage m1, DomainEventMessage m2) -> {
+        // Compare:
         long r = m1.getTimestamp().getMillis() - m2.getTimestamp().getMillis();
         int i = r < 0 ? -1 : r == 0 ? 0 : 1;
         

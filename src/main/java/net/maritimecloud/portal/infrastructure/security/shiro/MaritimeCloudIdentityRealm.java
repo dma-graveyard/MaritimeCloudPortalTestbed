@@ -14,10 +14,14 @@
  */
 package net.maritimecloud.portal.infrastructure.security.shiro;
 
+import net.maritimecloud.identityregistry.query.internal.InternalUserEntry;
+import net.maritimecloud.identityregistry.query.internal.InternalUserQueryRepository;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import net.maritimecloud.portal.application.IdentityApplicationService;
-import net.maritimecloud.portal.domain.model.identity.UnknownUserException;
-import net.maritimecloud.portal.domain.model.identity.User;
+import net.maritimecloud.portal.domain.model.DomainRegistry;
+import net.maritimecloud.portal.domain.model.identity.EncryptionService;
+import net.maritimecloud.portal.domain.model.identity.Role;
+import net.maritimecloud.portal.infrastructure.service.SHA512EncryptionService;
 import org.apache.shiro.authc.AccountException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -47,8 +51,8 @@ public class MaritimeCloudIdentityRealm extends AuthorizingRealm {
         setName(REALM); // This name must match the name in the User class's getPrincipals() method
     }
 
-    private IdentityApplicationService identityApplicationService() {
-        return ApplicationServiceRegistry.identityApplicationService();
+    private InternalUserQueryRepository internalUserQueryRepository() {
+        return DomainRegistry.internalUserQueryRepository();
     }
 
     @Override
@@ -67,17 +71,18 @@ public class MaritimeCloudIdentityRealm extends AuthorizingRealm {
             }
 
             // Lookup user
-            User user = identityApplicationService().user(username);
+            //User user = identityApplicationService().user(username);
+            InternalUserEntry user = internalUserQueryRepository().findByUsername(username);
 
-            if (user == null || !user.isActive()) {
+            if (user == null || !user.isActivated()) {
                 throw new UnknownAccountException("Could not authenticate with given credentials");
             }
 
             // Create Auth Info
             return new SimpleAuthenticationInfo(
-                    user.id(),
-                    user.internalAccessOnlyEncryptedPassword(),
-                    ByteSource.Util.bytes(user.internalAccessOnlyEncryptionSalt()),
+                    user.getUserId(),
+                    user.getEncryptedPassword(),
+                    ByteSource.Util.bytes("salt"), // (not sure if this salt is used at all?)
                     getName()
             );
         } else {
@@ -88,23 +93,30 @@ public class MaritimeCloudIdentityRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
 
-        try {
-            // Get the userId from the first principal in the collection
-            long userId = (long) getAvailablePrincipal(principals);
+        // Get the userId from the first principal in the collection
+        String userIdentifier = (String) getAvailablePrincipal(principals);
 
-            // Lookup user
-            User user = identityApplicationService().user(userId);
+        // Lookup user
+        InternalUserEntry user = internalUserQueryRepository().findOne(userIdentifier);
+        assertUserFound(user);
 
-            // Create AuthorizationInfo
-            SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+        // Create AuthorizationInfo
+        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
-            // Add all roles
-            user.userRoles().all().stream().forEach((role) -> {
-                info.addRole(role.name());
-            });
+        // Add all roles
+        info.addRole(Role.USER.name());
+        if (user.getUsername().equalsIgnoreCase("admin")) {
+            info.addRole(Role.ADMIN.name());
+        }
+        //user.userRoles().all().stream().forEach((role) -> {
+        //    info.addRole(role.name());
+        //});
 
-            return info;
-        } catch (UnknownUserException ex) {
+        return info;
+    }
+
+    private void assertUserFound(InternalUserEntry user) {
+        if (user == null) {
             throw new UnknownAccountException("No user found in application registry");
         }
     }

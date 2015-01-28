@@ -14,8 +14,6 @@
  */
 package net.maritimecloud.portal.domain.infrastructure.shiro;
 
-import net.maritimecloud.portal.application.ApplicationServiceRegistry;
-import net.maritimecloud.portal.application.IdentityApplicationService;
 import net.maritimecloud.portal.domain.model.security.AuthenticationException;
 import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
 import net.maritimecloud.portal.domain.model.security.UserNotLoggedInException;
@@ -31,15 +29,11 @@ import org.apache.shiro.authc.UsernamePasswordToken;
  */
 public class ShiroAuthenticationUtil implements AuthenticationUtil {
 
-    private IdentityApplicationService identityApplicationService() {
-        return ApplicationServiceRegistry.identityApplicationService();
-    }
-
     @Override
-    public long login(String username, String password) throws AuthenticationException {
+    public String login(String username, String password) throws AuthenticationException {
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         SecurityUtils.getSubject().login(token);
-        return identityApplicationService().user(username).id();
+        return (String) SecurityUtils.getSubject().getPrincipal();
     }
 
     @Override
@@ -48,9 +42,9 @@ public class ShiroAuthenticationUtil implements AuthenticationUtil {
     }
 
     @Override
-    public long getUserId() throws UserNotLoggedInException {
+    public String getUserId() throws UserNotLoggedInException {
         if (isLoggedIn()) {
-            return (long) SecurityUtils.getSubject().getPrincipal();
+            return (String) SecurityUtils.getSubject().getPrincipal();
         }
         throw new UserNotLoggedInException();
     }

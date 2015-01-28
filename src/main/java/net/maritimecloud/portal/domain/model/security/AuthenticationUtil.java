@@ -33,7 +33,7 @@ public interface AuthenticationUtil {
      * @return the application specific unique userId.
      * @throws net.maritimecloud.portal.domain.model.security.AuthenticationException
      */
-    long login(String username, String password) throws AuthenticationException;
+    String login(String username, String password) throws AuthenticationException;
 
     /**
      * @return true if the current user is logged in
@@ -44,7 +44,7 @@ public interface AuthenticationUtil {
      * @return the application specific unique userId of the currently logged in user
      * @throws UserNotLoggedInException if the current user is anonymous
      */
-    long getUserId() throws UserNotLoggedInException;
+    String getUserId() throws UserNotLoggedInException;
 
     /**
      *

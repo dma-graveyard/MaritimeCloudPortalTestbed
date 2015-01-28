@@ -16,22 +16,22 @@ public class UserAccountActivated {
 
     @TargetAggregateIdentifier
     private final UserId userId;
-    private final String prefferedUsername;
+    private final String username;
 
     public UserAccountActivated(
             UserId userId,
-            String prefferedUsername
+            String username
     ) {
         this.userId = userId;
-        this.prefferedUsername = prefferedUsername;
+        this.username = username;
     }
 
     public UserId getUserId() {
         return userId;
     }
 
-    public String getPrefferedUsername() {
-        return prefferedUsername;
+    public String getUsername() {
+        return username;
     }
 
 }

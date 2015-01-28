@@ -47,7 +47,7 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
 
     private String username;
     private String password;
-    private String passwordEncryptionSalt;
+//    private String passwordEncryptionSalt;
     //private Person person;
     private String emailAddress;
     private String activationId;
@@ -69,11 +69,11 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
         assertValidUsername(command.getPrefferedUsername());
         assertPasswordComply(command.getPrefferedUsername(), command.getPassword());
         String emailVerificationCode = new UnconfirmedEmailAddress(command.getEmailAddress()).activationCode().toString();
+
         // HACK: FIXME: TODO: 
         // supply hardcoded code in odrer to auto-create users for test and demo without reading mails
-        if(command.getEmailAddress().endsWith("@boerrild.dk"))
-            emailVerificationCode = "94b389dd-e50e-48c1-b0fc-6840289a647e";
-        
+        emailVerificationCode = aHACK_FIXME_TEST_FEATURE(command.getEmailAddress(), emailVerificationCode);
+
         apply(new UserRegistered(
                 command.getUserId(),
                 command.getPrefferedUsername(),
@@ -88,8 +88,22 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
         assertValidEmailAddress(command.getEmailAddress());
         if (!command.getEmailAddress().equalsIgnoreCase(emailAddress())) {
             String emailVerificationCode = new UnconfirmedEmailAddress(command.getEmailAddress()).activationCode().toString();
+
+            // HACK: FIXME: TODO: 
+            // supply hardcoded code in odrer to auto-create users for test and demo without reading mails
+            emailVerificationCode = aHACK_FIXME_TEST_FEATURE(command.getEmailAddress(), emailVerificationCode);
+
             apply(new UnconfirmedUserEmailAddressSupplied(command.getUserId(), this.username(), command.getEmailAddress(), emailVerificationCode));
         }
+    }
+
+    private String aHACK_FIXME_TEST_FEATURE(String emailAddress, String emailVerificationCode) {
+        // HACK: FIXME: TODO:
+        // supply hardcoded code in odrer to auto-create users for test and demo without reading mails
+        if (emailAddress.endsWith("@boerrild.dk")) {
+            emailVerificationCode = "94b389dd-e50e-48c1-b0fc-6840289a647e";
+        }
+        return emailVerificationCode;
     }
 
     @CommandHandler
@@ -117,14 +131,23 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
     public void on(UserRegistered event) {
         this.userId = event.getUserId();
         this.setUsername(event.getPrefferedUsername());
-//        this.setEmailAddress(event.getEmailAddress());
         this.unconfirmedEmailAddress = new UnconfirmedEmailAddress(event.getEmailAddress(), event.getEmailVerificationCode());
         this.setPassword(event.getObfuscatedPassword());
     }
 
     @EventSourcingHandler
+    public void on(UnconfirmedUserEmailAddressSupplied event) {
+        this.unconfirmedEmailAddress = new UnconfirmedEmailAddress(event.getUnconfirmedEmailAddress(), event.getEmailVerificationCode());
+    }
+
+    @EventSourcingHandler
     public void on(UserEmailAddressVerified event) {
         this.setEmailAddress(event.getEmailAddress());
+    }
+
+    @EventSourcingHandler
+    public void on(UserAccountActivated event) {
+        this.activated = true; 
     }
 
     @EventSourcingHandler
@@ -317,7 +340,7 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
         Assert.notEmpty(aUsername, "The username is required.");
         assertArgumentLength(aUsername, 3, 250, "The username must be 3 to 250 characters.");
         // TODO: check a domain service to see if the username is already taken
-        // ...command.getPrefferedUsername()
+        // ...command.getUsername()
         // ...or perhaps add a saga for that!?!
     }
 

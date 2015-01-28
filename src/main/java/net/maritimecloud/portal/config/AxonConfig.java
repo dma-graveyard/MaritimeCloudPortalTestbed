@@ -18,6 +18,7 @@ import net.maritimecloud.portal.domain.infrastructure.axon.ShiroAuditDataProvide
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import net.maritimecloud.identityregistry.command.user.ConfirmEmailAddressSaga;
 import net.maritimecloud.identityregistry.command.user.User;
 import net.maritimecloud.portal.domain.infrastructure.axon.NoReplayedEvents;
 import net.maritimecloud.portal.domain.infrastructure.axon.ReplayableFileSystemEventStore;
@@ -171,7 +172,8 @@ public class AxonConfig {
     public SagaManager sagaManager() {
         AnnotatedSagaManager sagaManager = new AnnotatedSagaManager(sagaRepository(), sagaFactory(),
                 AttachOrganizationAliasSaga.class,
-                SetupOrganizationOwnerMemberSaga.class
+                SetupOrganizationOwnerMemberSaga.class,
+                ConfirmEmailAddressSaga.class
         );
         return sagaManager;
     }

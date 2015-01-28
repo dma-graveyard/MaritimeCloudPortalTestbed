@@ -21,7 +21,7 @@ package net.maritimecloud.portal.domain.model.identity;
  */
 public class UnknownUserException extends Exception {
 
-    public UnknownUserException(long userId) {
+    public UnknownUserException(String userId) {
         super("Unknown user with userId '" + userId + "'");
     }
 

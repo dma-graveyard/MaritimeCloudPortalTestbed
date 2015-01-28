@@ -75,7 +75,7 @@ public class UserResource {
         return JsonCommandHelper.overwriteIdentity(commandJSON, propertyName, value);
     }
 
-    protected IdentityApplicationService identityApplicationService() {
+    private IdentityApplicationService identityApplicationService() {
         return ApplicationServiceRegistry.identityApplicationService();
     }
 

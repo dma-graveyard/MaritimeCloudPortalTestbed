@@ -18,10 +18,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.maritimecloud.identityregistry.query.internal.InternalUserEntry;
+import net.maritimecloud.identityregistry.query.internal.InternalUserQueryRepository;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import net.maritimecloud.portal.config.AxonConfig;
-import net.maritimecloud.portal.domain.model.identity.UnknownUserException;
-import net.maritimecloud.portal.domain.model.identity.User;
+import net.maritimecloud.portal.domain.model.DomainRegistry;
 import net.maritimecloud.portal.domain.model.security.UserNotLoggedInException;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
@@ -31,9 +32,14 @@ import org.axonframework.commandhandling.CommandMessage;
 
 /**
  * AuditDataProvider that provides user-information obtained from Shiro
+ * <p>
  * @author Christoffer Børrild
  */
 public class ShiroAuditDataProvider implements AuditDataProvider {
+
+    private InternalUserQueryRepository internalUserQueryRepository() {
+        return DomainRegistry.internalUserQueryRepository();
+    }
 
     @Override
     public Map<String, Object> provideAuditDataFor(CommandMessage<?> command) {
@@ -43,21 +49,23 @@ public class ShiroAuditDataProvider implements AuditDataProvider {
             final Subject subject = SecurityUtils.getSubject();
             String userHost = subject.getSession().getHost();
             metaData.put(UserMetaData.USER_HOST, userHost);
-            
-            long userId = ApplicationServiceRegistry.authenticationUtil().getUserId();
-            metaData.put(UserMetaData.USERID, userId);
-            
-            User user = ApplicationServiceRegistry.identityApplicationService().user(userId);
-            metaData.put(UserMetaData.USERNAME, user.username());
 
+            String userId = (String) ApplicationServiceRegistry.authenticationUtil().getUserId();
+            metaData.put(UserMetaData.USERID, userId);
+
+            //User user = ApplicationServiceRegistry.identityApplicationService().user(userId);
+            InternalUserEntry user = internalUserQueryRepository().findByUsername(userId);
+            if (user != null) {
+                metaData.put(UserMetaData.USERNAME, user.getUsername());
+            } else {
+                Logger.getLogger(AxonConfig.class.getName()).log(Level.WARNING, "Unknown user with userId {} from host " + metaData.get(UserMetaData.USER_HOST), metaData.get(UserMetaData.USERID));
+                metaData.put(UserMetaData.USERNAME, "Anonymous");
+            }
         } catch (UnavailableSecurityManagerException ex) {
             Logger.getLogger(AxonConfig.class.getName()).log(Level.WARNING, null, ex);
-            throw ex;            
+            throw ex;
         } catch (UserNotLoggedInException ex) {
             Logger.getLogger(AxonConfig.class.getName()).log(Level.FINE, "Anonymous access from host {}", metaData.get(UserMetaData.USER_HOST));
-            metaData.put(UserMetaData.USERNAME, "Anonymous");
-        } catch (UnknownUserException ex) {
-            Logger.getLogger(AxonConfig.class.getName()).log(Level.WARNING, "Unknown user with userId {} from host " + metaData.get(UserMetaData.USER_HOST), metaData.get(UserMetaData.USERID));
             metaData.put(UserMetaData.USERNAME, "Anonymous");
         }
 
