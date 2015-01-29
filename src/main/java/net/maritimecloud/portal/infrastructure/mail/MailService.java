@@ -14,6 +14,8 @@
  */
 package net.maritimecloud.portal.infrastructure.mail;
 
+import net.maritimecloud.identityregistry.command.api.ResetPasswordKeyGenerated;
+import net.maritimecloud.identityregistry.command.api.UserRegistered;
 import net.maritimecloud.portal.domain.model.identity.User;
 
 /**
@@ -32,15 +34,15 @@ public class MailService {
         this.mailAdapter = mailAdapter;
     }
 
-    public void sendSignUpActivationMessage(User user) {
-        String message = messageComposer.composeSignUpActivationMessage(user);
-        Mail mail = new Mail(user.emailAddress(), "Account activation on Maritime Cloud Portal", message);
+    public void sendSignUpActivationMessage(UserRegistered event) {
+        String message = messageComposer.composeSignUpActivationMessage(event);
+        Mail mail = new Mail(event.getEmailAddress(), "Account activation on Maritime Cloud Portal", message);
         mailAdapter.send(mail);
     }
 
-    public void sendResetPasswordMessage(User user) {
-        String message = messageComposer.composeResetPasswordMessage(user);
-        Mail mail = new Mail(user.emailAddress(), "Password reset for Account at Maritime Cloud Portal", message);
+    public void sendResetPasswordMessage(ResetPasswordKeyGenerated event) {
+        String message = messageComposer.composeResetPasswordMessage(event);
+        Mail mail = new Mail(event.getEmailAddress(), "Password reset for Account at Maritime Cloud Portal", message);
         mailAdapter.send(mail);
     }
 

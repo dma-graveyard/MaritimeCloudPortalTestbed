@@ -18,7 +18,9 @@ import javax.annotation.Resource;
 import net.maritimecloud.identityregistry.command.api.ChangeUserPassword;
 import net.maritimecloud.identityregistry.command.api.ResetPasswordKeyGenerated;
 import net.maritimecloud.identityregistry.command.api.UserPasswordChanged;
+import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import net.maritimecloud.portal.domain.infrastructure.axon.NoReplayedEvents;
+import net.maritimecloud.portal.infrastructure.mail.MailService;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.saga.annotation.AbstractAnnotatedSaga;
 import org.axonframework.saga.annotation.EndSaga;
@@ -34,6 +36,10 @@ public class ResetPasswordSaga extends AbstractAnnotatedSaga {
 
     @Resource
     private transient CommandGateway commandGateway;
+    
+    private MailService mailService() {
+        return ApplicationServiceRegistry.mailService();
+    }
 
     public CommandGateway getCommandGateway() {
         return commandGateway;
@@ -51,7 +57,8 @@ public class ResetPasswordSaga extends AbstractAnnotatedSaga {
 
         // compose and send out welcome and confirm email
         System.out.println("Sending out reset password instruction email with the reset password key: " + event.getResetPasswordKey());
-        //...
+        
+        mailService().sendResetPasswordMessage(event);
         
         // HACK: FIXME: TODO: 
         // auto-confirm users that fulfil some criteria

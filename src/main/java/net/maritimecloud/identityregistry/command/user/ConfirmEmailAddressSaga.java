@@ -19,6 +19,7 @@ import net.maritimecloud.identityregistry.command.api.UnconfirmedUserEmailAddres
 import net.maritimecloud.identityregistry.command.api.UserEmailAddressVerified;
 import net.maritimecloud.identityregistry.command.api.UserRegistered;
 import net.maritimecloud.identityregistry.command.api.VerifyEmailAddress;
+import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import net.maritimecloud.portal.domain.infrastructure.axon.NoReplayedEvents;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.saga.annotation.AbstractAnnotatedSaga;
@@ -52,7 +53,8 @@ public class ConfirmEmailAddressSaga extends AbstractAnnotatedSaga {
 
         // compose and send out welcome and confirm email
         System.out.println("Sending out a confirmation email with email verification code: " + event.getEmailVerificationCode());
-        //...
+        
+        ApplicationServiceRegistry.mailService().sendSignUpActivationMessage(event);
         
         // HACK: FIXME: TODO: 
         // auto-confirm users that fulfil some criteria

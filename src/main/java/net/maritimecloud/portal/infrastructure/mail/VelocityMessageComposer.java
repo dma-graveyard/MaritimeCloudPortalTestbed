@@ -16,6 +16,8 @@ package net.maritimecloud.portal.infrastructure.mail;
 
 import java.util.HashMap;
 import java.util.Map;
+import net.maritimecloud.identityregistry.command.api.ResetPasswordKeyGenerated;
+import net.maritimecloud.identityregistry.command.api.UserRegistered;
 import net.maritimecloud.portal.domain.model.identity.User;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.ui.velocity.VelocityEngineUtils;
@@ -37,14 +39,14 @@ public class VelocityMessageComposer implements MessageComposer {
     }
 
     @Override
-    public String composeSignUpActivationMessage(User user) {
-        assertThatUserHasAnActivationId(user);
-        return compose(createModel(user), TEMPLATE_SIGN_UP_ACTIVATION_MESSAGE);
+    public String composeSignUpActivationMessage(UserRegistered event) {
+        assertNotNull(event.getEmailVerificationCode());
+        return compose(createModel(event.getPrefferedUsername(), event.getEmailVerificationCode()), TEMPLATE_SIGN_UP_ACTIVATION_MESSAGE);
     }
 
-    private void assertThatUserHasAnActivationId(User user) throws IllegalStateException {
-        if(user.activationId() == null)
-            throw new IllegalStateException("User object is missing activationid!");
+    private void assertNotNull(Object value) throws IllegalStateException {
+        if(value == null)
+            throw new IllegalStateException("User object is missing activationid or reset key!");
     }
 
     private String compose(Map model, String templateFilename) {
@@ -52,17 +54,17 @@ public class VelocityMessageComposer implements MessageComposer {
     }
 
     @Override
-    public String composeResetPasswordMessage(User user) {
+    public String composeResetPasswordMessage(ResetPasswordKeyGenerated event) {
         // TODO: consider to rename activationId to confirmationId or verificationId
-        assertThatUserHasAnActivationId(user);
-        return compose(createModel(user), TEMPLATE_RESET_PASSWORD_MESSAGE);
+        assertNotNull(event.getResetPasswordKey());
+        return compose(createModel(event.getUsername(), event.getResetPasswordKey()), TEMPLATE_RESET_PASSWORD_MESSAGE);
     }
 
-    private Map createModel(User user) {
+    private Map createModel(String username, String key) {
         Map model = new HashMap();
-        model.put("username", user.username());
+        model.put("username", username);
         model.put("baseUrl", BASE_URL);
-        model.put("activationid", user.activationId());
+        model.put("activationid", key);
         return model;
     }
 

@@ -46,7 +46,7 @@ public class IdentityApplicationService extends AssertionConcern {
         User newUser = new User(username, password, emailAddress);
         newUser.generateActivationId();
         userRepository().add(newUser);
-        mailService().sendSignUpActivationMessage(newUser);
+//        mailService().sendSignUpActivationMessage(newUser);
         return newUser;
     }
 
@@ -95,7 +95,7 @@ public class IdentityApplicationService extends AssertionConcern {
         // Generate a new confirmation id to be used for reset password
         aUser.generateActivationId();
 
-        mailService().sendResetPasswordMessage(aUser);
+//        mailService().sendResetPasswordMessage(aUser);
     }
 
     public void resetPassword(String aUsername, String aVerificationCode, String aNewPassword) {
