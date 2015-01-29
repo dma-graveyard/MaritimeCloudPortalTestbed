@@ -14,26 +14,41 @@
  */
 package net.maritimecloud.identityregistry.command.user;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import net.maritimecloud.identityregistry.command.api.ChangeUserEmailAddress;
 import net.maritimecloud.identityregistry.command.api.ChangeUserPassword;
 import net.maritimecloud.identityregistry.command.api.RegisterUser;
+import net.maritimecloud.identityregistry.command.api.ResetPasswordKeyGenerated;
+import net.maritimecloud.identityregistry.command.api.SendResetPasswordInstructions;
 import net.maritimecloud.identityregistry.command.api.UnconfirmedUserEmailAddressSupplied;
 import net.maritimecloud.identityregistry.command.api.UserAccountActivated;
 import net.maritimecloud.identityregistry.command.api.UserEmailAddressVerified;
 import net.maritimecloud.identityregistry.command.api.UserPasswordChanged;
 import net.maritimecloud.identityregistry.command.api.UserRegistered;
 import net.maritimecloud.identityregistry.command.api.VerifyEmailAddress;
+import net.maritimecloud.identityregistry.query.internal.InternalUserEntry;
+import net.maritimecloud.identityregistry.query.internal.InternalUserQueryRepository;
 import net.maritimecloud.portal.domain.model.DomainRegistry;
+import org.axonframework.domain.Message;
 import org.axonframework.test.FixtureConfiguration;
 import org.axonframework.test.Fixtures;
 import org.axonframework.test.matchers.Matchers;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.allOf;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
+import static org.mockito.Matchers.any;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 /**
  *
@@ -66,13 +81,11 @@ public class UserTest {
         fixture.givenNoPriorActivity()
                 .when(new RegisterUser(aUserId, A_USERNAME, AN_EMAIL_ADDRESS, A_PASSWORD))
                 .expectEventsMatching(
-                        Matchers.payloadsMatching(
-                                Matchers.exactSequenceOf(
-                                        // note: pass in plain text password here - the matcher needs the original in order to tell of things went well!
-                                        isSameUserRegisteredEvent(new UserRegistered(aUserId, A_USERNAME, AN_EMAIL_ADDRESS, A_PASSWORD, AN_EMAIL_ADDRESS_VERIFICATION_CODE)),
-                                        Matchers.andNoMore()
-                                )
-                        ));
+                        aSequenceOf(
+                                // note: pass in plain text password here - the matcher needs the original in order to tell of things went well!
+                                anEventLike(new UserRegistered(aUserId, A_USERNAME, AN_EMAIL_ADDRESS, A_PASSWORD, AN_EMAIL_ADDRESS_VERIFICATION_CODE))
+                        )
+                );
     }
 
     @Test
@@ -102,17 +115,11 @@ public class UserTest {
                 new UserEmailAddressVerified(aUserId, A_USERNAME, AN_EMAIL_ADDRESS)
         )
                 .when(new ChangeUserEmailAddress(aUserId, ANOTHER_EMAIL_ADDRESS))
-                .expectEventsMatching(
-                        Matchers.payloadsMatching(
-                                Matchers.exactSequenceOf(
-                                        // note: we pass in an existing verification code just to make sure it is not reused (see matcher)
-                                        // ... we expect a new randomly created code 
-                                        isSameUnconfirmedUserEmailAddressSuppliedEvent(
-                        new UnconfirmedUserEmailAddressSupplied(aUserId, A_USERNAME, ANOTHER_EMAIL_ADDRESS, AN_EMAIL_ADDRESS_VERIFICATION_CODE)
-                                        ),
-                                        Matchers.andNoMore()
-                                )
-                        ));
+                .expectEventsMatching(aSequenceOf(
+                                // note: we pass in an existing verification code just to make sure it is not reused (see matcher)
+                                // ... we expect a new randomly created code 
+                                anEventLike(new UnconfirmedUserEmailAddressSupplied(aUserId, A_USERNAME, ANOTHER_EMAIL_ADDRESS, AN_EMAIL_ADDRESS_VERIFICATION_CODE)))
+                );
     }
 
     @Test
@@ -142,14 +149,37 @@ public class UserTest {
                 .when(new ChangeUserPassword(aUserId, A_PASSWORD, A_CHANGED_PASSWORD))
                 //.expectEvents(new UserPasswordChanged(aUserId, A_USERNAME, A_CHANGED_PASSWORD_OBFUSCATED));
                 // we have to use a customized matcher since we cannot reproduce to the same obfuscated password
+                .expectEventsMatching(aSequenceOf(
+                                anEventLike(new UserPasswordChanged(aUserId, A_USERNAME, A_CHANGED_PASSWORD)))
+                );
+    }
+
+    @Mock
+    InternalUserQueryRepository internalUserQueryRepository;
+
+    @Test
+    public void resetPassword() {
+
+        MockitoAnnotations.initMocks(this);
+        InternalUserEntry aUserEntry = new InternalUserEntry();
+        aUserEntry.setUserId(aUserId.identifier());
+        aUserEntry.setUsername(A_USERNAME);
+        aUserEntry.setEmailAddress(AN_EMAIL_ADDRESS);
+
+        Mockito.when(internalUserQueryRepository.findByEmailAddressIgnoreCase(any())).thenReturn(aUserEntry);
+        UserCommandHandler commandHandler = new UserCommandHandler(fixture.getRepository(), internalUserQueryRepository);
+        fixture.registerAnnotatedCommandHandler(commandHandler);
+
+        fixture.given(
+                new UserRegistered(aUserId, A_USERNAME, AN_EMAIL_ADDRESS, A_PASSWORD_OBFUSCATED, AN_EMAIL_ADDRESS_VERIFICATION_CODE),
+                new UserEmailAddressVerified(aUserId, A_USERNAME, AN_EMAIL_ADDRESS)
+        )
+                .when(new SendResetPasswordInstructions(AN_EMAIL_ADDRESS))
                 .expectEventsMatching(
-                        Matchers.payloadsMatching(
-                                Matchers.exactSequenceOf(
-                                        // note: pass in plain text password here - the matcher needs the original in order to compare with obfuscated password
-                                        isUserPasswordChangedEvent(new UserPasswordChanged(aUserId, A_USERNAME, A_CHANGED_PASSWORD)),
-                                        Matchers.andNoMore()
-                                )
-                        ));
+                        aSequenceOf(
+                                anEventLike(new ResetPasswordKeyGenerated(aUserId, A_USERNAME, AN_EMAIL_ADDRESS, "dummy reset code"))
+                        )
+                );
     }
 
     @Test
@@ -170,25 +200,43 @@ public class UserTest {
     // HELPER MATCHERS
     // ------------------------------------------------------------------------
     @Factory
-    public static <T> Matcher<UserPasswordChanged> isUserPasswordChangedEvent(UserPasswordChanged sourceEvent) {
-        return new IsUserPasswordChangedEvent(sourceEvent);
+    public static Matcher<List<? extends Message<?>>> aSequenceOf(Matcher<?>... matchers) {
+        Matcher<?>[] terminatedListOfMatchers = Arrays.copyOf(matchers, matchers.length + 1);
+        terminatedListOfMatchers[matchers.length] = Matchers.andNoMore();
+        return Matchers.payloadsMatching(Matchers.exactSequenceOf(terminatedListOfMatchers));
     }
 
     @Factory
-    public static <T> Matcher<UserRegistered> isSameUserRegisteredEvent(UserRegistered sourceEvent) {
-        return new IsSameUserRegisteredEvent(sourceEvent);
+    public static <T> Matcher<ResetPasswordKeyGenerated> anEventLike(ResetPasswordKeyGenerated event) {
+        return allOf(
+                instanceOf(ResetPasswordKeyGenerated.class),
+                hasProperty("userId", equalTo(event.getUserId())),
+                hasProperty("username", equalTo(event.getUsername())),
+                hasProperty("emailAddress", equalTo(event.getEmailAddress())),
+                hasProperty("resetPasswordKey")
+        );
     }
 
     @Factory
-    public static <T> Matcher<UnconfirmedUserEmailAddressSupplied> isSameUnconfirmedUserEmailAddressSuppliedEvent(UnconfirmedUserEmailAddressSupplied sourceEvent) {
-        return new IsSameUnconfirmedUserEmailAddressSuppliedEvent(sourceEvent);
+    public static <T> Matcher<UserPasswordChanged> anEventLike(UserPasswordChanged sourceEvent) {
+        return new IsUserPasswordChangedEventMatcher(sourceEvent);
     }
 
-    public static class IsSameUserRegisteredEvent extends TypeSafeMatcher<UserRegistered> {
+    @Factory
+    public static <T> Matcher<UserRegistered> anEventLike(UserRegistered sourceEvent) {
+        return new IsSameUserRegisteredEventMatcher(sourceEvent);
+    }
 
-        private UserRegistered sourceEvent;
+    @Factory
+    public static <T> Matcher<UnconfirmedUserEmailAddressSupplied> anEventLike(UnconfirmedUserEmailAddressSupplied sourceEvent) {
+        return new IsSameUnconfirmedUserEmailAddressSuppliedEventMatcher(sourceEvent);
+    }
 
-        public IsSameUserRegisteredEvent(UserRegistered sourceEvent) {
+    public static class IsSameUserRegisteredEventMatcher extends TypeSafeMatcher<UserRegistered> {
+
+        private final UserRegistered sourceEvent;
+
+        public IsSameUserRegisteredEventMatcher(UserRegistered sourceEvent) {
             this.sourceEvent = sourceEvent;
         }
 
@@ -208,11 +256,11 @@ public class UserTest {
 
     }
 
-    public static class IsUserPasswordChangedEvent extends TypeSafeMatcher<UserPasswordChanged> {
+    public static class IsUserPasswordChangedEventMatcher extends TypeSafeMatcher<UserPasswordChanged> {
 
-        private UserPasswordChanged sourceEvent;
+        private final UserPasswordChanged sourceEvent;
 
-        public IsUserPasswordChangedEvent(UserPasswordChanged sourceEvent) {
+        public IsUserPasswordChangedEventMatcher(UserPasswordChanged sourceEvent) {
             this.sourceEvent = sourceEvent;
         }
 
@@ -231,11 +279,11 @@ public class UserTest {
 
     }
 
-    public static class IsSameUnconfirmedUserEmailAddressSuppliedEvent extends TypeSafeMatcher<UnconfirmedUserEmailAddressSupplied> {
+    public static class IsSameUnconfirmedUserEmailAddressSuppliedEventMatcher extends TypeSafeMatcher<UnconfirmedUserEmailAddressSupplied> {
 
-        private UnconfirmedUserEmailAddressSupplied sourceEvent;
+        private final UnconfirmedUserEmailAddressSupplied sourceEvent;
 
-        public IsSameUnconfirmedUserEmailAddressSuppliedEvent(UnconfirmedUserEmailAddressSupplied sourceEvent) {
+        public IsSameUnconfirmedUserEmailAddressSuppliedEventMatcher(UnconfirmedUserEmailAddressSupplied sourceEvent) {
             this.sourceEvent = sourceEvent;
         }
 
@@ -244,7 +292,7 @@ public class UserTest {
             return sourceEvent.getUserId().equals(event.getUserId())
                     && sourceEvent.getUsername().equals(event.getUsername())
                     && sourceEvent.getUnconfirmedEmailAddress().equals(event.getUnconfirmedEmailAddress())
-                    // *NOTE* silly test that it is not using a predictable verificationcaode, like the one from a previous verification
+                    // *NOTE* silly test that it is not using a predictable verificationcode, like the one from a previous verification
                     && !sourceEvent.getEmailVerificationCode().equals(event.getEmailVerificationCode());
         }
 

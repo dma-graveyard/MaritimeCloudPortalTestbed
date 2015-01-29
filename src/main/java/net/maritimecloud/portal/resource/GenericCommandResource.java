@@ -70,6 +70,11 @@ public class GenericCommandResource {
     private static final CommandRegistry deleteCommandsRegistry = new CommandRegistry();
     private static final CommandRegistry patchCommandsRegistry = new CommandRegistry();
 
+    
+    public static void sendAndWait(String contentType, String queryCommandName, String commandJSON, Class... classes) {
+        sendAndWait(contentType, queryCommandName, new CommandRegistry(classes), commandJSON);
+    }
+    
     public static void sendAndWait(String contentType, String queryCommandName, CommandRegistry commandRegistry, String commandJSON) throws WebApplicationException {
         try {
             LOG.info("Received command: Cmd={}{}", contentType, queryCommandName);

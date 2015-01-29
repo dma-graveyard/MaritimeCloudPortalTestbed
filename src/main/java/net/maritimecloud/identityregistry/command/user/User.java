@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import net.maritimecloud.identityregistry.command.api.ChangeUserEmailAddress;
 import net.maritimecloud.identityregistry.command.api.ChangeUserPassword;
 import net.maritimecloud.identityregistry.command.api.RegisterUser;
+import net.maritimecloud.identityregistry.command.api.ResetPasswordKeyGenerated;
 import net.maritimecloud.identityregistry.command.api.UnconfirmedUserEmailAddressSupplied;
 import net.maritimecloud.identityregistry.command.api.UserAccountActivated;
 import net.maritimecloud.identityregistry.command.api.UserEmailAddressVerified;
@@ -56,6 +57,7 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
     private boolean activated;
 
     private UnconfirmedEmailAddress unconfirmedEmailAddress;
+    private String resetPasswordKey;
 
     protected User() {
 //        encryptionService = DomainRegistry.encryptionService();
@@ -151,6 +153,11 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
     }
 
     @EventSourcingHandler
+    public void on(ResetPasswordKeyGenerated event) {
+        this.resetPasswordKey = event.getResetPasswordKey();
+    }
+
+    @EventSourcingHandler
     public void on(UserPasswordChanged event) {
         setPassword(event.getObfuscatedChangedPassword());
     }
@@ -216,7 +223,7 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
 
         Assert.notEmpty(aCurrentPassword, "Current and new password must be provided.");
         Assert.notEmpty(aChangedPassword, "Current and new password must be provided.");
-        assertCurrentPasswordConfirmedOrIsConfirmationId(aCurrentPassword, "Current password not confirmed.");
+        assertCurrentPasswordConfirmedOrIsResetPasswordKey(aCurrentPassword, "Current password not confirmed.");
         assertPasswordComply(username(), aChangedPassword);
 
 //        protectPassword(aChangedPassword);
@@ -238,14 +245,14 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
 ////    public void changePersonalName(FullName aPersonalName) {
 ////        person().changeName(aPersonalName);
 ////    }
-    private void assertCurrentPasswordConfirmedOrIsConfirmationId(String aCurrentPassword, String message) {
-        if (isNotResetPasswordConfirmationId(aCurrentPassword)) {
+    private void assertCurrentPasswordConfirmedOrIsResetPasswordKey(String aCurrentPassword, String message) {
+        if (isNotResetPasswordKey(aCurrentPassword)) {
             assertCurrentPasswordConfirmed(aCurrentPassword, message);
         }
     }
 
-    private boolean isNotResetPasswordConfirmationId(String aCurrentPassword) {
-        return !aCurrentPassword.equals(activationId());
+    private boolean isNotResetPasswordKey(String aCurrentPassword) {
+        return !aCurrentPassword.equals(resetPasswordKey);
     }
 
     private void assertCurrentPasswordConfirmed(String aCurrentPassword, String message) {
@@ -400,6 +407,10 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
 //    }
     public boolean isActivated() {
         return activated;
+    }
+
+    public void registerResetPasswordKey(String resetPasswordKey) {
+        apply(new ResetPasswordKeyGenerated(userId, username, emailAddress, resetPasswordKey));
     }
 
     private static class UnconfirmedEmailAddress {

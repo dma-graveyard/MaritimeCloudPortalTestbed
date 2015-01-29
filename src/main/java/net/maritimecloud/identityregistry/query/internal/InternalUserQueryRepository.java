@@ -23,4 +23,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface InternalUserQueryRepository extends PagingAndSortingRepository<InternalUserEntry, String> {
 
     public InternalUserEntry findByUsername(String username);
+
+    public InternalUserEntry findByEmailAddressIgnoreCase(String emailAddress);
 }

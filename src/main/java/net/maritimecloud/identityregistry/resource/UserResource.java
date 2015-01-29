@@ -130,7 +130,7 @@ public class UserResource {
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{username}")
-    public void organizationPutCommand(
+    public void userPutCommand(
             @HeaderParam("Content-type") String contentType,
             @QueryParam("command") @DefaultValue("") String queryCommandName,
             @PathParam("username") String username,

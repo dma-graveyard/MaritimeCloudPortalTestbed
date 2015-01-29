@@ -49,6 +49,9 @@ public interface IdentityRegistryContract extends CqrsContract {
     @Command
     void ChangeUserPassword(UserId userId, String currentPassword, String changedPassword);
 
+    @Command
+    void SendResetPasswordInstructions(String emailAddress);
+    
 //    @Command
 //    void ChangeUserContactName(UserId userId, String firstname, String lastname);
 
@@ -66,6 +69,9 @@ public interface IdentityRegistryContract extends CqrsContract {
 
     @Event
     void UserAccountActivated(UserId userId, String username);
+
+    @Event
+    void ResetPasswordKeyGenerated(UserId userId, String username, String emailAddress, String resetPasswordKey);
 
     @Event
     void UserPasswordChanged(UserId userId, String username, String obfuscatedChangedPassword);

@@ -14,10 +14,8 @@
  */
 package net.maritimecloud.identityregistry.query.internal;
 
-import net.maritimecloud.identityregistry.query.*;
 import javax.annotation.Resource;
 import net.maritimecloud.identityregistry.command.api.UserAccountActivated;
-import net.maritimecloud.identityregistry.command.api.UserEmailAddressVerified;
 import net.maritimecloud.identityregistry.command.api.UserRegistered;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.axonframework.eventhandling.annotation.Timestamp;
@@ -49,6 +47,7 @@ public class InternalUserListener {
         InternalUserEntry userEntry = new InternalUserEntry();
         userEntry.setUserId(event.getUserId().identifier());
         userEntry.setUsername(event.getPrefferedUsername());
+        userEntry.setEmailAddress(event.getEmailAddress());
         userEntry.setEncryptedPassword(event.getObfuscatedPassword());
         userEntry.setActivated(false);
         internalUserQueryRepository.save(userEntry);

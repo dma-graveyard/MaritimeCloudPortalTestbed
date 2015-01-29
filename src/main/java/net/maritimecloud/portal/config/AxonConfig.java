@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import net.maritimecloud.identityregistry.command.user.ConfirmEmailAddressSaga;
+import net.maritimecloud.identityregistry.command.user.ResetPasswordSaga;
 import net.maritimecloud.identityregistry.command.user.User;
 import net.maritimecloud.portal.domain.infrastructure.axon.NoReplayedEvents;
 import net.maritimecloud.portal.domain.infrastructure.axon.ReplayableFileSystemEventStore;
@@ -173,7 +174,8 @@ public class AxonConfig {
         AnnotatedSagaManager sagaManager = new AnnotatedSagaManager(sagaRepository(), sagaFactory(),
                 AttachOrganizationAliasSaga.class,
                 SetupOrganizationOwnerMemberSaga.class,
-                ConfirmEmailAddressSaga.class
+                ConfirmEmailAddressSaga.class,
+                ResetPasswordSaga.class
         );
         return sagaManager;
     }

@@ -15,15 +15,20 @@
 package net.maritimecloud.portal.resource;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import net.maritimecloud.identityregistry.command.api.SendResetPasswordInstructions;
 import net.maritimecloud.identityregistry.query.internal.InternalUserEntry;
 import net.maritimecloud.identityregistry.query.internal.InternalUserQueryRepository;
+import static net.maritimecloud.identityregistry.resource.UserResource.APPLICATION_JSON_CQRS_COMMAND;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import net.maritimecloud.portal.application.IdentityApplicationService;
 import net.maritimecloud.portal.domain.model.DomainRegistry;
@@ -32,6 +37,7 @@ import net.maritimecloud.portal.domain.model.identity.UnknownUserException;
 import net.maritimecloud.portal.domain.model.security.AuthenticationException;
 import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
 import net.maritimecloud.portal.domain.model.security.UserNotLoggedInException;
+import static net.maritimecloud.portal.resource.GenericCommandResource.sendAndWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,18 +115,40 @@ public class AuthenticationResource {
         authenticationUtil().logout();
     }
 
+//    @POST
+//    @Path("/sendforgot")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public void sendResetPasswordInstructions(CredentialsDTO credentials) {
+//        LOG.debug("Send reset password instructions email to " + credentials.getEmailAddress());
+//        
+//        // 
+//        
+//        identityApplicationService().sendResetPasswordMessage(credentials.getEmailAddress());
+//    }
+//
     @POST
-    @Path("/sendforgot")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void sendResetPasswordInstructions(CredentialsDTO credentials) {
-        LOG.debug("Send reset password instructions email to " + credentials.getEmailAddress());
-        identityApplicationService().sendResetPasswordMessage(credentials.getEmailAddress());
+    @Consumes(APPLICATION_JSON_CQRS_COMMAND)
+    @Path("")
+    public void sendForgotPutCommand(
+            @HeaderParam("Content-type") String contentType,
+            @QueryParam("command") @DefaultValue("") String queryCommandName,
+            String commandJSON
+    ) {
+        LOG.info("Organization PUT command");
+        sendAndWait(contentType, queryCommandName, commandJSON,
+                SendResetPasswordInstructions.class
+        );
     }
+    
+    
 
     @POST
     @Path("/reset")
     @Consumes(MediaType.APPLICATION_JSON)
     public void resetPassword(CredentialsDTO credentials) {
+        
+        // TODO: flyt til user api!
+        
         identityApplicationService().resetPassword(credentials.getUsername(), credentials.getVerificationId(), credentials.getPassword());
     }
 

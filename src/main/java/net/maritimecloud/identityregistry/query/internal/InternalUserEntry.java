@@ -19,7 +19,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
- * An internal 
+ * An internal
+ * <p>
  * @author Christoffer Børrild
  */
 @Entity
@@ -29,6 +30,9 @@ public class InternalUserEntry implements Serializable {
     private String userId;
     // TODO: add unique index
     private String username;
+    // TODO: add unique index
+    private String emailAddress;
+
     private String encryptedPassword;
     private boolean activated;
 
@@ -48,6 +52,14 @@ public class InternalUserEntry implements Serializable {
         this.username = username;
     }
 
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
     public String getEncryptedPassword() {
         return encryptedPassword;
     }
@@ -63,5 +75,5 @@ public class InternalUserEntry implements Serializable {
     public void setActivated(boolean activated) {
         this.activated = activated;
     }
-    
+
 }
