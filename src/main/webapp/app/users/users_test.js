@@ -13,7 +13,7 @@ describe('UserListController', function() {
   beforeEach(angular.mock.inject(function($httpBackend) {
     httpBackend = $httpBackend;
 
-    httpBackend.whenGET(/rest\/users/).respond(
+    httpBackend.whenGET(/rest\/api\/users/).respond(
         [
           {"emailAddress": "tintin@dma.org", "username": "Tintin"},
           {"emailAddress": "admin@dma.dk", "username": "admin"},
@@ -92,7 +92,7 @@ describe('UserSignupController', function() {
   it('should flag new username as not already existing', function() {
 
     // GIVEN a userlist not containing a user with the username 'A'
-    httpBackend.expectGET(/rest\/users\/A\/exist/).respond({usernameExist: false});
+    httpBackend.expectGET(/rest\/api\/users\/A\/exist/).respond({usernameExist: false});
     // WHEN username is set to 'A':
     scope.user.username = 'A';
     // (and the listener will call resolveUniqueUsername)
@@ -107,7 +107,7 @@ describe('UserSignupController', function() {
   it('should flag known username as already existing', function() {
 
     // GIVEN a userlist containing a user with the username 'Ann'
-    httpBackend.expectGET(/rest\/users\/Ann\/exist/).respond({usernameExist: true});
+    httpBackend.expectGET(/rest\/api\/users\/Ann\/exist/).respond({usernameExist: true});
     // WHEN username is set to 'Ann'
     scope.user.username = 'Ann';
     scope.$digest();
@@ -130,7 +130,7 @@ describe('UserSignupController', function() {
   it('should flag form as invalid when password equals username', function() {
 
     // GIVEN a userlist containing a user with the username 'Ann'
-    httpBackend.expectGET(/rest\/users\/Ann\/exist/).respond({usernameExist: false});
+    httpBackend.expectGET(/rest\/api\/users\/Ann\/exist/).respond({usernameExist: false});
     // WHEN username is Ann and password is something else
     expect(scope.isValid(true)).to.be.false;
     scope.user.username = 'Ann';
@@ -176,7 +176,7 @@ describe('UserActivationController', function() {
 
     // GIVEN a user with a valid activation id  
     var $stateParams = {username: 'aUser', activationId: 'VALID-ID-123-xyz'};
-    httpBackend.whenPOST(/rest\/users\/aUser\/activate\/VALID-ID-123-xyz/).respond({accountActivated: true});
+    httpBackend.whenPOST(/rest\/api\/users\/aUser\/activate\/VALID-ID-123-xyz/).respond({accountActivated: true});
     // WHEN controller is created
     userActivationController = controller("UserActivationController", {$scope: scope, UserService: userService, $stateParams: $stateParams});
     // THEN initially the viewState is laoding
@@ -190,7 +190,7 @@ describe('UserActivationController', function() {
 
     // GIVEN a user with an invalid activation id  
     var $stateParams = {username: 'aUser', activationId: 'INVALID-123-xyz'};
-    httpBackend.whenPOST(/rest\/users\/aUser\/activate\/INVALID-123-xyz/).respond({accountActivated: false});
+    httpBackend.whenPOST(/rest\/api\/users\/aUser\/activate\/INVALID-123-xyz/).respond({accountActivated: false});
     // WHEN controller is created
     userActivationController = controller("UserActivationController", {$scope: scope, UserService: userService, $stateParams: $stateParams});
     // AND remote request is reolved 
@@ -202,7 +202,7 @@ describe('UserActivationController', function() {
 
     // GIVEN a user with an invalid activation id  
     var $stateParams = {username: 'anotherUser', activationId: 'FAKE-123-xyz'};
-    httpBackend.whenPOST(/rest\/users/).respond(500);
+    httpBackend.whenPOST(/rest\/api\/users/).respond(500);
     // WHEN controller is created
     userActivationController = controller("UserActivationController", {$scope: scope, UserService: userService, $stateParams: $stateParams});
     // AND remote request is reolved 
