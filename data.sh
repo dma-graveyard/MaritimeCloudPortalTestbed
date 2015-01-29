@@ -52,6 +52,8 @@ set host="http://localhost:8080"
 curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/users -H "Content-Type: application/json;domain-model=RegisterUser" -d '{"userId":{"identifier":"9acd9a23-ab23-44a7-8203-18e700ea0da1"},"prefferedUsername":"admin","emailAddress":"admin@auto.demo.dma.dk","password":"test"}'
 curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/users -H "Content-Type: application/json;domain-model=RegisterUser" -d '{"userId":{"identifier":"14342aa2-d5f5-416b-9128-eba788f80c90"},"prefferedUsername":"Tintin","emailAddress":"tintin@auto.demo.dma.dk","password":"test"}'
 curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/users -H "Content-Type: application/json;domain-model=RegisterUser" -d '{"userId":{"identifier":"611fc041-2c69-471d-95e8-25139b7efe76"},"prefferedUsername":"Haddock","emailAddress":"haddock@auto.demo.dma.dk","password":"test"}'
+# user with empty userId indentifier (...will auto generate id) 
+curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/users -H "Content-Type: application/json;domain-model=RegisterUser" -d '{"userId":{"identifier":""},"prefferedUsername":"terry","emailAddress":"terry@auto.demo.dma.dk","password":"test"}'
 
 # (hack): user with static verification code (provided in email)
 curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/users -H "Content-Type: application/json;domain-model=RegisterUser" -d '{"userId":{"identifier":"8669b18d-b41b-4c0e-a5ff-08b3fb8fed85"},"prefferedUsername":"Dupont","emailAddress":"94b389dd-e50e-48c1-b0fc-6840289a647e@static.demo.dma.dk","password":"test"}'
