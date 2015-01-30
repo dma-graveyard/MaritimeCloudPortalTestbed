@@ -301,6 +301,9 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       {
         var ai = 0, bi = 0;
         var result = new Array();
+        
+        a.sort();
+        b.sort();
 
         while (ai < a.length && bi < b.length)
         {
