@@ -14,11 +14,13 @@ describe('UserListController', function() {
     httpBackend = $httpBackend;
 
     httpBackend.whenGET(/rest\/api\/users/).respond(
-        [
-          {"emailAddress": "tintin@dma.org", "username": "Tintin"},
-          {"emailAddress": "admin@dma.dk", "username": "admin"},
-          {"emailAddress": "hadock@dma.org", "username": "Haddock"}
-        ]);
+        {
+          content: [
+            {"emailAddress": "tintin@dma.org", "username": "Tintin"},
+            {"emailAddress": "admin@dma.dk", "username": "admin"},
+            {"emailAddress": "hadock@dma.org", "username": "Haddock"}]
+        }
+    );
   }));
 
   beforeEach(angular.mock.inject(function($controller, UserService) {
