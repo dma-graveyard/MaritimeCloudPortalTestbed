@@ -4,8 +4,24 @@ angular.module('mcp.users', ['ui.bootstrap'])
 
     .controller('UserListController', ['$scope', 'UserService',
       function ($scope, UserService) {
-        $scope.users = UserService.query();
-        $scope.orderProp = 'age';
+        $scope.pageSize = 20;
+        $scope.totalItems = 0;
+        $scope.currentPage = 1;
+
+        $scope.updateSearch = function () {
+          $scope.busyPromise = UserService.query({size: $scope.pageSize, page: $scope.currentPage - 1, usernamePattern: $scope.filter_query}, function (page) {
+            $scope.page = page;
+            $scope.users = page.content;
+          });
+        };
+        
+        $scope.pageChanged = function () {
+          $scope.updateSearch();
+        };
+
+        // load first page
+        $scope.updateSearch();
+
       }])
 
     .controller('UserDetailController', ['$scope', '$stateParams', 'UserService',
@@ -153,9 +169,9 @@ angular.module('mcp.users', ['ui.bootstrap'])
           username: $stateParams.username,
           emailAddressVerificationId: $stateParams.activationId
         },
-            function () {
-              $scope.viewState = 'accountActivated';
-            },
+        function () {
+          $scope.viewState = 'accountActivated';
+        },
             function (error) {
               console.log(error);
               $scope.viewState = error.status === 400 ? 'accountNotActivated' : 'error';

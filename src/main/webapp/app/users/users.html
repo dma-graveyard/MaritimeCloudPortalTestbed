@@ -1,6 +1,6 @@
 <div class="boxed-group">
     <div class="boxed-group-action" > 
-        Search: <input ng-model="filter_query"> <!--Sort by: <select ng-model="orderProp">
+        Search: <input ng-model="filter_query" ng-change="updateSearch()"> <!--Sort by: <select ng-model="orderProp">
             <option value="username">Alphabetical</option>
             <option value="emailAddress">Email</option>
         </select> -->
@@ -8,11 +8,13 @@
     <h3>Users</h3>
     <div class="boxed-group-inner">
         <ul class="boxed-group-list standalone">
-            <li ng-repeat="user in users| filter:filter_query | orderBy:orderProp">
+            <li ng-repeat="user in users| filter:filter_query">
                 <img alt="{{user.username}}" class=" js-avatar" data-user="2655913" height="20" src="https://avatars3.githubusercontent.com/u/2655913?s=140" width="20">
-                <a href="#/users/{{user.username}}">{{user.active | checkmark}} {{user.username}}</a>
+                <a href="#/users/{{user.username}}">{{user.isActivated| checkmark}} {{user.username}}</a>
                 <a href="#/users/{{user.username}}" class="minibutton btn btn-xs btn-info btn-round"><i class="fa fa-user"></i> details </a>
             </li>
         </ul>
     </div>
+    <pagination total-items="page.totalElements" items-per-page="page.size" ng-model="currentPage" ng-change="pageChanged()" max-size="5" Xclass="pagination-lg" rotate="false" boundary-links="true"></pagination>
+    <!--Users in total {{page.totalElements}}-->
 </div>

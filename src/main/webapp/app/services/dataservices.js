@@ -128,7 +128,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
     .factory('UserService', ['$resource', 'serviceBaseUrl',
       function ($resource, serviceBaseUrl) {
         var resource = $resource(serviceBaseUrl + '/rest/api/users/:username', {}, {
-          query: {method: 'GET', params: {username: ''}, isArray: true},
+          query: {method: 'GET', params: {username: ''}, isArray: false},
           post: {method: 'POST', params: {}, isArray: false},
           put: {method: 'PUT', params: {}, isArray: false},
           queryOrganizationMeberships: {method: 'GET', url: '/rest/api/users/:username/orgs', isArray: true},
