@@ -15,7 +15,6 @@
 package net.maritimecloud.identityregistry.resource;
 
 import java.util.UUID;
-import net.maritimecloud.portal.resource.*;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -27,24 +26,21 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import net.maritimecloud.common.cqrs.Command;
 import net.maritimecloud.common.cqrs.CommandRegistry;
 import net.maritimecloud.identityregistry.command.api.ChangeUserEmailAddress;
 import net.maritimecloud.identityregistry.command.api.ChangeUserPassword;
 import net.maritimecloud.identityregistry.command.api.RegisterUser;
 import net.maritimecloud.identityregistry.command.api.VerifyEmailAddress;
-import net.maritimecloud.identityregistry.command.user.UserId;
 import net.maritimecloud.identityregistry.query.UserEntry;
 import net.maritimecloud.identityregistry.query.UserQueryRepository;
+import net.maritimecloud.portal.resource.*;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import net.maritimecloud.portal.application.IdentityApplicationService;
 import static net.maritimecloud.portal.resource.JsonCommandHelper.identityIsEmpty;
 import net.maritimecloud.serviceregistry.query.OrganizationMembershipEntry;
-import org.axonframework.commandhandling.CommandExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -146,63 +142,7 @@ public class UserResource {
                 VerifyEmailAddress.class
         );
     }
-//    @PUT
-//    @Consumes(APPLICATION_JSON_CQRS_COMMAND)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Path("{username}/verify")
-//    public void verifiEmailAddressPutCommand(
-//            @HeaderParam("Content-type") String contentType,
-//            @QueryParam("command") @DefaultValue("") String queryCommandName,
-//            @PathParam("username") String username,
-//            String commandJSON
-//    ) {
-//        LOG.info("Organization PUT command");
-//        String userId = resolveUserIdOrFail(username);
-//        commandJSON = overwriteIdentity(commandJSON, "userId", userId);
-//        sendAndWait(contentType, queryCommandName, commandJSON,
-//                VerifyEmailAddress.class
-//        );
-//    }
-
-    @GET
-    @Consumes(APPLICATION_JSON_CQRS_COMMAND)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("{username}/verify/{emailAddressVerificationId}")
-    public void verifiEmailAddressGetCommand(
-            @PathParam("username") String username,
-            @PathParam("emailAddressVerificationId") String emailAddressVerificationId
-    ) {
-        LOG.info("verifiEmailAddress GET Command");
-        String userId = resolveUserIdOrFail(username);
-        VerifyEmailAddress verifyEmailAddressCommand = new VerifyEmailAddress(new UserId(userId), emailAddressVerificationId);
-        sendAndWait(verifyEmailAddressCommand);
-    }
-
-//    @POST
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response createUser(UserDTO aUser, @Context UriInfo uriInfo) {
-//        LOG.warn("Called createUser with user " + aUser);
-//        User newUser = identityApplicationService().registerUser(aUser.getUsername(), aUser.getPassword(), aUser.getEmailAddress());
-//        return createResponseWithNewUserAndUri(uriInfo, newUser);
-//    }
-//
-//    private Response createResponseWithNewUserAndUri(UriInfo uriInfo, User user) throws UriBuilderException, IllegalArgumentException {
-//        return Response.created(uriOf(uriInfo, user)).entity(toDto(user)).build();
-//    }
-//
-//    private URI uriOf(UriInfo uriInfo, User user) throws UriBuilderException, IllegalArgumentException {
-//        return uriInfo.getAbsolutePathBuilder().path(user.username()).build();
-//    }
-//    @POST
-//    @Path("{username}/activate/{activationId}")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public UserAccountActivatedDTO activateAccount(@PathParam("username") String aUsername, @PathParam("activationId") String activationId, @Context UriInfo uriInfo) {
-//        LOG.warn("Called activate account with user " + aUsername + " " + activationId + " " + uriInfo);
-//
-//        boolean activated = identityApplicationService().activate(aUsername, activationId);
-//        return new UserAccountActivatedDTO(activated);
-//    }
+    
     // -------------------------------------------------------
     // -------------------------------------------------------
     // Queries
@@ -267,98 +207,4 @@ public class UserResource {
         return "hej";
     }
 
-//    private UserDTO toDto(User user) {
-//        return new UserDTO(user.username(), null, user.emailAddress(), user.isActive());
-//    }
-    public static class UserDTO {
-
-        private String username;
-        private String password;
-        private String emailAddress;
-        private Boolean usernameExist;
-        private boolean active;
-
-        public static final UserDTO USERNAME_EXIST = new UserDTO(true);
-        public static final UserDTO USERNAME_IS_UNKNOWN = new UserDTO(false);
-
-        public UserDTO() {
-        }
-
-        public UserDTO(boolean usernameExist) {
-            this.usernameExist = usernameExist;
-        }
-
-        public UserDTO(String username, String password, String emailAddress, boolean isActive) {
-            this.username = username;
-            this.password = password;
-            this.emailAddress = emailAddress;
-            this.active = isActive;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
-
-        public String getEmailAddress() {
-            return emailAddress;
-        }
-
-        public void setEmailAddress(String emailAddress) {
-            this.emailAddress = emailAddress;
-        }
-
-        public Boolean getUsernameExist() {
-            return usernameExist;
-        }
-
-        public void setUsernameExist(Boolean usernameExist) {
-            this.usernameExist = usernameExist;
-        }
-
-        public void setActive(boolean isActive) {
-            this.active = isActive;
-        }
-
-        public boolean isActive() {
-            return active;
-        }
-
-        @Override
-        public String toString() {
-            return "UserDTO{" + "username=" + username + ", password=" + password + ", emailAddress=" + emailAddress + ", usernameExist=" + usernameExist + ", active=" + active + '}';
-        }
-
-    }
-
-    public static class UserAccountActivatedDTO {
-
-        private boolean accountActivated;
-
-        public UserAccountActivatedDTO() {
-        }
-
-        public UserAccountActivatedDTO(boolean accountActivated) {
-            this.accountActivated = accountActivated;
-        }
-
-        public void setAccountActivated(boolean accountActivated) {
-            this.accountActivated = accountActivated;
-        }
-
-        public boolean getAccountActivated() {
-            return accountActivated;
-        }
-    }
 }
