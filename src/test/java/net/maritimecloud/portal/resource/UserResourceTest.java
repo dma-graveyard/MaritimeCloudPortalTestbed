@@ -22,10 +22,12 @@ import static javax.ws.rs.client.Entity.json;
 import net.maritimecloud.portal.domain.model.DomainRegistry;
 import net.maritimecloud.portal.domain.model.identity.User;
 import static net.maritimecloud.portal.resource.UserResource.UserDTO;
+import org.junit.Ignore;
 
 /**
  * @author Christoffer Børrild
  */
+@Ignore
 public class UserResourceTest extends ResourceTest {
 
     /**

@@ -15,8 +15,8 @@
 package net.maritimecloud.portal.infrastructure.mail;
 
 import net.maritimecloud.identityregistry.command.api.ResetPasswordKeyGenerated;
+import net.maritimecloud.identityregistry.command.api.UnconfirmedUserEmailAddressSupplied;
 import net.maritimecloud.identityregistry.command.api.UserRegistered;
-import net.maritimecloud.portal.domain.model.identity.User;
 
 /**
  * MailService is responsible for composing and sending out domain 
@@ -43,6 +43,12 @@ public class MailService {
     public void sendResetPasswordMessage(ResetPasswordKeyGenerated event) {
         String message = messageComposer.composeResetPasswordMessage(event);
         Mail mail = new Mail(event.getEmailAddress(), "Password reset for Account at Maritime Cloud Portal", message);
+        mailAdapter.send(mail);
+    }
+
+    public void sendConfirmChangedEmailAddressMessage(UnconfirmedUserEmailAddressSupplied event) {
+        String message = messageComposer.composeConfirmChangedEmailAddressMessage(event);
+        Mail mail = new Mail(event.getUnconfirmedEmailAddress(), "Account activation on Maritime Cloud Portal", message);
         mailAdapter.send(mail);
     }
 

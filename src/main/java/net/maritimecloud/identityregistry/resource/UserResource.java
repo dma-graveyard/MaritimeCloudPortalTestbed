@@ -44,6 +44,7 @@ import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import net.maritimecloud.portal.application.IdentityApplicationService;
 import static net.maritimecloud.portal.resource.JsonCommandHelper.identityIsEmpty;
 import net.maritimecloud.serviceregistry.query.OrganizationMembershipEntry;
+import org.axonframework.commandhandling.CommandExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -118,7 +119,7 @@ public class UserResource {
         LOG.info("User POST command");
         if (identityIsEmpty(commandJSON, contentType)) {
             LOG.info("Empty userId -> AUTO creating UUID. Got:");
-            LOG.info("JSON: "+ commandJSON);
+            LOG.info("JSON: " + commandJSON);
             commandJSON = overwriteIdentity(commandJSON, "userId", UUID.randomUUID().toString());
         }
         sendAndWait(contentType, queryCommandName, commandJSON,
@@ -145,24 +146,23 @@ public class UserResource {
                 VerifyEmailAddress.class
         );
     }
-
-    @PUT
-    @Consumes(APPLICATION_JSON_CQRS_COMMAND)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("{username}/verify")
-    public void verifiEmailAddressPutCommand(
-            @HeaderParam("Content-type") String contentType,
-            @QueryParam("command") @DefaultValue("") String queryCommandName,
-            @PathParam("username") String username,
-            String commandJSON
-    ) {
-        LOG.info("Organization PUT command");
-        String userId = resolveUserIdOrFail(username);
-        commandJSON = overwriteIdentity(commandJSON, "userId", userId);
-        sendAndWait(contentType, queryCommandName, commandJSON,
-                VerifyEmailAddress.class
-        );
-    }
+//    @PUT
+//    @Consumes(APPLICATION_JSON_CQRS_COMMAND)
+//    @Produces(MediaType.APPLICATION_JSON)
+//    @Path("{username}/verify")
+//    public void verifiEmailAddressPutCommand(
+//            @HeaderParam("Content-type") String contentType,
+//            @QueryParam("command") @DefaultValue("") String queryCommandName,
+//            @PathParam("username") String username,
+//            String commandJSON
+//    ) {
+//        LOG.info("Organization PUT command");
+//        String userId = resolveUserIdOrFail(username);
+//        commandJSON = overwriteIdentity(commandJSON, "userId", userId);
+//        sendAndWait(contentType, queryCommandName, commandJSON,
+//                VerifyEmailAddress.class
+//        );
+//    }
 
     @GET
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
@@ -194,16 +194,15 @@ public class UserResource {
 //    private URI uriOf(UriInfo uriInfo, User user) throws UriBuilderException, IllegalArgumentException {
 //        return uriInfo.getAbsolutePathBuilder().path(user.username()).build();
 //    }
-    @POST
-    @Path("{username}/activate/{activationId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public UserAccountActivatedDTO activateAccount(@PathParam("username") String aUsername, @PathParam("activationId") String activationId, @Context UriInfo uriInfo) {
-        LOG.warn("Called activate account with user " + aUsername + " " + activationId + " " + uriInfo);
-
-        boolean activated = identityApplicationService().activate(aUsername, activationId);
-        return new UserAccountActivatedDTO(activated);
-    }
-
+//    @POST
+//    @Path("{username}/activate/{activationId}")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public UserAccountActivatedDTO activateAccount(@PathParam("username") String aUsername, @PathParam("activationId") String activationId, @Context UriInfo uriInfo) {
+//        LOG.warn("Called activate account with user " + aUsername + " " + activationId + " " + uriInfo);
+//
+//        boolean activated = identityApplicationService().activate(aUsername, activationId);
+//        return new UserAccountActivatedDTO(activated);
+//    }
     // -------------------------------------------------------
     // -------------------------------------------------------
     // Queries

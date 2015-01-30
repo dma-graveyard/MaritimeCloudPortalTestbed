@@ -111,11 +111,12 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
     @CommandHandler
     public void handle(VerifyEmailAddress command) {
         assertValidEmailVerificationCode(command.getEmailAddressVerificationId());
-        if (!emailAddressAlreadyConfirmed()) {
-            apply(new UserEmailAddressVerified(command.getUserId(), this.username(), unconfirmedEmailAddress.emailAddress));
-            if (!isActivated()) {
-                apply(new UserAccountActivated(command.getUserId(), this.username()));
-            }
+        if (emailAddressAlreadyConfirmed()) {
+            return;
+        }
+        apply(new UserEmailAddressVerified(command.getUserId(), this.username(), unconfirmedEmailAddress.emailAddress));
+        if (!isActivated()) {
+            apply(new UserAccountActivated(command.getUserId(), this.username()));
         }
     }
 
@@ -149,7 +150,7 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
 
     @EventSourcingHandler
     public void on(UserAccountActivated event) {
-        this.activated = true; 
+        this.activated = true;
     }
 
     @EventSourcingHandler

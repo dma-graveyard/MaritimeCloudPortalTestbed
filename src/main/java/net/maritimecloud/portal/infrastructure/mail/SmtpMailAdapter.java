@@ -33,6 +33,13 @@ public class SmtpMailAdapter implements MailAdapter {
 
     @Override
     public void send(Mail mail) {
+        
+        if(recipientIsOnIgnoreList(mail)){
+            System.out.println("Skipping send out of mail to "+mail.getRecipients());
+            System.out.println("Mail Content: \n"+mail.getMessage());
+            return;
+        }
+        
         mailSender.send(createMessagePreperator(mail));
     }
     
@@ -52,5 +59,13 @@ public class SmtpMailAdapter implements MailAdapter {
             message.setText(mail.getMessage(), true);
         };
         return preparator;
+    }
+
+    private boolean recipientIsOnIgnoreList(Mail mail) {
+        return recipientIsOnIgnoreList(mail.getRecipients());
+    }
+
+    private boolean recipientIsOnIgnoreList(String recipients) {
+        return recipients.contains("demo.dma.dk");
     }
 }

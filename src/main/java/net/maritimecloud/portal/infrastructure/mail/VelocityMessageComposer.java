@@ -17,6 +17,7 @@ package net.maritimecloud.portal.infrastructure.mail;
 import java.util.HashMap;
 import java.util.Map;
 import net.maritimecloud.identityregistry.command.api.ResetPasswordKeyGenerated;
+import net.maritimecloud.identityregistry.command.api.UnconfirmedUserEmailAddressSupplied;
 import net.maritimecloud.identityregistry.command.api.UserRegistered;
 import net.maritimecloud.portal.domain.model.identity.User;
 import org.apache.velocity.app.VelocityEngine;
@@ -31,6 +32,7 @@ public class VelocityMessageComposer implements MessageComposer {
     private static final String BASE_URL = "http://localhost:8080/app/index.html";
     private static final String TEMPLATE_SIGN_UP_ACTIVATION_MESSAGE = "templates/signUpActivationMessage.vm.html";
     private static final String TEMPLATE_RESET_PASSWORD_MESSAGE = "templates/resetPasswordMessage.vm.html";
+    private static final String TEMPLATE_CONFIRM_CHANGED_EMAIL_ADDRESS_MESSAGE = "templates/confirmChangedEmailAddressMessage.vm.html";
     private final VelocityEngine velocityEngine;
 
     public VelocityMessageComposer(VelocityEngine velocityEngine) {
@@ -66,6 +68,12 @@ public class VelocityMessageComposer implements MessageComposer {
         model.put("baseUrl", BASE_URL);
         model.put("activationid", key);
         return model;
+    }
+
+    @Override
+    public String composeConfirmChangedEmailAddressMessage(UnconfirmedUserEmailAddressSupplied event) {
+        assertNotNull(event.getEmailVerificationCode());
+        return compose(createModel(event.getUsername(), event.getEmailVerificationCode()), TEMPLATE_CONFIRM_CHANGED_EMAIL_ADDRESS_MESSAGE);
     }
 
 }

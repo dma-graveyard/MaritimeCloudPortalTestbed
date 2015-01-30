@@ -16,6 +16,7 @@
 package net.maritimecloud.portal.infrastructure.mail;
 
 import net.maritimecloud.identityregistry.command.api.ResetPasswordKeyGenerated;
+import net.maritimecloud.identityregistry.command.api.UnconfirmedUserEmailAddressSupplied;
 import net.maritimecloud.identityregistry.command.api.UserRegistered;
 
 /**
@@ -27,5 +28,7 @@ public interface MessageComposer {
     String composeSignUpActivationMessage(UserRegistered event);
 
     String composeResetPasswordMessage(ResetPasswordKeyGenerated event);
+
+    String composeConfirmChangedEmailAddressMessage(UnconfirmedUserEmailAddressSupplied event);
 
 }

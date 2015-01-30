@@ -41,6 +41,7 @@ import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpoint;
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
 import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
+import org.axonframework.commandhandling.CommandExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,6 +83,9 @@ public class GenericCommandResource {
             Class commandClass = commandRegistry.resolve(resolveCommandName(contentType, queryCommandName));
             Object command = readCommand(commandJSON, commandClass);
             sendAndWait((Command) command);
+            
+        } catch (WebApplicationException ex) {
+            throw ex;
         } catch (Throwable ex) {
             LOG.error("Error occured when reading command!", ex);
             throw new WebApplicationException("Error occured when reading command!", ex);
@@ -91,8 +95,15 @@ public class GenericCommandResource {
     public static void sendAndWait(Command command) throws WebApplicationException {
         try {
             ApplicationServiceRegistry.commandGateway().sendAndWait(command);
+        } catch (CommandExecutionException e) {
+            if (e.getCause() instanceof IllegalArgumentException) {
+                throw new WebApplicationException("Illegal Argument", e, 400);
+            } else {
+                LOG.error("Error occured when reading command!", e);
+                throw new WebApplicationException("Error occured when reading command!", e);
+            }
         } catch (Throwable ex) {
-            LOG.error("Error occured when executing command!", ex);
+            LOG.error("Error occured when reading command!", ex);
             throw new WebApplicationException("Error occured when reading command!", ex);
         }
     }
