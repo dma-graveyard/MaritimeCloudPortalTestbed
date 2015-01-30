@@ -176,7 +176,7 @@ describe('UserActivationController', function() {
 
     // GIVEN a user with a valid activation id  
     var $stateParams = {username: 'aUser', activationId: 'VALID-ID-123-xyz'};
-    httpBackend.whenPOST(/rest\/api\/users\/aUser\/activate\/VALID-ID-123-xyz/).respond({accountActivated: true});
+    httpBackend.whenPUT(/rest\/api\/users\/aUser/).respond(204);
     // WHEN controller is created
     userActivationController = controller("UserActivationController", {$scope: scope, UserService: userService, $stateParams: $stateParams});
     // THEN initially the viewState is laoding
@@ -190,7 +190,7 @@ describe('UserActivationController', function() {
 
     // GIVEN a user with an invalid activation id  
     var $stateParams = {username: 'aUser', activationId: 'INVALID-123-xyz'};
-    httpBackend.whenPOST(/rest\/api\/users\/aUser\/activate\/INVALID-123-xyz/).respond({accountActivated: false});
+    httpBackend.whenPUT(/rest\/api\/users\/aUser/).respond(400);
     // WHEN controller is created
     userActivationController = controller("UserActivationController", {$scope: scope, UserService: userService, $stateParams: $stateParams});
     // AND remote request is reolved 
@@ -200,9 +200,9 @@ describe('UserActivationController', function() {
   });
   it('should fail when username and activationId is unknown', function() {
 
-    // GIVEN a user with an invalid activation id  
-    var $stateParams = {username: 'anotherUser', activationId: 'FAKE-123-xyz'};
-    httpBackend.whenPOST(/rest\/api\/users/).respond(500);
+    // GIVEN a another user that hits a server brain-fart (server error)
+    var $stateParams = {username: 'anotherUser', activationId: 'SOME-123-xyz'};
+    httpBackend.whenPUT(/rest\/api\/users\/anotherUser/).respond(500);
     // WHEN controller is created
     userActivationController = controller("UserActivationController", {$scope: scope, UserService: userService, $stateParams: $stateParams});
     // AND remote request is reolved 

@@ -15,6 +15,11 @@ function RegisterUser(userId, prefferedUsername, emailAddress, password) {
   this.password = password;
 }
 
+function VerifyEmailAddress(userId, emailAddressVerificationId) {
+  this.userId = {identifier: userId};
+  this.emailAddressVerificationId = emailAddressVerificationId;
+}
+
 // ----------------------------------------------------------------------------
 // Remote API Commands
 // ----------------------------------------------------------------------------
@@ -125,13 +130,17 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
         var resource = $resource(serviceBaseUrl + '/rest/api/users/:username', {}, {
           query: {method: 'GET', params: {username: ''}, isArray: true},
           post: {method: 'POST', params: {}, isArray: false},
-          activateAccount: {method: 'POST', url: '/rest/api/users/:username/activate/:activationId', isArray: false},
+          put: {method: 'PUT', params: {}, isArray: false},
           queryOrganizationMeberships: {method: 'GET', url: '/rest/api/users/:username/orgs', isArray: true},
           isUnique: {method: 'GET', url: '/rest/api/users/:username/exist', isArray: false}
         });
         
         resource.signUp = function (user, succes, error) {
           return this.post({}, new RegisterUser(user.userId, user.username, user.emailAddress, user.password), succes, error);
+        };
+        
+        resource.verifyEmailAddress = function (data, succes, error) {
+          return this.put({username: data.username}, new VerifyEmailAddress(data.userId, data.emailAddressVerificationId), succes, error);
         };
         
         return resource;
