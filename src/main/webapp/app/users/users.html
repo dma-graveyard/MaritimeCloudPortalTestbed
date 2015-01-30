@@ -7,7 +7,7 @@
     </div>
     <h3>Users</h3>
     <div class="boxed-group-inner">
-        <ul class="boxed-group-list standalone">
+        <ul class="boxed-group-list standalone"  cg-busy="{promise:busyPromise,delay:10}">
             <li ng-repeat="user in users| filter:filter_query">
                 <img alt="{{user.username}}" class=" js-avatar" data-user="2655913" height="20" src="https://avatars3.githubusercontent.com/u/2655913?s=140" width="20">
                 <a href="#/users/{{user.username}}">{{user.isActivated| checkmark}} {{user.username}}</a>
