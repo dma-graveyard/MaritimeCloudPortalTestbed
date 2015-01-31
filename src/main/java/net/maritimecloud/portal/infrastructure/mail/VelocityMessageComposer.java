@@ -19,7 +19,6 @@ import java.util.Map;
 import net.maritimecloud.identityregistry.command.api.ResetPasswordKeyGenerated;
 import net.maritimecloud.identityregistry.command.api.UnconfirmedUserEmailAddressSupplied;
 import net.maritimecloud.identityregistry.command.api.UserRegistered;
-import net.maritimecloud.portal.domain.model.identity.User;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
