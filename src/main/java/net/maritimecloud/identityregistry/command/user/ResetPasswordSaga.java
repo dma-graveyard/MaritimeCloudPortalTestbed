@@ -53,7 +53,7 @@ public class ResetPasswordSaga extends AbstractAnnotatedSaga {
     @SagaEventHandler(associationProperty = "userId")
     public void handle(ResetPasswordKeyGenerated event) {
 
-        System.out.println("User  " + event.getUsername() + " has requested to reset password using " + event.getEmailAddress() + ".");
+        System.out.println("User " + event.getUsername() + " has requested to reset password using " + event.getEmailAddress() + ".");
 
         // compose and send out welcome and confirm email
         System.out.println("Sending out reset password instruction email with the reset password key: " + event.getResetPasswordKey());
@@ -77,7 +77,7 @@ public class ResetPasswordSaga extends AbstractAnnotatedSaga {
     @EndSaga
     @SagaEventHandler(associationProperty = "userId")
     public void handle(UserPasswordChanged event) {
-        System.out.println("User " + event.getUsername() + " password was reset.");
+        System.out.println("User " + event.getUsername() + " password has been changed.");
         //System.out.println("Sending out a 'Users password was reset' notification email to: " + event.getUsername());
     }
 

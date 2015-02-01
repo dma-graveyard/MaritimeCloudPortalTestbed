@@ -44,7 +44,7 @@ public class MailService {
 
     public void sendConfirmChangedEmailAddressMessage(String emailAddress, String username, String verificationCode) {
         String message = messageComposer.composeConfirmChangedEmailAddressMessage(username, verificationCode);
-        Mail mail = new Mail(emailAddress, "Account activation on Maritime Cloud Portal", message);
+        Mail mail = new Mail(emailAddress, "Confirm new emailaddress for account at Maritime Cloud Portal", message);
         mailAdapter.send(mail);
     }
 

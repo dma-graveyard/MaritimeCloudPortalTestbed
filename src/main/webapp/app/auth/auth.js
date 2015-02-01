@@ -272,10 +272,11 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
             });
       };
 
+
       this.resetPassword = function (username, verificationId, newPassword) {
         //console.log("Sending change password request", username, verificationId);
         return $http
-            .post('/rest/authentication/reset', {username: username, verificationId: verificationId, password: newPassword}, {ignoreAuthModule: true})
+            .put('/rest/api/users/'+username+'?command=ChangeUserPassword', new ChangeUserPassword('',verificationId,newPassword), {ignoreAuthModule: true})
             .then(function (respone) {
               var data = respone.data;
             });

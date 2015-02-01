@@ -24,6 +24,12 @@ function SendResetPasswordInstructions(emailAddress) {
   this.emailAddress = emailAddress;
 }
 
+function ChangeUserPassword(userId, currentPassword, changedPassword) {
+  this.userId = {identifier: userId};
+  this.currentPassword = currentPassword;
+  this.changedPassword = changedPassword;
+}
+
 // ----------------------------------------------------------------------------
 // Remote API Commands
 // ----------------------------------------------------------------------------

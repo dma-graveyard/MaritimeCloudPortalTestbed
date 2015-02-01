@@ -16,6 +16,8 @@ package net.maritimecloud.identityregistry.query.internal;
 
 import javax.annotation.Resource;
 import net.maritimecloud.identityregistry.command.api.UserAccountActivated;
+import net.maritimecloud.identityregistry.command.api.UserEmailAddressVerified;
+import net.maritimecloud.identityregistry.command.api.UserPasswordChanged;
 import net.maritimecloud.identityregistry.command.api.UserRegistered;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.axonframework.eventhandling.annotation.Timestamp;
@@ -57,6 +59,20 @@ public class InternalUserListener {
     public void on(UserAccountActivated event, @Timestamp DateTime dateTime) {
         InternalUserEntry userEntry = internalUserQueryRepository.findOne(event.getUserId().identifier());
         userEntry.setActivated(true);
+        internalUserQueryRepository.save(userEntry);
+    }
+
+    @EventHandler
+    public void on(UserPasswordChanged event) {
+        InternalUserEntry userEntry = internalUserQueryRepository.findOne(event.getUserId().identifier());
+        userEntry.setEncryptedPassword(event.getObfuscatedChangedPassword());
+        internalUserQueryRepository.save(userEntry);
+    }
+
+    @EventHandler
+    public void on(UserEmailAddressVerified event) {
+        InternalUserEntry userEntry = internalUserQueryRepository.findOne(event.getUserId().identifier());
+        userEntry.setEmailAddress(event.getEmailAddress());
         internalUserQueryRepository.save(userEntry);
     }
 

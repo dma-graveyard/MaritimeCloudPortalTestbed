@@ -235,8 +235,7 @@ describe('UserResetPasswordController', function() {
     userResetPasswordController = controller("UserResetPasswordController", {$scope: scope, $stateParams: stateParams, AuthService: authService, $controller: controller});
 
     // setup default responses
-    httpBackend.whenPOST(/rest\/authentication\/reset/, {username: 'aUser', verificationId: 'A-FAKE-CONFIRMATION-ID-123-xyz', password: "aNewSecret"}).respond(500, '');
-    httpBackend.whenPOST(/rest\/authentication\/reset/).respond();
+    httpBackend.whenPUT(/rest\/api\/users\/aUser/, {"userId":{"identifier":""},"currentPassword":"A-FAKE-CONFIRMATION-ID-123-xyz","changedPassword":"aNewSecret"}).respond(500, '');
 
   }));
 
@@ -250,7 +249,7 @@ describe('UserResetPasswordController', function() {
     // GIVEN a user with a valid confirmationID
     // WHEN the user supply a valid new password
     scope.changePassword('aNewSecret');
-    httpBackend.expectPOST(/rest\/authentication\/reset/, {username: 'aUser', verificationId: 'A-CONFIRMATION-ID-123-xyz', password: "aNewSecret"}).respond();
+    httpBackend.expectPUT(/rest\/api\/users\/aUser/, {"userId":{"identifier":""},"currentPassword":"A-CONFIRMATION-ID-123-xyz","changedPassword":"aNewSecret"}).respond();
     httpBackend.flush();
     // THEN the state of the view should be 'success'
     expect(scope.viewState).to.equal('success');
@@ -270,7 +269,7 @@ describe('UserResetPasswordController', function() {
     // WHEN the user supply a valid new password
     stateParams.activationId = 'A-FAKE-CONFIRMATION-ID-123-xyz';
     scope.changePassword('aNewSecret');
-    httpBackend.expectPOST(/rest\/authentication\/reset/, {username: 'aUser', verificationId: 'A-FAKE-CONFIRMATION-ID-123-xyz', password: "aNewSecret"});
+    httpBackend.expectPUT(/rest\/api\/users\/aUser/, {"userId":{"identifier":""},"currentPassword":"A-FAKE-CONFIRMATION-ID-123-xyz","changedPassword":"aNewSecret"});
     httpBackend.flush();
     // THEN the state of the view should be 'success'
     expect(scope.viewState).to.equal('expired');
