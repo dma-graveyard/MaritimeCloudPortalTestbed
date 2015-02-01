@@ -20,6 +20,10 @@ function VerifyEmailAddress(userId, emailAddressVerificationId) {
   this.emailAddressVerificationId = emailAddressVerificationId;
 }
 
+function SendResetPasswordInstructions(emailAddress) {
+  this.emailAddress = emailAddress;
+}
+
 // ----------------------------------------------------------------------------
 // Remote API Commands
 // ----------------------------------------------------------------------------
@@ -134,15 +138,15 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           queryOrganizationMeberships: {method: 'GET', url: '/rest/api/users/:username/orgs', isArray: true},
           isUnique: {method: 'GET', url: '/rest/api/users/:username/exist', isArray: false}
         });
-        
+
         resource.signUp = function (user, succes, error) {
           return this.post({}, new RegisterUser(user.userId, user.username, user.emailAddress, user.password), succes, error);
         };
-        
+
         resource.verifyEmailAddress = function (data, succes, error) {
           return this.put({username: data.username}, new VerifyEmailAddress(data.userId, data.emailAddressVerificationId), succes, error);
         };
-        
+
         return resource;
       }])
 
@@ -161,7 +165,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           },
           alias: {method: 'GET', params: {},
             url: serviceBaseUrl + '/rest/api/org/exist/alias/:alias'
-          }          
+          }
         });
 
         resource.create = function (organization, succes, error) {

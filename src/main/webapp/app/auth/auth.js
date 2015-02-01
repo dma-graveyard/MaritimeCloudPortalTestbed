@@ -266,7 +266,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       this.sendForgotPassword = function (email) {
         //console.log("Sending password instructions to  " + email);
         return $http
-            .post('/rest/authentication/sendforgot', {emailAddress: email}, {ignoreAuthModule: true})
+            .post('/rest/authentication?command=SendResetPasswordInstructions', new SendResetPasswordInstructions(email), {ignoreAuthModule: true})
             .then(function (respone) {
               var data = respone.data;
             });
