@@ -38,7 +38,6 @@ import net.maritimecloud.identityregistry.query.UserEntry;
 import net.maritimecloud.identityregistry.query.UserQueryRepository;
 import net.maritimecloud.portal.resource.*;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
-import net.maritimecloud.portal.application.IdentityApplicationService;
 import static net.maritimecloud.portal.resource.JsonCommandHelper.identityIsEmpty;
 import net.maritimecloud.serviceregistry.query.OrganizationMembershipEntry;
 import org.slf4j.Logger;
@@ -72,10 +71,6 @@ public class UserResource {
 
     private String overwriteIdentity(String commandJSON, String propertyName, String value) {
         return JsonCommandHelper.overwriteIdentity(commandJSON, propertyName, value);
-    }
-
-    private IdentityApplicationService identityApplicationService() {
-        return ApplicationServiceRegistry.identityApplicationService();
     }
 
     private String resolveUserIdOrFail(String username) {

@@ -33,10 +33,6 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
  */
 public class ApplicationServiceRegistry extends SpringContextBasedRegistry {
 
-    public static IdentityApplicationService identityApplicationService() {
-        return (IdentityApplicationService) get("identityApplicationService");
-    }
-
     public static AliasService aliasService() {
         return (AliasService) get("aliasService");
     }

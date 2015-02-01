@@ -71,6 +71,9 @@ public class UserTest {
     private static final String ANOTHER_EMAIL_ADDRESS_VERIFICATION_CODE = UUID.randomUUID().toString();
     private static final UserId aUserId = new UserId(UUID.randomUUID().toString());
 
+    @Mock
+    InternalUserQueryRepository internalUserQueryRepository;
+    
     @Before
     public void setUp() throws Exception {
         fixture = Fixtures.newGivenWhenThenFixture(User.class);
@@ -154,8 +157,26 @@ public class UserTest {
                 );
     }
 
-    @Mock
-    InternalUserQueryRepository internalUserQueryRepository;
+    @Test
+    public void changePasswordShouldFailWhenEqualToUsername() {
+        fixture.given(new UserRegistered(aUserId, A_USERNAME, AN_EMAIL_ADDRESS, A_PASSWORD_OBFUSCATED, AN_EMAIL_ADDRESS_VERIFICATION_CODE))
+                .when(new ChangeUserPassword(aUserId, A_PASSWORD, "A_USERNAME"))
+                .expectException(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void changePasswordShouldFailWhenEqualToOldPassword() {
+        fixture.given(new UserRegistered(aUserId, A_USERNAME, AN_EMAIL_ADDRESS, A_PASSWORD_OBFUSCATED, AN_EMAIL_ADDRESS_VERIFICATION_CODE))
+                .when(new ChangeUserPassword(aUserId, A_PASSWORD, A_PASSWORD))
+                .expectException(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void changePasswordShouldFailWhenUsingWrongPassword() {
+        fixture.given(new UserRegistered(aUserId, A_USERNAME, AN_EMAIL_ADDRESS, A_PASSWORD_OBFUSCATED, AN_EMAIL_ADDRESS_VERIFICATION_CODE))
+                .when(new ChangeUserPassword(aUserId, A_PASSWORD+"THAT_IS_WRONG", A_CHANGED_PASSWORD))
+                .expectException(IllegalArgumentException.class);
+    }
 
     @Test
     public void resetPassword() {
@@ -180,20 +201,6 @@ public class UserTest {
                                 anEventLike(new ResetPasswordKeyGenerated(aUserId, A_USERNAME, AN_EMAIL_ADDRESS, "dummy reset code"))
                         )
                 );
-    }
-
-    @Test
-    public void changePasswordShouldFailWhenEqualToUsername() {
-        fixture.given(new UserRegistered(aUserId, A_USERNAME, AN_EMAIL_ADDRESS, A_PASSWORD_OBFUSCATED, AN_EMAIL_ADDRESS_VERIFICATION_CODE))
-                .when(new ChangeUserPassword(aUserId, A_PASSWORD, "A_USERNAME"))
-                .expectException(IllegalArgumentException.class);
-    }
-
-    @Test
-    public void changePasswordShouldFailWhenEqualToOldPassword() {
-        fixture.given(new UserRegistered(aUserId, A_USERNAME, AN_EMAIL_ADDRESS, A_PASSWORD_OBFUSCATED, AN_EMAIL_ADDRESS_VERIFICATION_CODE))
-                .when(new ChangeUserPassword(aUserId, A_PASSWORD, A_PASSWORD))
-                .expectException(IllegalArgumentException.class);
     }
 
     // ------------------------------------------------------------------------

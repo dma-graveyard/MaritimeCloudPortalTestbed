@@ -15,8 +15,6 @@
 package net.maritimecloud.portal.application;
 
 import net.maritimecloud.portal.config.ApplicationTestConfig;
-import net.maritimecloud.portal.domain.model.DomainRegistry;
-import net.maritimecloud.portal.domain.model.identity.User;
 import net.maritimecloud.portal.infrastructure.persistence.CleanableStore;
 import org.junit.After;
 import org.junit.Before;
@@ -47,10 +45,6 @@ public class ApplicationServiceTest {
         return applicationContext;
     }
 
-    /**
-     *
-     * @param applicationContext
-     */
     private void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
@@ -66,8 +60,6 @@ public class ApplicationServiceTest {
         //eventStore = (EventStore) applicationContext.getBean("eventStore");
         //clean(eventStore);
         //clean(DomainRegistry.groupRepository());
-        //clean(DomainRegistry.roleRepository());
-        clean(DomainRegistry.userRepository());
     }
 
     private void clean(Object cleanableStore) {
@@ -77,10 +69,6 @@ public class ApplicationServiceTest {
     @After
     public void tearDown() {
         cleanAllRepositories();
-    }
-
-    protected User aUser() {
-        return new User("JohnDoe", "aPassword", "john@doe.com");
     }
 
 }

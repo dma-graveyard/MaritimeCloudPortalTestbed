@@ -16,10 +16,8 @@ package net.maritimecloud.portal.config;
 
 import java.io.IOException;
 import javax.annotation.Resource;
-import net.maritimecloud.portal.domain.model.identity.UserRepository;
 import net.maritimecloud.portal.infrastructure.mail.Mail;
 import net.maritimecloud.portal.infrastructure.mail.MailAdapter;
-import net.maritimecloud.portal.infrastructure.persistence.InMemoryUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -43,11 +41,6 @@ public class ApplicationInMemoryDemoConfig {
 
     @Resource
     JavaMailSender mailSender;
-
-    @Bean
-    public UserRepository userRepository() {
-        return new InMemoryUserRepository();
-    }
 
     @Bean
     @ConditionalOnProperty(prefix = "spring.mail", name = "password", havingValue = "false", matchIfMissing = true)

@@ -15,6 +15,7 @@
 package net.maritimecloud.portal.resource;
 
 import javax.ws.rs.core.Application;
+import net.maritimecloud.identityregistry.query.UserEntry;
 import net.maritimecloud.portal.JerseyConfig;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import net.maritimecloud.portal.config.ApplicationTestConfig;
@@ -22,10 +23,6 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import net.maritimecloud.portal.application.ApplicationServiceTest;
-import net.maritimecloud.portal.application.IdentityApplicationService;
-import net.maritimecloud.portal.domain.model.DomainRegistry;
-import net.maritimecloud.portal.domain.model.identity.User;
-import net.maritimecloud.portal.domain.model.identity.UserRepository;
 import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -41,7 +38,7 @@ public abstract class ResourceTest extends JerseyTest {
 
     private ApplicationContext sharedApplicationContext;
 
-    ApplicationServiceTestImpl applicationServiceTest = new ApplicationServiceTestImpl();
+    private ApplicationServiceTestImpl applicationServiceTest = new ApplicationServiceTestImpl();
 
     @Override
     protected Application configure() {
@@ -103,16 +100,6 @@ public abstract class ResourceTest extends JerseyTest {
         return new AnnotationConfigApplicationContext(ApplicationTestConfig.class);
     }
 
-    /**
-     * Exposed ApplicationServiceTest method
-     * <p>
-     * @return a user
-     * @see ApplicationServiceTest#aUser()
-     */
-    protected User aUser() {
-        return applicationServiceTest.aUser();
-    }
-
     private class ApplicationServiceTestImpl extends ApplicationServiceTest {
 
         public ApplicationServiceTestImpl() {
@@ -122,23 +109,10 @@ public abstract class ResourceTest extends JerseyTest {
         protected ApplicationContext createApplicationContext() {
             return sharedApplicationContext;
         }
-
-        @Override
-        public User aUser() {
-            return super.aUser();
-        }
     }
 
     protected AuthenticationUtil authenticationUtil() {
         return ApplicationServiceRegistry.authenticationUtil();
-    }
-
-    protected IdentityApplicationService identityApplicationService() {
-        return ApplicationServiceRegistry.identityApplicationService();
-    }
-
-    protected UserRepository userRepository() {
-        return DomainRegistry.userRepository();
     }
 
     protected LogService logService() {

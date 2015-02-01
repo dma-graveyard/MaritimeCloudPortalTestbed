@@ -14,13 +14,13 @@
  */
 package net.maritimecloud.portal;
 
+import net.maritimecloud.identityregistry.resource.UserResource;
 import net.maritimecloud.portal.resource.ActivityResource;
 import net.maritimecloud.portal.resource.AlmanacResource;
 import net.maritimecloud.portal.resource.OrganizationResource;
 import net.maritimecloud.portal.resource.AuthenticationResource;
 import net.maritimecloud.portal.resource.GenericCommandResource;
 import net.maritimecloud.portal.resource.UniqueIdResource;
-import net.maritimecloud.portal.resource.UserResource;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.web.filter.RequestContextFilter;
@@ -44,7 +44,6 @@ public class JerseyConfig extends ResourceConfig {
         register(OrganizationResource.class);
         register(UniqueIdResource.class);
         register(UserResource.class);
-        register(net.maritimecloud.identityregistry.resource.UserResource.class);
         register(LoggingFilter.class);
     }
 }

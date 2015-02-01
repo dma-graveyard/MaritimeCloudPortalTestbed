@@ -12,7 +12,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.maritimecloud.portal.domain.model.identity;
+package net.maritimecloud.identityregistry.resource;
+
+import java.util.Date;
+import net.maritimecloud.identityregistry.query.UserEntry;
+import net.maritimecloud.identityregistry.query.internal.InternalUserEntry;
 
 /**
  *
@@ -57,16 +61,22 @@ public class UserBuilder {
         return this;
     }
 
-    public User build() {
-        User u = new User(
-                name != null ? name : "anakin",
-                password != null ? password : "aDarkSecret",
-                email != null ? email : "anakin@skywalker.ds"
-        );
-        if (isActivated) {
-            u.generateActivationId();
-            u.activate(u.activationId());
-        }
+    public UserEntry build() {
+        UserEntry u = new UserEntry();
+        u.setUsername(name != null ? name : "anakin");
+        //u.setPassword(password != null ? password : "aDarkSecret");
+        u.setEmailAddress(email != null ? email : "anakin@skywalker.ds");
+        u.setIsActivated(isActivated);
+        u.setActivatedSince(new Date(0));
+        return u;
+    }
+
+    public InternalUserEntry buildInternal() {
+        InternalUserEntry u = new InternalUserEntry();
+        u.setUsername(name != null ? name : "anakin");
+        u.setEncryptedPassword(password != null ? password : "aDarkSecret");
+        u.setEmailAddress(email != null ? email : "anakin@skywalker.ds");
+        u.setActivated(isActivated);
         return u;
     }
 

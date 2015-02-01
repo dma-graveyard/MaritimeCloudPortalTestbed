@@ -16,8 +16,6 @@
 package net.maritimecloud.portal.infrastructure.mail;
 
 import java.io.IOException;
-import net.maritimecloud.identityregistry.command.api.ResetPasswordKeyGenerated;
-import net.maritimecloud.identityregistry.command.api.UserRegistered;
 import net.maritimecloud.identityregistry.command.user.UserId;
 import net.maritimecloud.portal.config.ApplicationConfig;
 import static org.hamcrest.Matchers.containsString;
@@ -28,7 +26,7 @@ import org.junit.Test;
 
 public class VelocityMessageComposerTest {
     
-    private static final UserId someUserId = null;
+    private static final String AN_EMAIL_ADDRESS_VERIFICATION_CODE = "AN_EMAIL_ADDRESS_VERIFICATION_CODE";
     
     private VelocityMessageComposer messageComposer;
     
@@ -40,49 +38,44 @@ public class VelocityMessageComposerTest {
     
     @Test
     public void signUpActivationMessageShouldBePatchedWithUserInfo() {
-        UserRegistered event = new UserRegistered(someUserId, "luke", "luke@skywalker.com", "a secret", "AN_EMAIL_ADDRESS_VERIFICATION_CODE");
-        String message = messageComposer.composeSignUpActivationMessage(event);
+        String message = messageComposer.composeSignUpActivationMessage("luke", AN_EMAIL_ADDRESS_VERIFICATION_CODE);
         assertThat(message, containsString("Dear LUKE"));
         assertThat(message, containsString("activate your account"));
-        assertThat(message, containsString("#/users/luke/activate/"+event.getEmailVerificationCode()));
+        assertThat(message, containsString("#/users/luke/activate/"+AN_EMAIL_ADDRESS_VERIFICATION_CODE));
         assertThatAllPlaceholsersHasBeenPatched(message);
     }
     
     @Test
     public void signUpActivationMessageShouldMentionUserAnakin() {
-        UserRegistered event = new UserRegistered(someUserId, "anakin", "anakin@skywalker.com", "a secret", "AN_EMAIL_ADDRESS_VERIFICATION_CODE");
-        String message = messageComposer.composeSignUpActivationMessage(event);
+        String message = messageComposer.composeSignUpActivationMessage("anakin", AN_EMAIL_ADDRESS_VERIFICATION_CODE);
         assertThat(message, containsString("Dear ANAKIN"));
     }
     
     @Test(expected = IllegalStateException.class)
     public void signUpActivationMessageShouldFailIfUserIsMissingActivationId() {
-        UserRegistered eventWithoutConfirmationCode = new UserRegistered(someUserId, "anakin", "anakin@skywalker.com", "a secret", null);
-        messageComposer.composeSignUpActivationMessage(eventWithoutConfirmationCode);
+        messageComposer.composeSignUpActivationMessage("anakin", null);
     }
 
     @Test
     public void resetPasswordMessageShouldBePatchedWithUserInfo() {
-        ResetPasswordKeyGenerated event = new ResetPasswordKeyGenerated(someUserId, "luke", "luke@skywalker.com", "reset_password_key");
-        String message = messageComposer.composeResetPasswordMessage(event);
+        String message = messageComposer.composeResetPasswordMessage("luke", A_RESET_PASSWORD_KEY);
         assertThat(message, containsString("Dear LUKE"));
         assertThat(message, containsString("reset"));
         assertThat(message, containsString("password"));
-        assertThat(message, containsString("#/users/luke/reset/"+event.getResetPasswordKey()));
+        assertThat(message, containsString("#/users/luke/reset/"+A_RESET_PASSWORD_KEY));
         assertThatAllPlaceholsersHasBeenPatched(message);
     }
+    private static final String A_RESET_PASSWORD_KEY = "reset_password_key";
     
     @Test
     public void resetPasswordMessageShouldMentionUserAnakin() {
-        ResetPasswordKeyGenerated event = new ResetPasswordKeyGenerated(someUserId, "anakin", "anakin@skywalker.com", "reset_password_key");
-        String message = messageComposer.composeResetPasswordMessage(event);
+        String message = messageComposer.composeResetPasswordMessage("anakin", A_RESET_PASSWORD_KEY);
         assertThat(message, containsString("Dear ANAKIN"));
     }
     
     @Test(expected = IllegalStateException.class)
     public void resetPasswordMessageShouldFailIfUserIsMissingActivationId() {
-        ResetPasswordKeyGenerated event = new ResetPasswordKeyGenerated(someUserId, "anakin", "anakin@skywalker.com", null);
-        messageComposer.composeResetPasswordMessage(event);
+        messageComposer.composeResetPasswordMessage("a username", null);
     }
 
     private void assertThatAllPlaceholsersHasBeenPatched(String message) {

@@ -30,7 +30,6 @@ import net.maritimecloud.identityregistry.query.internal.InternalUserEntry;
 import net.maritimecloud.identityregistry.query.internal.InternalUserQueryRepository;
 import static net.maritimecloud.identityregistry.resource.UserResource.APPLICATION_JSON_CQRS_COMMAND;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
-import net.maritimecloud.portal.application.IdentityApplicationService;
 import net.maritimecloud.portal.domain.model.DomainRegistry;
 import net.maritimecloud.portal.domain.model.identity.Role;
 import net.maritimecloud.portal.domain.model.identity.UnknownUserException;
@@ -53,10 +52,6 @@ public class AuthenticationResource {
 
     protected AuthenticationUtil authenticationUtil() {
         return ApplicationServiceRegistry.authenticationUtil();
-    }
-
-    private IdentityApplicationService identityApplicationService() {
-        return ApplicationServiceRegistry.identityApplicationService();
     }
 
     private InternalUserQueryRepository internalUserQueryRepository() {
@@ -115,17 +110,6 @@ public class AuthenticationResource {
         authenticationUtil().logout();
     }
 
-//    @POST
-//    @Path("/sendforgot")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public void sendResetPasswordInstructions(CredentialsDTO credentials) {
-//        LOG.debug("Send reset password instructions email to " + credentials.getEmailAddress());
-//        
-//        // 
-//        
-//        identityApplicationService().sendResetPasswordMessage(credentials.getEmailAddress());
-//    }
-//
     @POST
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Path("")
@@ -134,24 +118,12 @@ public class AuthenticationResource {
             @QueryParam("command") @DefaultValue("") String queryCommandName,
             String commandJSON
     ) {
-        LOG.info("Organization PUT command");
+        LOG.info("AuthenticationResource PUT command");
         sendAndWait(contentType, queryCommandName, commandJSON,
                 SendResetPasswordInstructions.class
         );
     }
     
-    
-
-    @POST
-    @Path("/reset")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void resetPassword(CredentialsDTO credentials) {
-        
-        // TODO: flyt til user api!
-        
-        identityApplicationService().resetPassword(credentials.getUsername(), credentials.getVerificationId(), credentials.getPassword());
-    }
-
     private void reportWrongUsernamePassword(CredentialsDTO credentials) {
         LOG.debug("User {} not logged in (wrong username / password)", credentials.username);
         logService().reportWrongUsernamePassword(credentials.username);

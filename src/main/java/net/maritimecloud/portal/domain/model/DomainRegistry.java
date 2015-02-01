@@ -18,7 +18,6 @@ import net.maritimecloud.identityregistry.query.internal.InternalUserQueryReposi
 import net.maritimecloud.portal.domain.model.identity.PasswordService;
 import net.maritimecloud.portal.application.SpringContextBasedRegistry;
 import net.maritimecloud.portal.domain.model.identity.EncryptionService;
-import net.maritimecloud.portal.domain.model.identity.UserRepository;
 import net.maritimecloud.portal.infrastructure.service.SHA512EncryptionService;
 
 /**
@@ -26,10 +25,6 @@ import net.maritimecloud.portal.infrastructure.service.SHA512EncryptionService;
  * @author Christoffer Børrild
  */
 public class DomainRegistry extends SpringContextBasedRegistry {
-
-    public static UserRepository userRepository() {
-        return (UserRepository) get("userRepository");
-    }
 
     public static InternalUserQueryRepository internalUserQueryRepository() {
         return (InternalUserQueryRepository) get("internalUserQueryRepository");

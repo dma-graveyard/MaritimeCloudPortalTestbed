@@ -15,10 +15,8 @@
 package net.maritimecloud.portal.config;
 
 import java.io.IOException;
-import net.maritimecloud.portal.domain.model.identity.UserRepository;
 import net.maritimecloud.portal.infrastructure.mail.Mail;
 import net.maritimecloud.portal.infrastructure.mail.MailAdapter;
-import net.maritimecloud.portal.infrastructure.persistence.InMemoryUserRepository;
 import org.axonframework.auditing.AuditDataProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,11 +30,6 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 @Configuration
 @Import(value = {ApplicationConfig.class})
 public class ApplicationTestConfig {
-
-    @Bean
-    public UserRepository userRepository() {
-        return new InMemoryUserRepository();
-    }
 
     @Bean
     public MailAdapter mailAdapter() throws IOException {

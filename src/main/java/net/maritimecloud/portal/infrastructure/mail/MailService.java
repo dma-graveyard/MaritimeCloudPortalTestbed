@@ -14,10 +14,6 @@
  */
 package net.maritimecloud.portal.infrastructure.mail;
 
-import net.maritimecloud.identityregistry.command.api.ResetPasswordKeyGenerated;
-import net.maritimecloud.identityregistry.command.api.UnconfirmedUserEmailAddressSupplied;
-import net.maritimecloud.identityregistry.command.api.UserRegistered;
-
 /**
  * MailService is responsible for composing and sending out domain 
  * specific mail messages.
@@ -34,21 +30,21 @@ public class MailService {
         this.mailAdapter = mailAdapter;
     }
 
-    public void sendSignUpActivationMessage(UserRegistered event) {
-        String message = messageComposer.composeSignUpActivationMessage(event);
-        Mail mail = new Mail(event.getEmailAddress(), "Account activation on Maritime Cloud Portal", message);
+    public void sendSignUpActivationMessage(String emailAddress, String username, String verificationCode) {
+        String message = messageComposer.composeSignUpActivationMessage(username, verificationCode);
+        Mail mail = new Mail(emailAddress, "Account activation on Maritime Cloud Portal", message);
         mailAdapter.send(mail);
     }
 
-    public void sendResetPasswordMessage(ResetPasswordKeyGenerated event) {
-        String message = messageComposer.composeResetPasswordMessage(event);
-        Mail mail = new Mail(event.getEmailAddress(), "Password reset for Account at Maritime Cloud Portal", message);
+    public void sendResetPasswordMessage(String emailAddress, String username, String resetPasswordCode) {
+        String message = messageComposer.composeResetPasswordMessage(username, resetPasswordCode);
+        Mail mail = new Mail(emailAddress, "Password reset for Account at Maritime Cloud Portal", message);
         mailAdapter.send(mail);
     }
 
-    public void sendConfirmChangedEmailAddressMessage(UnconfirmedUserEmailAddressSupplied event) {
-        String message = messageComposer.composeConfirmChangedEmailAddressMessage(event);
-        Mail mail = new Mail(event.getUnconfirmedEmailAddress(), "Account activation on Maritime Cloud Portal", message);
+    public void sendConfirmChangedEmailAddressMessage(String emailAddress, String username, String verificationCode) {
+        String message = messageComposer.composeConfirmChangedEmailAddressMessage(username, verificationCode);
+        Mail mail = new Mail(emailAddress, "Account activation on Maritime Cloud Portal", message);
         mailAdapter.send(mail);
     }
 

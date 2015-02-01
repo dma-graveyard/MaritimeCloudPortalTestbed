@@ -58,7 +58,7 @@ public class ResetPasswordSaga extends AbstractAnnotatedSaga {
         // compose and send out welcome and confirm email
         System.out.println("Sending out reset password instruction email with the reset password key: " + event.getResetPasswordKey());
         
-        mailService().sendResetPasswordMessage(event);
+        mailService().sendResetPasswordMessage(event.getEmailAddress(), event.getUsername(), event.getResetPasswordKey());
         
         // HACK: FIXME: TODO: 
         // auto-confirm users that fulfil some criteria

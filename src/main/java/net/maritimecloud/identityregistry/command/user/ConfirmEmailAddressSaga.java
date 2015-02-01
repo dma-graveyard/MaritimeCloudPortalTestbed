@@ -53,8 +53,12 @@ public class ConfirmEmailAddressSaga extends AbstractAnnotatedSaga {
 
         // compose and send out welcome and confirm email
         System.out.println("Sending out a confirmation email with email verification code: " + event.getEmailVerificationCode());
-        ApplicationServiceRegistry.mailService().sendSignUpActivationMessage(event);
-        
+        ApplicationServiceRegistry.mailService().sendSignUpActivationMessage(
+                event.getEmailAddress(),
+                event.getPrefferedUsername(),
+                event.getEmailVerificationCode()
+        );
+
         // HACK: FIXME: TODO: 
         // auto-confirm users that fulfil some criteria
         autoConfirmTestUsersEmailAddress_HACK(event.getUserId(), event.getEmailAddress(), event.getEmailVerificationCode());
@@ -68,8 +72,12 @@ public class ConfirmEmailAddressSaga extends AbstractAnnotatedSaga {
 
         // compose and send out confirm change email
         System.out.println("Sending out a confirmation email with email verification code: " + event.getEmailVerificationCode());
-        ApplicationServiceRegistry.mailService().sendConfirmChangedEmailAddressMessage(event);
-        
+        ApplicationServiceRegistry.mailService().sendConfirmChangedEmailAddressMessage(
+                event.getUnconfirmedEmailAddress(), 
+                event.getUsername(), 
+                event.getEmailVerificationCode()
+        );
+
         // HACK: FIXME: TODO: 
         // auto-confirm users that fulfil some criteria
         autoConfirmTestUsersEmailAddress_HACK(event.getUserId(), event.getUnconfirmedEmailAddress(), event.getEmailVerificationCode());

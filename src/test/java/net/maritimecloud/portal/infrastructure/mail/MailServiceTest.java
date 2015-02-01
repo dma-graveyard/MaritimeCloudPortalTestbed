@@ -16,8 +16,6 @@ package net.maritimecloud.portal.infrastructure.mail;
 
 import java.io.IOException;
 import javax.mail.MessagingException;
-import net.maritimecloud.portal.domain.model.identity.User;
-import static net.maritimecloud.portal.domain.model.identity.UserBuilder.aUser;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -32,7 +30,6 @@ public class MailServiceTest {
 
     private static final String A_MESSAGE = "a message";
     private MailService mailService;
-    private User aUser;
     @Mock
     private MessageComposer messageComposer;
     @Mock
@@ -44,25 +41,24 @@ public class MailServiceTest {
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
         mailService = new MailService(messageComposer, mailAdapter);
-        aUser = aUser().with().name("luke").and().password("luke@skywalker.com").build();
+    }
+
+    @Test
+    public void testSendSignUpActivationMessage() throws MessagingException, Exception {
+        when(messageComposer.composeSignUpActivationMessage(any(), any())).thenReturn(A_MESSAGE);
+        // When
+        mailService.sendSignUpActivationMessage("an@email.com", "a_username", "a_verification_code");
+        // Then
+        verify(messageComposer).composeSignUpActivationMessage("a_username", "a_verification_code");
+        verify(mailAdapter).send(mailCaptor.capture());
+        Mail mail = mailCaptor.getValue();
+        assertThat(mail.getRecipients(), equalToIgnoringWhiteSpace("an@email.com"));
+        assertThat(mail.getSubject(), containsString("Account"));
+        assertThat(mail.getSubject(), containsString("activation"));
+        assertThat(mail.getMessage(), equalTo(A_MESSAGE));
     }
 
 //TODO: fix test        
-//    @Test
-//    public void testSendSignUpActivationMessage() throws MessagingException, Exception {
-//        when(messageComposer.composeSignUpActivationMessage(any())).thenReturn(A_MESSAGE);
-//        // When
-//        mailService.sendSignUpActivationMessage(aUser);
-//        // Then
-//        verify(messageComposer).composeSignUpActivationMessage(aUser);
-//        verify(mailAdapter).send(mailCaptor.capture());
-//        Mail mail = mailCaptor.getValue();
-//        assertThat(mail.getRecipients(), equalToIgnoringWhiteSpace(aUser.emailAddress()));
-//        assertThat(mail.getSubject(), containsString("Account"));
-//        assertThat(mail.getSubject(), containsString("activation"));
-//        assertThat(mail.getMessage(), equalTo(A_MESSAGE));
-//    }
-//
 //    @Test
 //    public void testSendResetPasswordMessage() throws MessagingException, Exception {
 //        when(messageComposer.composeResetPasswordMessage(any())).thenReturn(A_MESSAGE);

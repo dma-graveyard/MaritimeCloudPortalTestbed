@@ -5,16 +5,13 @@ import java.util.Properties;
 import javax.annotation.Resource;
 import javax.servlet.DispatcherType;
 import net.maritimecloud.portal.*;
-import net.maritimecloud.portal.application.IdentityApplicationService;
 import net.maritimecloud.portal.domain.infrastructure.shiro.ShiroAuthenticationUtil;
 import net.maritimecloud.portal.domain.model.identity.EncryptionService;
-import net.maritimecloud.portal.domain.model.identity.UserRepository;
 import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
 import net.maritimecloud.portal.infrastructure.mail.MailAdapter;
 import net.maritimecloud.portal.infrastructure.mail.MailService;
 import net.maritimecloud.portal.infrastructure.mail.SmtpMailAdapter;
 import net.maritimecloud.portal.infrastructure.mail.VelocityMessageComposer;
-import net.maritimecloud.portal.infrastructure.persistence.JpaUserRepository;
 import net.maritimecloud.portal.infrastructure.service.SHA512EncryptionService;
 import net.maritimecloud.portal.resource.LogService;
 import net.maritimecloud.portal.resource.SimpleCORSFilter;
@@ -56,16 +53,6 @@ public class ApplicationConfig {
     public ApplicationContextSetup applicationContextSetup() {
         // this will trigger that the application context is propagated to all registries
         return new ApplicationContextSetup();
-    }
-
-    @Bean
-    public IdentityApplicationService identityApplicationService() {
-        return new IdentityApplicationService();
-    }
-
-    @Bean
-    public UserRepository userRepository() {
-        return new JpaUserRepository();
     }
 
     @Bean

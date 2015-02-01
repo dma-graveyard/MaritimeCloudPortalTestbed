@@ -16,9 +16,6 @@ package net.maritimecloud.portal.infrastructure.mail;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.maritimecloud.identityregistry.command.api.ResetPasswordKeyGenerated;
-import net.maritimecloud.identityregistry.command.api.UnconfirmedUserEmailAddressSupplied;
-import net.maritimecloud.identityregistry.command.api.UserRegistered;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
@@ -40,25 +37,32 @@ public class VelocityMessageComposer implements MessageComposer {
     }
 
     @Override
-    public String composeSignUpActivationMessage(UserRegistered event) {
-        assertNotNull(event.getEmailVerificationCode());
-        return compose(createModel(event.getPrefferedUsername(), event.getEmailVerificationCode()), TEMPLATE_SIGN_UP_ACTIVATION_MESSAGE);
+    public String composeSignUpActivationMessage(String username, String verificationCode) {
+        assertNotNull(verificationCode);
+        return compose(createModel(username, verificationCode), TEMPLATE_SIGN_UP_ACTIVATION_MESSAGE);
+    }
+
+    @Override
+    public String composeResetPasswordMessage(String username, String resetPasswordCode) {
+        // TODO: consider to rename activationId to confirmationId or verificationId
+        assertNotNull(resetPasswordCode);
+        return compose(createModel(username, resetPasswordCode), TEMPLATE_RESET_PASSWORD_MESSAGE);
+    }
+
+    @Override
+    public String composeConfirmChangedEmailAddressMessage(String username, String verificationCode) {
+        assertNotNull(verificationCode);
+        return compose(createModel(username, verificationCode), TEMPLATE_CONFIRM_CHANGED_EMAIL_ADDRESS_MESSAGE);
     }
 
     private void assertNotNull(Object value) throws IllegalStateException {
-        if(value == null)
+        if (value == null) {
             throw new IllegalStateException("User object is missing activationid or reset key!");
+        }
     }
 
     private String compose(Map model, String templateFilename) {
         return VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, templateFilename, "UTF-8", model);
-    }
-
-    @Override
-    public String composeResetPasswordMessage(ResetPasswordKeyGenerated event) {
-        // TODO: consider to rename activationId to confirmationId or verificationId
-        assertNotNull(event.getResetPasswordKey());
-        return compose(createModel(event.getUsername(), event.getResetPasswordKey()), TEMPLATE_RESET_PASSWORD_MESSAGE);
     }
 
     private Map createModel(String username, String key) {
@@ -67,12 +71,6 @@ public class VelocityMessageComposer implements MessageComposer {
         model.put("baseUrl", BASE_URL);
         model.put("activationid", key);
         return model;
-    }
-
-    @Override
-    public String composeConfirmChangedEmailAddressMessage(UnconfirmedUserEmailAddressSupplied event) {
-        assertNotNull(event.getEmailVerificationCode());
-        return compose(createModel(event.getUsername(), event.getEmailVerificationCode()), TEMPLATE_CONFIRM_CHANGED_EMAIL_ADDRESS_MESSAGE);
     }
 
 }
