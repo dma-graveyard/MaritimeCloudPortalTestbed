@@ -1,5 +1,4 @@
 'use strict';
-
 angular.module('mcp.users', ['ui.bootstrap'])
 
     .controller('UserListController', ['$scope', 'UserService',
@@ -7,21 +6,17 @@ angular.module('mcp.users', ['ui.bootstrap'])
         $scope.pageSize = 20;
         $scope.totalItems = 0;
         $scope.currentPage = 1;
-
         $scope.updateSearch = function () {
           $scope.busyPromise = UserService.query({size: $scope.pageSize, page: $scope.currentPage - 1, usernamePattern: $scope.filter_query}, function (page) {
             $scope.page = page;
             $scope.users = page.content;
           });
         };
-        
         $scope.pageChanged = function () {
           $scope.updateSearch();
         };
-
         // load first page
         $scope.updateSearch();
-
       }])
 
     .controller('UserDetailController', ['$scope', '$stateParams', 'UserService',
@@ -29,8 +24,6 @@ angular.module('mcp.users', ['ui.bootstrap'])
         $scope.user = UserService.get({username: $stateParams.username}, function (user) {
           // $scope.mainImageUrl = user.images[0];
         });
-
-
         // TODO: extend user with an avatar
         //    $scope.setImage = function(imageUrl) {
         //      $scope.mainImageUrl = imageUrl;
@@ -39,9 +32,9 @@ angular.module('mcp.users', ['ui.bootstrap'])
 
     .controller('UserProfileController', ['$scope', 'UserService', 'Session',
       function ($scope, UserService, Session) {
-        $scope.user = UserService.get({username: Session.userId}, function (user) {
+        $scope.busyPromise = UserService.get({username: Session.userId}, function (user) {
+          $scope.user = user;
         });
-        console.log($scope.currentUser);
       }])
 
     .controller('UserSignupController', ['$scope', 'UserService', '$state',
@@ -51,22 +44,18 @@ angular.module('mcp.users', ['ui.bootstrap'])
         $scope.alert = null;
         $scope.usernameAlreadyExist = true;
         $scope.signUpPromise = null;
-
         $scope.isValid = function (isFormValid) {
           return isFormValid
               && $scope.passwordsMatch()
               && !$scope.passwordEqualsUsername()
               && !$scope.usernameAlreadyExist;
         };
-
         $scope.passwordsMatch = function () {
           return $scope.user.password === $scope.user.repeatedPassword;
         };
-
         $scope.passwordEqualsUsername = function () {
           return $scope.user.password === $scope.user.username;
         };
-
         $scope.getError = function (error, minLength, maxLength, patternMsg) {
           if (angular.isDefined(error)) {
             if (error.required) {
@@ -83,7 +72,6 @@ angular.module('mcp.users', ['ui.bootstrap'])
           }
 
         };
-
         $scope.resolveUniqueUsername = function () {
           if (!angular.isDefined($scope.user.username)) {
             $scope.usernameAlreadyExist = true;
@@ -93,7 +81,6 @@ angular.module('mcp.users', ['ui.bootstrap'])
             $scope.usernameAlreadyExist = data.usernameExist;
           });
         };
-
         $scope.$watch("user.username",
             function (newValue, oldValue, scope) {
               if (newValue !== oldValue) {
@@ -102,7 +89,6 @@ angular.module('mcp.users', ['ui.bootstrap'])
               }
             }
         );
-
         $scope.sendRequest = function () {
           $scope.alert = null;
           $scope.user.userId = "";
@@ -116,7 +102,6 @@ angular.module('mcp.users', ['ui.bootstrap'])
             $scope.alert = "Argh! An error occured on the server :(";
           });
         };
-
       }])
 
     .controller('UserChangeEmailAddressController', ['$scope', 'UserService', '$stateParams',
@@ -125,26 +110,21 @@ angular.module('mcp.users', ['ui.bootstrap'])
           userId: "",
           username: $stateParams.username
         };
-        
         UserService.get($scope.user, function (user) {
           $scope.oldEmailAddress = user.emailAddress;
         });
-
         $scope.viewState = 'supplyEmailAddress';
         $scope.message = null;
         $scope.alert = null;
         $scope.busyPromise = null;
-
         $scope.isValid = function (isFormValid) {
           return isFormValid && $scope.user.emailAddress;
         };
-
         $scope.getError = function (error) {
           if (angular.isDefined(error)) {
-              return error.required ? "Please enter a value" : error.email ? "Please enter a valid email address" : "";
+            return error.required ? "Please enter a value" : error.email ? "Please enter a valid email address" : "";
           }
         };
-
         $scope.sendRequest = function () {
           $scope.alert = null;
           $scope.message = "Sending request...";
@@ -158,7 +138,6 @@ angular.module('mcp.users', ['ui.bootstrap'])
             $scope.alert = "Argh! An error occured on the server :(";
           });
         };
-
       }])
 
     .controller('UserResetPasswordController', ['$scope', '$stateParams', 'AuthService', '$controller',
@@ -176,11 +155,9 @@ angular.module('mcp.users', ['ui.bootstrap'])
               && $scope.passwordsMatch()
               && !$scope.passwordEqualsUsername();
         };
-
         $scope.busyPromise = null;
         $scope.viewState = 'supplyPassword';
         $scope.user.username = $stateParams.username;
-
         $scope.changePassword = function (newPassword) {
           $scope.busyPromise = AuthService.resetPassword(
               $stateParams.username,
@@ -199,13 +176,46 @@ angular.module('mcp.users', ['ui.bootstrap'])
       }
     ])
 
+    .controller('UserChangePasswordController', ['$scope', '$stateParams', 'UserService', '$controller',
+      function ($scope, $stateParams, UserService, $controller) {
+
+        // Inherit password field behavior from similar controller
+        $controller('UserSignupController', {$scope: $scope}); //This works
+        $scope.isValid = function (isFormValid) {
+          return isFormValid
+              && $scope.passwordsMatch()
+              && !$scope.passwordEqualsUsername();
+        };
+        $scope.viewState = 'supplyPassword';
+        $scope.passwordPrefix = "New";
+        $scope.busyPromise = null;
+        $scope.user.username = $stateParams.username;
+        $scope.retry = function () {
+            $scope.viewState = "supplyPassword";
+        };
+        $scope.changePassword = function (currentPassword, newPassword) {
+          $scope.busyPromise = UserService.changeUserPassword({
+            userId: "",
+            username: $stateParams.username,
+            currentPassword: currentPassword,
+            changedPassword: newPassword
+          }, function () {
+            $scope.viewState = "success";
+          }, function (error) {
+            // Error handler code
+            $scope.alert = "Whoops! Something went wrong: (" + error.status + ") " + error.statusText;
+            $scope.viewState = error.status === 400 ? 'notFound' : 'error';
+          });
+        };
+      }
+    ])
+
     .controller('UserConfirmEmailAddressController', ['$scope', '$stateParams', 'UserService',
       function ($scope, $stateParams, UserService) {
         //console.log("Activate " + $stateParams.username);
         $scope.busyPromise = null;
         $scope.accountActivated = null;
         $scope.viewState = 'loading';
-
         $scope.busyPromise = UserService.verifyEmailAddress({
           userId: "",
           username: $stateParams.username,
@@ -218,7 +228,6 @@ angular.module('mcp.users', ['ui.bootstrap'])
               console.log(error);
               $scope.viewState = error.status === 400 ? 'notFound' : 'error';
             });
-
       }
     ])
 
@@ -230,32 +239,25 @@ angular.module('mcp.users', ['ui.bootstrap'])
     .service('UserContext', ['UserService', 'OrganizationService', function (UserService, OrganizationService) {
 
         var currentUser = null;
-
         // Organizations that the current user is a member of
         var organizationMemberships = [];
-
         this.reset = function () {
           currentUser = null;
           organizationMemberships = [];
         };
-
         this.refresh = function () {
           updateOrganizationMemberships();
         };
-
         this.setCurrentUser = function (aUser) {
           currentUser = aUser;
           this.refresh();
         };
-
         this.currentUser = function () {
           return currentUser;
         };
-
         this.organizationMemberships = function () {
           return organizationMemberships;
         };
-
         this.isAdminMemberOf = function (organizationId) {
           for (var i = 0; i < organizationMemberships.length; i++) {
             if (organizationId === organizationMemberships[i].organizationId) {
@@ -264,7 +266,6 @@ angular.module('mcp.users', ['ui.bootstrap'])
           }
           return false;
         };
-
         var updateOrganizationMemberships = function () {
           organizationMemberships = !currentUser ? [] : UserService.queryOrganizationMeberships({username: currentUser.name}, function (memberships) {
             memberships.forEach(function (membership) {
@@ -273,12 +274,10 @@ angular.module('mcp.users', ['ui.bootstrap'])
             });
           });
         };
-
         this.isOwnerOf = function (organization) {
           var membership = findMembership(organization.organizationId);
           return membership; //fixme: && membership.isOwner();
         };
-
         var findMembership = function (organizationId) {
           for (var i = 0; i < organizationMemberships.length; i++) {
             if (organizationId === organizationMemberships[i].organizationId) {
@@ -287,7 +286,6 @@ angular.module('mcp.users', ['ui.bootstrap'])
           }
           return null;
         };
-
       }])
 
     ;

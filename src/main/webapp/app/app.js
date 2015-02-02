@@ -160,6 +160,12 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
           controller: 'UserChangeEmailAddressController'
         },
         {
+          name: 'userChangePasswordController',
+          url: "/users/{username}/profile/change/password",
+          templateUrl: 'users/user-change-password.html',
+          controller: 'UserChangePasswordController'
+        },
+        {
           name: 'organizations',
           url: "/orgs",
           templateUrl: 'organizations/manage-organizations.html',

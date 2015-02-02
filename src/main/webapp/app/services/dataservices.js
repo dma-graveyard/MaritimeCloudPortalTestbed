@@ -162,6 +162,10 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           return this.put({username: data.username}, new VerifyEmailAddress(data.userId, data.emailAddressVerificationId), succes, error);
         };
 
+        resource.changeUserPassword = function (data, succes, error) {
+          return this.put({username: data.username}, new ChangeUserPassword(data.userId, data.currentPassword, data.changedPassword), succes, error);
+        };
+
         return resource;
       }])
 

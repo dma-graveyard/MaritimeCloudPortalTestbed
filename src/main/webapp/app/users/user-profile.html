@@ -1,25 +1,31 @@
 <div class="panel panel-default">
-
     <div class="panel-heading">
         <h1 class="panel-title">Profile: {{user.username}}</h1>
     </div>
     <div class="panel-body">
-
         <h4>Details</h4>
-        <table class="table-condensed">
-            <tr> <th class="text-right">Username : </th>          <td>{{user.username}} </td> </tr>
+        <table class="table-condensed" cg-busy="busyPromise">
+            <tr> <th class="text-right">Username : </th><td>{{user.username}} </td> </tr>
             <tr> 
-                <th class="text-right">Email Address : </th>     <td>{{user.emailAddress}} 
+                <th class="text-right">Email Address : </th><td>{{user.emailAddress}} 
                     <a class="edit-gear" ui-sref="restricted.userChangeEmailAddressController({username: user.username})" 
                        data-tooltip="Change email address" data-tooltip-placement="right">
                         <span class="fa fa-gear"></span>
                     </a>
                 </td>
             </tr>
-            <tr> <th class="text-right">Account activated : </th> <td><span am-time-ago="user.activatedSince"></td>  </tr>
-            <tr> <th class="text-right">System Roles : </th>              <td>{{currentUser.role}}</td>  </tr>
+            <tr> 
+                <th class="text-right">Password : </th>
+                <td>****** 
+                    <a class="edit-gear" ui-sref="restricted.userChangePasswordController({username: user.username})" 
+                       data-tooltip="Change password" data-tooltip-placement="right">
+                        <span class="fa fa-gear"></span>
+                    </a>
+                </td>
+            </tr>
+            <tr> <th class="text-right">Account activated : </th><td><span am-time-ago="user.activatedSince"></td></tr>
+            <tr> <th class="text-right">System Roles : </th><td>{{currentUser.role}}</td></tr>
         </table>
-
     </div>
 </div>
 
