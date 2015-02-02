@@ -157,7 +157,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
       }
     ])
 
-    .controller('UserActivationController', ['$scope', '$stateParams', 'UserService',
+    .controller('UserConfirmEmailAddressController', ['$scope', '$stateParams', 'UserService',
       function ($scope, $stateParams, UserService) {
         //console.log("Activate " + $stateParams.username);
         $scope.busyPromise = null;
@@ -170,11 +170,11 @@ angular.module('mcp.users', ['ui.bootstrap'])
           emailAddressVerificationId: $stateParams.activationId
         },
         function () {
-          $scope.viewState = 'accountActivated';
+          $scope.viewState = 'success';
         },
             function (error) {
               console.log(error);
-              $scope.viewState = error.status === 400 ? 'accountNotActivated' : 'error';
+              $scope.viewState = error.status === 400 ? 'notFound' : 'error';
             });
 
       }

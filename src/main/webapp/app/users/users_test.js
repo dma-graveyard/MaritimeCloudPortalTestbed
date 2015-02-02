@@ -152,8 +152,8 @@ describe('UserSignupController', function() {
   });
 });
 
-// UserActivationController
-describe('UserActivationController', function() {
+// UserConfirmEmailAddressController
+describe('UserConfirmEmailAddressController', function() {
 
   // Arrange
   var scope, controller, httpBackend, userService;
@@ -180,13 +180,13 @@ describe('UserActivationController', function() {
     var $stateParams = {username: 'aUser', activationId: 'VALID-ID-123-xyz'};
     httpBackend.whenPUT(/rest\/api\/users\/aUser/).respond(204);
     // WHEN controller is created
-    userActivationController = controller("UserActivationController", {$scope: scope, UserService: userService, $stateParams: $stateParams});
+    UserConfirmEmailAddressController = controller("UserConfirmEmailAddressController", {$scope: scope, UserService: userService, $stateParams: $stateParams});
     // THEN initially the viewState is laoding
     expect(scope.viewState).to.equal('loading');
     // WHEN remote request is reolved 
     httpBackend.flush();
     // THEN the account is activated 
-    expect(scope.viewState).to.equal('accountActivated');
+    expect(scope.viewState).to.equal('success');
   });
   it('should fail when username and activationId is invalid', function() {
 
@@ -194,11 +194,11 @@ describe('UserActivationController', function() {
     var $stateParams = {username: 'aUser', activationId: 'INVALID-123-xyz'};
     httpBackend.whenPUT(/rest\/api\/users\/aUser/).respond(400);
     // WHEN controller is created
-    userActivationController = controller("UserActivationController", {$scope: scope, UserService: userService, $stateParams: $stateParams});
+    UserConfirmEmailAddressController = controller("UserConfirmEmailAddressController", {$scope: scope, UserService: userService, $stateParams: $stateParams});
     // AND remote request is reolved 
     httpBackend.flush();
     // THEN the account is still not activated 
-    expect(scope.viewState).to.equal('accountNotActivated');
+    expect(scope.viewState).to.equal('notFound');
   });
   it('should fail when username and activationId is unknown', function() {
 
@@ -206,7 +206,7 @@ describe('UserActivationController', function() {
     var $stateParams = {username: 'anotherUser', activationId: 'SOME-123-xyz'};
     httpBackend.whenPUT(/rest\/api\/users\/anotherUser/).respond(500);
     // WHEN controller is created
-    userActivationController = controller("UserActivationController", {$scope: scope, UserService: userService, $stateParams: $stateParams});
+    UserConfirmEmailAddressController = controller("UserConfirmEmailAddressController", {$scope: scope, UserService: userService, $stateParams: $stateParams});
     // AND remote request is reolved 
     httpBackend.flush();
     // THEN an error is indicated

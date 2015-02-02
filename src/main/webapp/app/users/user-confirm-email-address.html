@@ -1,8 +1,8 @@
 <div class="col-sm-3"></div>
 
-<panel ng-show="viewState === 'success'" category="success" icon="user" title="Account activated">
+<panel ng-show="viewState === 'success'" category="success" icon="user" title="Email address confirmed">
     <p>
-        Your account has been activated.
+        Your email address has been confirmed.
     </p>
     <p>
         Press the button below to navigate to the login page.
@@ -10,20 +10,20 @@
     <panel-button btn-type="primary" ui-sref="restricted.dashboard">Log in</panel-button>
 </panel>
 
-<panel ng-show="viewState === 'notFound'" category="danger" icon="warning" title="Unable to activate the account">
+<panel ng-show="viewState === 'notFound'" category="danger" icon="warning" title="Unable to find matching account">
     <p>
         Oh snap! It seems like we have a disagreement here.
     </p>
     <p>
-        Apparently we cannot find the combination of your username and the activation ID in our registry.
+        Apparently we cannot find the combination of your username and the confirmation ID in our registry.
     </p>
     <p>
-        Check to see if you got the entire activation URL right and try again.
+        Check to see if you got the entire confirmation URL right and try again.
     </p>
     <panel-button btn-type="danger" ui-sref="public.landingpage">Close</panel-button>
 </panel>
 
-<panel ng-show="viewState === 'error'" category="danger" icon="warning" title="An error occurred during activation">
+<panel ng-show="viewState === 'error'" category="danger" icon="warning" title="An error occurred">
     <p>
         Hmm... something went wrong on the server :-(
     </p>
