@@ -56,7 +56,7 @@ curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/users -H
 curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/users -H "Content-Type: application/json;domain-model=RegisterUser" -d '{"userId":{"identifier":""},"prefferedUsername":"terry","emailAddress":"terry@auto.demo.dma.dk","password":"test"}'
 
 # reset password (with auto-confirm email)
-curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/authentication -H "Content-Type: application/json;domain-model=SendResetPasswordInstructions" -d '{"emailAddress":"admin@auto.demo.dma.dk"}'
+curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/authentication -H "Content-Type: application/json;domain-model=SendResetPasswordInstructions" -d '{"emailAddress":"tintin@auto.demo.dma.dk"}'
 
 # (hack): user with static verification code (provided in email)
 curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/users -H "Content-Type: application/json;domain-model=RegisterUser" -d '{"userId":{"identifier":"8669b18d-b41b-4c0e-a5ff-08b3fb8fed85"},"prefferedUsername":"Dupont","emailAddress":"94b389dd-e50e-48c1-b0fc-6840289a647e@static.demo.dma.dk","password":"test"}'
@@ -144,6 +144,7 @@ curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/org/imo/
 # (TODO: we really should not be able to change Duponts email from another users login context!!!)
 curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/users/Dupont -H "Content-Type: application/json;domain-model=ChangeUserEmailAddress" -X PUT -d '{"userId":{"identifier":"inferred"},"emailAddress":"e9764ce8-7320-4322-bf29-1bbe9582ddf3@static.demo.dma.dk"}'
 curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/users/Dupont -H "Content-Type: application/json;domain-model=VerifyEmailAddress" -X PUT -d '{"userId":{"identifier":"inferred"},"emailAddressVerificationId":"e9764ce8-7320-4322-bf29-1bbe9582ddf3"}'
+curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/users/Dupont -H "Content-Type: application/json;domain-model=ChangeUserPassword" -X PUT -d '{"userId":{"identifier":"inferred"},"currentPassword":"test","changedPassword":"testtest"}'
 
 # Query: list 3 users
 curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/users?size=3

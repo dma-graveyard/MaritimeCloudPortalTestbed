@@ -69,6 +69,7 @@ public class ResetPasswordSaga extends AbstractAnnotatedSaga {
         // HACK: FIXME: TODO:
         // auto generate ResetPasswordCommand in odrer to auto-reset users password in test and demo without reading mails
         if (emailAddress.endsWith("@auto.demo.dma.dk")) {
+            System.out.println("HACK for auto.demo.dma.dk dmoain: auto-reset password to 'reset' for user "+ userId);
             commandGateway.send(new ChangeUserPassword(userId, resetPasswordKey, "reset"));
         }
         return resetPasswordKey;
