@@ -15,8 +15,6 @@
 package net.maritimecloud.serviceregistry.query;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Resource;
 import net.maritimecloud.portal.domain.infrastructure.axon.UserMetaData;
 import net.maritimecloud.serviceregistry.command.api.OrganizationAliasAdded;
@@ -39,8 +37,13 @@ import net.maritimecloud.serviceregistry.command.api.ServiceSpecificationCreated
 import net.maritimecloud.serviceregistry.command.api.ServiceSpecificationNameAndSummaryChanged;
 import net.maritimecloud.serviceregistry.command.api.UserInvitedToOrganization;
 import net.maritimecloud.serviceregistry.command.api.UserLeftOrganization;
-import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import net.maritimecloud.common.ddd.DomainIdentifier;
+import net.maritimecloud.identityregistry.command.api.ResetPasswordKeyGenerated;
+import net.maritimecloud.identityregistry.command.api.UnconfirmedUserEmailAddressSupplied;
+import net.maritimecloud.identityregistry.command.api.UserAccountActivated;
+import net.maritimecloud.identityregistry.command.api.UserEmailAddressVerified;
+import net.maritimecloud.identityregistry.command.api.UserPasswordChanged;
+import net.maritimecloud.identityregistry.command.api.UserRegistered;
 import org.axonframework.common.annotation.MetaData;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.axonframework.eventhandling.annotation.Timestamp;
@@ -48,8 +51,13 @@ import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 /**
- *
+ * This listener keeps a humanly formatted record of (selected/all?) events that has taken place in the context. The events are those difend
+ * in the following Contracts:
+ * <p>
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract
+ * @see net.maritimecloud.identityregistry.command.IdentityRegistryContract#UserPasswordChanged
  * @author Christoffer Børrild
+ * <p>
  */
 @Component
 public class ActivityEntryListener {
@@ -64,6 +72,9 @@ public class ActivityEntryListener {
         this.activityEntryQueryRepository = activityEntryQueryRepository;
     }
 
+    // -------------------------------------------
+    // ServiceRegistryContract
+    // -------------------------------------------
     @EventHandler
     public void on(OrganizationCreated event, @MetaData(UserMetaData.USERNAME) String username, @Timestamp DateTime dateTime) {
         registerPublic(username, dateTime, event, "New Organization Created", "created organization", event.getOrganizationId());
@@ -164,6 +175,43 @@ public class ActivityEntryListener {
         register(username, dateTime, event, "Service name and summary changed", "changed name and summary of service", event.getServiceInstanceId());
     }
 
+    // -------------------------------------------
+    // IdentityRegistryContract
+    // -------------------------------------------
+    @EventHandler
+    public void on(UserRegistered event, @MetaData(UserMetaData.USERNAME) String username, @Timestamp DateTime dateTime) {
+        register(event.getPrefferedUsername(), dateTime, event, "User registered", "signed up", event.getUserId());
+    }
+
+    @EventHandler
+    public void on(UnconfirmedUserEmailAddressSupplied event, @MetaData(UserMetaData.USERNAME) String username, @Timestamp DateTime dateTime) {
+        register(username, dateTime, event, "Change of e-mail address initiated", "supplied a new e-mail address", event.getUserId());
+    }
+
+    @EventHandler
+    public void on(UserEmailAddressVerified event, @MetaData(UserMetaData.USERNAME) String username, @Timestamp DateTime dateTime) {
+        register(username, dateTime, event, "E-mail address changed", "confirmed new e-mail address", event.getUserId());
+    }
+
+    @EventHandler
+    public void on(UserAccountActivated event, @MetaData(UserMetaData.USERNAME) String username, @Timestamp DateTime dateTime) {
+        registerPublic(event.getUsername(), dateTime, event, "User account activated", "confirmed user account registration", event.getUserId());
+    }
+
+    @EventHandler
+    public void on(ResetPasswordKeyGenerated event, @MetaData(UserMetaData.USERNAME) String username, @Timestamp DateTime dateTime) {
+        register(username, dateTime, event, "Password reset requested", "requested a reset of password", event.getUserId());
+    }
+
+    @EventHandler
+    public void on(UserPasswordChanged event, @MetaData(UserMetaData.USERNAME) String username, @Timestamp DateTime dateTime) {
+        register(username, dateTime, event, "Password changed", "changed password", event.getUserId());
+    }
+
+
+    // -------------------------------------------
+    // Utilities
+    // -------------------------------------------
     private void register(String username, DateTime dateTime, Object event, String title, String summary, DomainIdentifier target) {
         ActivityEntry entry = create(username, dateTime, event);
         describe(entry, title, summary, target);
@@ -193,10 +241,10 @@ public class ActivityEntryListener {
     }
 
     private String getOrganizationIdentifier(Object event) {
-        if(event instanceof ServiceSpecificationCreated){
+        if (event instanceof ServiceSpecificationCreated) {
             return ((ServiceSpecificationCreated) event).getOwnerId().identifier();
         }
-        if(event instanceof ServiceInstanceCreated){
+        if (event instanceof ServiceInstanceCreated) {
             return ((ServiceInstanceCreated) event).getProviderId().identifier();
         }
         try {
