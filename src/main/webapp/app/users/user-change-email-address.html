@@ -3,9 +3,12 @@
     <alert ng-show="alert" type="danger">{{alert}}</alert>
     <alert ng-show="message" type="info">{{message}}</alert>
     <!--FORM-->
-    <form role="form" name="form" novalidate>
+    <form role="form" name="form" novalidate ng-submit="isValid(form.$valid && form.email.$dirty) ? sendRequest() : null" >
         <!--EMAIL-->
         <div class="form-group">
+            <p>
+                <i>Current e-mail address: {{oldEmailAddress}}</i>
+            </p>
             <label for="email">New Email Address:</label> 
             <div class="input-group">
                 <input type="email" class="form-control input-sm" placeholder="Email Address" id="email" name="email" 
@@ -25,9 +28,10 @@
             </div--> 
         </div>
     </form>
-    <panel-button btn-type="primary" ng-disabled="!isValid(form.$valid && form.email.$dirty)" ng-click="sendRequest()" >
+    <panel-button btn-type="primary" ng-disabled="!isValid(form.$valid && form.email.$dirty)" ng-click="sendRequest()" href="">
         Change email address <i class="fa fa-arrow-right"></i>
-    </panel-button>
+    </panel-button> 
+    <panel-button btn-type="default" ui-sref="restricted.userProfile"> Back <i class="fa fa-ban"></i> </panel-button>
 </panel>
 
 <panel ng-show="viewState === 'success'" category="primary" icon="user" title="Change Email Address" offset="3">
@@ -35,7 +39,7 @@
         An email has been sent to your primary email address. Open it and 
         follow the instructions to confirm the new email address.
     </p>
-    <panel-button btn-type="primary" ui-sref="restricted.dashboard">Close</panel-button>
+    <panel-button btn-type="primary" ui-sref="restricted.dashboard" name="closeButton">Close</panel-button>
 </panel>
 
 <panel ng-show="viewState === 'error'" category="danger" icon="warning" title="An error occurred">

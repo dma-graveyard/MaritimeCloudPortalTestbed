@@ -125,6 +125,11 @@ angular.module('mcp.users', ['ui.bootstrap'])
           userId: "",
           username: $stateParams.username
         };
+        
+        UserService.get($scope.user, function (user) {
+          $scope.oldEmailAddress = user.emailAddress;
+        });
+
         $scope.viewState = 'supplyEmailAddress';
         $scope.message = null;
         $scope.alert = null;
@@ -146,9 +151,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
           delete $scope.user.repeatedPassword;
           $scope.busyPromise = UserService.changeUserEmailAddress($scope.user, function (data) {
             $scope.message = null;
-            console.log(data);
             $scope.viewState = 'success';
-            //$state.transitionTo("public.joinConfirmation");
           }, function (error) {
             $scope.viewState = 'error';
             $scope.message = null;

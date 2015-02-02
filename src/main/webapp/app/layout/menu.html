@@ -82,8 +82,7 @@
                         <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="#"><i class="fa fa-cog"></i> Settings </a></li>
-                        <li><a data-ui-sref="restricted.userProfile({username : currentUser.name})"><i class="fa fa-user"></i> Profile </a></li>
+                        <li><a data-ui-sref="restricted.userProfile({username : currentUser.name})"><i class="fa fa-cog"></i> Profile </a></li>
                         <li ng-if="!hasOrganizations()"class="divider"></li>
                         <li ng-if="!hasOrganizations()"><a href="#/orgs/new"><i class="menu-icon fa fa-plus"></i> Create organization</a><b class="arrow"></b></li>
                         <li class="divider"></li>
