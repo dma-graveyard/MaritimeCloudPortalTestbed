@@ -1,0 +1,49 @@
+<panel ng-show="viewState === 'supplyEmailAddress'" category="primary" icon="user" title="Change Email Address" offset="3" cg-busy="busyPromise">
+    <!-- FEEDBACK --> 
+    <alert ng-show="alert" type="danger">{{alert}}</alert>
+    <alert ng-show="message" type="info">{{message}}</alert>
+    <!--FORM-->
+    <form role="form" name="form" novalidate>
+        <!--EMAIL-->
+        <div class="form-group">
+            <label for="email">New Email Address:</label> 
+            <div class="input-group">
+                <input type="email" class="form-control input-sm" placeholder="Email Address" id="email" name="email" 
+                       autocorrect="off" autocapitalize="off" spellcheck="false" ng-model="user.emailAddress" 
+                       required="true" maxlength="200" mcp-focus-me>
+                <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+            </div>
+            <div class="text-danger" ng-show="form.email.$error && form.email.$dirty">
+                {{getError(form.email.$error)}}
+            </div>
+            <p class="help-block">The new address where e-mails should be sent to.</p>
+            <!--div ng-show="user.emailAddress">
+                <span class="block input-icon input-icon-right" >
+                    <input type="email" class="form-control" placeholder="Retype your Email (optional)" id="repeatedEmail" ng-model="repeatedEmailAddress">
+                    <i class="fa fa-retweet"></i>
+                </span>
+            </div--> 
+        </div>
+    </form>
+    <panel-button btn-type="primary" ng-disabled="!isValid(form.$valid && form.email.$dirty)" ng-click="sendRequest()" >
+        Change email address <i class="fa fa-arrow-right"></i>
+    </panel-button>
+</panel>
+
+<panel ng-show="viewState === 'success'" category="primary" icon="user" title="Change Email Address" offset="3">
+    <p>
+        An email has been sent to your primary email address. Open it and 
+        follow the instructions to confirm the new email address.
+    </p>
+    <panel-button btn-type="primary" ui-sref="restricted.dashboard">Close</panel-button>
+</panel>
+
+<panel ng-show="viewState === 'error'" category="danger" icon="warning" title="An error occurred">
+    <p>
+        Hmm... something went wrong on the server :-(
+    </p>
+    <p>
+        Wait for a while and then try again.
+    </p>
+    <panel-button btn-type="danger" ui-sref="restricted.dashboard">Close</panel-button>
+</panel>

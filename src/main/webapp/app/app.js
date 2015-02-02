@@ -154,6 +154,12 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
           controller: 'UserProfileController',
         },
         {
+          name: 'userChangeEmailAddressController',
+          url: "/users/{username}/profile/change/emailAddress",
+          templateUrl: 'users/user-change-email-address.html',
+          controller: 'UserChangeEmailAddressController'
+        },
+        {
           name: 'organizations',
           url: "/orgs",
           templateUrl: 'organizations/manage-organizations.html',

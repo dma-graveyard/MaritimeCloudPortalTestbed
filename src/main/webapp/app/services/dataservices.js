@@ -15,6 +15,11 @@ function RegisterUser(userId, prefferedUsername, emailAddress, password) {
   this.password = password;
 }
 
+function ChangeUserEmailAddress(userId, emailAddress) {
+  this.userId = {identifier: userId};
+  this.emailAddress = emailAddress;
+}
+
 function VerifyEmailAddress(userId, emailAddressVerificationId) {
   this.userId = {identifier: userId};
   this.emailAddressVerificationId = emailAddressVerificationId;
@@ -147,6 +152,10 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 
         resource.signUp = function (user, succes, error) {
           return this.post({}, new RegisterUser(user.userId, user.username, user.emailAddress, user.password), succes, error);
+        };
+
+        resource.changeUserEmailAddress = function (data, succes, error) {
+          return this.put({username: data.username}, new ChangeUserEmailAddress(data.userId, data.emailAddress), succes, error);
         };
 
         resource.verifyEmailAddress = function (data, succes, error) {

@@ -119,6 +119,45 @@ angular.module('mcp.users', ['ui.bootstrap'])
 
       }])
 
+    .controller('UserChangeEmailAddressController', ['$scope', 'UserService', '$stateParams',
+      function ($scope, UserService, $stateParams) {
+        $scope.user = {
+          userId: "",
+          username: $stateParams.username
+        };
+        $scope.viewState = 'supplyEmailAddress';
+        $scope.message = null;
+        $scope.alert = null;
+        $scope.busyPromise = null;
+
+        $scope.isValid = function (isFormValid) {
+          return isFormValid && $scope.user.emailAddress;
+        };
+
+        $scope.getError = function (error) {
+          if (angular.isDefined(error)) {
+              return error.required ? "Please enter a value" : error.email ? "Please enter a valid email address" : "";
+          }
+        };
+
+        $scope.sendRequest = function () {
+          $scope.alert = null;
+          $scope.message = "Sending request...";
+          delete $scope.user.repeatedPassword;
+          $scope.busyPromise = UserService.changeUserEmailAddress($scope.user, function (data) {
+            $scope.message = null;
+            console.log(data);
+            $scope.viewState = 'success';
+            //$state.transitionTo("public.joinConfirmation");
+          }, function (error) {
+            $scope.viewState = 'error';
+            $scope.message = null;
+            $scope.alert = "Argh! An error occured on the server :(";
+          });
+        };
+
+      }])
+
     .controller('UserResetPasswordController', ['$scope', '$stateParams', 'AuthService', '$controller',
       function ($scope, $stateParams, AuthService, $controller) {
 
