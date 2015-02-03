@@ -5,16 +5,17 @@ import java.util.Properties;
 import javax.annotation.Resource;
 import javax.servlet.DispatcherType;
 import net.maritimecloud.portal.*;
-import net.maritimecloud.portal.domain.infrastructure.shiro.ShiroAuthenticationUtil;
-import net.maritimecloud.portal.domain.model.identity.EncryptionService;
-import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
+import net.maritimecloud.portal.infrastructure.shiro.ShiroAuthenticationUtil;
+import net.maritimecloud.identityregistry.domain.EncryptionService;
+import net.maritimecloud.portal.security.AuthenticationUtil;
 import net.maritimecloud.portal.infrastructure.mail.MailAdapter;
 import net.maritimecloud.portal.infrastructure.mail.MailService;
 import net.maritimecloud.portal.infrastructure.mail.SmtpMailAdapter;
 import net.maritimecloud.portal.infrastructure.mail.VelocityMessageComposer;
 import net.maritimecloud.portal.infrastructure.service.SHA512EncryptionService;
 import net.maritimecloud.portal.resource.LogService;
-import net.maritimecloud.portal.resource.SimpleCORSFilter;
+import net.maritimecloud.common.resource.SimpleCORSFilter;
+import net.maritimecloud.identityregistry.domain.IdentityService;
 import net.maritimecloud.serviceregistry.domain.service.AliasService;
 import net.maritimecloud.serviceregistry.infrastructure.service.JpaAliasService;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
@@ -138,6 +139,11 @@ public class ApplicationConfig {
     @Bean
     public AliasService aliasService() throws IOException {
         return new JpaAliasService();
+    }
+
+    @Bean
+    public IdentityService identityService() throws IOException {
+        return new IdentityService();
     }
 
 }

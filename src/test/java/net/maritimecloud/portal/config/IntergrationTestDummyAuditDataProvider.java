@@ -14,9 +14,9 @@
  */
 package net.maritimecloud.portal.config;
 
-import net.maritimecloud.portal.domain.infrastructure.axon.*;
 import java.util.HashMap;
 import java.util.Map;
+import net.maritimecloud.portal.audit.axon.UserMetaData;
 import org.axonframework.auditing.AuditDataProvider;
 import org.axonframework.commandhandling.CommandMessage;
 

@@ -17,7 +17,7 @@ package net.maritimecloud.serviceregistry.command.serviceinstance;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import net.maritimecloud.common.ddd.ValueObject;
+import net.maritimecloud.common.domain.ValueObject;
 
 /**
  * A Coverage object is something that has a geographical extend, ie. "covers an area".

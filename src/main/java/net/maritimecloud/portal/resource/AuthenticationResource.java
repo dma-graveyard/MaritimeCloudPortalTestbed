@@ -25,18 +25,17 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import net.maritimecloud.common.resource.AbstractCommandResource;
 import net.maritimecloud.identityregistry.command.api.SendResetPasswordInstructions;
-import net.maritimecloud.identityregistry.query.internal.InternalUserEntry;
-import net.maritimecloud.identityregistry.query.internal.InternalUserQueryRepository;
-import static net.maritimecloud.identityregistry.resource.UserResource.APPLICATION_JSON_CQRS_COMMAND;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
-import net.maritimecloud.portal.domain.model.DomainRegistry;
-import net.maritimecloud.portal.domain.model.identity.Role;
-import net.maritimecloud.portal.domain.model.identity.UnknownUserException;
-import net.maritimecloud.portal.domain.model.security.AuthenticationException;
-import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
-import net.maritimecloud.portal.domain.model.security.UserNotLoggedInException;
-import static net.maritimecloud.portal.resource.GenericCommandResource.sendAndWait;
+import net.maritimecloud.identityregistry.domain.Identity;
+import net.maritimecloud.identityregistry.domain.IdentityService;
+import net.maritimecloud.identityregistry.domain.Role;
+import net.maritimecloud.portal.security.AuthenticationException;
+import net.maritimecloud.portal.security.AuthenticationUtil;
+import net.maritimecloud.portal.security.UserNotLoggedInException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,16 +45,21 @@ import org.slf4j.LoggerFactory;
  * @author Christoffer Børrild
  */
 @Path("/authentication")
-public class AuthenticationResource {
+public class AuthenticationResource extends AbstractCommandResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthenticationResource.class);
+
+    @Override
+    protected CommandGateway commandGateway() {
+        return ApplicationServiceRegistry.commandGateway();
+    }
 
     protected AuthenticationUtil authenticationUtil() {
         return ApplicationServiceRegistry.authenticationUtil();
     }
 
-    private InternalUserQueryRepository internalUserQueryRepository() {
-        return DomainRegistry.internalUserQueryRepository();
+    private IdentityService identityService() {
+        return ApplicationServiceRegistry.identityService();
     }
 
     private LogService logService() {
@@ -123,7 +127,7 @@ public class AuthenticationResource {
                 SendResetPasswordInstructions.class
         );
     }
-    
+
     private void reportWrongUsernamePassword(CredentialsDTO credentials) {
         LOG.debug("User {} not logged in (wrong username / password)", credentials.username);
         logService().reportWrongUsernamePassword(credentials.username);
@@ -162,27 +166,29 @@ public class AuthenticationResource {
 
         try {
             String userIdentifier = authenticationUtil().getUserId();
-            InternalUserEntry user = internalUserQueryRepository().findOne(userIdentifier);
-            assertUserFound(user);
-            return createSubject(user);
-        } catch (UserNotLoggedInException | UnknownUserException e) {
+
+            // Lookup user
+            Identity identity = identityService().findByUserId(userIdentifier);
+            assertUserFound(identity);
+            return createSubject(identity);
+        } catch (UserNotLoggedInException | UnknownAccountException e) {
             reportCurrentSubjectNotAuthenticated(e);
             throw new UserNotAuthenticated();
         }
     }
 
-    private void assertUserFound(InternalUserEntry user) throws UnknownUserException {
-        if (user == null) {
-            throw new UnknownUserException(user.getUserId());
+    private void assertUserFound(Identity identity) throws UnknownAccountException {
+        if (identity == null) {
+            throw new UnknownAccountException("No user found in application registry");
         }
     }
 
-    private SubjectDTO createSubject(InternalUserEntry user) {
-        return new SubjectDTO(user.getUsername(), extractRolenamesAsArrayOfStrings(user));
+    private SubjectDTO createSubject(Identity identity) {
+        return new SubjectDTO(identity.username(), extractRolenamesAsArrayOfStrings(identity));
     }
 
-    private String[] extractRolenamesAsArrayOfStrings(InternalUserEntry user) {
-        return user.getUsername().equalsIgnoreCase("admin")
+    private String[] extractRolenamesAsArrayOfStrings(Identity identity) {
+        return identity.username().equalsIgnoreCase("admin")
                 ? new String[]{Role.USER.name(), Role.ADMIN.name()}
                 : new String[]{Role.USER.name()};
     }

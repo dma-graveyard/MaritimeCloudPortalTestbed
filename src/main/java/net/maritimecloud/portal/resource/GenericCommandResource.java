@@ -18,30 +18,12 @@ import net.maritimecloud.common.cqrs.CommandRegistry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import net.maritimecloud.common.cqrs.Command;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
-import static net.maritimecloud.portal.resource.RestCommandUtil.readCommand;
-import static net.maritimecloud.portal.resource.RestCommandUtil.resolveCommandName;
-import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
-import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
-import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
-import net.maritimecloud.serviceregistry.command.api.ProvideServiceInstance;
-import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpoint;
-import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
-import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
-import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
-import org.axonframework.commandhandling.CommandExecutionException;
+import net.maritimecloud.serviceregistry.command.api.*;
+import net.maritimecloud.common.resource.AbstractCommandResource;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,11 +32,14 @@ import org.slf4j.LoggerFactory;
  * @author Christoffer Børrild
  */
 @Path("/api/command")
-public class GenericCommandResource {
+public class GenericCommandResource extends AbstractCommandResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(GenericCommandResource.class);
-    
-    public static final String APPLICATION_JSON_CQRS_COMMAND = MediaType.APPLICATION_JSON + ";domain-model=*Command";
+
+    @Override
+    protected CommandGateway commandGateway() {
+        return ApplicationServiceRegistry.commandGateway();
+    }
 
     private static final CommandRegistry postCommandsRegistry = new CommandRegistry(
             CreateOrganization.class,
@@ -70,43 +55,6 @@ public class GenericCommandResource {
     );
     private static final CommandRegistry deleteCommandsRegistry = new CommandRegistry();
     private static final CommandRegistry patchCommandsRegistry = new CommandRegistry();
-
-    
-    public static void sendAndWait(String contentType, String queryCommandName, String commandJSON, Class... classes) {
-        sendAndWait(contentType, queryCommandName, new CommandRegistry(classes), commandJSON);
-    }
-    
-    public static void sendAndWait(String contentType, String queryCommandName, CommandRegistry commandRegistry, String commandJSON) throws WebApplicationException {
-        try {
-            LOG.info("Received command: Cmd={}{}", contentType, queryCommandName);
-            LOG.info("JSON: {}", commandJSON);
-            Class commandClass = commandRegistry.resolve(resolveCommandName(contentType, queryCommandName));
-            Object command = readCommand(commandJSON, commandClass);
-            sendAndWait((Command) command);
-            
-        } catch (WebApplicationException ex) {
-            throw ex;
-        } catch (Throwable ex) {
-            LOG.error("Error occured when reading command!", ex);
-            throw new WebApplicationException("Error occured when reading command!", ex);
-        }
-    }
-
-    public static void sendAndWait(Command command) throws WebApplicationException {
-        try {
-            ApplicationServiceRegistry.commandGateway().sendAndWait(command);
-        } catch (CommandExecutionException e) {
-            if (e.getCause() instanceof IllegalArgumentException) {
-                throw new WebApplicationException("Illegal Argument", e, 400);
-            } else {
-                LOG.error("Error occured when reading command!", e);
-                throw new WebApplicationException("Error occured when reading command!", e);
-            }
-        } catch (Throwable ex) {
-            LOG.error("Error occured when reading command!", ex);
-            throw new WebApplicationException("Error occured when reading command!", ex);
-        }
-    }
 
     @POST
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)

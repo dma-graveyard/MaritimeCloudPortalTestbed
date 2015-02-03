@@ -23,7 +23,7 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import net.maritimecloud.portal.application.ApplicationServiceTest;
-import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
+import net.maritimecloud.portal.security.AuthenticationUtil;
 import org.junit.After;
 import org.junit.Before;
 

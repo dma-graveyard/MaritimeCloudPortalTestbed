@@ -17,6 +17,7 @@ package net.maritimecloud.identityregistry.command.user;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import net.maritimecloud.common.spring.ApplicationContextProvider;
 import net.maritimecloud.identityregistry.command.api.ChangeUserEmailAddress;
 import net.maritimecloud.identityregistry.command.api.ChangeUserPassword;
 import net.maritimecloud.identityregistry.command.api.RegisterUser;
@@ -30,7 +31,8 @@ import net.maritimecloud.identityregistry.command.api.UserRegistered;
 import net.maritimecloud.identityregistry.command.api.VerifyEmailAddress;
 import net.maritimecloud.identityregistry.query.internal.InternalUserEntry;
 import net.maritimecloud.identityregistry.query.internal.InternalUserQueryRepository;
-import net.maritimecloud.portal.domain.model.DomainRegistry;
+import net.maritimecloud.identityregistry.domain.DomainRegistry;
+import net.maritimecloud.portal.infrastructure.service.SHA512EncryptionService;
 import org.axonframework.domain.Message;
 import org.axonframework.test.FixtureConfiguration;
 import org.axonframework.test.Fixtures;
@@ -49,6 +51,7 @@ import static org.mockito.Matchers.any;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.ApplicationContext;
 
 /**
  *
@@ -73,10 +76,17 @@ public class UserTest {
 
     @Mock
     InternalUserQueryRepository internalUserQueryRepository;
-    
+
+    @Mock
+    ApplicationContext applicationContext;
+
     @Before
     public void setUp() throws Exception {
         fixture = Fixtures.newGivenWhenThenFixture(User.class);
+
+        MockitoAnnotations.initMocks(this);
+        Mockito.when(applicationContext.getBean("encryptionService")).thenReturn(new SHA512EncryptionService());
+        new ApplicationContextProvider().setApplicationContext(applicationContext);
     }
 
     @Test
@@ -174,14 +184,13 @@ public class UserTest {
     @Test
     public void changePasswordShouldFailWhenUsingWrongPassword() {
         fixture.given(new UserRegistered(aUserId, A_USERNAME, AN_EMAIL_ADDRESS, A_PASSWORD_OBFUSCATED, AN_EMAIL_ADDRESS_VERIFICATION_CODE))
-                .when(new ChangeUserPassword(aUserId, A_PASSWORD+"THAT_IS_WRONG", A_CHANGED_PASSWORD))
+                .when(new ChangeUserPassword(aUserId, A_PASSWORD + "THAT_IS_WRONG", A_CHANGED_PASSWORD))
                 .expectException(IllegalArgumentException.class);
     }
 
     @Test
     public void resetPassword() {
 
-        MockitoAnnotations.initMocks(this);
         InternalUserEntry aUserEntry = new InternalUserEntry();
         aUserEntry.setUserId(aUserId.identifier());
         aUserEntry.setUsername(A_USERNAME);

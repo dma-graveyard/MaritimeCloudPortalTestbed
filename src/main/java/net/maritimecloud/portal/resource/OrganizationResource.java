@@ -16,47 +16,24 @@ package net.maritimecloud.portal.resource;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
 import static net.maritimecloud.portal.resource.ResourceResolver.resolveOrganizationIdOrFail;
 import static net.maritimecloud.portal.resource.ResourceResolver.resolveServiceInstance;
 import static net.maritimecloud.portal.resource.ResourceResolver.resolveServiceSpecification;
-import static net.maritimecloud.portal.resource.GenericCommandResource.APPLICATION_JSON_CQRS_COMMAND;
-import net.maritimecloud.common.cqrs.CommandRegistry;
-import net.maritimecloud.serviceregistry.command.api.AddOrganizationAlias;
-import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
-import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
-import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
-import net.maritimecloud.serviceregistry.command.api.ProvideServiceInstance;
-import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceEndpoint;
-import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationWebsiteUrl;
-import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceCoverage;
-import net.maritimecloud.serviceregistry.command.api.ChangeServiceInstanceNameAndSummary;
-import net.maritimecloud.serviceregistry.command.api.ChangeServiceSpecificationNameAndSummary;
-import net.maritimecloud.serviceregistry.command.api.InviteUserToOrganization;
-import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
-import net.maritimecloud.serviceregistry.command.api.RemoveOrganizationAlias;
-import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceAlias;
-import net.maritimecloud.serviceregistry.command.api.RemoveServiceInstanceEndpoint;
-import net.maritimecloud.serviceregistry.command.api.RemoveUserFromOrganization;
+import net.maritimecloud.common.resource.AbstractCommandResource;
+import net.maritimecloud.common.resource.JsonCommandHelper;
+import net.maritimecloud.serviceregistry.command.api.*;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
+import net.maritimecloud.serviceregistry.command.serviceinstance.ChangeServiceInstanceCoverage;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstanceId;
 import net.maritimecloud.serviceregistry.domain.service.AliasGroups;
 import net.maritimecloud.serviceregistry.query.AliasRegistryEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationEntry;
 import net.maritimecloud.serviceregistry.query.ServiceInstanceEntry;
 import net.maritimecloud.serviceregistry.query.ServiceSpecificationEntry;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,9 +42,14 @@ import org.slf4j.LoggerFactory;
  * @author Christoffer Børrild
  */
 @Path("/api")
-public class OrganizationResource {
+public class OrganizationResource extends AbstractCommandResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(OrganizationResource.class);
+
+    @Override
+    protected CommandGateway commandGateway() {
+        return ApplicationServiceRegistry.commandGateway();
+    }
 
     // -------------------------------------------------------
     // -------------------------------------------------------
@@ -258,10 +240,6 @@ public class OrganizationResource {
         sendAndWait(contentType, queryCommandName, commandJSON,
                 RemoveServiceInstanceEndpoint.class
         );
-    }
-
-    private void sendAndWait(String contentType, String queryCommandName, String commandJSON, Class... classes) {
-        GenericCommandResource.sendAndWait(contentType, queryCommandName, new CommandRegistry(classes), commandJSON);
     }
 
     // -------------------------------------------------------

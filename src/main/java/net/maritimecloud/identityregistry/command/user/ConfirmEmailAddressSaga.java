@@ -20,7 +20,7 @@ import net.maritimecloud.identityregistry.command.api.UserEmailAddressVerified;
 import net.maritimecloud.identityregistry.command.api.UserRegistered;
 import net.maritimecloud.identityregistry.command.api.VerifyEmailAddress;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
-import net.maritimecloud.portal.domain.infrastructure.axon.NoReplayedEvents;
+import net.maritimecloud.common.eventsourcing.axon.NoReplayedEvents;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.saga.annotation.AbstractAnnotatedSaga;
 import org.axonframework.saga.annotation.EndSaga;
@@ -73,8 +73,8 @@ public class ConfirmEmailAddressSaga extends AbstractAnnotatedSaga {
         // compose and send out confirm change email
         System.out.println("Sending out a confirmation email with email verification code: " + event.getEmailVerificationCode());
         ApplicationServiceRegistry.mailService().sendConfirmChangedEmailAddressMessage(
-                event.getUnconfirmedEmailAddress(), 
-                event.getUsername(), 
+                event.getUnconfirmedEmailAddress(),
+                event.getUsername(),
                 event.getEmailVerificationCode()
         );
 

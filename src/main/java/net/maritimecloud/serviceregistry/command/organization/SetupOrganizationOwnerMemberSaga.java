@@ -15,8 +15,8 @@
 package net.maritimecloud.serviceregistry.command.organization;
 
 import javax.annotation.Resource;
-import net.maritimecloud.portal.domain.infrastructure.axon.NoReplayedEvents;
-import net.maritimecloud.portal.domain.infrastructure.axon.UserMetaData;
+import net.maritimecloud.common.eventsourcing.axon.NoReplayedEvents;
+import net.maritimecloud.portal.audit.axon.UserMetaData;
 import net.maritimecloud.serviceregistry.command.api.AuthorizeMembershipToOrganizationCreator;
 import net.maritimecloud.serviceregistry.command.api.OrganizationAliasAdded;
 import net.maritimecloud.serviceregistry.command.api.OrganizationCreated;

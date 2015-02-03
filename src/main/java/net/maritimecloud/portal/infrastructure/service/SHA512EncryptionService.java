@@ -14,7 +14,7 @@
  */
 package net.maritimecloud.portal.infrastructure.service;
 
-import net.maritimecloud.portal.domain.model.identity.EncryptionService;
+import net.maritimecloud.identityregistry.domain.EncryptionService;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.apache.shiro.crypto.hash.DefaultHashService;
 

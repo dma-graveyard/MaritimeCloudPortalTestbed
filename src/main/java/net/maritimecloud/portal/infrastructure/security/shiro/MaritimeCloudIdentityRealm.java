@@ -14,11 +14,11 @@
  */
 package net.maritimecloud.portal.infrastructure.security.shiro;
 
-import net.maritimecloud.identityregistry.query.internal.InternalUserEntry;
-import net.maritimecloud.identityregistry.query.internal.InternalUserQueryRepository;
-import net.maritimecloud.portal.domain.model.DomainRegistry;
-import net.maritimecloud.portal.domain.model.identity.EncryptionService;
-import net.maritimecloud.portal.domain.model.identity.Role;
+import net.maritimecloud.identityregistry.domain.Identity;
+import net.maritimecloud.identityregistry.domain.IdentityService;
+import net.maritimecloud.identityregistry.domain.EncryptionService;
+import net.maritimecloud.portal.application.ApplicationServiceRegistry;
+import net.maritimecloud.identityregistry.domain.Role;
 import net.maritimecloud.portal.infrastructure.service.SHA512EncryptionService;
 import org.apache.shiro.authc.AccountException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -49,8 +49,8 @@ public class MaritimeCloudIdentityRealm extends AuthorizingRealm {
         setName(REALM); // This name must match the name in the User class's getPrincipals() method
     }
 
-    private InternalUserQueryRepository internalUserQueryRepository() {
-        return DomainRegistry.internalUserQueryRepository();
+    private IdentityService identityService() {
+        return ApplicationServiceRegistry.identityService();
     }
 
     @Override
@@ -69,17 +69,16 @@ public class MaritimeCloudIdentityRealm extends AuthorizingRealm {
             }
 
             // Lookup user
-            //User user = identityApplicationService().user(username);
-            InternalUserEntry user = internalUserQueryRepository().findByUsername(username);
+            Identity identity = identityService().findActivatedIdentityByUsername(username);
 
-            if (user == null || !user.isActivated()) {
+            if (identity == null) {
                 throw new UnknownAccountException("Could not authenticate with given credentials");
             }
 
             // Create Auth Info
             return new SimpleAuthenticationInfo(
-                    user.getUserId(),
-                    user.getEncryptedPassword(),
+                    identity.userId().identifier(),
+                    identity.encryptedPassword(),
                     ByteSource.Util.bytes("salt"), // (not sure if this salt is used at all?)
                     getName()
             );
@@ -95,15 +94,13 @@ public class MaritimeCloudIdentityRealm extends AuthorizingRealm {
         String userIdentifier = (String) getAvailablePrincipal(principals);
 
         // Lookup user
-        InternalUserEntry user = internalUserQueryRepository().findOne(userIdentifier);
-        assertUserFound(user);
+        Identity identity = identityService().findByUserId(userIdentifier);
+        assertUserFound(identity);
 
-        // Create AuthorizationInfo
+        // Add roles to AuthorizationInfo
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-
-        // Add all roles
         info.addRole(Role.USER.name());
-        if (user.getUsername().equalsIgnoreCase("admin")) {
+        if (identity.username().equalsIgnoreCase("admin")) {
             info.addRole(Role.ADMIN.name());
         }
         //user.userRoles().all().stream().forEach((role) -> {
@@ -113,7 +110,7 @@ public class MaritimeCloudIdentityRealm extends AuthorizingRealm {
         return info;
     }
 
-    private void assertUserFound(InternalUserEntry user) {
+    private void assertUserFound(Identity user) {
         if (user == null) {
             throw new UnknownAccountException("No user found in application registry");
         }

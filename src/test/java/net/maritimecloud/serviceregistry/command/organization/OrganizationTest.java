@@ -19,7 +19,7 @@ import net.maritimecloud.serviceregistry.command.api.OrganizationCreated;
 import net.maritimecloud.serviceregistry.command.api.CreateOrganization;
 import net.maritimecloud.common.infrastructure.axon.CommonFixture;
 import static net.maritimecloud.common.infrastructure.axon.CommonFixture.AN_ALIAS;
-import net.maritimecloud.portal.application.SpringContextBasedRegistry;
+import net.maritimecloud.common.spring.ApplicationContextProvider;
 import net.maritimecloud.serviceregistry.command.api.AddOrganizationAlias;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
@@ -58,7 +58,7 @@ public class OrganizationTest extends CommonFixture {
         // just some ugly mocking for the organization alias test : (
         ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
         mockedAliasService = Mockito.mock(AliasService.class);
-        new SpringContextBasedRegistry().setApplicationContext(applicationContext);
+        new ApplicationContextProvider().setApplicationContext(applicationContext);
         when(applicationContext.getBean("aliasService")).thenReturn(mockedAliasService);
 
     }

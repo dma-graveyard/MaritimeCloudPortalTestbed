@@ -19,7 +19,7 @@ import net.maritimecloud.identityregistry.command.api.ChangeUserPassword;
 import net.maritimecloud.identityregistry.command.api.ResetPasswordKeyGenerated;
 import net.maritimecloud.identityregistry.command.api.UserPasswordChanged;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
-import net.maritimecloud.portal.domain.infrastructure.axon.NoReplayedEvents;
+import net.maritimecloud.common.eventsourcing.axon.NoReplayedEvents;
 import net.maritimecloud.portal.infrastructure.mail.MailService;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.saga.annotation.AbstractAnnotatedSaga;
@@ -36,7 +36,7 @@ public class ResetPasswordSaga extends AbstractAnnotatedSaga {
 
     @Resource
     private transient CommandGateway commandGateway;
-    
+
     private MailService mailService() {
         return ApplicationServiceRegistry.mailService();
     }
@@ -57,9 +57,9 @@ public class ResetPasswordSaga extends AbstractAnnotatedSaga {
 
         // compose and send out welcome and confirm email
         System.out.println("Sending out reset password instruction email with the reset password key: " + event.getResetPasswordKey());
-        
+
         mailService().sendResetPasswordMessage(event.getEmailAddress(), event.getUsername(), event.getResetPasswordKey());
-        
+
         // HACK: FIXME: TODO: 
         // auto-confirm users that fulfil some criteria
         autoResetTestUsersPassword_HACK(event.getUserId(), event.getEmailAddress(), event.getResetPasswordKey());
@@ -69,7 +69,7 @@ public class ResetPasswordSaga extends AbstractAnnotatedSaga {
         // HACK: FIXME: TODO:
         // auto generate ResetPasswordCommand in odrer to auto-reset users password in test and demo without reading mails
         if (emailAddress.endsWith("@auto.demo.dma.dk")) {
-            System.out.println("HACK for auto.demo.dma.dk dmoain: auto-reset password to 'reset' for user "+ userId);
+            System.out.println("HACK for auto.demo.dma.dk dmoain: auto-reset password to 'reset' for user " + userId);
             commandGateway.send(new ChangeUserPassword(userId, resetPasswordKey, "reset"));
         }
         return resetPasswordKey;

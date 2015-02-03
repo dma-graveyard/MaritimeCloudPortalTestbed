@@ -14,8 +14,10 @@
  */
 package net.maritimecloud.portal.application;
 
+import net.maritimecloud.common.spring.ApplicationContextProvider;
+import net.maritimecloud.identityregistry.domain.IdentityService;
 import net.maritimecloud.identityregistry.query.UserQueryRepository;
-import net.maritimecloud.portal.domain.model.security.AuthenticationUtil;
+import net.maritimecloud.portal.security.AuthenticationUtil;
 import net.maritimecloud.portal.infrastructure.mail.MailService;
 import net.maritimecloud.portal.resource.LogService;
 import net.maritimecloud.serviceregistry.domain.service.AliasService;
@@ -31,7 +33,7 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 /**
  * @author Christoffer Børrild
  */
-public class ApplicationServiceRegistry extends SpringContextBasedRegistry {
+public class ApplicationServiceRegistry extends ApplicationContextProvider {
 
     public static AliasService aliasService() {
         return (AliasService) get("aliasService");
@@ -47,6 +49,10 @@ public class ApplicationServiceRegistry extends SpringContextBasedRegistry {
 
     public static MailService mailService() {
         return (MailService) get("mailService");
+    }
+
+    public static IdentityService identityService() {
+        return (IdentityService) get("identityService");
     }
 
     // ------------------------------------------------------------------------------------------

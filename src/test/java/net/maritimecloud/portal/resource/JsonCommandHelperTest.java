@@ -14,6 +14,7 @@
  */
 package net.maritimecloud.portal.resource;
 
+import net.maritimecloud.common.resource.JsonCommandHelper;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

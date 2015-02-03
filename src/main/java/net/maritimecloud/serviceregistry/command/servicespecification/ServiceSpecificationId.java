@@ -14,7 +14,7 @@
  */
 package net.maritimecloud.serviceregistry.command.servicespecification;
 
-import net.maritimecloud.common.ddd.DomainIdentifier;
+import net.maritimecloud.common.domain.DomainIdentifier;
 
 /**
  *

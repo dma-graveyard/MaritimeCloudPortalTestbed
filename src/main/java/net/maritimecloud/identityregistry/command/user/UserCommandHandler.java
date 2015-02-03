@@ -19,8 +19,6 @@ import javax.annotation.Resource;
 import net.maritimecloud.identityregistry.command.api.SendResetPasswordInstructions;
 import net.maritimecloud.identityregistry.query.internal.InternalUserEntry;
 import net.maritimecloud.identityregistry.query.internal.InternalUserQueryRepository;
-import net.maritimecloud.portal.application.ApplicationServiceRegistry;
-import net.maritimecloud.portal.infrastructure.mail.MailService;
 import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.repository.AggregateNotFoundException;
 import org.axonframework.repository.Repository;
@@ -37,10 +35,6 @@ public class UserCommandHandler {
 
     @Resource
     InternalUserQueryRepository internalUserQueryRepository;
-
-    private MailService mailService() {
-        return ApplicationServiceRegistry.mailService();
-    }
 
     public UserCommandHandler() {
     }
@@ -67,12 +61,7 @@ public class UserCommandHandler {
             UserId userId = new UserId(userView.getUserId());
             User user = userAggregateRepository.load(userId);
             if (!user.isDeleted()) {
-
-                // generate and register a resetPasswordKey
                 user.registerResetPasswordKey(generateResetPasswordKey());
-
-                // call sendEmail...
-//TODO:                mailService().sendResetPasswordMessage(userView);
             }
 
         } catch (AggregateNotFoundException e) {

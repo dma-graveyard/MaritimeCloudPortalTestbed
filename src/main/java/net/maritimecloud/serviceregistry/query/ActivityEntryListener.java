@@ -16,7 +16,7 @@ package net.maritimecloud.serviceregistry.query;
 
 import java.lang.reflect.InvocationTargetException;
 import javax.annotation.Resource;
-import net.maritimecloud.portal.domain.infrastructure.axon.UserMetaData;
+import net.maritimecloud.portal.audit.axon.UserMetaData;
 import net.maritimecloud.serviceregistry.command.api.OrganizationAliasAdded;
 import net.maritimecloud.serviceregistry.command.api.OrganizationAliasRegistrationDenied;
 import net.maritimecloud.serviceregistry.command.api.OrganizationAliasRemoved;
@@ -37,7 +37,7 @@ import net.maritimecloud.serviceregistry.command.api.ServiceSpecificationCreated
 import net.maritimecloud.serviceregistry.command.api.ServiceSpecificationNameAndSummaryChanged;
 import net.maritimecloud.serviceregistry.command.api.UserInvitedToOrganization;
 import net.maritimecloud.serviceregistry.command.api.UserLeftOrganization;
-import net.maritimecloud.common.ddd.DomainIdentifier;
+import net.maritimecloud.common.domain.DomainIdentifier;
 import net.maritimecloud.identityregistry.command.api.ResetPasswordKeyGenerated;
 import net.maritimecloud.identityregistry.command.api.UnconfirmedUserEmailAddressSupplied;
 import net.maritimecloud.identityregistry.command.api.UserAccountActivated;

@@ -17,6 +17,8 @@ package net.maritimecloud.identityregistry.query.internal;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import net.maritimecloud.identityregistry.command.user.UserId;
+import net.maritimecloud.identityregistry.domain.Identity;
 
 /**
  * An internal
@@ -24,7 +26,7 @@ import javax.persistence.Id;
  * @author Christoffer Børrild
  */
 @Entity
-public class InternalUserEntry implements Serializable {
+public class InternalUserEntry implements Identity, Serializable {
 
     @Id
     private String userId;
@@ -74,6 +76,21 @@ public class InternalUserEntry implements Serializable {
 
     public void setActivated(boolean activated) {
         this.activated = activated;
+    }
+
+    @Override
+    public UserId userId() {
+        return new UserId(getUserId());
+    }
+
+    @Override
+    public String encryptedPassword() {
+        return getEncryptedPassword();
+    }
+
+    @Override
+    public String username() {
+        return getUsername();
     }
 
 }

@@ -14,15 +14,15 @@
  */
 package net.maritimecloud.portal.config;
 
-import net.maritimecloud.portal.domain.infrastructure.axon.ShiroAuditDataProvider;
+import net.maritimecloud.portal.audit.axon.ShiroAuditDataProvider;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import net.maritimecloud.identityregistry.command.user.ConfirmEmailAddressSaga;
 import net.maritimecloud.identityregistry.command.user.ResetPasswordSaga;
 import net.maritimecloud.identityregistry.command.user.User;
-import net.maritimecloud.portal.domain.infrastructure.axon.NoReplayedEvents;
-import net.maritimecloud.portal.domain.infrastructure.axon.ReplayableFileSystemEventStore;
+import net.maritimecloud.common.eventsourcing.axon.NoReplayedEvents;
+import net.maritimecloud.common.eventsourcing.axon.ReplayableFileSystemEventStore;
 import net.maritimecloud.serviceregistry.command.organization.AttachOrganizationAliasSaga;
 import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.commandhandling.SimpleCommandBus;

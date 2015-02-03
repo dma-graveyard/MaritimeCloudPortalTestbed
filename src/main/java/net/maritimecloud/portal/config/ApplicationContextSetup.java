@@ -14,7 +14,7 @@
  */
 package net.maritimecloud.portal.config;
 
-import net.maritimecloud.portal.application.SpringContextBasedRegistry;
+import net.maritimecloud.common.spring.ApplicationContextProvider;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -34,7 +34,7 @@ public class ApplicationContextSetup implements ApplicationContextAware {
             System.out.println("setApplicationContext: " + anApplicationContext);
 
             // Set application context on all our registries once and for all
-            new SpringContextBasedRegistry().setApplicationContext(anApplicationContext);
+            new ApplicationContextProvider().setApplicationContext(anApplicationContext);
         }
     }
 

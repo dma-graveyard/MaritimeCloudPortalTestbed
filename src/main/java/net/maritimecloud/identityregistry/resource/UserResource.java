@@ -28,18 +28,18 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import net.maritimecloud.common.cqrs.Command;
-import net.maritimecloud.common.cqrs.CommandRegistry;
+import net.maritimecloud.common.resource.AbstractCommandResource;
+import net.maritimecloud.common.resource.JsonCommandHelper;
+import static net.maritimecloud.common.resource.JsonCommandHelper.identityIsEmpty;
 import net.maritimecloud.identityregistry.command.api.ChangeUserEmailAddress;
 import net.maritimecloud.identityregistry.command.api.ChangeUserPassword;
 import net.maritimecloud.identityregistry.command.api.RegisterUser;
 import net.maritimecloud.identityregistry.command.api.VerifyEmailAddress;
 import net.maritimecloud.identityregistry.query.UserEntry;
 import net.maritimecloud.identityregistry.query.UserQueryRepository;
-import net.maritimecloud.portal.resource.*;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
-import static net.maritimecloud.portal.resource.JsonCommandHelper.identityIsEmpty;
 import net.maritimecloud.serviceregistry.query.OrganizationMembershipEntry;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -51,22 +51,17 @@ import org.springframework.data.domain.Sort;
  * @author Christoffer Børrild
  */
 @Path("/api/users")
-public class UserResource {
-
-    public static final String APPLICATION_JSON_CQRS_COMMAND = MediaType.APPLICATION_JSON + ";domain-model=*Command";
+public class UserResource extends AbstractCommandResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserResource.class);
 
+    @Override
+    protected CommandGateway commandGateway() {
+        return ApplicationServiceRegistry.commandGateway();
+    }
+
     private UserQueryRepository userQueryRepository() {
         return ApplicationServiceRegistry.userQueryRepository();
-    }
-
-    private void sendAndWait(String contentType, String queryCommandName, String commandJSON, Class... classes) {
-        GenericCommandResource.sendAndWait(contentType, queryCommandName, new CommandRegistry(classes), commandJSON);
-    }
-
-    private void sendAndWait(Command command) {
-        GenericCommandResource.sendAndWait(command);
     }
 
     private String overwriteIdentity(String commandJSON, String propertyName, String value) {
@@ -137,7 +132,7 @@ public class UserResource {
                 VerifyEmailAddress.class
         );
     }
-    
+
     // -------------------------------------------------------
     // -------------------------------------------------------
     // Queries
@@ -174,10 +169,8 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public UserEntry getUser(@PathParam("username") String aUsername) {
         LOG.debug("Called getUser with username " + aUsername);
-
         LOG.warn("TODO: We should probably not expose this service publicly. Only logged in users should be able to get user info!!! ");
 
-//        User user = identityApplicationService().user(aUsername);
         // FIXME: user should only be able to access own profile unless is an admin 
         UserEntry userEntry = findByUsername(aUsername);
         assertNotNull(userEntry, "User not found");

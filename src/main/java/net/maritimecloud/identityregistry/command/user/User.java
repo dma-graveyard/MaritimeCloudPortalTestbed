@@ -14,8 +14,8 @@
  */
 package net.maritimecloud.identityregistry.command.user;
 
+import net.maritimecloud.identityregistry.domain.UserRoles;
 import java.util.Objects;
-import net.maritimecloud.portal.domain.model.identity.*;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import net.maritimecloud.identityregistry.command.api.ChangeUserEmailAddress;
@@ -28,7 +28,8 @@ import net.maritimecloud.identityregistry.command.api.UserEmailAddressVerified;
 import net.maritimecloud.identityregistry.command.api.UserPasswordChanged;
 import net.maritimecloud.identityregistry.command.api.UserRegistered;
 import net.maritimecloud.identityregistry.command.api.VerifyEmailAddress;
-import net.maritimecloud.portal.domain.model.DomainRegistry;
+import net.maritimecloud.identityregistry.domain.EncryptionService;
+import net.maritimecloud.identityregistry.domain.DomainRegistry;
 import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.common.Assert;
 import org.axonframework.eventsourcing.annotation.AbstractAnnotatedAggregateRoot;
@@ -42,25 +43,23 @@ import org.springframework.stereotype.Component;
 @Component
 public class User extends AbstractAnnotatedAggregateRoot<UserId> {
 
-//    private final EncryptionService encryptionService;
     @AggregateIdentifier
     private UserId userId;
-
     private String username;
     private String password;
 //    private String passwordEncryptionSalt;
     //private Person person;
     private String emailAddress;
-    private String activationId;
-
     private UserRoles userRoles;
     private boolean activated;
-
     private UnconfirmedEmailAddress unconfirmedEmailAddress;
     private String resetPasswordKey;
 
+    private static EncryptionService encryptionService() {
+        return DomainRegistry.encryptionService();
+    }
+
     protected User() {
-//        encryptionService = DomainRegistry.encryptionService();
         activated = false;
     }
 
@@ -92,7 +91,7 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
             String emailVerificationCode = new UnconfirmedEmailAddress(command.getEmailAddress()).activationCode().toString();
 
             // HACK: FIXME: TODO: 
-            // supply hardcoded code in odrer to auto-create users for test and demo without reading mails
+            // supply hardcoded code in order to auto-create users for test and demo without reading mails
             emailVerificationCode = a_HACK_TEST_useStaticVerificationCode(command.getEmailAddress(), emailVerificationCode);
 
             apply(new UnconfirmedUserEmailAddressSupplied(command.getUserId(), this.username(), command.getEmailAddress(), emailVerificationCode));
@@ -222,8 +221,8 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
 //    }
     private void assertCanChangePassword(String aCurrentPassword, String aChangedPassword) {
 
-        Assert.notEmpty(aCurrentPassword, "Current and new password must be provided.");
-        Assert.notEmpty(aChangedPassword, "Current and new password must be provided.");
+        Assert.notEmpty(aCurrentPassword, "Current password must be provided.");
+        Assert.notEmpty(aChangedPassword, "New password must be provided.");
         assertCurrentPasswordConfirmedOrIsResetPasswordKey(aCurrentPassword, "Current password not confirmed.");
         assertPasswordComply(username(), aChangedPassword);
 
@@ -259,10 +258,6 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
     private void assertCurrentPasswordConfirmed(String aCurrentPassword, String message) {
         boolean valuesMatch = encryptionService().valuesMatch(aCurrentPassword, internalAccessOnlyEncryptedPassword());
         Assert.isTrue(valuesMatch, message);
-    }
-
-    private static EncryptionService encryptionService() {
-        return DomainRegistry.encryptionService();
     }
 
 //    @Override
@@ -374,10 +369,6 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
 //    public UserRoles userRoles() {
 //        return userRoles;
 //    }
-    private String activationId() {
-        return activationId;
-    }
-
     private void assertValidEmailVerificationCode(String emailAddressVerificationCode) {
         if (!unconfirmedEmailAddress.match(emailAddressVerificationCode)) {
             throw new IllegalArgumentException("Unknown or deprecated emailAddress Verification Code");
