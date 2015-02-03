@@ -75,10 +75,12 @@ angular.module('mcp.organizations.members', ['ui.bootstrap'])
 
         $scope.updateSearch = function (pattern) {
           if (pattern.trim().length > 0) {
-            $scope.busyPromiseSearch = UserService.query({usernamePattern: pattern}, function (users) {
-              $scope.people = users;
+            $scope.busyPromiseSearch = UserService.query({usernamePattern: pattern, size:1}, function (page) {
+              $scope.page = page;
+              $scope.people = page.content;
             }).$promise;
           } else {
+              $scope.page = null;
             $scope.people = [];
           }
         };

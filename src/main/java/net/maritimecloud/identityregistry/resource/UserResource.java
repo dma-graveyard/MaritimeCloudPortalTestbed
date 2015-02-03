@@ -150,7 +150,7 @@ public class UserResource extends AbstractCommandResource {
         Pageable pageable = new PageRequest(page, size, new Sort(Sort.Direction.DESC, "username"));
         return usernamePattern == null
                 ? userQueryRepository().findAll(pageable)
-                : userQueryRepository().findByUsernameStartingWith(usernamePattern, pageable);
+                : userQueryRepository().findByUsernameContaining(usernamePattern, pageable);
     }
 
     /**

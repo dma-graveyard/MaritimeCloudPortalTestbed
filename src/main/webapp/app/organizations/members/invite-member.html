@@ -15,6 +15,9 @@
             <li ng-if="filter_query && !filteredPeople.length" class="text-muted" ng-cloak>
                 <p class="text-muted">Found no usernames containing '{{filter_query}}'</p>                
             </li>
+            <li ng-if="page && page.numberOfElements < page.totalElements" class="text-muted" ng-cloak>
+                <p class="text-muted">... and {{page.totalElements - page.numberOfElements}} more</p>                
+            </li>
         </ul>
     </div>
     <panel-button btn-type="default" ui-sref="restricted.organizationMembers({organizationId: organizationRef(organization)})">Close</panel-button>

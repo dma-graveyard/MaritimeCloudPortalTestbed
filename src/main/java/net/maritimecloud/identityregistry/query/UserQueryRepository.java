@@ -14,7 +14,6 @@
  */
 package net.maritimecloud.identityregistry.query;
 
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -26,6 +25,5 @@ public interface UserQueryRepository extends PagingAndSortingRepository<UserEntr
 
     public UserEntry findByUsername(String username);
 
-    //OrganizationEntry findByNameIdentifier(String nameIdentifier);
-    public Page<UserEntry> findByUsernameStartingWith(String usernamePattern, Pageable pageable);
+    public Page<UserEntry> findByUsernameContaining(String usernamePattern, Pageable pageable);
 }
