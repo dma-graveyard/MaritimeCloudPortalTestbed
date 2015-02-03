@@ -32,7 +32,7 @@ public class OperationalServiceEntry implements Serializable {
 
     public OperationalServiceEntry() {
     }
-    
+
     public OperationalServiceEntry(String operationalServiceId, String ownerId, String name, String summary) {
         this.operationalServiceId = operationalServiceId;
         this.ownerId = ownerId;

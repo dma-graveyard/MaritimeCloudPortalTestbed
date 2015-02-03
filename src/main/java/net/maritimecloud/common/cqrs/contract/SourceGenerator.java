@@ -147,7 +147,7 @@ public class SourceGenerator {
         }
 
         private void writeImport(Class aClass) throws IOException {
-            osw.write("import "+ aClass.getCanonicalName()+";" + EOL);
+            osw.write("import " + aClass.getCanonicalName() + ";" + EOL);
         }
 
         private void writeImport(Parameter parameter) throws IOException {

@@ -22,13 +22,13 @@ package net.maritimecloud.common.cqrs.contract;
  * Events may inherit their properties from corresponding commands, and may extend those properties, as would be needed to make room for
  * enrichment.
  * <p>
- * The generator will take each method defined in the interface and create a corresponding class of the same name (capitalized first 
- * letter). The class will be supplied with a constructor with the same signature and properties and getters and setters will be defined for 
+ * The generator will take each method defined in the interface and create a corresponding class of the same name (capitalized first
+ * letter). The class will be supplied with a constructor with the same signature and properties and getters and setters will be defined for
  * each of the arguments using the names of the arguments. The first argument MUST be the aggregate identity, and the names of the arguments
- * will be used for serialization when serializing to JSON. 
- * 
+ * will be used for serialization when serializing to JSON.
+ * <p>
  * @author Christoffer Børrild
  */
 public interface CqrsContract {
-    
+
 }

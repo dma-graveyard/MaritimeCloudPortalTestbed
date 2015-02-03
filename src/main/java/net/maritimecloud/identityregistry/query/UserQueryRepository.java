@@ -12,7 +12,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package net.maritimecloud.identityregistry.query;
 
 import java.util.List;
@@ -28,6 +27,5 @@ public interface UserQueryRepository extends PagingAndSortingRepository<UserEntr
     public UserEntry findByUsername(String username);
 
     //OrganizationEntry findByNameIdentifier(String nameIdentifier);
-
     public Page<UserEntry> findByUsernameStartingWith(String usernamePattern, Pageable pageable);
 }

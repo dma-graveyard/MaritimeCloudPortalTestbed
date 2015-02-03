@@ -54,14 +54,14 @@ public class ServiceInstance extends AbstractAnnotatedAggregateRoot<ServiceInsta
     }
 
     public ServiceInstance(
-            OrganizationId providerId, 
-            ServiceSpecificationId specificationId, 
-            ServiceInstanceId serviceInstanceId, 
-            String name, 
-            String summary, 
+            OrganizationId providerId,
+            ServiceSpecificationId specificationId,
+            ServiceInstanceId serviceInstanceId,
+            String name,
+            String summary,
             Coverage coverage,
             ServiceType serviceType
-            ) {
+    ) {
         this();
         this.providerId = providerId;
         this.specificationId = specificationId;

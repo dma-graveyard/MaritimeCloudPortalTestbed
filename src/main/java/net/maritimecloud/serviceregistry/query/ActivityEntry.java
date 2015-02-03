@@ -163,5 +163,5 @@ public class ActivityEntry {
     public String toString() {
         return "ActivityEntry{" + "activityId=" + activityId + ", username=" + username + ", organizationId=" + organizationId + ", isPublic=" + isPublic + ", dateTime=" + dateTime + ", eventType=" + eventType + ", eventSimpleType=" + eventSimpleType + ", title=" + title + ", summary=" + summary + ", targetType=" + targetType + ", targetId=" + targetId + '}';
     }
-    
+
 }

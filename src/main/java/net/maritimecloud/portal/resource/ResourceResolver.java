@@ -30,10 +30,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Helper class to assist with resolving resources based on id or aliases
- * 
+ * <p>
  * @author Christoffer Børrild
  */
 public class ResourceResolver {
+
     private static final Logger LOG = LoggerFactory.getLogger(ResourceResolver.class);
 
     public static String resolveOrganizationIdOrFail(String organizationAliasOrId) {

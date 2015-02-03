@@ -16,7 +16,7 @@ package net.maritimecloud.portal.security;
 
 /**
  * Represents exceptions related to the Security domain
- *
+ * <p>
  * @author Christoffer Børrild
  */
 public class SecurityException extends Exception {

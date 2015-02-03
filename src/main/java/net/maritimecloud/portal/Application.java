@@ -50,15 +50,15 @@ public class Application /*extends SpringBootServletInitializer*/ {
     }
 
     public static void rebuild(ConfigurableApplicationContext applicationContext) throws BeansException {
-        
+
         LOG.info("Rebuilding view repositories from events ...");
-        
+
         ReplayingCluster replayingCluster = applicationContext.getBean(ReplayingCluster.class);
-        
+
         long start = System.currentTimeMillis();
         replayingCluster.startReplay();
         long stop = System.currentTimeMillis();
-        
+
         LOG.info("Completed in {} milliseconds!", stop - start);
     }
 

@@ -52,7 +52,7 @@ public class OrganizationCommandHandler {
     private Repository<ServiceInstance> serviceInstanceRepository;
     @Resource
     private Repository<Membership> membershipRepository;
-    
+
     // HACK! TODO: probably should NOT be using a view-model from a command context!
     @Resource
     OrganizationMembershipQueryRepository membershipQueryRepository;
@@ -90,8 +90,8 @@ public class OrganizationCommandHandler {
         if (organization.isDeleted()) {
             throw new IllegalArgumentException("Organization exists no more. " + command.getOrganizationId());
         }
-        
-        if(isAlreadyAMember(command)){
+
+        if (isAlreadyAMember(command)) {
             // dublicate registration - just ignore
             return;
         }

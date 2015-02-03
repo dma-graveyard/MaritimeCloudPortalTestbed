@@ -25,9 +25,10 @@ import javax.persistence.UniqueConstraint;
  * @author Christoffer Børrild
  */
 @Entity
-@Table(uniqueConstraints={@UniqueConstraint(columnNames = {"groupId" , "typeName", "alias"})})
+@Table(uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"groupId", "typeName", "alias"})})
 public class AliasRegistryEntry {
-    
+
     @Id
     @GeneratedValue
     private long id;

@@ -23,5 +23,5 @@ public class ValueObject extends AssertionConcern {
     public ValueObject() {
         super();
     }
-    
+
 }

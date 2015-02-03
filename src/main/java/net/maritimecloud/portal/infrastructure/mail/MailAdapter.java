@@ -12,7 +12,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package net.maritimecloud.portal.infrastructure.mail;
 
 /**
@@ -20,7 +19,7 @@ package net.maritimecloud.portal.infrastructure.mail;
  * @author Christoffer Børrild
  */
 public interface MailAdapter {
-    
+
     void send(Mail mail);
-    
+
 }

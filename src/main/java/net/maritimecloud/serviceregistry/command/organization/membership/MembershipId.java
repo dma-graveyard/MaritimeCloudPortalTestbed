@@ -20,7 +20,7 @@ import net.maritimecloud.common.domain.DomainIdentifier;
  *
  * @author Christoffer Børrild
  */
-public class MembershipId  extends DomainIdentifier<MembershipId> {
+public class MembershipId extends DomainIdentifier<MembershipId> {
 
     public MembershipId(String anIdentifier) {
         super(anIdentifier);
@@ -29,9 +29,9 @@ public class MembershipId  extends DomainIdentifier<MembershipId> {
     public MembershipId(MembershipId membershipId) {
         this(membershipId.identifier());
     }
-    
+
     protected MembershipId() {
         super();
     }
-    
+
 }

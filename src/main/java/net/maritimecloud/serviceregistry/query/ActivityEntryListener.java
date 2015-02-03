@@ -208,7 +208,6 @@ public class ActivityEntryListener {
         register(username, dateTime, event, "Password changed", "changed password", event.getUserId());
     }
 
-
     // -------------------------------------------
     // Utilities
     // -------------------------------------------

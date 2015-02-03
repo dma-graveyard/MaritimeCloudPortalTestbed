@@ -21,14 +21,13 @@ import java.lang.annotation.Target;
 
 /**
  * Marker annotation that marks an interface method as an DSL specification of a CQRS Command
- * 
- * Methods marked with this annotation will be used as templates for generating a corresponding
- * CQRS Command Value Object.
- *
+ * <p>
+ * Methods marked with this annotation will be used as templates for generating a corresponding CQRS Command Value Object.
+ * <p>
  * @author Christoffer Børrild
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value = { ElementType.METHOD, ElementType.TYPE})
+@Target(value = {ElementType.METHOD, ElementType.TYPE})
 public @interface Command {
-    
+
 }

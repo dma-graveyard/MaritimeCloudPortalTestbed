@@ -21,9 +21,10 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  * @author Christoffer Børrild
  */
 public interface ServiceSpecificationQueryRepository extends PagingAndSortingRepository<ServiceSpecificationEntry, String> {
-    
+
     List<ServiceSpecificationEntry> findByOwnerId(String ownerId);
 //    List<ServiceSpecificationEntry> findByOperationalServiceId(String operationalServiceId);
+
     List<ServiceSpecificationEntry> findBySummaryContains(String operationalServiceId);
 
 }

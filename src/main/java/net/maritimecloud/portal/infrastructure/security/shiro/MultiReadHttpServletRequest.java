@@ -25,11 +25,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
 //import org.apache.commons.io.IOUtils;
-
 /**
  * @author Jesper Tejlgaard
  */
 public class MultiReadHttpServletRequest extends HttpServletRequestWrapper {
+
     private ByteArrayOutputStream cachedBytes;
 
     public MultiReadHttpServletRequest(HttpServletRequest request) {
@@ -38,7 +38,7 @@ public class MultiReadHttpServletRequest extends HttpServletRequestWrapper {
 
     @Override
     public ServletInputStream getInputStream() throws IOException {
-        if (cachedBytes == null){
+        if (cachedBytes == null) {
             cacheInputStream();
         }
 
@@ -56,6 +56,7 @@ public class MultiReadHttpServletRequest extends HttpServletRequestWrapper {
 
     /* An inputstream which reads the cached request body */
     public class CachedServletInputStream extends ServletInputStream {
+
         private ByteArrayInputStream input;
 
         public CachedServletInputStream() {

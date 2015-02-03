@@ -30,7 +30,7 @@ public class ServiceEndpoint /*extends ValueObject*/ implements Serializable {
 
     @Column(name = "ENDPOINT_URI", length = 256)
     private URI uri;
-    
+
     protected ServiceEndpoint() {
     }
 

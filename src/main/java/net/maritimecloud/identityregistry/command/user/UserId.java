@@ -33,5 +33,5 @@ public class UserId extends DomainIdentifier<UserId> {
     protected UserId() {
         super();
     }
-    
+
 }

@@ -19,7 +19,10 @@ package net.maritimecloud.serviceregistry.domain.service;
  * @author Christoffer Børrild
  */
 public enum AliasGroups {
-    /** Key for the unique aliases group that governs Organizations and Users aliases */
+
+    /**
+     * Key for the unique aliases group that governs Organizations and Users aliases
+     */
     USERS_AND_ORGANIZATIONS
-    
+
 }

@@ -12,7 +12,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package net.maritimecloud.portal.infrastructure.mail;
 
 import java.util.Date;
@@ -21,7 +20,6 @@ import javax.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
-
 
 public class SmtpMailAdapter implements MailAdapter {
 
@@ -33,25 +31,25 @@ public class SmtpMailAdapter implements MailAdapter {
 
     @Override
     public void send(Mail mail) {
-        
-        if(recipientIsOnIgnoreList(mail)){
-            System.out.println("Skipping send out of mail to "+mail.getRecipients());
-            System.out.println("Mail Content: \n"+mail.getMessage());
+
+        if (recipientIsOnIgnoreList(mail)) {
+            System.out.println("Skipping send out of mail to " + mail.getRecipients());
+            System.out.println("Mail Content: \n" + mail.getMessage());
             return;
         }
-        
+
         mailSender.send(createMessagePreperator(mail));
     }
-    
+
     private MimeMessagePreparator createMessagePreperator(Mail mail) {
         MimeMessagePreparator preparator = (MimeMessage mimeMessage) -> {
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
-            
+
             // TODO: remove this filter line before going to prod
             if (mail.getRecipients().contains("boerrild")) {
                 message.setTo(mail.getRecipients());
             }
-            
+
             message.setBcc("christoffer.boerrild@gmail.com");
             message.setFrom(new InternetAddress("maritime_cloud_portal@boerrild.dk"));
             message.setSubject(mail.getSubject());

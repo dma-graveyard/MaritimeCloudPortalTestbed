@@ -43,10 +43,10 @@ public class ApplicationConfig {
 
     @Resource
     private Environment env;
-    
+
     @Resource
     private ApplicationContextSetup applicationContextSetup;
-    
+
     @Resource
     private JavaMailSender mailSender;
 
@@ -62,7 +62,7 @@ public class ApplicationConfig {
         registration.addInitParameter(ServletProperties.JAXRS_APPLICATION_CLASS, JerseyConfig.class.getName());
         return registration;
     }
-    
+
     @Bean
     public EncryptionService encryptionService() {
         return new SHA512EncryptionService();
@@ -107,6 +107,7 @@ public class ApplicationConfig {
      * This will allow our client to be hosted elsewhere, e.g. from another port.
      * <p>
      * (See http://spring.io/guides/gs/rest-service-cors/ )
+     * <p>
      * @return a SimpleCORSFilter
      */
     @Bean
@@ -127,7 +128,7 @@ public class ApplicationConfig {
 
     @Bean
     public MailAdapter mailAdapter() throws IOException {
-        LOG.info("Using Mail sender with host '"+env.getProperty("spring.mail.host")+"' and user '"+env.getProperty("spring.mail.user")+"'");
+        LOG.info("Using Mail sender with host '" + env.getProperty("spring.mail.host") + "' and user '" + env.getProperty("spring.mail.user") + "'");
         return new SmtpMailAdapter(mailSender);
     }
 

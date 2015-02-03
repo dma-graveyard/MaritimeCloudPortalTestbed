@@ -41,5 +41,5 @@ public interface AliasService {
      * @return true when the supplied target id is known within the alias group
      */
     public boolean hasTarget(String aliasGroupId, String targetIdentifier);
-    
+
 }

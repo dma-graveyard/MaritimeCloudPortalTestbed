@@ -23,8 +23,8 @@ public class OrganizationPrimaryAliasAdded extends OrganizationAliasAdded {
             String alias
     ) {
         super(
-            organizationId,
-            alias
+                organizationId,
+                alias
         );
         this.organizationId = organizationId;
         this.alias = alias;

@@ -94,7 +94,7 @@ public class AxonConfig {
 
         return auditingInterceptor;
     }
-    
+
     @Bean
     public AuditDataProvider auditDataProvider() {
         return new ShiroAuditDataProvider();

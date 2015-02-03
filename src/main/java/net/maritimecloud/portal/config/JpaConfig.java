@@ -30,5 +30,5 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan(basePackageClasses = {OrganizationQueryRepository.class, UserQueryRepository.class}) //todo: replace with marker interfaces
 @EnableAutoConfiguration
 public class JpaConfig {
-    
+
 }

@@ -12,7 +12,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package net.maritimecloud.portal.security;
 
 /**
@@ -20,5 +19,5 @@ package net.maritimecloud.portal.security;
  * @author Christoffer Børrild
  */
 public class UserNotLoggedInException extends SecurityException {
-    
+
 }

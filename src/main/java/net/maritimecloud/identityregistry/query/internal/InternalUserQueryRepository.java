@@ -12,7 +12,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package net.maritimecloud.identityregistry.query.internal;
 
 import org.springframework.data.repository.PagingAndSortingRepository;

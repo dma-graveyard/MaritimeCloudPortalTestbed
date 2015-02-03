@@ -46,6 +46,5 @@ public class Mail {
     public String toString() {
         return "Mail{" + "\nrecipients=" + recipients + ", \nsubject=" + subject + ", \nmessage=" + message + '}';
     }
-    
-    
+
 }

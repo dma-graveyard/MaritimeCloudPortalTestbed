@@ -104,7 +104,6 @@ public interface ServiceRegistryContract extends CqrsContract {
     // ------------------------------------------------------------------------
     // EVENTS
     // ------------------------------------------------------------------------
-
     @Event
     void organizationCreated(OrganizationId organizationId, String primaryAlias, String name, String summary, String url);
 
@@ -128,16 +127,16 @@ public interface ServiceRegistryContract extends CqrsContract {
 
     @Event
     void organizationAliasRemoved(OrganizationId organizationId, String alias);
-    
+
     @Event
-    void UserInvitedToOrganization(MembershipId membershipId, OrganizationId organizationId, String username);    
-    
+    void UserInvitedToOrganization(MembershipId membershipId, OrganizationId organizationId, String username);
+
     @Event
-    void UserLeftOrganization(MembershipId membershipId, OrganizationId organizationId, String username);    
-    
+    void UserLeftOrganization(MembershipId membershipId, OrganizationId organizationId, String username);
+
     @Event
-    void OrganizationRevokedUserMembership(MembershipId membershipId, OrganizationId organizationId, String username);    
-    
+    void OrganizationRevokedUserMembership(MembershipId membershipId, OrganizationId organizationId, String username);
+
     @Event
     void serviceSpecificationCreated(
             OrganizationId ownerId,

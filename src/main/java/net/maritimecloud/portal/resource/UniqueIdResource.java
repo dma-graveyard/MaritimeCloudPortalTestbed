@@ -25,7 +25,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 /**
- * Simpleminded service that clients may use to generate unique id's. NOT REST compliant in the sense that get is NOT idempotent!!! 
+ * Simpleminded service that clients may use to generate unique id's. NOT REST compliant in the sense that get is NOT idempotent!!!
+ * <p>
  * @author Christoffer Børrild
  */
 @Path("/api")
@@ -35,11 +36,11 @@ public class UniqueIdResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("uuid")
     public String generateUUID(@Context HttpServletResponse response, @QueryParam("name") @DefaultValue("uuid") String uuidName) {
-        
+
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
         response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
         response.setDateHeader("Expires", 0); // Proxies.
-        
-        return "{\""+uuidName+"\":\""+UUID.randomUUID().toString()+"\"}" ;
+
+        return "{\"" + uuidName + "\":\"" + UUID.randomUUID().toString() + "\"}";
     }
 }

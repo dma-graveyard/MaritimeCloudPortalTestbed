@@ -12,7 +12,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package net.maritimecloud.serviceregistry.query;
 
 import java.util.List;
@@ -30,5 +29,5 @@ public interface AliasRegistryQueryRepository extends PagingAndSortingRepository
     AliasRegistryEntry findByGroupIdAndAlias(String aliasGroupId, String alias);
 
     List<AliasRegistryEntry> findByGroupIdAndTargetId(String aliasGroupId, String targetIdentifier);
-    
+
 }

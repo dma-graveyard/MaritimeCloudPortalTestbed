@@ -15,9 +15,8 @@
 package net.maritimecloud.portal.infrastructure.mail;
 
 /**
- * MailService is responsible for composing and sending out domain 
- * specific mail messages.
- * 
+ * MailService is responsible for composing and sending out domain specific mail messages.
+ * <p>
  * @author Christoffer Børrild
  */
 public class MailService {

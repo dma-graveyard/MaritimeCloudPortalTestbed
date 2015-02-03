@@ -147,5 +147,5 @@ public class ServiceInstanceEntry implements Serializable {
     void removeEndpoint(ServiceEndpoint serviceEndpoint) {
         getEndpoints().remove(serviceEndpoint);
     }
-    
+
 }

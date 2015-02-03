@@ -20,17 +20,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marker annotation that marks a parameter as being the identifier of the target aggregate. 
- * 
- * Using this annotation on a parameter in a method the Contract interface will make this 
- * parameter marked with the AXON TargetAggregateIdentifier in the resulting event or command 
- * class. If omitting this annotation, the first parameter of the method will be used as default.
- *
+ * Marker annotation that marks a parameter as being the identifier of the target aggregate.
+ * <p>
+ * Using this annotation on a parameter in a method the Contract interface will make this parameter marked with the AXON
+ * TargetAggregateIdentifier in the resulting event or command class. If omitting this annotation, the first parameter of the method will be
+ * used as default.
+ * <p>
  * @author Christoffer Børrild
  * @see org.axonframework.commandhandling.annotation.TargetAggregateIdentifier
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value = { ElementType.PARAMETER})
+@Target(value = {ElementType.PARAMETER})
 public @interface TargetAggregateIdentifier {
-    
+
 }

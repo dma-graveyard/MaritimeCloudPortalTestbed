@@ -50,5 +50,5 @@ public class ApplicationInMemoryDemoConfig {
             System.out.println("Send (dummy mail adapter): " + mail);
         };
     }
-    
+
 }

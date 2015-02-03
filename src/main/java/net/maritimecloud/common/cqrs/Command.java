@@ -16,9 +16,9 @@ package net.maritimecloud.common.cqrs;
 
 /**
  * Marker interface that makes it easier to identify CQRS Commands in the mist of classes.
- * 
+ * <p>
  * @author Christoffer Børrild
  */
 public interface Command {
-    
+
 }

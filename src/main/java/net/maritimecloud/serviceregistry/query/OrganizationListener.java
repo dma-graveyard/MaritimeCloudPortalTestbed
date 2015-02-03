@@ -45,7 +45,7 @@ public class OrganizationListener {
     public void setOrganizationQueryRepository(OrganizationQueryRepository organizationQueryRepository) {
         this.organizationQueryRepository = organizationQueryRepository;
     }
-    
+
     @EventHandler
     public void on(OrganizationCreated event) {
         logger.debug("About to handle the OrganizationCreatedEvent: {}", event);
@@ -71,7 +71,7 @@ public class OrganizationListener {
         organizationEntry.setUrl(event.getUrl());
         organizationQueryRepository.save(organizationEntry);
     }
-    
+
     @EventHandler
     public void on(OrganizationPrimaryAliasAdded event) {
         OrganizationEntry organizationEntry = organizationQueryRepository.findOne(event.getOrganizationId().identifier());
@@ -79,5 +79,4 @@ public class OrganizationListener {
         organizationQueryRepository.save(organizationEntry);
     }
 
-    
 }

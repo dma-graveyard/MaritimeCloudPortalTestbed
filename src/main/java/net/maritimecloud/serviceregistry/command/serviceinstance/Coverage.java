@@ -21,15 +21,15 @@ import net.maritimecloud.common.domain.ValueObject;
 
 /**
  * A Coverage object is something that has a geographical extend, ie. "covers an area".
- * 
- * FIXME: for now this class simply holds a string. This string is intended to hold the JSON representation of the body of the coverage. 
+ * <p>
+ * FIXME: for now this class simply holds a string. This string is intended to hold the JSON representation of the body of the coverage.
  * Later on, we should fully parse and store the object graph.
- * 
+ * <p>
  * @author Christoffer Børrild
  */
 @Embeddable
 public class Coverage extends ValueObject {
-    
+
     @Column(length = 500000)
     String serializedJsonValue;
 
@@ -71,5 +71,5 @@ public class Coverage extends ValueObject {
         final Coverage other = (Coverage) obj;
         return Objects.equals(this.serializedJsonValue, other.serializedJsonValue);
     }
-    
+
 }
