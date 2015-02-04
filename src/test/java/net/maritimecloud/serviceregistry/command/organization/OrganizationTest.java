@@ -26,7 +26,6 @@ import static net.maritimecloud.common.infrastructure.axon.CommonFixture.anOrgan
 import net.maritimecloud.common.spring.ApplicationContextProvider;
 import net.maritimecloud.serviceregistry.command.api.AddOrganizationAlias;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
-import net.maritimecloud.serviceregistry.command.api.ApplyForMembershipToOrganization;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationNameAndSummary;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationWebsiteUrl;
 import net.maritimecloud.serviceregistry.command.api.OrganizationAliasAdded;
@@ -37,8 +36,6 @@ import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasAdded;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasRegistrationDenied;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstanceAliasRemoved;
 import net.maritimecloud.serviceregistry.command.api.ServiceInstancePrimaryAliasAdded;
-import net.maritimecloud.serviceregistry.command.api.UserAppliedForMembershipToOrganization;
-import net.maritimecloud.serviceregistry.command.organization.membership.MembershipId;
 import net.maritimecloud.serviceregistry.domain.service.AliasGroups;
 import net.maritimecloud.serviceregistry.domain.service.AliasService;
 import org.axonframework.test.FixtureConfiguration;
