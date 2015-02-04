@@ -61,6 +61,18 @@ public interface ServiceRegistryContract extends CqrsContract {
     @Command
     void inviteUserToOrganization(OrganizationId organizationId, MembershipId membershipId, String username);
 
+    /**
+     * @see #userAppliedForMembershipToOrganization(MembershipId, OrganizationId, String) 
+     */
+    @Command
+    void applyForMembershipToOrganization(OrganizationId organizationId, MembershipId membershipId, String username, String applicationMessage);
+
+    @Command
+    void acceptUsersMembershipApplication(MembershipId membershipId);
+
+    @Command
+    void acceptMembershipToOrganization(MembershipId membershipId);
+
     @Command
     void removeUserFromOrganization(MembershipId membershipId);
 
@@ -129,13 +141,28 @@ public interface ServiceRegistryContract extends CqrsContract {
     void organizationAliasRemoved(OrganizationId organizationId, String alias);
 
     @Event
-    void UserInvitedToOrganization(MembershipId membershipId, OrganizationId organizationId, String username);
+    void organizationMembershipAssignedToOwner(MembershipId membershipId, OrganizationId organizationId, String username);
+    
+    @Event
+    void userInvitedToOrganization(MembershipId membershipId, OrganizationId organizationId, String username);
+    
+    @Event
+    void userAcceptedMembershipToOrganization(MembershipId membershipId, OrganizationId organizationId, String username);
+
+    /**
+     * @see #applyForMembershipToOrganization(OrganizationId, MembershipId, String, String) 
+     */
+    @Event
+    void userAppliedForMembershipToOrganization(MembershipId membershipId, OrganizationId organizationId, String username, String applicationMessage);
 
     @Event
-    void UserLeftOrganization(MembershipId membershipId, OrganizationId organizationId, String username);
+    void organizationAcceptedMembershipApplication(MembershipId membershipId, OrganizationId organizationId, String username);
+    
+    @Event
+    void userLeftOrganization(MembershipId membershipId, OrganizationId organizationId, String username);
 
     @Event
-    void OrganizationRevokedUserMembership(MembershipId membershipId, OrganizationId organizationId, String username);
+    void organizationRevokedUserMembership(MembershipId membershipId, OrganizationId organizationId, String username);
 
     @Event
     void serviceSpecificationCreated(

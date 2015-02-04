@@ -70,15 +70,6 @@ public class OrganizationTest extends CommonFixture {
 
     }
 
-    private static final MembershipId aMembershipId = new MembershipId("A_MEMBERSHIP_ID");
-
-    @Test
-    public void requestMembershipToOrganization() throws Exception {
-        fixture.given(new OrganizationCreated(anOrganizationId, AN_ALIAS, A_NAME, A_SUMMARY, A_URL))
-                .when(new ApplyForMembershipToOrganization(anOrganizationId, aMembershipId, A_NAME, "Let me in"))
-                .expectEvents(new UserAppliedForMembershipToOrganization(aMembershipId, anOrganizationId, A_NAME, "Let me in"));
-    }
-
     @Test
     public void createOrganization() throws Exception {
         fixture.givenNoPriorActivity()
