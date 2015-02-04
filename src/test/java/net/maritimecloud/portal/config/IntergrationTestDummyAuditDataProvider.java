@@ -26,12 +26,14 @@ import org.axonframework.commandhandling.CommandMessage;
  * @author Christoffer Børrild
  */
 public class IntergrationTestDummyAuditDataProvider implements AuditDataProvider {
+    
+    public static final String INTEGRATION_TEST_USER = "INTEGRATION_TEST_USER";    
 
     @Override
     public Map<String, Object> provideAuditDataFor(CommandMessage<?> command) {
         Map<String, Object> metaData = new HashMap<>();
         metaData.put(UserMetaData.USERID, -1);
-        metaData.put(UserMetaData.USERNAME, "integration-tester");
+        metaData.put(UserMetaData.USERNAME, INTEGRATION_TEST_USER);
         metaData.put(UserMetaData.USER_HOST, "0.0.0.0.1");
         return metaData;
     }

@@ -18,28 +18,23 @@ import javax.annotation.Resource;
 import net.maritimecloud.common.eventsourcing.axon.NoReplayedEvents;
 import net.maritimecloud.portal.audit.axon.UserMetaData;
 import net.maritimecloud.serviceregistry.command.api.AuthorizeMembershipToOrganizationCreator;
-import net.maritimecloud.serviceregistry.command.api.OrganizationAliasAdded;
 import net.maritimecloud.serviceregistry.command.api.OrganizationCreated;
-import net.maritimecloud.serviceregistry.command.api.UserInvitedToOrganization;
 import net.maritimecloud.serviceregistry.command.organization.membership.MembershipId;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.common.annotation.MetaData;
 import org.axonframework.saga.annotation.AbstractAnnotatedSaga;
-import org.axonframework.saga.annotation.EndSaga;
 import org.axonframework.saga.annotation.SagaEventHandler;
 import org.axonframework.saga.annotation.StartSaga;
 
 /**
  * This saga adds the creating user as owner of the newly created organization. This is a special purpose process, as usually all potential
- * members need to go through an invite- or join-request process in order to achieve membership. The creator of the organization should of
+ * members need to go through an invite- or apply-process in order to achieve membership. The creator of the organization should of
  * course be granted membership as owner right away.
  * <p>
  * @author Christoffer Børrild
  */
 @NoReplayedEvents
 public class SetupOrganizationOwnerMemberSaga extends AbstractAnnotatedSaga {
-
-    private String alias;
 
     @Resource
     private transient CommandGateway commandGateway;
@@ -55,20 +50,8 @@ public class SetupOrganizationOwnerMemberSaga extends AbstractAnnotatedSaga {
     @StartSaga
     @SagaEventHandler(associationProperty = "organizationId")
     public void handle(OrganizationCreated event, @MetaData(UserMetaData.USERNAME) String username) {
-        alias = event.getPrimaryAlias();
         commandGateway.send(new AuthorizeMembershipToOrganizationCreator(event.getOrganizationId(), new MembershipId(event.getOrganizationId().identifier()), username));
-    }
-
-    @EndSaga
-    @SagaEventHandler(associationProperty = "organizationId")
-    public void handle(UserInvitedToOrganization event) {
-        System.out.println("Saga added the primary alias " + alias + " to the organization " + event.getOrganizationId().identifier());
-    }
-
-    @EndSaga
-    @SagaEventHandler(associationProperty = "organizationId")
-    public void handle(OrganizationAliasAdded event) {
-        System.out.println("SetupOrganizationSaga added a member invitation for organization " + event.getOrganizationId().identifier());
+        end();
     }
 
 }

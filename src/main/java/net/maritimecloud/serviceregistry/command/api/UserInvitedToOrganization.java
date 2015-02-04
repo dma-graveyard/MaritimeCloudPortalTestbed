@@ -10,7 +10,7 @@ import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#UserInvitedToOrganization
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#userInvitedToOrganization
  */
 @Event
 public class UserInvitedToOrganization {

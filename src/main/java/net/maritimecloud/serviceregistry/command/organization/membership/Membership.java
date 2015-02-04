@@ -14,9 +14,15 @@
  */
 package net.maritimecloud.serviceregistry.command.organization.membership;
 
+import net.maritimecloud.serviceregistry.command.api.AcceptUsersMembershipApplication;
+import net.maritimecloud.serviceregistry.command.api.AcceptMembershipToOrganization;
+import net.maritimecloud.serviceregistry.command.api.OrganizationAcceptedMembershipApplication;
+import net.maritimecloud.serviceregistry.command.api.OrganizationMembershipAssignedToOwner;
 import net.maritimecloud.serviceregistry.command.api.OrganizationRevokedUserMembership;
 import net.maritimecloud.serviceregistry.command.api.RemoveUserFromOrganization;
+import net.maritimecloud.serviceregistry.command.api.UserAcceptedMembershipToOrganization;
 import net.maritimecloud.serviceregistry.command.api.UserInvitedToOrganization;
+import net.maritimecloud.serviceregistry.command.api.UserAppliedForMembershipToOrganization;
 import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.eventsourcing.annotation.AbstractAnnotatedAggregateRoot;
@@ -32,9 +38,6 @@ import org.springframework.stereotype.Component;
  * <p>
  * In the future it is envisioned that this class should react to commands like:
  * <ul>
- * <li>AcceptOrganizationMembership</li>
- * <li>RequestOrganizationMembership</li>
- * <li>AcceptUserMembership</li>
  * <li>ChangeMembershipRole</li>
  * </ul>
  * <p>
@@ -48,15 +51,64 @@ public class Membership extends AbstractAnnotatedAggregateRoot<MembershipId> {
     private MembershipId membershipId;
     private OrganizationId organizationId;
     private String username;
+    boolean acceptedByUser;
+    boolean acceptedByOrganization;
 
     protected Membership() {
+        acceptedByUser = false;
+        acceptedByOrganization = false;
     }
 
-    public Membership(MembershipId membershipId, OrganizationId organizationId, String username) {
+    public static enum ApplicationType {
+
+        APPLICATION, INVITE, CREATOR
+    };
+
+    public Membership(MembershipId membershipId, OrganizationId organizationId, String username, String applicationMessage, ApplicationType applicationType) {
         this.membershipId = membershipId;
         this.organizationId = organizationId;
         this.username = username;
-        apply(new UserInvitedToOrganization(membershipId, organizationId, username));
+
+        switch (applicationType) {
+            case APPLICATION:
+                apply(new UserAppliedForMembershipToOrganization(membershipId, organizationId, username, applicationMessage));
+                break;
+            case INVITE:
+                apply(new UserInvitedToOrganization(membershipId, organizationId, username));
+                break;
+            case CREATOR:
+                activate();
+                break;
+            default:
+                throw new IllegalArgumentException("Membership must be startet by either an invite or an application");
+
+        }
+    }
+
+    @CommandHandler
+    public void handle(AcceptUsersMembershipApplication command) {
+        if (!acceptedByOrganization) {
+            apply(new OrganizationAcceptedMembershipApplication(membershipId, organizationId, username));
+
+            if (acceptedByUser) {
+                activate();
+            }
+        }
+    }
+
+    @CommandHandler
+    public void handle(AcceptMembershipToOrganization command) {
+        if (!acceptedByUser) {
+            apply(new UserAcceptedMembershipToOrganization(membershipId, organizationId, username));
+
+            if (acceptedByOrganization) {
+                activate();
+            }
+        }
+    }
+
+    private void activate() {
+        apply(new OrganizationMembershipAssignedToOwner(membershipId, organizationId, username));
     }
 
     @CommandHandler
@@ -69,6 +121,24 @@ public class Membership extends AbstractAnnotatedAggregateRoot<MembershipId> {
 
     @EventSourcingHandler
     public void on(UserInvitedToOrganization event) {
+        this.acceptedByOrganization = true;
+        this.membershipId = new MembershipId(event.getMembershipId());
+        this.organizationId = event.getOrganizationId();
+        this.username = event.getUsername();
+    }
+
+    @EventSourcingHandler
+    public void on(UserAppliedForMembershipToOrganization event) {
+        this.acceptedByUser = true;
+        this.membershipId = new MembershipId(event.getMembershipId());
+        this.organizationId = event.getOrganizationId();
+        this.username = event.getUsername();
+    }
+
+    @EventSourcingHandler
+    public void on(OrganizationMembershipAssignedToOwner event) {
+        this.acceptedByOrganization = true;
+        this.acceptedByUser = true;
         this.membershipId = new MembershipId(event.getMembershipId());
         this.organizationId = event.getOrganizationId();
         this.username = event.getUsername();

@@ -26,8 +26,11 @@ import static net.maritimecloud.common.infrastructure.axon.CommonFixture.A_SUMMA
 import static net.maritimecloud.common.infrastructure.axon.CommonFixture.aPrepareServiceSpecificationCommand;
 import static net.maritimecloud.common.infrastructure.axon.CommonFixture.generateServiceInstanceId;
 import static net.maritimecloud.common.infrastructure.axon.CommonFixture.generateServiceSpecificationId;
+import net.maritimecloud.portal.config.IntergrationTestDummyAuditDataProvider;
+import net.maritimecloud.serviceregistry.command.api.AcceptUsersMembershipApplication;
 import net.maritimecloud.serviceregistry.command.api.AddOrganizationAlias;
 import net.maritimecloud.serviceregistry.command.api.AddServiceInstanceAlias;
+import net.maritimecloud.serviceregistry.command.api.ApplyForMembershipToOrganization;
 import net.maritimecloud.serviceregistry.command.api.ChangeOrganizationWebsiteUrl;
 import net.maritimecloud.serviceregistry.command.api.InviteUserToOrganization;
 import net.maritimecloud.serviceregistry.command.api.PrepareServiceSpecification;
@@ -41,8 +44,12 @@ import net.maritimecloud.serviceregistry.query.OrganizationEntry;
 import net.maritimecloud.serviceregistry.query.OrganizationMembershipEntry;
 import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.repository.AggregateNotFoundException;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,25 +93,40 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
     @Test
     public void createOrganizationWithOwnerAndChangeName() {
 
+        // When organization is created
         commandGateway().sendAndWait(createOrganizationCommand);
         
-        OrganizationMembershipEntry membership = organizationMemberQueryRepository.findByOrganizationIdAndUsername(organizationId.identifier(), "integration-tester");
+        // then the creator is assigned membership (as owner) 
+        OrganizationMembershipEntry membership = organizationMemberQueryRepository.findByOrganizationIdAndUsername(
+                organizationId.identifier(), 
+                IntergrationTestDummyAuditDataProvider.INTEGRATION_TEST_USER
+        );
         assertNotNull(membership);
+        Assert.assertTrue(membership.isAcceptedByOrganization());
+        Assert.assertTrue(membership.isAcceptedByUser());
+        Assert.assertTrue(membership.isActive());
         
+        // when organization name is changed
         commandGateway().sendAndWait(new ChangeOrganizationNameAndSummary(organizationId, ANOTHER_NAME, ANOTHER_SUMMARY));
 
+        OrganizationEntry entry = organizationQueryRepository.findOne(organizationId.identifier());
+        assertEquals(ANOTHER_NAME, entry.getName());
+        assertEquals(ANOTHER_SUMMARY, entry.getSummary());
+
+        // when we resend command to create organization
         try {
             commandGateway().sendAndWait(createOrganizationCommand);
             fail("Should fail as item already exist");
         } catch (Exception e) {
         }
 
+        // then we still have just one organization - nothing has changed
         assertEquals(1, organizationQueryRepository.count());
-        OrganizationEntry entry = organizationQueryRepository.findOne(organizationId.identifier());
-        assertEquals(ANOTHER_NAME, entry.getName());
-        assertEquals(ANOTHER_SUMMARY, entry.getSummary());
-
+        
+        // when creating antoher organization
         commandGateway().send(new CreateOrganization(organizationId2, AN_ALIAS+organizationId2.identifier(), A_NAME, A_SUMMARY, A_URL));
+        
+        // then we have two
         assertEquals(2, organizationQueryRepository.count());
     }
 
@@ -131,10 +153,37 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
     @Test
     public void inviteUser() throws Throwable {
         commandGateway().sendAndWait(createOrganizationCommand);
-        commandGateway().sendAndWait(new InviteUserToOrganization(organizationId, new MembershipId("A_MEMBERSHIP_ID_"+generateIdentity()), "A_USER"));
-        OrganizationMembershipEntry entry = organizationMemberQueryRepository.findByOrganizationIdAndUsername(organizationId.identifier(), "A_USER");
+        commandGateway().sendAndWait(new InviteUserToOrganization(organizationId, new MembershipId("A_MEMBERSHIP_ID_"+generateIdentity()), "ANOTHER_USER"));
+        OrganizationMembershipEntry entry = organizationMemberQueryRepository.findByOrganizationIdAndUsername(organizationId.identifier(), "ANOTHER_USER");
         assertEquals(organizationId.identifier(), entry.getOrganizationId());
-        assertEquals("A_USER", entry.getUsername());
+        assertEquals("ANOTHER_USER", entry.getUsername());
+        assertTrue(entry.isAcceptedByOrganization());
+        assertFalse(entry.isAcceptedByUser());
+        assertFalse(entry.isActive());
+    }
+
+    @Test
+    public void requestMembership() throws Throwable {
+        // given an organization
+        commandGateway().sendAndWait(createOrganizationCommand);
+        // when user request membership
+        final MembershipId membershipId = new MembershipId("A_MEMBERSHIP_ID_"+generateIdentity());
+        commandGateway().sendAndWait(new ApplyForMembershipToOrganization(organizationId, membershipId, "ANOTHER_USER", "Let me in"));
+        // then find membership in view
+        OrganizationMembershipEntry entry = organizationMemberQueryRepository.findByOrganizationIdAndUsername(organizationId.identifier(), "ANOTHER_USER");
+        assertEquals(organizationId.identifier(), entry.getOrganizationId());
+        assertEquals("ANOTHER_USER", entry.getUsername());
+        assertTrue(entry.isAcceptedByUser());
+        assertFalse(entry.isAcceptedByOrganization());
+        assertFalse(entry.isActive());
+        // and membership is not yet active
+        OrganizationMembershipEntry activeEntry = organizationMemberQueryRepository.findByOrganizationIdAndUsernameAndActiveTrue(organizationId.identifier(), "ANOTHER_USER");
+        assertNull(activeEntry);
+        // when organization accept application for membership
+        commandGateway().sendAndWait(new AcceptUsersMembershipApplication(membershipId));
+        activeEntry = organizationMemberQueryRepository.findByOrganizationIdAndUsernameAndActiveTrue(organizationId.identifier(), "ANOTHER_USER");
+        // then membership is activated
+        assertNotNull(activeEntry);
     }
 
     @Test

@@ -22,6 +22,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface OrganizationMembershipQueryRepository extends PagingAndSortingRepository<OrganizationMembershipEntry, String> {
 
     public OrganizationMembershipEntry findByOrganizationIdAndUsername(String anOrganizationId, String aUsername);
+    
+    public OrganizationMembershipEntry findByOrganizationIdAndUsernameAndActiveTrue(String anOrganizationId, String aUsername);
 
     public Iterable<OrganizationMembershipEntry> findByUsername(String aUsername);
 

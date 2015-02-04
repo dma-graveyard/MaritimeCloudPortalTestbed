@@ -89,13 +89,13 @@ public class OrganizationResource extends AbstractCommandResource {
     }
 
     // ------------------------------------------------------------------------
-    // SERVICE SPECIFICATIONS
+    // MEMBERSHIP
     // ------------------------------------------------------------------------
     @POST
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("org/{organizationIdOrAlias}/member")
-    public void memberPostCommand(
+    public void membershipPostCommand(
             @HeaderParam("Content-type") String contentType,
             @QueryParam("command") @DefaultValue("") String queryCommandName,
             @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
@@ -105,27 +105,30 @@ public class OrganizationResource extends AbstractCommandResource {
         commandJSON = overwriteIdentity(commandJSON, "organizationId", organizationId);
         sendAndWait(contentType, queryCommandName, commandJSON,
                 InviteUserToOrganization.class,
+                ApplyForMembershipToOrganization.class,
                 RemoveUserFromOrganization.class
         );
     }
 
-//    @PUT
-//    @Consumes(APPLICATION_JSON_CQRS_COMMAND)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Path("org/{organizationIdOrAlias}/member/{serviceSpecificationIdOrAlias}")
-//    public void memberPutCommand(
-//            @HeaderParam("Content-type") String contentType,
-//            @QueryParam("command") @DefaultValue("") String queryCommandName,
-//            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
-//            @PathParam("serviceSpecificationIdOrAlias") String serviceSpecificationIdOrAlias,
-//            String commandJSON
-//    ) {
-//        ServiceSpecificationEntry serviceSpecification = getServiceSpecificationByAlias(organizationIdOrAlias, serviceSpecificationIdOrAlias);
-//        commandJSON = overwriteIdentity(commandJSON, "serviceSpecificationId", serviceSpecification.getServiceSpecificationId());
-//        sendAndWait(contentType, queryCommandName, commandJSON,
-//                ChangeServiceSpecificationNameAndSummary.class
-//        );
-//    }
+    @PUT
+    @Consumes(APPLICATION_JSON_CQRS_COMMAND)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("org/{organizationIdOrAlias}/member")
+    public void membershipPutCommand(
+            @HeaderParam("Content-type") String contentType,
+            @QueryParam("command") @DefaultValue("") String queryCommandName,
+            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
+            String commandJSON
+    ) {
+        String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
+        commandJSON = overwriteIdentity(commandJSON, "organizationId", organizationId);
+        sendAndWait(contentType, queryCommandName, commandJSON,
+                AcceptUsersMembershipApplication.class,
+                ApplyForMembershipToOrganization.class,
+                RemoveUserFromOrganization.class
+        );
+    }
+
     // ------------------------------------------------------------------------
     // SERVICE SPECIFICATIONS
     // ------------------------------------------------------------------------

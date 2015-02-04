@@ -10,24 +10,27 @@ import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#userLeftOrganization
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#userAppliedForMembershipToOrganization
  */
 @Event
-public class UserLeftOrganization {
+public class UserAppliedForMembershipToOrganization {
 
     @TargetAggregateIdentifier
     private final MembershipId membershipId;
     private final OrganizationId organizationId;
     private final String username;
+    private final String applicationMessage;
 
-    public UserLeftOrganization(
+    public UserAppliedForMembershipToOrganization(
             MembershipId membershipId,
             OrganizationId organizationId,
-            String username
+            String username,
+            String applicationMessage
     ) {
         this.membershipId = membershipId;
         this.organizationId = organizationId;
         this.username = username;
+        this.applicationMessage = applicationMessage;
     }
 
     public MembershipId getMembershipId() {
@@ -40,6 +43,10 @@ public class UserLeftOrganization {
 
     public String getUsername() {
         return username;
+    }
+
+    public String getApplicationMessage() {
+        return applicationMessage;
     }
 
 }

@@ -87,6 +87,11 @@ curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/org/dma/
 # ...and remove again
 curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/org/dma/member -H "Content-Type: application/json;domain-model=RemoveUserFromOrganization" -d '{"membershipId":{"identifier":"49b3e82b-ce79-4a3c-8fb8-7b2b64f8e51f"}}'
 
+# Apply for membership to organization
+curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/org/fmha/member -H "Content-Type: application/json;domain-model=ApplyForMembershipToOrganization" -d '{"membershipId":{"identifier":"1039cbd2-4065-473c-9cfa-4a997395829e"},"organizationId":{"identifier":"path"},"username":"Tintin", "applicationMessage":"Please add me as member. I am really smart, and the only one who knows how to control Captain Haddock - You guys need me!"}'
+# Accept membership application
+curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/org/fmha/member -H "Content-Type: application/json;domain-model=AcceptUsersMembershipApplication" -X PUT -d '{"membershipId":{"identifier":"1039cbd2-4065-473c-9cfa-4a997395829e"}}'
+
 # Create Service Specifications
 curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/org/imo/ss -H "Content-Type: application/json;domain-model=PrepareServiceSpecification" -d '{"ownerId":{"identifier":"path"}, "serviceSpecificationId":{"identifier":"imo-mis-rest"}, "serviceType":"REST", "name":"METOC en route (rest)","summary":"Meteorological services provided as a REST api operational services: mis"}'
 curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/org/imo/ss -H "Content-Type: application/json;domain-model=PrepareServiceSpecification" -d '{"ownerId":{"identifier":"path"}, "serviceSpecificationId":{"identifier":"imo-mis-www"}, "serviceType":"WWW", "name":"METOC en route (www)","summary":"Meteorological services provided on the internet operational services: mis"}'

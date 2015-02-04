@@ -10,7 +10,7 @@ import net.maritimecloud.serviceregistry.command.organization.OrganizationId;
 
 /**
  * GENERATED CLASS!
- * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#OrganizationRevokedUserMembership
+ * @see net.maritimecloud.serviceregistry.command.ServiceRegistryContract#organizationRevokedUserMembership
  */
 @Event
 public class OrganizationRevokedUserMembership {

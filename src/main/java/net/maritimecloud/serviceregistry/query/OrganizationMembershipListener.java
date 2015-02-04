@@ -16,7 +16,9 @@ package net.maritimecloud.serviceregistry.query;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
+import net.maritimecloud.serviceregistry.command.api.OrganizationMembershipAssignedToOwner;
 import net.maritimecloud.serviceregistry.command.api.OrganizationRevokedUserMembership;
+import net.maritimecloud.serviceregistry.command.api.UserAppliedForMembershipToOrganization;
 import net.maritimecloud.serviceregistry.command.api.UserInvitedToOrganization;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.slf4j.Logger;
@@ -51,11 +53,40 @@ public class OrganizationMembershipListener {
     @EventHandler
     public void on(UserInvitedToOrganization event) {
         logger.debug("About to handle the UserInvitedToOrganization: {}", event);
-        OrganizationMembershipEntry organizationMemberEntry = new OrganizationMembershipEntry();
-        organizationMemberEntry.setMembershipId(event.getMembershipId().identifier());
-        organizationMemberEntry.setOrganizationId(event.getOrganizationId().identifier());
-        organizationMemberEntry.setUsername(event.getUsername());
-        organizationMemberQueryRepository.save(organizationMemberEntry);
+        OrganizationMembershipEntry entry = new OrganizationMembershipEntry();
+        entry.setMembershipId(event.getMembershipId().identifier());
+        entry.setOrganizationId(event.getOrganizationId().identifier());
+        entry.setUsername(event.getUsername());
+        entry.setAcceptedByOrganization(true);
+        organizationMemberQueryRepository.save(entry);
+    }
+
+    @EventHandler
+    public void on(UserAppliedForMembershipToOrganization event) {
+        logger.debug("About to handle the UserRequestedMembershipToOrganization: {}", event);
+        OrganizationMembershipEntry entry = new OrganizationMembershipEntry();
+        entry.setMembershipId(event.getMembershipId().identifier());
+        entry.setOrganizationId(event.getOrganizationId().identifier());
+        entry.setUsername(event.getUsername());
+        entry.setAcceptedByUser(true);
+        organizationMemberQueryRepository.save(entry);
+    }
+
+    @EventHandler
+    public void on(OrganizationMembershipAssignedToOwner event) {
+        logger.debug("About to handle the OrganizationMembershipAssignedToOwner: {}", event);
+        OrganizationMembershipEntry entry = organizationMemberQueryRepository.findOne(event.getMembershipId().identifier());
+        if (entry == null) {
+            // new organization
+            entry = new OrganizationMembershipEntry();
+            entry.setMembershipId(event.getMembershipId().identifier());
+            entry.setOrganizationId(event.getOrganizationId().identifier());
+            entry.setUsername(event.getUsername());
+        }
+        entry.setAcceptedByOrganization(true);
+        entry.setAcceptedByUser(true);
+        entry.setActive(true);
+        organizationMemberQueryRepository.save(entry);
     }
 
     @EventHandler

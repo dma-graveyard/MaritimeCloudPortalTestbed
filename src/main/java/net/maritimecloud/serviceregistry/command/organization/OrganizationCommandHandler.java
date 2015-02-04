@@ -19,6 +19,7 @@ import net.maritimecloud.serviceregistry.command.api.ProvideServiceInstance;
 import javax.annotation.Resource;
 import net.maritimecloud.serviceregistry.command.api.AuthorizeMembershipToOrganizationCreator;
 import net.maritimecloud.serviceregistry.command.api.InviteUserToOrganization;
+import net.maritimecloud.serviceregistry.command.api.ApplyForMembershipToOrganization;
 import net.maritimecloud.serviceregistry.command.organization.membership.Membership;
 import net.maritimecloud.serviceregistry.command.serviceinstance.ServiceInstance;
 import net.maritimecloud.serviceregistry.command.servicespecification.ServiceSpecification;
@@ -69,6 +70,14 @@ public class OrganizationCommandHandler {
         this.serviceInstanceRepository = serviceInstanceRepository;
     }
 
+    public void setMembershipRepository(Repository<Membership> membershipRepository) {
+        this.membershipRepository = membershipRepository;
+    }
+    
+    public void setMembershipQueryRepository(OrganizationMembershipQueryRepository membershipQueryRepository) {
+        this.membershipQueryRepository = membershipQueryRepository;
+    }
+
     @CommandHandler
     public void handle(AuthorizeMembershipToOrganizationCreator command) {
 
@@ -78,7 +87,14 @@ public class OrganizationCommandHandler {
             throw new IllegalArgumentException("Organization exists no more. " + command.getOrganizationId());
         }
 
-        Membership membership = new Membership(command.getMembershipId(), command.getOrganizationId(), command.getUsername());
+        Membership membership = new Membership(
+                command.getMembershipId(), 
+                command.getOrganizationId(),
+                command.getUsername(), 
+                "",
+                Membership.ApplicationType.CREATOR
+        );
+        
         membershipRepository.add(membership);
     }
 
@@ -91,18 +107,49 @@ public class OrganizationCommandHandler {
             throw new IllegalArgumentException("Organization exists no more. " + command.getOrganizationId());
         }
 
-        if (isAlreadyAMember(command)) {
+        if (isAlreadyAMember(command.getOrganizationId(), command.getUsername())) {
             // dublicate registration - just ignore
             return;
         }
 
-        Membership membership = new Membership(command.getMembershipId(), command.getOrganizationId(), command.getUsername());
+        Membership membership = new Membership(
+                command.getMembershipId(), 
+                command.getOrganizationId(),
+                command.getUsername(), 
+                "",
+                Membership.ApplicationType.INVITE
+        );
+        
         membershipRepository.add(membership);
     }
 
-    private boolean isAlreadyAMember(InviteUserToOrganization command) {
+    @CommandHandler
+    public void handle(ApplyForMembershipToOrganization command) {
+
+        Organization organization = repository.load(command.getOrganizationId());
+
+        if (organization.isDeleted()) {
+            throw new IllegalArgumentException("Organization exists no more. " + command.getOrganizationId());
+        }
+
+        if (isAlreadyAMember(command.getOrganizationId(), command.getUsername())) {
+            // dublicate registration - just ignore
+            return;
+        }
+
+        Membership membership = new Membership(
+                command.getMembershipId(), 
+                command.getOrganizationId(),
+                command.getUsername(), 
+                command.getApplicationMessage(),
+                Membership.ApplicationType.APPLICATION
+        );
+        membershipRepository.add(membership);
+    }
+
+    private boolean isAlreadyAMember(OrganizationId organizationId, String username) {
         // (HACK: probably should NOT be using a public query-model for this verification)
-        return membershipQueryRepository.findByOrganizationIdAndUsername(command.getOrganizationId().identifier(), command.getUsername()) != null;
+        return membershipQueryRepository.findByOrganizationIdAndUsername(organizationId.identifier(), username) != null;
     }
 
     @CommandHandler

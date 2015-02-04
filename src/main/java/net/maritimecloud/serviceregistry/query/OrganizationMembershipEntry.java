@@ -32,6 +32,9 @@ public class OrganizationMembershipEntry {
     private String membershipId;
     private String organizationId;
     private String username;
+    boolean acceptedByUser;
+    boolean acceptedByOrganization;
+    boolean active;
 
     public String getMembershipId() {
         return membershipId;
@@ -57,4 +60,29 @@ public class OrganizationMembershipEntry {
         this.username = username;
     }
 
+    public boolean isAcceptedByUser() {
+        return acceptedByUser;
+    }
+
+    public void setAcceptedByUser(boolean acceptedByUser) {
+        this.acceptedByUser = acceptedByUser;
+    }
+
+    public boolean isAcceptedByOrganization() {
+        return acceptedByOrganization;
+    }
+
+    public void setAcceptedByOrganization(boolean acceptedByOrganization) {
+        this.acceptedByOrganization = acceptedByOrganization;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    
 }
