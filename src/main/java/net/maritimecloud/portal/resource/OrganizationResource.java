@@ -105,8 +105,7 @@ public class OrganizationResource extends AbstractCommandResource {
         commandJSON = overwriteIdentity(commandJSON, "organizationId", organizationId);
         sendAndWait(contentType, queryCommandName, commandJSON,
                 InviteUserToOrganization.class,
-                ApplyForMembershipToOrganization.class,
-                RemoveUserFromOrganization.class
+                ApplyForMembershipToOrganization.class
         );
     }
 
@@ -124,7 +123,7 @@ public class OrganizationResource extends AbstractCommandResource {
         commandJSON = overwriteIdentity(commandJSON, "organizationId", organizationId);
         sendAndWait(contentType, queryCommandName, commandJSON,
                 AcceptUsersMembershipApplication.class,
-                ApplyForMembershipToOrganization.class,
+                AcceptMembershipToOrganization.class,
                 RemoveUserFromOrganization.class
         );
     }

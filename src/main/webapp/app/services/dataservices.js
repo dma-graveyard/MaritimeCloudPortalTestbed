@@ -63,6 +63,17 @@ function InviteUserToOrganization(organizationId, membershipId, username) {
   this.username = username;
 }
 
+function ApplyForMembershipToOrganization(organizationId, membershipId, username, applicationMessage) {
+  this.organizationId = {identifier: organizationId};
+  this.membershipId = {identifier: membershipId};
+  this.username = username;
+  this.applicationMessage = applicationMessage;
+}
+
+function AcceptMembershipToOrganization(membershipId) {
+  this.membershipId = {identifier: membershipId};
+}
+
 function RemoveUserFromOrganization(membershipId, username) {
   this.membershipId = {identifier: membershipId};
   this.username = username;
@@ -146,7 +157,7 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           query: {method: 'GET', params: {username: ''}, isArray: false},
           post: {method: 'POST', params: {}, isArray: false},
           put: {method: 'PUT', params: {}, isArray: false},
-          queryOrganizationMeberships: {method: 'GET', url: '/rest/api/users/:username/orgs', isArray: true},
+          queryOrganizationMemberships: {method: 'GET', url: '/rest/api/users/:username/orgs', isArray: true},
           isUnique: {method: 'GET', url: '/rest/api/users/:username/exist', isArray: false}
         });
 
@@ -178,6 +189,9 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           membership: {method: 'POST', params: {},
             url: serviceBaseUrl + '/rest/api/org/:organizationId/member'
           },
+          membershipPut: {method: 'PUT', params: {},
+            url: serviceBaseUrl + '/rest/api/org/:organizationId/member'
+          },
           aliases: {method: 'GET', params: {serviceInstanceId: '@organizationId.identifier'},
             url: serviceBaseUrl + '/rest/api/org/:organizationId/alias',
             isArray: true
@@ -203,8 +217,21 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
           return this.membership({organizationId: organization.organizationId}, new InviteUserToOrganization(organization.organizationId, membershipId, username), succes, error);
         };
 
+        resource.applyForMembershipToOrganization = function (organization, membershipId, username, applicationMessage, succes, error) {
+          return this.membership({organizationId: organization.organizationId}, new ApplyForMembershipToOrganization(
+              organization.organizationId, membershipId, username, applicationMessage), succes, error);
+        };
+
+        resource.acceptMembershipToOrganization = function (organizationId, membershipId, succes, error) {
+          return this.membershipPut({organizationId: organizationId}, new AcceptMembershipToOrganization(membershipId), succes, error);
+        };
+
+        resource.dropMembershipToOrganization = function (organizationId, membershipId, succes, error) {
+          return this.membershipPut({organizationId: organizationId}, new RemoveUserFromOrganization(membershipId), succes, error);
+        };
+
         resource.RemoveUserFromOrganization = function (organization, membershipId, succes, error) {
-          return this.membership({organizationId: organization.organizationId, membershipId: membershipId}, new RemoveUserFromOrganization(membershipId), succes, error);
+          return this.membershipPut({organizationId: organization.organizationId, membershipId: membershipId}, new RemoveUserFromOrganization(membershipId), succes, error);
         };
 
         resource.addAlias = function (organization, alias, succes, error) {

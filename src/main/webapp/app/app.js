@@ -100,24 +100,24 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
           name: 'userActivation',
           url: "/users/{username}/activate/{activationId}",
           templateUrl: 'users/user-activation.html',
-          controller: 'UserConfirmEmailAddressController',
+          controller: 'UserConfirmEmailAddressController'
         },
         {
           name: 'userConfirmEmailAddress',
           url: "/users/{username}/confirmEmailAddress/{activationId}",
           templateUrl: 'users/user-confirm-email-address.html',
-          controller: 'UserConfirmEmailAddressController',
+          controller: 'UserConfirmEmailAddressController'
         },
         {
           name: 'userResetPasswordLink',
           url: "/users/{username}/reset/{activationId}",
           templateUrl: 'users/user-reset-password.html',
-          controller: 'UserResetPasswordController',
+          controller: 'UserResetPasswordController'
         },
         {
           name: 'styleguide',
           url: "/styleguide",
-          templateUrl: 'layout/styleguide.html',
+          templateUrl: 'layout/styleguide.html'
         }        
       ]
     };
@@ -133,25 +133,25 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
           name: 'dashboard',
           url: "/dashboard",
           templateUrl: 'partials/dashboard.html',
-          controller: 'DashboardController',
+          controller: 'DashboardController'
         },
         {
           name: 'users',
           url: "/users",
           templateUrl: 'users/users.html',
-          controller: 'UserListController',
+          controller: 'UserListController'
         },
         {
           name: 'userDetails',
           url: "/users/{username}",
           templateUrl: 'users/user-detail.html',
-          controller: 'UserDetailController',
+          controller: 'UserDetailController'
         },
         {
           name: 'userProfile',
           url: "/users/{username}/profile",
           templateUrl: 'users/user-profile.html',
-          controller: 'UserProfileController',
+          controller: 'UserProfileController'
         },
         {
           name: 'userChangeEmailAddressController',
@@ -169,43 +169,61 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
           name: 'organizations',
           url: "/orgs",
           templateUrl: 'organizations/manage-organizations.html',
-          controller: 'DashboardContextController',
+          controller: 'DashboardContextController'
         },
         {
           name: 'searchOrganizations',
           url: "/public/orgs",
           templateUrl: 'organizations/public-organizations.html',
-          controller: 'AlmanacOrganizationListController',
+          controller: 'AlmanacOrganizationListController'
         },
         {
           name: 'organizationCreate',
           url: "/orgs/new",
           templateUrl: 'organizations/organization-create.html',
-          controller: 'OrganizationCreateController',
+          controller: 'OrganizationCreateController'
         },
         {
           name: 'organizationDetails',
           url: "/orgs/{organizationId}",
           templateUrl: 'organizations/organization-detail.html',
-          controller: 'OrganizationDetailsController',
+          controller: 'OrganizationDetailsController'
         },
         {
           name: 'organizationSettings',
           url: "/orgs/{organizationId}/settings",
           templateUrl: 'organizations/organization-edit.html',
-          controller: 'OrganizationEditController',
+          controller: 'OrganizationEditController'
         },
         {
           name: 'organizationMembers',
           url: "/orgs/{organizationId}/members",
           templateUrl: 'organizations/members/member-list.html',
-          controller: 'OrganizationMembersController',
+          controller: 'OrganizationMembersController'
         },
         {
           name: 'organizationMembersInvite',
           url: "/orgs/{organizationId}/members/invite",
-          templateUrl: 'organizations/members/invite-member.html',
-          controller: 'OrganizationInviteMemberController',
+          templateUrl: 'organizations/members/membership.html',
+          controller: 'OrganizationInviteMemberController'
+        },
+        {
+          name: 'organizationMembersAcceptInvite',
+          url: "/orgs/{organizationId}/members/invite/accept",
+          templateUrl: 'organizations/members/membership.html',
+          controller: 'MembershipAcceptInviteController'
+        },
+        {
+          name: 'organizationMembersJoin',
+          url: "/orgs/{organizationId}/members/join",
+          templateUrl: 'organizations/members/membership.html',
+          controller: 'UserJoinOrganizationController'
+        },
+        {
+          name: 'organizationMembersLeave',
+          url: "/orgs/{organizationId}/members/leave",
+          templateUrl: 'organizations/members/membership.html',
+          controller: 'UserLeaveOrganizationController'
         },
         {
           name: 'serviceInstanceCreate',
@@ -225,8 +243,8 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
           name: 'searchServiceMap',
           url: "/search/service/map",
           templateUrl: 'search/search-service-map.html',
-          controller: 'SearchServiceMapController',
-        },
+          controller: 'SearchServiceMapController'
+        }
       ]
     };
 

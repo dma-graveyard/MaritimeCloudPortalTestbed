@@ -127,7 +127,11 @@ public class ActivityEntryListener {
 
     @EventHandler
     public void on(OrganizationRevokedUserMembership event, @MetaData(UserMetaData.USERNAME) String username, @Timestamp DateTime dateTime) {
-        register(username, dateTime, event, "Membership revoked", "revoked '" + event.getUsername() + "s' membership to organization", event.getOrganizationId());
+        if (username.equals(event.getUsername())) {
+            register(username, dateTime, event, "Membership dropped", "dropped membership to organization", event.getOrganizationId());
+        } else {
+            register(username, dateTime, event, "Membership revoked", "revoked '" + event.getUsername() + "s' membership to organization", event.getOrganizationId());
+        }
     }
 
     @EventHandler

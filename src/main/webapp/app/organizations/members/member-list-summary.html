@@ -9,5 +9,12 @@
         <div class="team" ng-repeat="member in organization.members| filter:filter_query">
             <a ng-class="'fa fa-user'" href="#/users/{{member.username}}"> {{member.username}}</a>
         </div>
+        <br>
+        <div ng-switch="memberStatus">
+           <button ng-switch-when='LEAVE' class='btn-minier btn-danger fa fa-trash' ui-sref='restricted.organizationMembersLeave({organizationId: organizationRef(organization)})' href=''> Leave </button>
+           <p ng-switch-when='PENDING' href=''> You have a pending membership application! </p>
+           <button ng-switch-when='ACCEPT' class='btn-minier btn-info fa fa-check' ui-sref='restricted.organizationMembersAcceptInvite({organizationId: organizationRef(organization)})'> Accept Invite </button>
+           <button ng-switch-when='JOIN' class='btn-minier btn-primary fa fa-plus' ui-sref='restricted.organizationMembersJoin({organizationId: organizationRef(organization)})'> Join </button>
+        </div>
     </div>
 </div>

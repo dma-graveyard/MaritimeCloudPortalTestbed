@@ -259,15 +259,29 @@ angular.module('mcp.users', ['ui.bootstrap'])
           return organizationMemberships;
         };
         this.isAdminMemberOf = function (organizationId) {
+          return this.membershipOf(organizationId) !== null;
+        };
+        this.membershipOf = function (organizationId) {
           for (var i = 0; i < organizationMemberships.length; i++) {
             if (organizationId === organizationMemberships[i].organizationId) {
-              return true;
+              return organizationMemberships[i];
             }
           }
-          return false;
+          return null;
+        };
+        this.membershipStatus = function (organizationId) {
+          var userMembership = this.membershipOf(organizationId);
+          var isMember = userMembership !== null && userMembership.active;
+          var hasPendingApplication = userMembership !== null && !userMembership.active && userMembership.acceptedByUser;
+          var isInvited = userMembership !== null && !userMembership.active && userMembership.acceptedByOrganization;
+          var membershipStatus = !currentUser ? "UNDEFINED" :
+              isMember ? "LEAVE" :
+              hasPendingApplication ? "PENDING" :
+              isInvited ? "ACCEPT" : "JOIN";
+          return membershipStatus;
         };
         var updateOrganizationMemberships = function () {
-          organizationMemberships = !currentUser ? [] : UserService.queryOrganizationMeberships({username: currentUser.name}, function (memberships) {
+          organizationMemberships = !currentUser ? [] : UserService.queryOrganizationMemberships({username: currentUser.name}, function (memberships) {
             memberships.forEach(function (membership) {
               // hydrate with organization
               membership.organization = OrganizationService.get({organizationId: membership.organizationId});
