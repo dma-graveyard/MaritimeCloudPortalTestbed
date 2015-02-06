@@ -97,6 +97,9 @@ public abstract class ResourceTest extends JerseyTest {
      * @see ApplicationServiceTest#createApplicationContext()
      */
     protected ApplicationContext createApplicationContext() {
+        
+        System.setProperty("baseUrl", "localhost:8080");
+        System.setProperty("spaUrl", "/app/index.html/");
         return new AnnotationConfigApplicationContext(ApplicationTestConfig.class);
     }
 

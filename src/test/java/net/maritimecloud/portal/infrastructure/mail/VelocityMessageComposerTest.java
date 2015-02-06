@@ -32,7 +32,7 @@ public class VelocityMessageComposerTest {
     
     @Before
     public void setUp() throws IOException {
-        messageComposer = new VelocityMessageComposer(new ApplicationConfig().velocityEngine());
+        messageComposer = new VelocityMessageComposer(new ApplicationConfig().velocityEngine(), "localhost:8080/app/index.html");
         
     }
     
