@@ -43,9 +43,9 @@ public class ApplicationInMemoryDemoConfig {
     JavaMailSender mailSender;
 
     @Bean
-    @ConditionalOnProperty(prefix = "spring.mail", name = "password", havingValue = "false", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "spring.mail", name = "host", havingValue = "console", matchIfMissing = true)
     public MailAdapter mailAdapter() throws IOException {
-        LOG.info("No Mail sender configured - echoing to console. Make sure spring.mail.password is set "/*+ env.getProperty("spring.mail.password")*/);
+        LOG.info("No Mail sender configured - echoing to console. Make sure spring.mail.host is not set to 'console'"/*+ env.getProperty("spring.mail.host")*/);
         return (Mail mail) -> {
             System.out.println("Send (dummy mail adapter): " + mail);
         };
