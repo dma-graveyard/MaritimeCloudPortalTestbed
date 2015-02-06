@@ -6,9 +6,9 @@ angular.module('mcp.organizations.members', ['ui.bootstrap'])
 
     .controller('MembershipUserStatusController', ['$scope', 'UserContext',
       function ($scope, UserContext) {
-
-        // Adds 'membershipStatus' to scope: 
-        UserContext.membershipStatus($scope.membership.organizationId, $scope);
+        UserContext.initAndThen(function (user) {
+          $scope.membershipStatus = user.membershipStatus($scope.membership.organizationId);
+        });
       }])
 
     .controller('OrganizationMembersSummaryController', ['$scope', '$stateParams', 'UserContext', 'OrganizationService', 'AlmanacOrganizationMemberService',
@@ -33,11 +33,12 @@ angular.module('mcp.organizations.members', ['ui.bootstrap'])
             $scope.organization.membersApplying = members.filter(isApplying);
             $scope.organization.membersInvited = members.filter(isInvited);
           });
-          $scope.userHasWriteAccess = UserContext.isAdminMemberOf($scope.organization.organizationId);
-
-          // Adds 'membershipStatus' to scope: 
-          UserContext.membershipStatus($scope.organization.organizationId, $scope);
+          UserContext.initAndThen(function (user) {
+            $scope.userHasWriteAccess = user.hasWriteAccessTo(organization.organizationId);
+            $scope.membershipStatus = user.membershipStatus(organization.organizationId);
+          });
         });
+
       }])
 
     .controller('OrganizationMembersController', ['$scope', '$stateParams', 'UserContext', 'OrganizationService', 'AlmanacOrganizationMemberService',
@@ -45,7 +46,10 @@ angular.module('mcp.organizations.members', ['ui.bootstrap'])
 
         $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId}, function (organization) {
           $scope.organization.members = AlmanacOrganizationMemberService.query({organizationId: organization.organizationId});
-          $scope.userHasWriteAccess = UserContext.isAdminMemberOf($scope.organization.organizationId);
+          UserContext.initAndThen(function (user) {
+            $scope.userHasWriteAccess = user.hasWriteAccessTo(organization.organizationId);
+          });
+
         });
 
         $scope.canBeRemoved = function (membership) {
@@ -77,7 +81,7 @@ angular.module('mcp.organizations.members', ['ui.bootstrap'])
         };
 
         $scope.viewState = 'list';
-        
+
         $scope.confirmRemove = function (username) {
           $scope.viewState = 'confirm-remove';
           $scope.selectedMember = username;
@@ -127,9 +131,8 @@ angular.module('mcp.organizations.members', ['ui.bootstrap'])
         $scope.viewState = 'accept-application-try';
         $scope.busyPromise = OrganizationService.get({organizationId: $stateParams.organizationId}, function (organization) {
           $scope.organization = organization;
-          var membership = UserContext.membershipOf($stateParams.organizationId);
           $scope.busyPromise = OrganizationService.acceptUsersMembershipApplication(
-              membership.organizationId,
+              organization.organizationId,
               $stateParams.membershipId,
               function () {
                 $scope.viewState = 'accept-application-success';
@@ -175,7 +178,6 @@ angular.module('mcp.organizations.members', ['ui.bootstrap'])
 
         $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId}, function (organization) {
           $scope.organization.members = AlmanacOrganizationMemberService.query({organizationId: organization.organizationId});
-          $scope.userHasWriteAccess = UserContext.isAdminMemberOf($scope.organization.organizationId);
         });
 
         $scope.isNewMember = function (user) {

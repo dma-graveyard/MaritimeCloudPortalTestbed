@@ -8,6 +8,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
       function ($scope, OrganizationContext, UserContext) {
 
         $scope.currentOrganization = OrganizationContext.currentOrganization();
+        
         $scope.isOwnerOf = UserContext.isOwnerOf;
 
         $scope.OrganizationContext = OrganizationContext;
@@ -169,12 +170,14 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
       }])
 
     .controller('OrganizationDetailsController', ['$scope', '$stateParams', 'OrganizationService', 'UserContext',
-      'AlmanacOrganizationMemberService', 'ServiceSpecificationService', 'ServiceInstanceService',
-      function ($scope, $stateParams, OrganizationService, UserContext, AlmanacOrganizationMemberService, ServiceSpecificationService,
+      'ServiceSpecificationService', 'ServiceInstanceService',
+      function ($scope, $stateParams, OrganizationService, UserContext, ServiceSpecificationService,
           ServiceInstanceService) {
 
         $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId}, function (organization) {
-          $scope.userHasWriteAccess = UserContext.isAdminMemberOf(organization.organizationId);
+          UserContext.initAndThen(function(user){
+            $scope.userHasWriteAccess = user.hasWriteAccessTo(organization.organizationId);
+          });
         });
 
         $scope.specifications = ServiceSpecificationService.query({organizationId: $stateParams.organizationId});

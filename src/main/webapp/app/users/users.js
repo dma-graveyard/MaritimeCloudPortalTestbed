@@ -239,9 +239,12 @@ angular.module('mcp.users', ['ui.bootstrap'])
     .service('UserContext', ['UserService', 'OrganizationService', 'AlmanacOrganizationMemberService', function (UserService, OrganizationService, AlmanacOrganizationMemberService) {
 
         var currentUser = null;
+        var userContext = null;
         // Organizations that the current user is a member of
         var organizationMemberships = [];
+
         this.reset = function () {
+          userContext = null;
           currentUser = null;
           organizationMemberships = [];
         };
@@ -258,40 +261,43 @@ angular.module('mcp.users', ['ui.bootstrap'])
         this.organizationMemberships = function () {
           return organizationMemberships;
         };
-        this.isAdminMemberOf = function (organizationId) {
-          var m = this.membershipOf(organizationId);
-          return m !== null && m.active;
-        };
-        this.membershipOf = function (organizationId) {
-          for (var i = 0; i < organizationMemberships.length; i++) {
-            if (organizationId === organizationMemberships[i].organizationId) {
-              return organizationMemberships[i];
-            }
-          }
-          return null;
-        };
-        
-        var that = this;
-        this.membershipStatus = function (organizationId, target) {
+        this.initAndThen = function (callback) {
           return organizationMemberships.$promise.then(function (memberships) {
-            var userMembership = that.membershipOf(organizationId);
-            var isMember = userMembership !== null && userMembership.active;
-            var hasPendingApplication = userMembership !== null && !userMembership.active && userMembership.acceptedByUser;
-            var isInvited = userMembership !== null && !userMembership.active && userMembership.acceptedByOrganization;
-
-            var membershipStatus = !currentUser ? "UNDEFINED" :
-                isMember ? "LEAVE" :
-                hasPendingApplication ? "PENDING" :
-                isInvited ? "ACCEPT" : "JOIN";
-            
-            // assign the result as a property to the target
-            target.membershipStatus = membershipStatus;
+            callback(userContext);
           });
         };
-        var updateOrganizationMemberships = function () {
+        this.membershipOf = function (organizationId) {
+          var list = organizationMemberships.filter(function (m) {
+            return organizationId === m.organizationId;
+          });
+          return list.length ? list[0] : null;
+        };
 
+        var updateOrganizationMemberships = function () {
+          userContext = null;
+          organizationMemberships = [];
           if (currentUser) {
             organizationMemberships = UserService.queryOrganizationMemberships({username: currentUser.name}, function (memberships) {
+
+              if (!userContext) {
+                userContext = {
+                  memberships: memberships,
+                  membershipOf: function (organizationId) {
+                    var list = memberships.filter(function (m) {
+                      return organizationId === m.organizationId;
+                    });
+                    return list.length ? list[0] : null;
+                  },
+                  hasWriteAccessTo: function (organizationId) {
+                    var m = this.membershipOf(organizationId);
+                    return m && m.active;
+                  },
+                  membershipStatus: function (organizationId) {
+                    return _membershipStatus(this.membershipOf(organizationId));
+                  }
+                };
+              }
+
               memberships.forEach(function (membership) {
                 // hydrate with organization
                 membership.organization = OrganizationService.get({organizationId: membership.organizationId}, function (organization) {
@@ -315,12 +321,9 @@ angular.module('mcp.users', ['ui.bootstrap'])
                     membership.organization.membersInvited = members.filter(isInvited);
                   });
 
-
                 });
               });
             });
-          } else {
-            organizationMemberships = [];
           }
         };
         this.isOwnerOf = function (organization) {
@@ -335,6 +338,19 @@ angular.module('mcp.users', ['ui.bootstrap'])
           }
           return null;
         };
+        var _membershipStatus = function (m) {
+          var isMember = m !== null && m.active;
+          var hasPendingApplication = m !== null && !m.active && m.acceptedByUser;
+          var isInvited = m !== null && !m.active && m.acceptedByOrganization;
+
+          var membershipStatus = isMember ? "LEAVE" :
+              hasPendingApplication ? "PENDING" :
+              isInvited ? "ACCEPT" : "JOIN";
+
+          return membershipStatus;
+        };
+
       }])
 
     ;
+
