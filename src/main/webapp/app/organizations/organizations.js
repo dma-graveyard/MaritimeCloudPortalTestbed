@@ -174,7 +174,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
           ServiceInstanceService) {
 
         $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId}, function (organization) {
-          $scope.userHasWriteAccess = UserContext.isAdminMemberOf($scope.organization.organizationId);
+          $scope.userHasWriteAccess = UserContext.isAdminMemberOf(organization.organizationId);
         });
 
         $scope.specifications = ServiceSpecificationService.query({organizationId: $stateParams.organizationId});

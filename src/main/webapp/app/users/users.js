@@ -191,7 +191,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
         $scope.busyPromise = null;
         $scope.user.username = $stateParams.username;
         $scope.retry = function () {
-            $scope.viewState = "supplyPassword";
+          $scope.viewState = "supplyPassword";
         };
         $scope.changePassword = function (currentPassword, newPassword) {
           $scope.busyPromise = UserService.changeUserPassword({
@@ -236,7 +236,7 @@ angular.module('mcp.users', ['ui.bootstrap'])
     // holds info about: 
     // - the current logged in user 
     // - the users list of organization memberships
-    .service('UserContext', ['UserService', 'OrganizationService', function (UserService, OrganizationService) {
+    .service('UserContext', ['UserService', 'OrganizationService', 'AlmanacOrganizationMemberService', function (UserService, OrganizationService, AlmanacOrganizationMemberService) {
 
         var currentUser = null;
         // Organizations that the current user is a member of
@@ -259,7 +259,8 @@ angular.module('mcp.users', ['ui.bootstrap'])
           return organizationMemberships;
         };
         this.isAdminMemberOf = function (organizationId) {
-          return this.membershipOf(organizationId) !== null;
+          var m = this.membershipOf(organizationId);
+          return m !== null && m.active;
         };
         this.membershipOf = function (organizationId) {
           for (var i = 0; i < organizationMemberships.length; i++) {
@@ -269,24 +270,58 @@ angular.module('mcp.users', ['ui.bootstrap'])
           }
           return null;
         };
-        this.membershipStatus = function (organizationId) {
-          var userMembership = this.membershipOf(organizationId);
-          var isMember = userMembership !== null && userMembership.active;
-          var hasPendingApplication = userMembership !== null && !userMembership.active && userMembership.acceptedByUser;
-          var isInvited = userMembership !== null && !userMembership.active && userMembership.acceptedByOrganization;
-          var membershipStatus = !currentUser ? "UNDEFINED" :
-              isMember ? "LEAVE" :
-              hasPendingApplication ? "PENDING" :
-              isInvited ? "ACCEPT" : "JOIN";
-          return membershipStatus;
+        
+        var that = this;
+        this.membershipStatus = function (organizationId, target) {
+          return organizationMemberships.$promise.then(function (memberships) {
+            var userMembership = that.membershipOf(organizationId);
+            var isMember = userMembership !== null && userMembership.active;
+            var hasPendingApplication = userMembership !== null && !userMembership.active && userMembership.acceptedByUser;
+            var isInvited = userMembership !== null && !userMembership.active && userMembership.acceptedByOrganization;
+
+            var membershipStatus = !currentUser ? "UNDEFINED" :
+                isMember ? "LEAVE" :
+                hasPendingApplication ? "PENDING" :
+                isInvited ? "ACCEPT" : "JOIN";
+            
+            // assign the result as a property to the target
+            target.membershipStatus = membershipStatus;
+          });
         };
         var updateOrganizationMemberships = function () {
-          organizationMemberships = !currentUser ? [] : UserService.queryOrganizationMemberships({username: currentUser.name}, function (memberships) {
-            memberships.forEach(function (membership) {
-              // hydrate with organization
-              membership.organization = OrganizationService.get({organizationId: membership.organizationId});
+
+          if (currentUser) {
+            organizationMemberships = UserService.queryOrganizationMemberships({username: currentUser.name}, function (memberships) {
+              memberships.forEach(function (membership) {
+                // hydrate with organization
+                membership.organization = OrganizationService.get({organizationId: membership.organizationId}, function (organization) {
+                  membership.organization = organization;
+
+                  AlmanacOrganizationMemberService.query({organizationId: organization.organizationId}, function (members) {
+
+                    var isActive = function (m) {
+                      return m.active;
+                    };
+                    var isApplying = function (m) {
+                      return !(m.active || m.acceptedByOrganization) && m.acceptedByUser;
+                    };
+                    var isInvited = function (m) {
+                      return !m.active && m.acceptedByOrganization && !m.acceptedByUser;
+                    };
+
+                    membership.organization.members = members;
+                    membership.organization.activeMembers = members.filter(isActive);
+                    membership.organization.membersApplying = members.filter(isApplying);
+                    membership.organization.membersInvited = members.filter(isInvited);
+                  });
+
+
+                });
+              });
             });
-          });
+          } else {
+            organizationMemberships = [];
+          }
         };
         this.isOwnerOf = function (organization) {
           var membership = findMembership(organization.organizationId);

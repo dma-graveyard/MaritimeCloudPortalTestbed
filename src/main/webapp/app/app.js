@@ -220,6 +220,12 @@ mcpApp.config(['$stateProvider', 'stateHelperProvider', '$urlRouterProvider', 'U
           controller: 'UserJoinOrganizationController'
         },
         {
+          name: 'organizationMembersAcceptApplication',
+          url: "/orgs/{organizationId}/members/join/accept/{membershipId}",
+          templateUrl: 'organizations/members/membership.html',
+          controller: 'MembershipAcceptApplicationController'
+        },
+        {
           name: 'organizationMembersLeave',
           url: "/orgs/{organizationId}/members/leave",
           templateUrl: 'organizations/members/membership.html',

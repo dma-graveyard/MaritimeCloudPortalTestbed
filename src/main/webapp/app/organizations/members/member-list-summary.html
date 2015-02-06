@@ -6,15 +6,31 @@
         <div >
             Search member: <input ng-model="filter_query"> 
         </div>
-        <div class="team" ng-repeat="member in organization.members| filter:filter_query">
+        <div class="team" ng-repeat="member in organization.activeMembers| filter:filter_query">
             <a ng-class="'fa fa-user'" href="#/users/{{member.username}}"> {{member.username}}</a>
         </div>
-        <br>
-        <div ng-switch="memberStatus">
-           <button ng-switch-when='LEAVE' class='btn-minier btn-danger fa fa-trash' ui-sref='restricted.organizationMembersLeave({organizationId: organizationRef(organization)})' href=''> Leave </button>
-           <p ng-switch-when='PENDING' href=''> You have a pending membership application! </p>
-           <button ng-switch-when='ACCEPT' class='btn-minier btn-info fa fa-check' ui-sref='restricted.organizationMembersAcceptInvite({organizationId: organizationRef(organization)})'> Accept Invite </button>
-           <button ng-switch-when='JOIN' class='btn-minier btn-primary fa fa-plus' ui-sref='restricted.organizationMembersJoin({organizationId: organizationRef(organization)})'> Join </button>
+        <div ng-if='userHasWriteAccess'>
+            <div ng-if='organization.membersApplying.length'>
+                <h4>Applied for membership:</h4>
+                <div class="team" ng-repeat="member in organization.membersApplying">
+                    <a ng-class="'fa fa-user'" href="#/users/{{member.username}}"> {{member.username}}</a>
+                    <button class='btn-minier btn-success fa fa-check' ui-sref='restricted.organizationMembersAcceptApplication({membershipId: member.membershipId, organizationId: member.organizationId})'> Accept </button>
+                    <p ng-if='!member.active && member.acceptedByOrganization && !member.acceptedByUser'> invited </p>
+                </div>
+            </div>
+            <div ng-if='organization.membersInvited.length'>
+                <h4>Invitations send to:</h4>
+                <div class="team" ng-repeat="member in organization.membersInvited">
+                    <a ng-class="'fa fa-user'" href="#/users/{{member.username}}"> {{member.username}}</a>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div ng-switch="membershipStatus">
+            <button ng-switch-when='LEAVE' class='btn-minier btn-danger fa fa-trash' ui-sref='restricted.organizationMembersLeave({organizationId: organizationRef(organization)})' href=''> Leave </button>
+            <p ng-switch-when='PENDING' class='bg-success'><span class='fa fa-envelope'></span> You have applied for membership! </p>
+            <button ng-switch-when='ACCEPT' class='btn-minier btn-success fa fa-check' ui-sref='restricted.organizationMembersAcceptInvite({organizationId: organizationRef(organization)})'> Accept Invite </button>
+            <button ng-switch-when='JOIN' class='btn-minier btn-primary fa fa-plus' ui-sref='restricted.organizationMembersJoin({organizationId: organizationRef(organization)})'> Join </button>
         </div>
     </div>
 </div>

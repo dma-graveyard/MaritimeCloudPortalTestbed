@@ -29,6 +29,17 @@
                             <span class="menu-item-check" ng-class="{'selected' : isCurrentContext(membership.organization)}">&#x2713;</span>
                             <i class="menu-icon fa fa-university"></i> {{membership.organization.name}}
                         </a>
+                        
+                        <span ng-if="membership.active">
+                        <span class="badge" popover="There are pending membership applications" popover-trigger="mouseenter" popover-placement="top"
+                              >{{membership.organization.membersApplying.length>0?membership.organization.membersApplying.length:''}}</span>
+                        </span>
+
+                        <span ng-controller="MembershipUserStatusController" ng-switch="membershipStatus"> 
+                            <span class='label label-warning' ng-switch-when='PENDING'> you have applied for membership </span>
+                            <a ng-switch-when='ACCEPT' class='label label-success' Xclass='btn-minier btn-success fa fa-check' ui-sref='restricted.organizationMembersAcceptInvite({organizationId: membership.organizationId})'> Accept Invite </a>
+                        </span>
+
                     </li>
                 </ul>
             </div> 

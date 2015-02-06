@@ -94,6 +94,21 @@
     <panel-button btn-type="default" ui-sref="restricted.organizationDetails({organizationId: organizationRef(organization)})"> Ok </panel-button>
 </panel>
 
+<!-- ACCEPT APPLICATION VIEW -->
+
+<panel ng-show="viewState === 'accept-application-try'" category="primary" icon="" title="Accepting..." offset="3">
+    <p>
+        Sending request...
+    </p>
+</panel>
+
+<panel ng-show="viewState === 'accept-application-success'" category="primary" icon="check" title="User application accepted" offset="3">
+    <p>
+        The user is now a member of {{organization.name}}.
+    </p>
+    <panel-button btn-type="default" ui-sref="restricted.organizationDetails({organizationId: organizationRef(organization)})"> Ok </panel-button>
+</panel>
+
 <!-- LEAVE VIEW -->
 
 <panel ng-show="viewState === 'confirm-leave'" category="danger" icon="danger" title="Really leave?" offset="3">

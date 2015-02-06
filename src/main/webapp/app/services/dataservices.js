@@ -74,6 +74,10 @@ function AcceptMembershipToOrganization(membershipId) {
   this.membershipId = {identifier: membershipId};
 }
 
+function AcceptUsersMembershipApplication(membershipId) {
+  this.membershipId = {identifier: membershipId};
+}
+
 function RemoveUserFromOrganization(membershipId, username) {
   this.membershipId = {identifier: membershipId};
   this.username = username;
@@ -224,6 +228,10 @@ var mcpServices = angular.module('mcp.dataservices', ['ngResource'])
 
         resource.acceptMembershipToOrganization = function (organizationId, membershipId, succes, error) {
           return this.membershipPut({organizationId: organizationId}, new AcceptMembershipToOrganization(membershipId), succes, error);
+        };
+
+        resource.acceptUsersMembershipApplication = function (organizationId, membershipId, succes, error) {
+          return this.membershipPut({organizationId: organizationId}, new AcceptUsersMembershipApplication(membershipId), succes, error);
         };
 
         resource.dropMembershipToOrganization = function (organizationId, membershipId, succes, error) {

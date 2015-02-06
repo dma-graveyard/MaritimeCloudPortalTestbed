@@ -4,15 +4,39 @@
 
 angular.module('mcp.organizations.members', ['ui.bootstrap'])
 
+    .controller('MembershipUserStatusController', ['$scope', 'UserContext',
+      function ($scope, UserContext) {
+
+        // Adds 'membershipStatus' to scope: 
+        UserContext.membershipStatus($scope.membership.organizationId, $scope);
+      }])
+
     .controller('OrganizationMembersSummaryController', ['$scope', '$stateParams', 'UserContext', 'OrganizationService', 'AlmanacOrganizationMemberService',
       function ($scope, $stateParams, UserContext, OrganizationService, AlmanacOrganizationMemberService) {
+
+        var isActive = function (m) {
+          return m.active;
+        };
+        var isApplying = function (m) {
+          return !(m.active || m.acceptedByOrganization) && m.acceptedByUser;
+        };
+        var isInvited = function (m) {
+          return !m.active && m.acceptedByOrganization && !m.acceptedByUser;
+        };
 
         UserContext.refresh();
 
         $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId}, function (organization) {
-          $scope.organization.members = AlmanacOrganizationMemberService.query({organizationId: organization.organizationId});
+          AlmanacOrganizationMemberService.query({organizationId: organization.organizationId}, function (members) {
+            $scope.organization.members = members;
+            $scope.organization.activeMembers = members.filter(isActive);
+            $scope.organization.membersApplying = members.filter(isApplying);
+            $scope.organization.membersInvited = members.filter(isInvited);
+          });
           $scope.userHasWriteAccess = UserContext.isAdminMemberOf($scope.organization.organizationId);
-          $scope.memberStatus = UserContext.membershipStatus($scope.organization.organizationId);
+
+          // Adds 'membershipStatus' to scope: 
+          UserContext.membershipStatus($scope.organization.organizationId, $scope);
         });
       }])
 
@@ -24,14 +48,36 @@ angular.module('mcp.organizations.members', ['ui.bootstrap'])
           $scope.userHasWriteAccess = UserContext.isAdminMemberOf($scope.organization.organizationId);
         });
 
-        $scope.canBeRemoved = function (member) {
-          return $scope.userHasWriteAccess && UserContext.currentUser() && member.username !== UserContext.currentUser().name;
+        $scope.canBeRemoved = function (membership) {
+          return isNotCurrentUser(membership);
+        };
+
+        $scope.canBeAccepted = function (membership) {
+          return isNotCurrentUser(membership) && isApplying(membership);
+        };
+
+        $scope.isInvited = function (membership) {
+          return isInvited(membership);
+        };
+
+        var isNotCurrentUser = function (membership) {
+          return !$scope.isCurrentUser(membership);
+        };
+
+        $scope.isCurrentUser = function (membership) {
+          return UserContext.currentUser() && membership.username === UserContext.currentUser().name;
+        };
+
+        var isApplying = function (m) {
+          return !(m.active || m.acceptedByOrganization) && m.acceptedByUser;
+        };
+
+        var isInvited = function (m) {
+          return !m.active && m.acceptedByOrganization && !m.acceptedByUser;
         };
 
         $scope.viewState = 'list';
-        $scope.remove = function (username) {
-        };
-
+        
         $scope.confirmRemove = function (username) {
           $scope.viewState = 'confirm-remove';
           $scope.selectedMember = username;
@@ -57,8 +103,8 @@ angular.module('mcp.organizations.members', ['ui.bootstrap'])
     .controller('MembershipAcceptInviteController', ['$scope', '$stateParams', 'UserContext', 'OrganizationService',
       function ($scope, $stateParams, UserContext, OrganizationService) {
 
+        $scope.viewState = 'accept-invite-try';
         $scope.busyPromise = OrganizationService.get({organizationId: $stateParams.organizationId}, function (organization) {
-          $scope.viewState = 'accept-invite-try';
           $scope.organization = organization;
           var membership = UserContext.membershipOf(organization.organizationId);
           $scope.busyPromise = OrganizationService.acceptMembershipToOrganization(
@@ -66,6 +112,27 @@ angular.module('mcp.organizations.members', ['ui.bootstrap'])
               membership.membershipId,
               function () {
                 $scope.viewState = 'accept-success';
+              },
+              function (error) { /*reportError*/
+                console.log("Error, dammit!", error);
+                $scope.viewState = 'error';
+              }
+          );
+        });
+      }])
+
+    .controller('MembershipAcceptApplicationController', ['$scope', '$stateParams', 'UserContext', 'OrganizationService',
+      function ($scope, $stateParams, UserContext, OrganizationService) {
+
+        $scope.viewState = 'accept-application-try';
+        $scope.busyPromise = OrganizationService.get({organizationId: $stateParams.organizationId}, function (organization) {
+          $scope.organization = organization;
+          var membership = UserContext.membershipOf($stateParams.organizationId);
+          $scope.busyPromise = OrganizationService.acceptUsersMembershipApplication(
+              membership.organizationId,
+              $stateParams.membershipId,
+              function () {
+                $scope.viewState = 'accept-application-success';
               },
               function (error) { /*reportError*/
                 console.log("Error, dammit!", error);
@@ -84,7 +151,6 @@ angular.module('mcp.organizations.members', ['ui.bootstrap'])
           $scope.membership = UserContext.membershipOf(organization.organizationId);
 
           $scope.leave = function (membership) {
-            console.log(membership);
             $scope.busyPromise = OrganizationService.dropMembershipToOrganization(
                 membership.organizationId,
                 membership.membershipId,
