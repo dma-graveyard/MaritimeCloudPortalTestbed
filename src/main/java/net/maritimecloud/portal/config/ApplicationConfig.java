@@ -25,6 +25,7 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.glassfish.jersey.servlet.ServletProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.embedded.ServletListenerRegistrationBean;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
@@ -40,6 +41,12 @@ import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 public class ApplicationConfig {
 
     private static final Logger LOG = LoggerFactory.getLogger(ApplicationConfig.class);
+
+    @Value(value = "${baseUrl:localhost:8080}")
+    private String baseUrl;
+
+    @Value(value = "${spaUrl:${baseUrl}/app/index.html}")
+    private String spaUrl;
 
     @Resource
     private Environment env;
@@ -129,12 +136,14 @@ public class ApplicationConfig {
     @Bean
     public MailAdapter mailAdapter() throws IOException {
         LOG.info("Using Mail sender with host '" + env.getProperty("spring.mail.host") + "' and user '" + env.getProperty("spring.mail.user") + "'");
+        LOG.info("************* Links to maritime cloud use this base URL: " + baseUrl);
+        LOG.info("************* Links to maritime cloud use this spa URL: " + spaUrl);
         return new SmtpMailAdapter(mailSender);
     }
 
     @Bean
     public MailService mailService() throws IOException {
-        return new MailService(new VelocityMessageComposer(velocityEngine()), mailAdapter());
+        return new MailService(new VelocityMessageComposer(velocityEngine(), spaUrl), mailAdapter());
     }
 
     @Bean

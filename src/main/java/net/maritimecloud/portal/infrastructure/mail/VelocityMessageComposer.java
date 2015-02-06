@@ -25,15 +25,17 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
  */
 public class VelocityMessageComposer implements MessageComposer {
 
-    private static final String BASE_URL = "http://localhost:8080/app/index.html";
     private static final String TEMPLATE_SIGN_UP_ACTIVATION_MESSAGE = "templates/signUpActivationMessage.vm.html";
     private static final String TEMPLATE_RESET_PASSWORD_MESSAGE = "templates/resetPasswordMessage.vm.html";
     private static final String TEMPLATE_CONFIRM_CHANGED_EMAIL_ADDRESS_MESSAGE = "templates/confirmChangedEmailAddressMessage.vm.html";
     private final VelocityEngine velocityEngine;
+    private final String spaUrl;
 
-    public VelocityMessageComposer(VelocityEngine velocityEngine) {
+    public VelocityMessageComposer(VelocityEngine velocityEngine, String spaUrl) {
         assert (velocityEngine != null);
+        assert (spaUrl != null);
         this.velocityEngine = velocityEngine;
+        this.spaUrl = spaUrl;
     }
 
     @Override
@@ -68,7 +70,7 @@ public class VelocityMessageComposer implements MessageComposer {
     private Map createModel(String username, String key) {
         Map model = new HashMap();
         model.put("username", username);
-        model.put("baseUrl", BASE_URL);
+        model.put("baseUrl", spaUrl);
         model.put("activationid", key);
         return model;
     }
