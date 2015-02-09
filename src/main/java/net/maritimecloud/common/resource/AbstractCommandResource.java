@@ -16,10 +16,13 @@ package net.maritimecloud.common.resource;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import net.maritimecloud.common.cqrs.Command;
 import net.maritimecloud.common.cqrs.CommandRegistry;
 import static net.maritimecloud.common.resource.RestCommandUtil.readCommand;
 import static net.maritimecloud.common.resource.RestCommandUtil.resolveCommandName;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.AuthorizationException;
 import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.slf4j.Logger;
@@ -73,4 +76,27 @@ public abstract class AbstractCommandResource {
 
     protected abstract CommandGateway commandGateway();
 
+    protected void requiresRoles(String... roles) {
+        try {
+            SecurityUtils.getSubject().checkRoles(roles);
+        } catch (AuthorizationException authorizationException) {
+            throw new WebApplicationException(authorizationException, Response.Status.UNAUTHORIZED);
+        }
+    }
+
+    protected void assertUserRole(String role, String resolveCommandName, Class... commandTypes) {
+        if (matchCommandType(resolveCommandName, commandTypes)) {
+            requiresRoles("USER");
+        }
+    }
+
+    protected boolean matchCommandType(String resolveCommandName, Class... commandTypes) {
+        for (Class commandType : commandTypes) {
+            if (commandType.getSimpleName().equals(resolveCommandName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }

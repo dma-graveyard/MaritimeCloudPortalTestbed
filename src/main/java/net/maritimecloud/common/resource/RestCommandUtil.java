@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * @author Christoffer Børrild
  */
-class RestCommandUtil {
+public class RestCommandUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(RestCommandUtil.class);
 

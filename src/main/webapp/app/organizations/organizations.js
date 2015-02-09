@@ -43,8 +43,8 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
         AlmanacServiceInstanceService.query(function (list) {
           $scope.statistics.services = list.length;
         });
-        UserService.query(function (list) {
-          $scope.statistics.users = list.length;
+        UserService.count(function (result) {
+          $scope.statistics.users = result.usersCount;
         });
 
         $scope.isCurrentContext = function (organization) {

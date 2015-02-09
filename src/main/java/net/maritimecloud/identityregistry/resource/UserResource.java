@@ -31,6 +31,7 @@ import javax.ws.rs.core.Response;
 import net.maritimecloud.common.resource.AbstractCommandResource;
 import net.maritimecloud.common.resource.JsonCommandHelper;
 import static net.maritimecloud.common.resource.JsonCommandHelper.identityIsEmpty;
+import static net.maritimecloud.common.resource.RestCommandUtil.resolveCommandName;
 import net.maritimecloud.identityregistry.command.api.ChangeUserEmailAddress;
 import net.maritimecloud.identityregistry.command.api.ChangeUserPassword;
 import net.maritimecloud.identityregistry.command.api.RegisterUser;
@@ -124,6 +125,13 @@ public class UserResource extends AbstractCommandResource {
             String commandJSON
     ) {
         LOG.info("Organization PUT command");
+
+        // only allow anonymous access to VerifyEmailAddress
+        assertUserRole("USER", resolveCommandName(contentType, queryCommandName),
+                ChangeUserEmailAddress.class,
+                ChangeUserPassword.class
+        );
+
         String userId = resolveUserIdOrFail(username);
         commandJSON = overwriteIdentity(commandJSON, "userId", userId);
         sendAndWait(contentType, queryCommandName, commandJSON,
@@ -145,12 +153,36 @@ public class UserResource extends AbstractCommandResource {
             @QueryParam("page") @DefaultValue("0") int page,
             @QueryParam("size") @DefaultValue("10") int size
     ) {
-        // FIXME: we should hide the email address - it should only be visible from users profile!
+        // shori.ini allws "anon"-access to open for POST - restrict GET programaticly to ADMIN role
+        requiresRoles("ADMIN");
 
+        // FIXME: we should hide the email address - it should only be visible from users profile!
         Pageable pageable = new PageRequest(page, size, new Sort(Sort.Direction.DESC, "username"));
         return usernamePattern == null
                 ? userQueryRepository().findAll(pageable)
                 : userQueryRepository().findByUsernameContaining(usernamePattern, pageable);
+    }
+    
+    @GET
+    @Path("count")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getUsersCount(
+    ) {
+        return "{\"usersCount\":" + userQueryRepository().count() + "}";
+    }
+
+    @GET
+    @Path("{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public UserEntry getUser(@PathParam("username") String aUsername) {
+        requiresRoles("USER");
+        LOG.debug("Called getUser with username " + aUsername);
+        LOG.warn("TODO: We should probably not expose this service publicly. Only logged in users should be able to get user info!!! ");
+
+        // FIXME: user should only be able to access own profile unless is an admin 
+        UserEntry userEntry = findByUsername(aUsername);
+        assertNotNull(userEntry, "User not found");
+        return userEntry;
     }
 
     /**
@@ -161,20 +193,8 @@ public class UserResource extends AbstractCommandResource {
     @Path("{username}/orgs")
     @Consumes(MediaType.APPLICATION_JSON)
     public Iterable<OrganizationMembershipEntry> queryOrganizationMemberships(@PathParam("username") String aUsername) {
+        requiresRoles("USER");
         return ApplicationServiceRegistry.organizationMembershipQueryRepository().findByUsername(aUsername);
-    }
-
-    @GET
-    @Path("{username}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public UserEntry getUser(@PathParam("username") String aUsername) {
-        LOG.debug("Called getUser with username " + aUsername);
-        LOG.warn("TODO: We should probably not expose this service publicly. Only logged in users should be able to get user info!!! ");
-
-        // FIXME: user should only be able to access own profile unless is an admin 
-        UserEntry userEntry = findByUsername(aUsername);
-        assertNotNull(userEntry, "User not found");
-        return userEntry;
     }
 
     @GET
@@ -186,13 +206,6 @@ public class UserResource extends AbstractCommandResource {
 
     private boolean usernameExist(String username) {
         return findByUsername(username) != null;
-    }
-
-    @GET
-    @Path("/hello")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getHelloWorld() {
-        return "hej";
     }
 
 }
