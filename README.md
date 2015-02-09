@@ -352,7 +352,14 @@ The solution is a prototype which implies that it is incomplete in many ways. Fo
 the user is actually joined right away. Below is a (non-exhaustive) list of loose ends.
 
 ## A (non-exhaustive) list of loose ends and known problems
-- The API is not properly protected - any organization may for instance send a command to invite a user to some other organization.
+- The API is not properly protected so please scrutiny the access configuration before considering taking this to production
+-- any organization may for instance send a command to invite a user to some other organization.
+-- also, the shiro configuration has to allow for anonymous access to e.g. 
+users resource in order to allow for sign-up and confirmation commands. The 
+current lack of more granular access configuration prevents us from stating 
+that only these commands should be permitted. Consider to introduce some 
+annotations or the like that will allow to annotate access on resource 
+methods.
 - The system lacks caching 
 - In many queries the full result list is returned which may lead to a poor visual experience as well as poor performance
 - the client is probably more 'chatty' than needs be, as references are in many 
