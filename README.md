@@ -370,6 +370,9 @@ doing so!
 - Notification E-mails are likely to end in spam-folders, as the sender server 
 is not explicitly authorized to use the domain name, see Sender Policy 
 Framework http://www.openspf.org/Project_Overview
+- Lacking uniqueness test of user email address. System behavior is 
+inconsistent if two users provide the same email address. Needs 
+investigation.
 
 # REST API
 
