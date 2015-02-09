@@ -133,18 +133,22 @@ This will download external dependencies to the folder "src/main/webapp/app/bowe
 
 ### Mail SMTP
 
-Currently the solution uses a preconfigured GMAIL account as SMTP-server when 
-sending out notifications. In order to use this account you must supply the 
-password in the system variable called:
+E-mails notifications are sent out by the application when for instance users sign up or 
+forget their password. 
 
-    spring.mail.password=<my_secret>
+The solution uses Spring Boot to auto configure a JavaMailSender. The mail 
+sender settings, like host, port and password, can be supplied via 
+"application.properties". The default configuration assumes the mail host to be 
+on "localhost" port 25 and to allow for anonymous access: 
 
-When running in context of the test configuration () and this variable is unset 
-or equals "false" the system will fallback to echoing the mail messages to the 
-console, which may come in handy on buildservers and when testing locally.
+    ## MAIL
+    spring.mail.host=localhost
+    spring.mail.port=25
+    spring.mail.properties.mail.debug=true
 
 To change the configuration to another mail account please refer to the settings 
-file "src/main/resources/application.properties". 
+file "src/main/resources/application.properties". Possible variations can be found here
+http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 
 The most effective way to override these settings is to create a new file called 
 "applications.properties" with those properties that should be overridden in it and 
@@ -164,8 +168,31 @@ could supply it on the command line when launching the app:
 WARNING: Just keep in mind that this will render the password visible to anyone 
 with access to th machine with e.g. "ps -ef".
 
-See [Spring Boot configuration - Apllication property files] (http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-external-config-application-property-files)
+See [Spring Boot configuration - Application property files] (http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-external-config-application-property-files)
 for further possibilities.
+
+#### Setting the base URL of links in mail messages 
+
+The mails that are send out usually contains a confirmation-link or similar 
+that points to the application. The base URL of 
+these links may be configured using the "baseUrl"-property:
+
+    baseUrl=http://localhost:${server.port}
+
+As it defaults to localhost you will need to provide the correct address of 
+the application server. You should probably use something like this:
+
+    baseUrl=http://portal.maritimecloud.net
+  
+#### Echo mails to console for testing and development
+
+The mailing functionality can be overridden to echo all e-mails to the console 
+instead of sending them out for real. In order to trigger this behavior you 
+must specify the mail host to be "console" using the property or system 
+variable called:
+
+    spring.mail.host=console
+
 
 ## Building ##
 
@@ -297,7 +324,9 @@ Once up-n-running the result can be seen from the link below
 
 ### Demo [Maritime Cloud Portal] (http://portal.maritimecloud.net/app/index.html)
 
-Login with with "Tintin" or "admin". Password is "test" in both cases.
+Login with with "Haddock" or "admin". Password is "test" in both cases. Or use "Tintin" with the password "reset". Feel free to modify 
+services and members. You may also sign up to get your own user. Just be aware that this is a demo and that the database may be cleared now 
+and then, for instance due to updates.
 
 ## Netbeans setup ##
 
@@ -323,13 +352,17 @@ The solution is a prototype which implies that it is incomplete in many ways. Fo
 the user is actually joined right away. Below is a (non-exhaustive) list of loose ends.
 
 ## A (non-exhaustive) list of loose ends and known problems
-- When inviting a user to join an organization, the user is actually joined right away. There is no process for accepting the invite.
 - The API is not properly protected - any organization may for instance send a command to invite a user to some other organization.
-- Emails are not currently send out.
 - The system lacks caching 
 - In many queries the full result list is returned which may lead to a poor visual experience as well as poor performance
-- the client is probably more 'chatty' than need be, as references are in many cases resolved on the client side. Caching and more rich 
-events could solve some of this. Also, see Udi Dahans notes on request batching.
+- the client is probably more 'chatty' than needs be, as references are in many 
+cases resolved on the client side. Caching and more rich events could solve 
+some of this. See for instance Udi Dahans notes on "request batching".
+- SSL is not activated. Remember to change baseUrl from http to https when 
+doing so!
+- Notification E-mails are likely to end in spam-folders, as the sender server 
+is not explicitly authorized to use the domain name, see Sender Policy 
+Framework http://www.openspf.org/Project_Overview
 
 # REST API
 
