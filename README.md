@@ -1,12 +1,26 @@
 MaritimeCloudPortalTestbed
 ==========================
 
-(Temporal repository until portal code is ready to go public)
-
 A tool that offers Identity & Access Management of the Maritime Cloud Services as 
 well as management of services published in Maritime Cloud.
 
-The live system can be found here: TBD
+A live demo of the system may be found here: http://portal.maritimecloud.net
+
+Implemented features:
+- sign up and user management
+- creation of organizations
+- provision of spatially defined services
+-- management of endpoints
+- location based search of services
+- organization and service alias support
+- management of user membership
+- activity log
+
+Pending:
+- management of identity certificates
+- creation and management of Service Specifications
+- management of Operational Services (or more likely a sort of Service Categories)
+See also [The state of the solution] (#the-state-of-the-solution)
 
 ## Software Architecture
 
@@ -50,7 +64,7 @@ In the current configuration, the event store is based on plain files; one folde
 productional environment this is likely to be changed to something more durable like a RDB or some NoSQL store.
 
 Query data is kept in a relational persistence store, which is currently memory-based. This implies that in order to populate the query 
-model, the entire event store has to be replayed upon re-launching the system. From a developing perspective, this has the interesting 
+model, the entire event store has to be replayed upon re-launching the system. From a developer perspective, this has the interesting 
 side-effect of easing the development iterations as new queries which are based on existing events (a.k.a. Projections) can be build and 
 changed without much maintenance effort.
 
