@@ -338,9 +338,13 @@ Once up-n-running the result can be seen from the link below
 
 ### Demo [Maritime Cloud Portal] (http://portal.maritimecloud.net/app/index.html)
 
-Login with with "Haddock" or "admin". Password is "test" in both cases. Or use "Tintin" with the password "reset". Feel free to modify 
-services and members. You may also sign up to get your own user. Just be aware that this is a demo and that the database may be cleared now 
+Login with with "Tintin", "Haddock" or "admin". Password is "test" in all cases. 
+Feel free to modify services and members. You may also sign up to get your own 
+user. Just be aware that this is a demo and that the database may be cleared now 
 and then, for instance due to updates.
+
+Admin user has extended privileges, although currently this amounts to the 
+ability to see a full list of users.
 
 ## Netbeans setup ##
 

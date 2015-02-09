@@ -55,8 +55,8 @@ curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/users -H
 # user with empty userId indentifier (...will auto generate id) 
 curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/users -H "Content-Type: application/json;domain-model=RegisterUser" -d '{"userId":{"identifier":""},"prefferedUsername":"terry","emailAddress":"terry@auto.demo.dma.dk","password":"test"}'
 
-# reset password (with auto-confirm email)
-curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/authentication -H "Content-Type: application/json;domain-model=SendResetPasswordInstructions" -d '{"emailAddress":"tintin@auto.demo.dma.dk"}'
+# reset password (with auto-confirm email will set new password to 'reset')
+curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/authentication -H "Content-Type: application/json;domain-model=SendResetPasswordInstructions" -d '{"emailAddress":"terry@auto.demo.dma.dk"}'
 
 # (hack): user with static verification code (provided in email)
 curl -sw '%{http_code}\n' -b cookies.txt http://localhost:8080/rest/api/users -H "Content-Type: application/json;domain-model=RegisterUser" -d '{"userId":{"identifier":"8669b18d-b41b-4c0e-a5ff-08b3fb8fed85"},"prefferedUsername":"Dupont","emailAddress":"94b389dd-e50e-48c1-b0fc-6840289a647e@static.demo.dma.dk","password":"test"}'
