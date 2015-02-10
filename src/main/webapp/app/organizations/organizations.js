@@ -8,7 +8,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
       function ($scope, OrganizationContext, UserContext) {
 
         $scope.currentOrganization = OrganizationContext.currentOrganization();
-        
+
         $scope.isOwnerOf = UserContext.isOwnerOf;
 
         $scope.OrganizationContext = OrganizationContext;
@@ -96,9 +96,9 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
               });
             }
         );
-    
-        var periodOf30Days = 1000*60*60*24*30;
-        var dateLast30Days = Date.now() - periodOf30Days;    
+
+        var periodOf30Days = 1000 * 60 * 60 * 24 * 30;
+        var dateLast30Days = Date.now() - periodOf30Days;
         ActivityService.get({dateTime: dateLast30Days, page: 0, size: $scope.pageSize}, function (page) {
           $scope.publicActivities = page.content;
           $scope.publicActivitiesPage = page;
@@ -175,7 +175,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
           ServiceInstanceService) {
 
         $scope.organization = OrganizationService.get({organizationId: $stateParams.organizationId}, function (organization) {
-          UserContext.initAndThen(function(user){
+          UserContext.initAndThen(function (user) {
             $scope.userHasWriteAccess = user.hasWriteAccessTo(organization.organizationId);
           });
         });
@@ -295,8 +295,6 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
                 }, reportError);
           },
           addAlias: function (newAlias) {
-            console.log("$scope.ORG ---- ", $scope);
-
             OrganizationService.addAlias($scope.organization, newAlias, function () {
 
               // reload serviceInstance

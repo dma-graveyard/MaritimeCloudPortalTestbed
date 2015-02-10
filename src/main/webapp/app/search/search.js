@@ -152,7 +152,8 @@ angular.module('mcp.search.services', [])
             if ($scope.services.indexOf($scope.selectedService) === -1) {
               $scope.unselectService();
             } else {
-              console.log($scope.filter.location);
+              //console.log($scope.filter.location);
+              
               // when location marker is placed we should refresh the selection of the service layer 
               var service = $scope.selectedService;
               serviceLayer(service).select();

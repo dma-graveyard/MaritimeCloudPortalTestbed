@@ -129,7 +129,8 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
 
       // Logout listener that cleans up state bound to the current user
       $scope.$on(AUTH_EVENTS.logoutSuccess, function () {
-        console.log("EVENT: User logged out! Session: ", Session);
+        //console.log("EVENT: User logged out! Session: ", Session);
+        
         // reset local storage
         $scope.$storage.$reset({userSession: {}});
         Session.importFrom($scope.$storage.userSession);
@@ -150,7 +151,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
 
       // Login listener that resets any pending requests if user cancels login
       $scope.$on(AUTH_EVENTS.loginCancelled, function () {
-        console.log("User login cancelled!");
+        //console.log("User login cancelled!");
         httpAuthInterceptorService.loginCancelled();
       });
 
@@ -196,7 +197,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       };
 
       $scope.logout = function () {
-        console.log("Logging out...");
+        //console.log("Logging out...");
         AuthService.logout().then(function () {
           $rootScope.$broadcast(AUTH_EVENTS.logoutSuccess);
         }, function () {
@@ -337,12 +338,12 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
         return self.isAuthenticated() && intersects(Session.userRoles, authorizedRoles);
       };
       this.logout = function () {
-        console.log("Logging out...");
+        //console.log("Logging out...");
         return $http
             .post('/rest/authentication/logout', {}, {ignoreAuthModule: true})
             .then(function (respone) {
               var data = respone.data;
-              console.log("Logout response data: ", data);
+              //console.log("Logout response data: ", data);
               Session.destroy();
             });
       };
