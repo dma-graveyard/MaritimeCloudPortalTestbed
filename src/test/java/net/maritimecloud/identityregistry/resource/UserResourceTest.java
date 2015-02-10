@@ -16,12 +16,15 @@ package net.maritimecloud.identityregistry.resource;
 
 import javax.ws.rs.NotFoundException;
 import net.maritimecloud.common.infrastructure.axon.CommonFixture;
+import net.maritimecloud.common.infrastructure.shiro.AbstractShiroResourceTest;
 import net.maritimecloud.identityregistry.query.UserEntry;
 import net.maritimecloud.identityregistry.query.UserQueryRepository;
 import net.maritimecloud.portal.application.ApplicationServiceRegistry;
-import net.maritimecloud.portal.resource.ResourceTest;
+import org.apache.shiro.subject.Subject;
 import org.json.JSONException;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
@@ -29,7 +32,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
  *
  * @author Christoffer Børrild
  */
-public class UserResourceTest extends ResourceTest {
+public class UserResourceTest extends AbstractShiroResourceTest {
 
     /**
      * user resource path
@@ -37,6 +40,15 @@ public class UserResourceTest extends ResourceTest {
     private static final String API_USERS = "api/users";
 
     UserQueryRepository userQueryRepository;
+    
+    @Before
+    public void setup() throws JSONException {
+        //1.  Create a mock authenticated Subject instance for the test to run:
+        Subject subjectUnderTest = Mockito.mock(Subject.class);
+
+        //2. Bind the subject to the current thread:
+        setSubject(subjectUnderTest);
+    }
 
     @Test
     public void createUser() throws JSONException {
