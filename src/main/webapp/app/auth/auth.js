@@ -161,7 +161,6 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       $scope.$on(AUTH_EVENTS.notAuthorized, function () {
         console.log("User not authorized to visit this page!");
         $scope.alertMessages = ["User not authorized!"];
-        // TODO: flash an error message somehow...!?
       });
 
       // Login listener that brings up the login dialog whenver the "event:auth-loginRequired!" event is fired

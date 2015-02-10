@@ -195,7 +195,7 @@ public class OrganizationIT extends AbstractAxonCqrsIT {
         // Given an organization (with a Service Specification and a provided Service Instance)
         commandGateway().sendAndWait(createOrganizationCommand);
         
-        // NOTE: we expect the primary alias to have been denied, since it is used in another test, but we better check: (FIXME)
+        // NOTE: we expect the primary alias to have been denied, since it is used in another test, but we better check: (TODO)
         List<AliasRegistryEntry> aliasesAfterInit = aliasRegistryQueryRepository.findByGroupIdAndTypeNameAndTargetId(
                 AliasGroups.USERS_AND_ORGANIZATIONS.name(),
                 OrganizationId.class.getName(),

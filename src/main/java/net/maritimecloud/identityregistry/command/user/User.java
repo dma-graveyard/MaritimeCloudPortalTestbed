@@ -166,8 +166,6 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
 //
 //        this();
 //
-//        // TODO: hack? generate id using a UserIdService or something...
-//
 //        if (roles.length == 0) {
 //            userRoles = new UserRoles(Role.USER);
 //        } else {
@@ -231,8 +229,6 @@ public class User extends AbstractAnnotatedAggregateRoot<UserId> {
     }
 
     private void assertPasswordComply(String username, String aChangedPassword) {
-
-        // TODO: add this extra validation if you do not feel it's a bit to harsh:
         assertPasswordsNotSame(password(), aChangedPassword);
         assertPasswordNotWeak(aChangedPassword);
         assertUsernamePasswordNotSame(username, aChangedPassword);

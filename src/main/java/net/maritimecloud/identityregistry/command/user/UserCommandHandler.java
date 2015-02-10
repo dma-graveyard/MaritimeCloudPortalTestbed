@@ -70,10 +70,6 @@ public class UserCommandHandler {
 
     }
 
-    /**
-     * Generates a random activationId. The id must be used in order to activate the user account but may also be used for other purposes,
-     * like reset password confirmation (TODO: change that!)
-     */
     private String generateResetPasswordKey() {
         return UUID.randomUUID().toString();
     }

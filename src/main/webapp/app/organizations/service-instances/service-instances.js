@@ -100,7 +100,7 @@ angular.module('mcp.organizations.services', [])
           addEndpoint: function (newEndpointUri) {
             var protocol = $scope.protocol;
 
-            // FIXME: add validation
+            // TODO: add validation
             //validateUri(newEndpoint, serviceType);
 
             $scope.service.endpoints.push({uri: protocol + newEndpointUri});
@@ -293,7 +293,7 @@ angular.module('mcp.organizations.services', [])
           addEndpoint: function (newEndpointUri) {
             var protocol = $scope.protocol;
 
-            // FIXME: add validation
+            // TODO: add validation
             //validateUri(newEndpoint, serviceType);
 
             // send remote command right away 

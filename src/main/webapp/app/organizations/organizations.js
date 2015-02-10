@@ -204,7 +204,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
                 function (data) {
                   $location.path('/orgs/' + $scope.organization.organizationId).replace();
                   $scope.message = ["Organization created: " + data];
-//FIXME: update users org-list some other how                  
+                  // FIXME: update users org-list some other how                  
                   OrganizationContext.updateUserOrganizationsList($scope.currentUser);
                 },
                 function (error) {

@@ -7,7 +7,7 @@ angular.module('mcp.search.services', [])
 
         var SEARCHMAP_ID = 'searchmap';
 
-        // FIXME: only fetch a limited set of services, perhaps grouped by some criteria
+        // TODO: only fetch a limited set of services, perhaps grouped by some criteria
         $scope.allServices = AlmanacServiceInstanceService.query(function (serviceInstances) {
           filterAndShowServices();
         });
@@ -74,7 +74,7 @@ angular.module('mcp.search.services', [])
 
         function filterServices(filterBy) {
 
-          //FIXME: should delegate to server instead (...or at least in advance)
+          // TODO: should delegate to server instead (...or at least in advance)
 
           var allServices = $scope.allServices;
           var services = [];

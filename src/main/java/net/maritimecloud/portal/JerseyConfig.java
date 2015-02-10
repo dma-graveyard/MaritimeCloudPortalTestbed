@@ -34,9 +34,8 @@ public class JerseyConfig extends ResourceConfig {
         System.out.println("Initializing JerseyConfig");
         register(RequestContextFilter.class);
 
-        // TODO: scanning does not appear to work with java jar launcher (as opposed to 'mvn springboot:run' which does) !?
+        // NOTE: scanning does not appear to work with java jar launcher (as opposed to 'mvn springboot:run' which does) !?
         //       Explicitly register all resources here instead :-(
-        //packages("net.maritimecloud.portal.resource");
         register(ActivityResource.class);
         register(AlmanacResource.class);
         register(AuthenticationResource.class);
