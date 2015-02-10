@@ -19,9 +19,11 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
       }])
 
     .controller('DashboardController', ['$scope', '$stateParams', 'OrganizationContext', 'UserContext',
-      'AlmanacOrganizationService', 'AlmanacOperationalServiceService', 'AlmanacServiceSpecificationService', 'AlmanacServiceInstanceService', 'UserService', 'ActivityService',
+      'AlmanacOrganizationService', 'AlmanacOperationalServiceService', 'AlmanacServiceSpecificationService', 
+      'AlmanacServiceInstanceService', 'UserService', 'ActivityService',
       function ($scope, $stateParams, OrganizationContext, UserContext,
-          AlmanacOrganizationService, AlmanacOperationalServiceService, AlmanacServiceSpecificationService, AlmanacServiceInstanceService, UserService, ActivityService
+          AlmanacOrganizationService, AlmanacOperationalServiceService, AlmanacServiceSpecificationService, 
+          AlmanacServiceInstanceService, UserService, ActivityService
           ) {
 
         $scope.organizationMemberships = UserContext.organizationMemberships();
