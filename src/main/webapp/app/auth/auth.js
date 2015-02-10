@@ -24,7 +24,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
 
     /* Constants */
 
-// Authentication events broadcasted on rootScope
+    // Authentication events broadcasted on rootScope
     .constant('AUTH_EVENTS', {
       loginSuccess: 'auth-login-success',
       loginFailed: 'auth-login-failed',
@@ -106,7 +106,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
 
       // Login listener that binds the login session to current user upon login success
       $scope.$on(AUTH_EVENTS.loginSuccess, function () {
-        console.log("EVENT: User logged in! ", Session.user, "Session: ", Session);
+        //console.log("EVENT: User logged in! ", Session.user, "Session: ", Session);
         $scope.currentUser = Session.user;
         UserContext.setCurrentUser($scope.currentUser);
 
@@ -121,7 +121,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
         httpAuthInterceptorService.loginConfirmed();
         // Navigate to defered page
         if ($scope.navigationTarget) {
-          console.log("forwarding to defered path: ", $scope.navigationTarget);
+          //console.log("forwarding to defered path: ", $scope.navigationTarget);
           $location.path($scope.navigationTarget).replace();
           $scope.navigationTarget = null;
         }
@@ -130,7 +130,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       // Logout listener that cleans up state bound to the current user
       $scope.$on(AUTH_EVENTS.logoutSuccess, function () {
         //console.log("EVENT: User logged out! Session: ", Session);
-        
+
         // reset local storage
         $scope.$storage.$reset({userSession: {}});
         Session.importFrom($scope.$storage.userSession);
@@ -166,7 +166,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
 
       // Login listener that brings up the login dialog whenver the "event:auth-loginRequired!" event is fired
       $scope.$on('event:auth-loginRequired', function () {
-        console.log("event:auth-loginRequired!");
+        //console.log("event:auth-loginRequired!");
         $scope.openLoginDialog();
       });
 
@@ -254,12 +254,12 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       self = this;
 
       this.login = function (credentials) {
-        console.log("Logging in with " + credentials.username);
+        //console.log("Logging in with " + credentials.username);
         return $http
             .post('/rest/authentication/login', credentials, {ignoreAuthModule: true})
             .then(function (respone) {
               var data = respone.data;
-              console.log("Login response data: ", data);
+              //console.log("Login response data: ", data);
               Session.create(data.id, data.username, data.roles);
             });
       };
@@ -277,7 +277,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       this.resetPassword = function (username, verificationId, newPassword) {
         //console.log("Sending change password request", username, verificationId);
         return $http
-            .put('/rest/api/users/'+username+'?command=ChangeUserPassword', new ChangeUserPassword('',verificationId,newPassword), {ignoreAuthModule: true})
+            .put('/rest/api/users/' + username + '?command=ChangeUserPassword', new ChangeUserPassword('', verificationId, newPassword), {ignoreAuthModule: true})
             .then(function (respone) {
               var data = respone.data;
             });
@@ -303,7 +303,7 @@ angular.module('mcp.auth', ['ui.bootstrap', 'http-auth-interceptor', 'ngStorage'
       {
         var ai = 0, bi = 0;
         var result = new Array();
-        
+
         a.sort();
         b.sort();
 

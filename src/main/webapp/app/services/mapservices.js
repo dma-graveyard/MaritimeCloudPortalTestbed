@@ -200,8 +200,7 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
         };
       }
 
-      console.log('Unknown layer type !?!?!', layer);
-
+      console.log('unknown layer type', layer);
     }
 
     /**
@@ -297,7 +296,7 @@ mapservices.factory('mapService', ['$rootScope', function ($rootScope) {
      * @returns {Object} a corresponding Path object
      */
     function shapeToPath(shape) {
-      console.log('shape', shape);
+      //console.log('shape', shape);
       var path = {
         type: shape.type,
         //color: '#008000',

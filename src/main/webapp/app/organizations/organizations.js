@@ -56,8 +56,8 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
       }])
 
-    .controller('UserActivitiesController', ['$scope', '$stateParams', 'OrganizationContext', 'UserContext', 'ActivityService',
-      function ($scope, $stateParams, OrganizationContext, UserContext, ActivityService
+    .controller('UserActivitiesController', ['$scope', 'UserContext', 'ActivityService',
+      function ($scope, UserContext, ActivityService
           ) {
 
         $scope.orderProp = 'dateTime';
@@ -106,14 +106,8 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
 
       }])
 
-    .controller('ActivityController', ['$scope', '$stateParams', 'OrganizationContext', 'UserContext', 'ActivityService',
-      'AlmanacOrganizationService', 'AlmanacOperationalServiceService', 'AlmanacServiceSpecificationService', 'AlmanacServiceInstanceService',
-      function ($scope, $stateParams, OrganizationContext, UserContext, ActivityService,
-          AlmanacOrganizationService, AlmanacOperationalServiceService, AlmanacServiceSpecificationService, AlmanacServiceInstanceService
-
-          ) {
-
-//        console.log($scope.userActivity);
+    .controller('ActivityController', ['$scope', 'AlmanacOrganizationService', 'AlmanacServiceSpecificationService', 'AlmanacServiceInstanceService',
+      function ($scope, AlmanacOrganizationService, AlmanacServiceSpecificationService, AlmanacServiceInstanceService) {
 
         if ($scope.activity.targetType === 'ServiceInstanceId') {
           $scope.serviceInstance = AlmanacServiceInstanceService.get({serviceInstanceId: $scope.activity.targetId}, function (si) {

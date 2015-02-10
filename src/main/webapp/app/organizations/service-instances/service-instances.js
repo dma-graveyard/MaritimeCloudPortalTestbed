@@ -163,8 +163,9 @@ angular.module('mcp.organizations.services', [])
 
               // add primary alias
               ServiceInstanceService.addAlias($scope.service, $scope.service.primaryAlias, function () {
+                
                 // alias created
-                console.log("alias created", $scope.service.primaryAlias);
+                //console.log("alias created", $scope.service.primaryAlias);
                 $scope.message = "Created alias " + $scope.service.primaryAlias;
 
               }, function (error) {
