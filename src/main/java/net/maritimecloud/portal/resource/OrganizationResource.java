@@ -350,8 +350,7 @@ public class OrganizationResource extends AbstractCommandResource {
             @PathParam("serviceInstanceIdOrAlias") String serviceInstanceIdOrAlias
     ) {
         // TODO: move to almanac api as list aliases ...or something
-        System.out.println("ALL: " + ApplicationServiceRegistry.aliasRegistryQueryRepository().findAll());
-
+        //System.out.println("ALL: " + ApplicationServiceRegistry.aliasRegistryQueryRepository().findAll());
         String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
         return resolveServiceInstance(organizationId, serviceInstanceIdOrAlias);
     }

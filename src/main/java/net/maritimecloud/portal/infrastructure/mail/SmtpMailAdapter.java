@@ -44,13 +44,7 @@ public class SmtpMailAdapter implements MailAdapter {
     private MimeMessagePreparator createMessagePreperator(Mail mail) {
         MimeMessagePreparator preparator = (MimeMessage mimeMessage) -> {
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
-
-            // TODO: remove this filter line before going to prod
-            //if (mail.getRecipients().contains("boerrild")) {
             message.setTo(mail.getRecipients());
-            //}
-
-            //message.setBcc("christoffer.boerrild@gmail.com");
             message.setFrom(new InternetAddress("maritime_cloud_portal@demo.dma.dk"));
             message.setSubject(mail.getSubject());
             message.setSentDate(new Date());
