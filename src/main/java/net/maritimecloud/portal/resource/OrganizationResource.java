@@ -252,26 +252,11 @@ public class OrganizationResource extends AbstractCommandResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("org")
-    public List<OrganizationEntry> getOrganizations(
-            @QueryParam("member") @DefaultValue("") String memberUID,
+    public Iterable<OrganizationEntry> getOrganizations(
             @QueryParam("namePattern") @DefaultValue("") String organizationNamePattern
     ) {
-
-        LOG.info("getOrganizations");
-
-        Iterable<OrganizationEntry> all = ApplicationServiceRegistry.organizationQueryRepository().findAll();
-        List<OrganizationEntry> organizationEntries = new ArrayList<>();
-
-        for (OrganizationEntry organizationEntry : all) {
-
-            // TODO: create a mapping between organizations and members
-            if (memberUID.isEmpty() || organizationEntry.getSummary().contains(memberUID)) {
-                organizationEntries.add(organizationEntry);
-            }
-
-        }
-
-        return organizationEntries;
+        // TODO: Not sure if this method is ever used!?!
+        return ApplicationServiceRegistry.organizationQueryRepository().findAll();
     }
 
     @GET

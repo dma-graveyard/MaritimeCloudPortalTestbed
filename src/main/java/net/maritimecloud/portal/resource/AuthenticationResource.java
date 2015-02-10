@@ -71,14 +71,7 @@ public class AuthenticationResource extends AbstractCommandResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public SubjectDTO login(CredentialsDTO credentials) {
-
         assertCredentialsNotNull(credentials);
-
-        // TODO HACK: temporary hack to test error 
-        if (credentials.getUsername().equalsIgnoreCase("error")) {
-            throw new UserNotAuthenticated();
-        }
-
         return tryLogin(credentials);
     }
 
