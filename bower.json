@@ -1,6 +1,6 @@
 {
   "name": "MaritimeCloudPortal",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "ignore": [
     ".jshintrc",
     "**/*.txt",
@@ -27,7 +27,7 @@
     "chai": "*",
     "mocha": "*"
   },
-  "homepage": "https://github.com/dma-dk/MaritimeCloudPortalTestbed",
+  "homepage": "https://github.com/MaritimeCloud/MaritimeCloudPortalTestbed",
   "authors": [
     "Christoffer Børrild <christoffer@boerrild.dk>"
   ],
