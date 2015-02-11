@@ -41,11 +41,11 @@ import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 public class ApplicationConfig {
 
     private static final Logger LOG = LoggerFactory.getLogger(ApplicationConfig.class);
-
+    
     @Value(value = "${baseUrl:localhost:8080}")
     private String baseUrl;
 
-    @Value(value = "${spaUrl:${baseUrl}/app/index.html}")
+    @Value(value = "${spaUrl:${baseUrl:localhost:8080}/app/index.html}")
     private String spaUrl;
 
     @Resource
