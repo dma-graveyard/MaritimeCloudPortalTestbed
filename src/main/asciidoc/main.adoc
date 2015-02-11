@@ -1,0 +1,100 @@
+= Maritime Cloud Portal - User Guide
+:toc:
+:homepage: http://portal.maritimecloud.net
+An introduction to the http://portal.maritimecloud.net[Maritime Cloud Portal].
+
+image::maritimecloud.png[]
+
+== Introduction
+
+=== The vision and the domain
+In its own words, the Maritime Cloud project as a whole aims at providing: 
+[quote]
+A communication framework enabling efficient, secure, reliable and seamless 
+electronic information exchange between all authorized maritime stakeholders 
+across available communication systems.
+
+In that context, the Maritime Cloud Portal aims to facilitate management of 
+some of the more static parts of the system. More specifically, to provide 
+an API and a client for managing an Identity Registry and a Service Registry.
+
+The Identity Registry contains information about users and organizations, and
+associate them with an identity within the Maritime Cloud realm. Also, this 
+registry will (eventually) be able to provide the means for secure 
+authentication and communication presumably by some sort of cryptographic
+scheme.
+
+The Service Registry contains information about which services is provided
+within a certain region as well as specifications on how to communicate with 
+families of services.
+
+=== The given and the gap
+The current version of the Maritime Cloud Portal (v0.1.0) only fully implements
+a very limited set of the features envisioned for the final product and provides 
+sketches of a few more. In its current version, the client allows users to:
+
+* creation of organizations
+* provision of spatially defined services
+** management of endpoints
+* location based search of services
+* organization and service alias support
+* management of user membership
+* activity log
+
+This set of features barely scratches the surface of what could be wished for 
+and future versions are likely to contain:
+
+* creation and management of Service Specifications and a module for collaboration 
+* creation and management of Operational Service categories
+* management of identity certificates
+* management of user assets and assigning identity to such
+* delegation of trust
+* ...
+
+
+== Web client user interface
+
+image::landingpage.png[]
+
+The following sections outlines how to interact with the portal web client.
+
+=== Access
+
+* Sign up
+* Login
+* Logout
+* Forgot Password
+
+=== Dashboard
+
+* Assets and memberships
+* Logs
+
+=== Organization
+
+* Create Organization
+* Change Organization settings
+
+==== Services
+
+* Create Service
+* Change Service settings
+
+==== User management
+
+
+== REST API interface
+This section explains how to interact with the portal from a thirdparty by 
+using the REST interface.
+
+* Sign up
+[source,bash]
+puts "Hello, World!"
+
+* Login
+* Forgot Password
+* Create Organization
+* Create Service
+* User management
+* Logout
+
