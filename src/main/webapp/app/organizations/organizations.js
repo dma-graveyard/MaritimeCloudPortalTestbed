@@ -19,10 +19,10 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
       }])
 
     .controller('DashboardController', ['$scope', '$stateParams', 'OrganizationContext', 'UserContext',
-      'AlmanacOrganizationService', 'AlmanacOperationalServiceService', 'AlmanacServiceSpecificationService', 
+      'AlmanacOrganizationService', 'AlmanacOperationalServiceService', 'AlmanacServiceSpecificationService',
       'AlmanacServiceInstanceService', 'UserService', 'ActivityService',
       function ($scope, $stateParams, OrganizationContext, UserContext,
-          AlmanacOrganizationService, AlmanacOperationalServiceService, AlmanacServiceSpecificationService, 
+          AlmanacOrganizationService, AlmanacOperationalServiceService, AlmanacServiceSpecificationService,
           AlmanacServiceInstanceService, UserService, ActivityService
           ) {
 
@@ -144,7 +144,7 @@ angular.module('mcp.organizations', ['ui.bootstrap'])
           return organization === OrganizationContext.currentOrganization();
         };
         $scope.hasOrganizations = function () {
-          return $scope.organizationMemberships.length > 0;
+          return UserContext.organizationMemberships().length > 0;
         };
         $scope.setDashboardContext = function (organization) {
           OrganizationContext.setCurrentOrganization(organization);
