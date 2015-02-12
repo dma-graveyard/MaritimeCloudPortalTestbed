@@ -126,10 +126,9 @@ public class UserResource extends AbstractCommandResource {
     ) {
         LOG.info("Organization PUT command");
 
-        // only allow anonymous access to VerifyEmailAddress
+        // only allow anonymous access to VerifyEmailAddress and ChangeUserPassword
         assertUserRole("USER", resolveCommandName(contentType, queryCommandName),
-                ChangeUserEmailAddress.class,
-                ChangeUserPassword.class
+                ChangeUserEmailAddress.class
         );
 
         String userId = resolveUserIdOrFail(username);
