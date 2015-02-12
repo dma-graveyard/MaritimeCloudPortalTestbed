@@ -1,6 +1,7 @@
 = Maritime Cloud Portal - User Guide
 :toc:
 :homepage: http://portal.maritimecloud.net
+
 An introduction to the http://portal.maritimecloud.net[Maritime Cloud Portal].
 
 image::maritimecloud.png[]
@@ -29,20 +30,19 @@ within a certain region as well as specifications on how to communicate with
 families of services.
 
 === The given and the gap
-The current version of the Maritime Cloud Portal (v0.1.0) only fully implements
+The current version of the Maritime Cloud Portal (v0.1.0) only implements
 a very limited set of the features envisioned for the final product and provides 
 sketches of a few more. In its current version, the client allows users to:
 
 * creation of organizations
 * provision of spatially defined services
 ** management of endpoints
-* location based search of services
+* location based search for services
 * organization and service alias support
 * management of user membership
 * activity log
 
-This set of features barely scratches the surface of what could be wished for 
-and future versions are likely to contain:
+Below is a list of features that should or could be part of future versions:
 
 * creation and management of Service Specifications and a module for collaboration 
 * creation and management of Operational Service categories
@@ -56,29 +56,189 @@ and future versions are likely to contain:
 
 image::landingpage.png[]
 
-The following sections outlines how to interact with the portal web client.
+The following sections outlines how to interact with the portal web client. A 
+version of the portal is currently running at http://portal.maritimecloud.net.
 
 === Access
+This section explains how to gain access to the portal and how to login, logout
+and to how to reset to a new password.
 
-* Sign up
-* Login
-* Logout
-* Forgot Password
+==== Sign up
+In order to get access to the portal, you need to register with a unique 
+username and an e-mail address. Click on the "Join" button and fill in the 
+registration page.
+
+image::join-button.png[]
+image::join-form.png[]
+
+Once you are done you will receive an e-mail with an activation link. Following 
+the link will confirm your e-mail address and activate your registration.
+
+==== Login
+From the landing page, click on the "Log In" button and fill in your username 
+and password. Notice that the username must be spelled exactly as created - the 
+casing of the letters matters.
+
+image::login-form.png[role="thumb"]
+
+==== Forgot Password
+If you can no longer remember your password, or if you forgot your username you
+may still have a change to gain access to the portal. Click the "Forgot password"
+link in the "Log In" form, and supply your e-mail address.
+
+image::forgot-password.png[role="thumb"]
+
+If your e-mail address matches an account you will shortly receive an email with 
+a link. Follow the link in order to provide a new password. 
+
+image::forgot-password-change.png[]
+
+Once done, login with your new password.
+
+==== Logout
+Simple! Just click the "Log out" button in the upper right corner.
 
 === Dashboard
+image::dashboard-bering.png[]
 
+On the dashboard you may find a mix of general system information and 
+information related to the current user:
+
+* Statistics
+* Organizations
 * Assets and memberships
-* Logs
+* Activity logs
+
+Just beneath the title is a line of statistics that list the total number of
+organizations, services, specifications, categories and users currently in the
+system.
+
+Then follows a list of the organizations that the user is a member of or is in
+the process of becoming a member of. A label to the right of an organization 
+will indicate that the user has applied for membership of this organization. 
+Likewise, if you have been invited to an organization, a button will be shown
+asking for your approval to join the organization.
+A badge with a number indicates that someone has applied for membership of an 
+organization of which you are an owner. (Note: in current version, all members 
+are also owners!).
+
+The sections "Assets" and "Achievements" are placeholders for future 
+functionality. 
+
+Assets should be listing things that are possessed by the user 
+and that has some kind of relevancy in the maritime community. Usually this 
+would be things that for one reason or another needs to be associable with the 
+identity of the user and has an identity of its own. Examples could be vessels 
+and electronic communication devices. Registered assets has a configurable list
+of named properties. Each property may refer to some characteristic of the 
+asset, for instance an IMO number, AIS number, a network identification number
+or a radio call-name. Through some yet undefined process, an organizations may 
+then decide to issue a certificate that authenticate all or a subset of the
+properties of an asset and hereby granting privileges to the holder of the 
+certificate.
+
+Achievements should somehow list the various privileges received by 
+organizations.
+
+A section called "Public Certificates" should list public keys that this user
+has uploaded to the system. The user should hold on to the corresponding 
+private key. 
+
+==== Activity Feeds
+This section consists of three sub sections, one for feeds of actions performed
+by yourself, a list of actions happening in any of the organizations that you 
+are a member of, and one for other publicly available actions. The same feed may
+possibly occur in all three lists.
+
+=== Menu
+The menu bar consists of up to four visible elements; the brand, a context selector 
+which is only visible when applicable, a user menu and access buttons.
+
+Below follows the four most common states of the menu:
+
+image::menu-anon.png[title="Not logged in"]
+
+image::menu-bering.png[title="A new user, called Bering, without any organization memberships"]
+
+image::menu-haddock.png[title="A user with organization memberships, working in context of the user"]
+
+image::menu-haddock-org.png[title="A user with organization memberships, working in context of an organization"]
+
+image::menu-brand.png[role="thumb right"]
+Brand:: The brand link in the left side of the menu bar may be used to navigate back to the landingpage.
+
+
+image::menu-context-haddock.png[role="thumb right"]
+Context selector:: The context selector is only visible when the user is a member of at least one 
+organization. It allows the user to switch between the administered 
+organizations and the user. Currently, the main effect of switching context is
+that the selector shows the currently selected context, and, if the selected 
+context is an organization, then a special organization menu item will appear
+in the sidebar. This menu allows for creation of new services.
+
+In future versions the content of the dashboard might also depend on the 
+currently selected context.
+
+image::menu-user-bering-new.png[role="thumb right"]
+User menu::
+The user menu allows to manage the user profile. Also, when the user is no yet
+a member of any organizations, a new organization may be created from this 
+menu.
+
+
+image::menu-access.png[role="right"]
+Access buttons::
+Access buttons may be used to join, log in and out.
+
+- - -
+
+image::sidebar.png[role="thumb left"]
+=== Sidebar
+
+The sidebar contains actions that are possible from the currently selected 
+context. 
+
+Dashboard:: Link that brings you back to the dashboard.
+
+Search Service:: Opens up a list of search criteria and navigate to the 
+search service page map. See "Search Service" TODO add link here.
+
+Find Organization:: Opens up a page that list all organizations in the system. 
+
+Organization:: context related menu section that is only visible when an 
+organization has been selected in the context selector. Allows to add services 
+to the currently selected organization.
+
+Administration:: Menu section only visible to admin users. Allows to navigate 
+to a page listing all users in the system. 
 
 === Organization
+This section describes the organization details page, how to create a new 
+Organization and how to modify its properties.
 
-* Create Organization
-* Change Organization settings
+==== The Organizations page
+
+* The title, description and site URL
+* Members
+* Teams
+* Provided services summary thumbnail
+* Provided services list
+* Service Specifications
+* Public Certificates
+
+==== Creating a new organization
+
+
+==== Changing an organization
 
 ==== Services
 
 * Create Service
 * Change Service settings
+
+==== Find Services
+...
+
 
 ==== User management
 
