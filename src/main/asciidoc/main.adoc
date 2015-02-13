@@ -217,17 +217,64 @@ This section describes the organization details page, how to create a new
 Organization and how to modify its properties.
 
 ==== The Organizations page
+On the organization page you find a summary description and lists of members, 
+teams, services and specifications.
 
-* The title, description and site URL
-* Members
-* Teams
-* Provided services summary thumbnail
-* Provided services list
-* Service Specifications
-* Public Certificates
+image::organization-haddock-flh.png[]
+On the organization page you can find a list of who is member of the 
+organization, what services is provisioned by it as well of which service 
+specifications, if any, that has been published by the organization. If you
+have writing privileges to the organization, then a little "gear" will 
+appear after the title of elements that may be changed.
+
+Header:: 
+The title, a summary description of the organization and possibly a site URL 
+that points to the organizations official website.
+
+Members box::
+The members box previews the list of members of the organization. If the 
+logged in user is also owner of the displayed organization, two additional 
+lists may appear: one for listing users that has applied for membership, and
+one for listing users that has been invited to the organization but has not yet
+accepted membership. Membership applications may be quickly accepted by 
+clicking the green "Accept"-button.  
+
+Teams box (mocked)::
+The teams box is intended for providing means for sub-grouping members into 
+teams that can for instance receive with special privileges within the 
+organization. This could for instance offer a way to distinguish owners from 
+plain members, or create teams with limited write-access.
+
+Provided Services::
+This section consists of a summary thumbnail map and a list of all the 
+services that are provisioned by the organization. The first (and largest) 
+thumbnail map is a summary map that outlines all the areas covered by the 
+services provisioned by this organization. Below the summary thumbnail follows
+a list of the services. Each service is represented by a title, a (smaller) 
+thumbnail map and a summary description of the service. Clicking on the 
+map will make a details-section to unfold.   
+
+Service Specifications (read only)::
+This section lists all the service specifications that has been published by 
+the organization or is still under construction. The client implementation does
+not currently provide a way to create new specifications. (Refer to the REST API
+documentation for details on how to publish new specifications.) 
+
+Public Certificates (mocked)::
+This section is intended for listing all the public certificates that has been
+uploaded to the organization and may be used for validating signed messages or 
+encrypt communication with. [The details and inner mechanics of such 
+functionality is still undecided!].
 
 ==== Creating a new organization
-
+Creating a new organization is done in two different ways depending on your 
+current status:
+- If you have no existing or pending memberships you open up the toolbar user 
+menu and click on "Create organization" item.
+- If you already a member you should open up the toolbar context selection menu 
+and click on the "Manage organizations" item. This will take you to page that 
+lists all your organization memberships. In the top right corner of the list is 
+a button called "+ New organization".
 
 ==== Changing an organization
 
