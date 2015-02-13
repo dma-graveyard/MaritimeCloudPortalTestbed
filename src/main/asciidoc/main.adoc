@@ -276,16 +276,118 @@ and click on the "Manage organizations" item. This will take you to page that
 lists all your organization memberships. In the top right corner of the list is 
 a button called "+ New organization".
 
+image::organization-form.png[role="thumb"]
+Fill in the organization form. The identifier is also known as the primary alias 
+and must be unique amongst all organizations. The alias will impact on the way
+the organization is represented in e.g. URLs and may impact on the resource 
+addresses in maritime cloud as well, although this part is not yet finally 
+decided. The alias could be something shorthand like "imo" or "dma" and should
+possibly match or be similar to the organizations domain name representation.
+
+::Logo (mocked)
+/The Logo upload feature is not implemented!/
+
 ==== Changing an organization
+In order to change setting of an organization click on the "Gears" icon right to 
+the organization title on the organization details page. 
 
-==== Services
+==== Leaving an organization
+Leaving an organization can be managed from the organizations page. Open up the 
+toolbar context selection menu and click on the "Manage organizations" item.
 
-* Create Service
-* Change Service settings
+=== Services
+Organizations may register provisioned services. A service, sometimes also
+referred to as a "technical service", is something that an organization 
+provides and that adheres to a specific Service Specification. A service can
+be as simple as a call-name and a VHF channel, a phone number or the address of 
+a web site, but can also be something more profound like a web based weather 
+forecasting service following a certain standardized interface given by its 
+service specification and reachable on several medias and schemes like HTTP or 
+AIS.
+
+==== Register a Service
+To register a new service navigate to the organization page and click on the 
+blue button of that name.
+
+image::register-service-1.png[role="thumb"]
+image::register-service-2.png[role="thumb"]
+
+Operational Service (Category)::
+To fill in the form, start by choosing the category of service you are about to 
+register, also known as the "Operational Service". 
+
+service specification::
+Then select the service specification that the service follows. If your service 
+can be reached on multiple platforms or schemes you will need to register the 
+service multiple times, once for each type, e.g. VHF, Phone, WWW, HTTP, AIS 
+etc...
+
+Name::
+Choose a name for the service, this will be used when presenting the service.
+
+Primary alias::
+As with organizations, the services may have one or more aliases. The first one, 
+the primary one, cannot be changed one chosen, and must be unique within the 
+organization. The alias may (in the future) be used as part of the URI when 
+referring to the service in the Maritime Cloud Server.
+
+Summary:: 
+Add a short description that will accompany the service when presented in 
+search results.
+
+Endpoints::
+A service need to be reachable somehow. The endpoints defines how to reach the 
+service. Depending on the type of service, the endpoint scheme may be e.g. a 
+phone number, a VHF number, a HTTPS address or something else. You may specify 
+multiple service endpoints for the sake of redundancy. It must, however be the 
+same service that is provided by all endpoints, and should only be used for
+fallback or high availability reasons. 
+
+image::coverage-editor.png[role="right"]
+Coverage::
+The physical range of the service is referred to as the service "Coverage".
+Services usually apply to a restricted physical area. Either because of the 
+limitations of the service, like radio reachability or more likely because of
+the character of the service. Piloting may for instance be restricted to 
+domestic waters, and portal services only make sense close to the port and so 
+on. Click on the map to enter the coverage editor. This will open a new window
+where shapes may be drawn, specifying the range of the service. Click on type
+of shape that suits your needs and then click on the map to use it. Once done,
+click on the submit-button, or click cancel if you regret.
+
+When all is set, click on the "register service" button. 
+
+==== Change service settings
+To change an already registered service click on the "gear" icon right to the 
+service title on the organization page.
+
+Secondary aliases::
+It is common for organizations to be known both by their domestic name and 
+their international name. For that reason it is also possible to choose multiple 
+aliases for organizations and their provisioned services. On the "change service"
+page you may choose to supply or change additional aliases.
 
 ==== Find Services
-...
+All the registering of provisioned services has little or no purpose if they
+cannot be found. The side-bar menu "Find Service" mitigates that problem. When
+clicking this menu, a map will appear that is "zoomed out" to a level that 
+covers all currently registered services in the system. 
 
+image::search-service.png[]
+By clicking on a position on the map it will zoom in on the services that covers 
+that particular spot (or is nearby) and a list of the selected services will 
+appear. 
+
+An info-box in the lower right corner tells the distance to the selected location 
+as well as the position of the mouse cursor. Hovering any of the items on the list 
+will make that service highlighted (in green) on the map and vice versa. 
+
+Clicking an item on the list will highlight that service (in blue) and expand a 
+details section below the list with showing the service summary, the provisioning 
+organization, endpoints and so on.
+
+A set of filters in the sidebar allows to further narrow the result list to 
+services of for instance a specific kind or name.
 
 ==== User management
 
