@@ -99,32 +99,30 @@ Once done, login with your new password.
 Simple! Just click the "Log out" button in the upper right corner.
 
 === Dashboard
-image::dashboard-bering.png[]
+On the dashboard you find a mix of general system information and 
+information related to the current user.
 
-On the dashboard you may find a mix of general system information and 
-information related to the current user:
+image::dashboard-haddock.png[]
 
-* Statistics
-* Organizations
-* Assets and memberships
-* Activity logs
-
+Statistics::
 Just beneath the title is a line of statistics that list the total number of
 organizations, services, specifications, categories and users currently in the
 system.
 
+Organizations::
 Then follows a list of the organizations that the user is a member of or is in
-the process of becoming a member of. A label to the right of an organization 
-will indicate that the user has applied for membership of this organization. 
-Likewise, if you have been invited to an organization, a button will be shown
-asking for your approval to join the organization.
-A badge with a number indicates that someone has applied for membership of an 
-organization of which you are an owner. (Note: in current version, all members 
-are also owners!).
+the process of becoming a member of. A yellow label to the right of an 
+organization will indicate that the user has applied for membership of this 
+organization. Likewise, if you have been invited to an organization, a green 
+button will be shown asking for your approval to join the organization.
+A grey badge with a number indicates that someone has applied for membership of 
+an organization of which you are an owner. (Note: in the current version, all 
+members are also owners!).
 
-The sections "Assets" and "Achievements" are placeholders for future 
-functionality. 
+The following sections: "Assets", "Achievements" and "Public certificates" are 
+mock ups, that is, static examples of how things could look in the future: 
 
+Assets (mocked)::
 Assets should be listing things that are possessed by the user 
 and that has some kind of relevancy in the maritime community. Usually this 
 would be things that for one reason or another needs to be associable with the 
@@ -137,14 +135,16 @@ then decide to issue a certificate that authenticate all or a subset of the
 properties of an asset and hereby granting privileges to the holder of the 
 certificate.
 
+Achievements (mocked)::
 Achievements should somehow list the various privileges received by 
 organizations.
 
+Public Certificates (mocked)::
 A section called "Public Certificates" should list public keys that this user
 has uploaded to the system. The user should hold on to the corresponding 
 private key. 
 
-==== Activity Feeds
+Activity Feeds::
 This section consists of three sub sections, one for feeds of actions performed
 by yourself, a list of actions happening in any of the organizations that you 
 are a member of, and one for other publicly available actions. The same feed may
