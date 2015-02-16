@@ -152,7 +152,7 @@ public class UserResource extends AbstractCommandResource {
             @QueryParam("page") @DefaultValue("0") int page,
             @QueryParam("size") @DefaultValue("10") int size
     ) {
-        // shori.ini allws "anon"-access to open for POST - restrict GET programaticly to ADMIN role
+        // shori.ini allows "anon"-access to open for POST - restrict GET programaticly to ADMIN role
         requiresRoles("ADMIN");
 
         // FIXME: we should hide the email address - it should only be visible from users profile!
