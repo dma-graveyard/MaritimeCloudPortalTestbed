@@ -25,5 +25,5 @@ public interface UserQueryRepository extends PagingAndSortingRepository<UserEntr
 
     public UserEntry findByUsername(String username);
 
-    public Page<UserEntry> findByUsernameContaining(String usernamePattern, Pageable pageable);
+    public Page<UserEntry> findByUsernameContainingIgnoreCase(String usernamePattern, Pageable pageable);
 }
