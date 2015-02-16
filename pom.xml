@@ -232,15 +232,14 @@
                 <artifactId>asciidoctor-maven-plugin</artifactId>
                 <version>1.5.2</version>
                 <executions>
-                    <execution>
+<!--                    <execution>
                         <id>output-html</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>process-asciidoc</goal>
                         </goals>
-                    </execution>
-                    
-                   <execution>
+                    </execution>-->
+                    <execution>
                         <id>asciidoc-to-html</id>
                         <phase>generate-resources</phase>
                         <goals>
@@ -300,9 +299,6 @@
                             </attributes>
                         </configuration>
                     </execution>                    
-                    
-                    
-                    
                 </executions>
                 <dependencies>
                     <dependency>
