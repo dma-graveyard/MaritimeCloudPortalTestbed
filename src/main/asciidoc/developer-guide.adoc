@@ -1,0 +1,18 @@
+= Maritime Cloud Portal - Developer Guide
+
+== Introduction
+
+== Server architecture
+
+=== DDD, CQRS and Event Sourcing
+
+=== Security
+- shiro
+
+=== REST interface
+- jersey JAXB
+
+=== Spring boot and the micro service
+
+== Client architecture
+

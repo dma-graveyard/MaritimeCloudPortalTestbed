@@ -1,0 +1,20 @@
+= Maritime Cloud Portal - REST API
+:toc:
+
+== Introduction
+
+== REST API interface
+This section explains how to interact with the portal from a third party by 
+using the REST interface.
+
+* Sign up
+[source,bash]
+puts "Hello, World!"
+
+* Login
+* Forgot Password
+* Create Organization
+* Create Service
+* User management
+* Logout
+

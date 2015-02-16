@@ -1,0 +1,446 @@
+= Maritime Cloud Portal - User Guide
+:toc:
+:homepage: http://portal.maritimecloud.net
+
+An introduction to the http://portal.maritimecloud.net[Maritime Cloud Portal].
+
+image::maritimecloud.png[]
+
+== Introduction
+
+=== The vision and the domain
+In its own words, the Maritime Cloud project as a whole aims at providing: 
+[quote]
+A communication framework enabling efficient, secure, reliable and seamless 
+electronic information exchange between all authorized maritime stakeholders 
+across available communication systems.
+
+In that context, the Maritime Cloud Portal aims to facilitate management of 
+some of the more static parts of the system. More specifically, to provide 
+an API and a client for managing an Identity Registry and a Service Registry.
+
+The Identity Registry contains information about users and organizations, and
+associate them with an identity within the Maritime Cloud realm. Also, this 
+registry will (eventually) be able to provide the means for secure 
+authentication and communication presumably by some sort of cryptographic
+scheme.
+
+The Service Registry contains information about which services is provided
+within a certain region as well as specifications on how to communicate with 
+families of services.
+
+=== The given and the gap
+The current version of the Maritime Cloud Portal (v0.1.0) only implements
+a very limited set of the features envisioned for the final product and provides 
+sketches of a few more. In its current version, the client allows users to:
+
+* creation of organizations
+* provision of spatially defined services
+** management of endpoints
+* location based search for services
+* organization and service alias support
+* management of user membership
+* activity log
+
+Below is a list of features that should or could be part of future versions:
+
+* creation and management of Service Specifications and a module for collaboration 
+* creation and management of Operational Service categories
+* management of identity certificates
+* management of user assets and assigning identity to such
+* delegation of trust
+
+== Web client user interface
+
+image::landingpage.png[]
+
+The following sections outlines how to interact with the portal web client. A 
+version of the portal is currently running at http://portal.maritimecloud.net.
+
+=== Access
+This section explains how to gain access to the portal and how to login, logout
+and to how to reset to a new password.
+
+==== Sign up
+In order to get access to the portal, you need to register with a unique 
+username and an e-mail address. Click on the "Join" button and fill in the 
+registration page.
+
+image::join-button.png[]
+image::join-form.png[]
+
+Once you are done you will receive an e-mail with an activation link. Following 
+the link will confirm your e-mail address and activate your registration.
+
+==== Login
+From the landing page, click on the "Log In" button and fill in your username 
+and password. Notice that the username must be spelled exactly as created - the 
+casing of the letters matters.
+
+image::login-form.png[role="thumb"]
+
+==== Forgot Password
+If you can no longer remember your password, or if you forgot your username you
+may still have a change to gain access to the portal. Click the "Forgot password"
+link in the "Log In" form, and supply your e-mail address.
+
+image::forgot-password.png[role="thumb"]
+
+If your e-mail address matches an account you will shortly receive an email with 
+a link. Follow the link in order to provide a new password. 
+
+image::forgot-password-change.png[]
+
+Once done, login with your new password.
+
+==== Logout
+Simple! Just click the "Log out" button in the upper right corner.
+
+=== Dashboard
+On the dashboard you find a mix of general system information and 
+information related to the current user.
+
+image::dashboard-haddock.png[]
+
+Statistics::
+Just beneath the title is a line of statistics that list the total number of
+organizations, services, specifications, categories and users currently in the
+system.
+
+Organizations::
+Then follows a list of the organizations that the user is a member of or is in
+the process of becoming a member of. A yellow label to the right of an 
+organization will indicate that the user has applied for membership of this 
+organization. Likewise, if you have been invited to an organization, a green 
+button will be shown asking for your approval to join the organization.
+A grey badge with a number indicates that someone has applied for membership of 
+an organization of which you are an owner. (Note: in the current version, all 
+members are also owners!).
+
+The following sections: "Assets", "Achievements" and "Public certificates" are 
+mock ups, that is, static examples of how things could look in the future: 
+
+Assets (mocked)::
+Assets should be listing things that are possessed by the user 
+and that has some kind of relevancy in the maritime community. Usually this 
+would be things that for one reason or another needs to be associable with the 
+identity of the user and has an identity of its own. Examples could be vessels 
+and electronic communication devices. Registered assets has a configurable list
+of named properties. Each property may refer to some characteristic of the 
+asset, for instance an IMO number, AIS number, a network identification number
+or a radio call-name. Through some yet undefined process, an organizations may 
+then decide to issue a certificate that authenticate all or a subset of the
+properties of an asset and hereby granting privileges to the holder of the 
+certificate.
+
+Achievements (mocked)::
+Achievements should somehow list the various privileges received by 
+organizations.
+
+Public Certificates (mocked)::
+A section called "Public Certificates" should list public keys that this user
+has uploaded to the system. The user should hold on to the corresponding 
+private key. 
+
+Activity Feeds::
+This section consists of three sub sections, one for feeds of actions performed
+by yourself, a list of actions happening in any of the organizations that you 
+are a member of, and one for other publicly available actions. The same feed may
+possibly occur in all three lists.
+
+=== Menu
+The menu bar consists of up to four visible elements; the brand, a context selector 
+which is only visible when applicable, a user menu and access buttons.
+
+Below follows the four most common states of the menu:
+
+image::menu-anon.png[title="Not logged in"]
+
+image::menu-bering.png[title="A new user, called Bering, without any organization memberships"]
+
+image::menu-haddock.png[title="A user with organization memberships, working in context of the user"]
+
+image::menu-haddock-org.png[title="A user with organization memberships, working in context of an organization"]
+
+image::menu-brand.png[role="thumb right"]
+Brand:: The brand link in the left side of the menu bar may be used to navigate 
+back to the landingpage.
+
+image::menu-context-haddock.png[role="thumb right"]
+Context selector:: The context selector is only visible when the user is a member of at least one 
+organization. It allows the user to switch between the administered 
+organizations and the user. Currently, the main effect of switching context is
+that the selector shows the currently selected context, and, if the selected 
+context is an organization, then a special organization menu item will appear
+in the sidebar. This menu allows for creation of new services.
+
+In future versions the content of the dashboard might also depend on the 
+currently selected context.
+
+image::menu-user-bering-new.png[role="thumb right"]
+User menu::
+The user menu allows to manage the user profile. Also, when the user is no yet
+a member of any organizations, a new organization may be created from this 
+menu.
+
+image::menu-access.png[role="right"]
+Access buttons::
+Access buttons may be used to join, log in and out.
+
+- - -
+
+image::sidebar.png[role="thumb left"]
+=== Sidebar
+
+The sidebar contains actions that are possible from the currently selected 
+context. 
+
+Dashboard:: Link that brings you back to the dashboard.
+
+Search Service:: Opens up a list of search criteria and navigate to the 
+search service page map. See "Search Service" TODO add link here.
+
+Find Organization:: Opens up a page that list all organizations in the system. 
+
+Organization:: context related menu section that is only visible when an 
+organization has been selected in the context selector. Allows to add services 
+to the currently selected organization.
+
+Administration:: Menu section only visible to admin users. Allows to navigate 
+to a page listing all users in the system. 
+
+=== Organization
+This section describes the organization details page, how to create a new 
+Organization and how to modify its properties.
+
+==== The Organizations page
+On the organization page you find a summary description and lists of members, 
+teams, services and specifications.
+
+image::organization-haddock-flh.png[]
+On the organization page you can find a list of who is member of the 
+organization, what services is provisioned by it as well of which service 
+specifications, if any, that has been published by the organization. If you
+have writing privileges to the organization, then a little "gear" will 
+appear after the title of elements that may be changed.
+
+Header:: 
+The title, a summary description of the organization and possibly a site URL 
+that points to the organizations official website.
+
+Members box::
+The members box previews the list of members of the organization. If the 
+logged in user is also owner of the displayed organization, two additional 
+lists may appear: one for listing users that has applied for membership, and
+one for listing users that has been invited to the organization but has not yet
+accepted membership. Membership applications may be quickly accepted by 
+clicking the green "Accept"-button.  
+
+Teams box (mocked)::
+The teams box is intended for providing means for sub-grouping members into 
+teams that can for instance receive with special privileges within the 
+organization. This could for instance offer a way to distinguish owners from 
+plain members, or create teams with limited write-access.
+
+image::provided-services-summary.png[align="center"]
+image::provided-service-thumb.png[role="thumb right related"]
+Provided Services::
+This section consists of a summary thumbnail map and a list of all the 
+services that are provisioned by the organization. The first (and largest) 
+thumbnail map is a summary map that outlines all the areas covered by the 
+services provisioned by this organization. Below the summary thumbnail follows
+a list of the services. Each service is represented by a title, a (smaller) 
+thumbnail map and a summary description of the service. Clicking on the 
+map will make the details-section unfold.   
+
+image::service-specifications.png[role="thumb right related"]
+Service Specifications (read only)::
+This section lists all the service specifications that has been published by 
+the organization or is still under construction. The client implementation does
+not currently provide a way to create new specifications. (Refer to the REST API
+documentation for details on how to publish new specifications.) 
+
+image::organization-certificates.png[role="thumb right related"]
+Public Certificates (mocked)::
+This section is intended for listing all the public certificates that has been
+uploaded to the organization and may be used for validating signed messages or 
+encrypt communication with. [The details and inner mechanics of such 
+functionality is still undecided!].
+
+==== Creating a new organization
+Creating a new organization is done in two different ways depending on your 
+current status:
+- If you have no existing or pending memberships you open up the toolbar user 
+menu and click on "Create organization" item.
+- If you already a member you should open up the toolbar context selection menu 
+and click on the "Manage organizations" item. This will take you to page that 
+lists all your organization memberships. In the top right corner of the list is 
+a button called "+ New organization".
+
+image::organization-form.png[role="thumb"]
+Fill in the organization form. The identifier is also known as the primary alias 
+and must be unique amongst all organizations. The alias will impact on the way
+the organization is represented in e.g. URLs and may impact on the resource 
+addresses in maritime cloud as well, although this part is not yet finally 
+decided. The alias could be something shorthand like "imo" or "dma" and should
+possibly match or be similar to the organizations domain name representation.
+
+::Logo (mocked)
+/The Logo upload feature is not implemented!/
+
+==== Changing an organization
+In order to change setting of an organization click on the "Gears" icon right to 
+the organization title on the organization details page. 
+
+==== Leaving an organization
+Leaving an organization can be managed from the organizations page. Open up the 
+toolbar context selection menu and click on the "Manage organizations" item.
+
+=== Services
+Organizations may register provisioned services. A service, sometimes also
+referred to as a "technical service", is something that an organization 
+provides and that adheres to a specific Service Specification. A service can
+be as simple as a call-name and a VHF channel, a phone number or the address of 
+a web site, but can also be something more profound like a web based weather 
+forecasting service following a certain standardized interface given by its 
+service specification and reachable on several medias and schemes like HTTP or 
+AIS.
+
+==== Register a Service
+To register a new service navigate to the organization page and click on the 
+blue button of that name.
+
+image::register-service-1.png[role="thumb"]
+image::register-service-2.png[role="thumb"]
+
+Operational Service (Category)::
+To fill in the form, start by choosing the category of service you are about to 
+register, also known as the "Operational Service". 
+
+service specification::
+Then select the service specification that the service follows. If your service 
+can be reached on multiple platforms or schemes you will need to register the 
+service multiple times, once for each type, e.g. VHF, Phone, WWW, HTTP, AIS 
+etc...
+
+Name::
+Choose a name for the service, this will be used when presenting the service.
+
+Primary alias::
+As with organizations, the services may have one or more aliases. The first one, 
+the primary one, cannot be changed one chosen, and must be unique within the 
+organization. The alias may (in the future) be used as part of the URI when 
+referring to the service in the Maritime Cloud Server.
+
+Summary:: 
+Add a short description that will accompany the service when presented in 
+search results.
+
+Endpoints::
+A service need to be reachable somehow. The endpoints defines how to reach the 
+service. Depending on the type of service, the endpoint scheme may be e.g. a 
+phone number, a VHF number, a HTTPS address or something else. You may specify 
+multiple service endpoints for the sake of redundancy. It must, however be the 
+same service that is provided by all endpoints, and should only be used for
+fallback or high availability reasons. 
+
+image::coverage-editor.png[role="thumb right"]
+Coverage::
+The physical range of the service is referred to as the service "Coverage".
+Services usually apply to a restricted physical area. Either because of the 
+limitations of the service, like radio reachability or more likely because of
+the character of the service. Piloting may for instance be restricted to 
+domestic waters, and portal services only make sense close to the port and so 
+on. Click on the map to enter the coverage editor. This will open a new window
+where shapes may be drawn, specifying the range of the service. Click on type
+of shape that suits your needs and then click on the map to use it. Once done,
+click on the submit-button, or click cancel if you regret.
+
+When all is set, click on the "register service" button. 
+
+==== Change service settings
+To change an already registered service click on the "gear" icon right to the 
+service title on the organization page.
+
+Secondary aliases::
+It is common for organizations to be known both by their domestic name and 
+their international name. For that reason it is also possible to choose 
+multiple aliases for organizations and their provisioned services. On the 
+"change service" page you may choose to supply or change additional aliases.
+
+=== Find Services
+All the registering of provisioned services has little or no purpose if they
+cannot be found. The side-bar menu "Find Service" mitigates that problem. When
+clicking this menu, a map will appear that is "zoomed out" to a level that 
+covers all currently registered services in the system. 
+
+image::search-service.png[]
+By clicking on a position on the map it will zoom in on the services that 
+covers that particular spot and a list of the selected services 
+will appear.footnote:[More precisely, each service that has the position 
+in its "bounding box", will be shown. This also implies, that sometimes 
+services that may only appear to be near by, but not actually covering the 
+selected position, will also show up on the list.]
+
+A set of filters in the sidebar allows to further narrow the result list to 
+services of for instance a specific kind or name.
+
+Hovering any of the items on the list will make that service highlighted (in 
+green) on the map and vice versa. 
+
+Clicking an item on the list will highlight (in blue) and zoom in on that 
+service and expand a details section below the list showing the service 
+summary, the provisioning organization, endpoints and so on.
+
+An info-box in the lower right corner tells the current position of the mouse 
+cursor as well as the distance from the mouse cursor to the selected location. 
+
+<<<
+
+=== Managing memberships
+
+==== Organization members
+Apart from signing up with the system and create own organizations, users may 
+also apply for membership of existing organizations as well as invite existing
+users to own organizations or expel members that no longer should belong. Most
+of these actions can be initiated from the "Members" page. This is a list of 
+all the current members of the organization as well as any pending memberships.
+
+image::members.png[align="center"]
+This page can be reached from the Organizations page by clicking on the title 
+of the "Members" box which is also a link.
+
+image::invite-member.png[role="right related"]
+Invite member::
+New members can be invited to an organization by navigating to the Members 
+page and clicking the "+ Invite someone" button in the top right corner. Users
+that has been invited but has not yet accepted the invitation will appear on 
+the list with an "Invited" label sticked to it.
+
+Remove member::
+Existing members as well as pending members may be removed from the 
+organization by clicking the "Remove" link.
+
+Accept membership application::
+When a user has applied for membership of your organization a link "Accept 
+application" will appear on that users line. Clicking the link will accept the 
+users application and make that user a full member of the organization.
+
+===== Membership
+As a user you can manage your membership by applying an organization for it, 
+you can receive an invite that you can accept and you can leave an 
+organization, as long as you're not the last to leave.
+
+image::membership-join.png[role="right related"]
+Apply for membership::
+As a user you may apply for membership by navigating to the organizations page 
+and click on the "Join" button in the Member box.
+
+Accept an invite::
+Likewise, if you already received an invitation to join an organization, a 
+button called "Accept invite" is displayed in the Member box and on the 
+dashboard.
+
+Leave organization::
+In order to leave an organization you can click the "Leave" button in the 
+Member box.
