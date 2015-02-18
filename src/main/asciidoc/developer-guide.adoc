@@ -4,7 +4,138 @@
 
 == Server architecture
 
-=== DDD, CQRS and Event Sourcing
+Outline of the architecture...
+
+=== History
+It would be a lie to claim that the maritime cloud portal is equipped with a 
+clean cut architecture. To understand why, and to assist in future decisions on 
+what to change and what to keep, lets start out with a quick trip back in the 
+short, yet bumpy road of the portal architecture history. 
+
+In the start there was this idea of one web-application with one server side.
+Then came the realization, that maybe this was more of one portal, interfacing 
+with two possibly separate services, an "identity registry" and some "service 
+registry".
+
+The architecture started out as a layered architecture, with an interface, 
+an application, a domain and a persistence layer, just as most traditional 
+server applications use to have. However, it had a slight bias towards "ports 
+and adapters architecture", focusing more on isolating the domain from the 
+other layers than on enforcing the traditional roles of the other layers. Also, 
+this was all seasoned with tactical patterns from the domain driven design 
+literature, like Entities, Value Objects, Services and Repositories. A little 
+later on, the ideas of command and query responsibility segregation were 
+introduced, at first as a handmade solution, and quickly thereafter fully 
+embracing the existing framework called "Axon". The reason for choosing CQRS 
+was that it should be well suited for collaboration solutions with many reads 
+and limited write operations. Also, it was the expectation that this 
+architecture would yield a more flexible domain model that would be easier to 
+modify and extend. The concept of aggregates has also become more explicitly 
+visible after the introduction of CQRS not the least due to the annotations 
+introduced by the Axon framework. 
+
+=== Modules
+Currently there are four high level modules (java packages) in the solution. In 
+the future, this might be split out into two to three separate applications 
+depending how this fit into the broader architectural picture. One direction to
+follow could be to split the solution into two separate micro-services, one for 
+each of the bounded contexts of identity management and service registry, if, 
+however, one agree that this is in fact a suitable breakdown of the problem 
+domain. The current module structure could be seen as an early attempt to move 
+into this direction, however, there are still some remaining dependencies that 
+reveal that this initiative is far from completed. A first next step in this 
+direction would be to introduce multiple separate POM modules, hereby 
+indicating more cleanly the separation of the sub-domains. 
+
+Common::
+Tools, utilities and tactical framework-like components that are generic enough 
+to be placed in a separate module.
+
+Identity Registry::
+Module concerned with the identification and authentication of (mainly) users. 
+It could be argued that the identity of organizations should also be handled 
+from here, however this is not currently the case, mainly out of convenience.
+
+Service Registry::
+The Service Registry is concerned with, obviously, services; how they are 
+defined, where they are offered and by whom. As a side effect, Organizations 
+are also defined here, as is organization memberships. 
+
+Portal::
+The portal module itself is mainly gathering everything else needed to deliver 
+the services to the web-based client. This is where a login context (security) 
+is setup and where (some of) the services are exposed as RESTful resources. 
+
+=== Domain
+==== Aggregates
+
+=== CQRS and Event Sourcing
+The following sections will outline the CQRS solution and eventually introduce 
+the Contract generator tool.
+
+- Concept
+
+- Axon
+-- Commands
+-- Command gateway
+-- Events
+--- Replayable filesystem Repository
+-- Sagas (handling the long running processes)
+-- Views
+--- SpringData repositories and in memory database
+- Replays all events on startup to rebuild views (projections)
+
+==== The Contract tool
+Defining Command and Event classes can be a repetitive task, and the resulting 
+structures has so many similarities that the process simply begs for 
+automation. For that reason, and for the convenience of having a single and 
+concise description of the interface to the command model, a simpleminded 
+tool has been designed that can scan a java interface file, called a 
+"Contract" and generate Command and Event classes based on the annotated 
+methods that it contains. 
+
+The common generator utility and the corresponding annotations "Command" and 
+"Event" can be found in the package "net.maritimecloud.common.cqrs.contract".
+
+Two examples of this contract and generator can be found in the Maritime Cloud 
+Portal: ...TODO: insert references here... 
+This is also marks an excellent starting point for investigating what behavior 
+is offered by the domains.
+
+When running the "Generator" it scans the contract and build the corresponding 
+Command and Event classes. The resulting classes are placed in a predefined 
+package, usually called "api". This package is placed in the source structure 
+which is under version control. The reason for that is a bit of a "Hen and the 
+Egg" problem which is solved using a poor mans tactic. The problem is that the 
+generator itself cannot be build and run if the source has compile errors. 
+Errors, that will obviously be there when initially building the project, 
+because the Commands and Events that are likely to be referenced elsewhere in 
+the source has not yet been build. Placing the generated classes under version 
+control ensures that they are present at compile time, allowing the generator 
+to be build and run. But then, what is the gain, if the classes are already 
+there, you ask? 
+The gain is, that when you want to introduce a new command or event, you can 
+specify it as a method in the contract, and then simply run the generator and
+be assured that the resulting Command or Event class is implemented according
+to the same pattern as all the rest. Another benefit is that you have a single
+file that lists all the commands that your model understands, and all the 
+events that it emits. Also, the generated classes all has a javadoc "@see" tag
+that points back to the source contract, allowing for navigation if your IDE 
+supports it.
+
+Testing::
+Notice, that, at least on Netbeans, you can actually also use the Command or 
+event in a unit test in advance of it being defined, as this folder needs not 
+be compilable for the generator to build and run. Why is that important, you 
+ask? 
+Well, because this aligns very well with the modus operandi of writing behavior 
+driven tests in advance of your implementation, which you love to do, right? 
+
+Refactoring::
+The drawback is of course the awkward situation when refactoring an existing 
+Command or Event. In this case it is recommended to use the IDE's refactoring 
+tool to change the Command or Event, and then after the fact, commence the same
+changes to the contract.
 
 === Security
 - shiro
