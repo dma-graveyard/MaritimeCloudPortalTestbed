@@ -162,8 +162,71 @@ well.
 The Axon Framework is a framework that provides some of all the building blocks 
 that you are likely to need when implementing an event sourced domain model.
 
--- Commands
--- Command gateway
+=== The flow of commands and events
+This section will outline the flow of commands and events from a Command hits the 
+RESTful resource and until a response for a view request hits the client. Notice,
+however, that this includes two requests from the client: one for the command, 
+and one (or more) for the later querying of the result of applying the command. 
+
+
+image::mcp-command-flow.png[]
+
+===== (1) RESTful facade
+When a web client submits a command to the Maritime Cloud Portal it is done in 
+terms of a HTTP POST or UPDATE request containing a JSON formatted command. The
+command will be submitted against the resource that it addresses (using the 
+path) and the type of command will be stated as part of the mime-type. 
+
+The 
+"Resource"-classes lives in the packages 
+`net.maritimecloud.identityregistry.resource` and 
+`net.maritimecloud.portal.resource`.
+
+Once the command hits the targeted resource class, it is unwrapped and parsed 
+to a corresponding java-based Command class. Some validation and processing
+may happen in between (although more is needed before prime time) checking that 
+the user is allowed to perform the action and for instance resolving any 
+alias-references and adding resource references from the path to the command.
+
+===== (2) CommandGateway
+Once the command is instantiated it is dispatched to the _CommandGateway_. This
+is an Axon framework and constitutes the entrance to the CQRS engine. From here 
+on the flow is more or less controlled by Axon. The command may be delivered to 
+the gateway in two ways: blocking or non-blocking. In the first way, the method
+only returns once the command has been handled, in the second way, the method
+returns as soon as any command validators has succeeded. Currently, the first
+way is used by Maritime Cloud Portal, but this was merely done out of 
+coincidence, as this was how the initial trails started out. It is expected that 
+the non-blocking way can be used as well, maybe even yielding smoother user 
+experience.
+
+Through Axon, it is possible to apply various validators on the incoming 
+commands which will be evaluated before a command is dispatched to the Command
+Handler. This is not currently used in MCP, but might come in handy in the 
+future. Especially the possibility to verify arguments according to annotated
+JSRxxx specification could be useful in order to protect against misbehaving 
+clients.
+
+===== (3) CommandHandler
+The CommandGateway dispatches the command to the registered handler. There can 
+only be one handler per Command, and Axon will complaint if more is registered
+or if none is found.
+
+The CommandHandler is a method that is annotated with the an Axon annotation. 
+A special annotation exist that allows a method in the target aggregate to be act 
+as the command handler, hereby skipping the step where the handler look up the
+target aggregate and invoke a method on it. 
+
+==== (4)
+The target aggregate ...
+
+==== (5)
+One or more events are recorded in the repository ... 
+
+==== Commands
+
+==== Command gateway
+
 -- Events
 --- Replayable filesystem Repository
 -- Sagas (handling the long running processes)
@@ -209,7 +272,7 @@ events that it emits. Also, the generated classes all has a javadoc "@see" tag
 that points back to the source contract, allowing for navigation if your IDE 
 supports it.
 
-Testing::
+===== Testing
 Notice, that, at least on Netbeans, you can actually also use the Command or 
 Event in a unit test in advance of it being defined, as this folder needs not 
 be compilable for the generator to build and run. Why is that important, you 
@@ -217,11 +280,67 @@ ask?
 Well, because this aligns very well with the modus operandi of writing behavior 
 driven tests in advance of your implementation, which you love to do, right? 
 
-Refactoring::
+===== Refactoring
 The drawback is of course the awkward situation when refactoring an existing 
 Command or Event. In this case it is recommended to use the IDE's refactoring 
 tool to change the Command or Event, and then after the fact, commence the same
 changes to the contract.
+
+==== Extending the domain
+Extending the behavior of the system is achieved in a series of steps, starting
+with deciding the intention of the new feature. From this, a name for the 
+corresponding command should be chosen. Given the new command, it may already 
+be evident which events will be emitted from such a command, thus, these may
+also be ready to be defined in the Contract file. Arguments for the command
+and events should be decided. Command arguments usually consist of parameters 
+that points out the target aggregate as well as the payload of the command, 
+the new value to apply or whatever is needed to perform the intended action.
+Likewise, Events will have at least a mandatory identity reference, and
+usually will repeat the values from the command. In addition, events may 
+contain redundant "convenience values", values that may make the life simpler 
+for the consumers of the events, for instance it may provide the name of 
+a user, instead of just the user id, hence making a separate lookup  by the 
+consumer unnecessary.
+
+When the Contract is in place, it is time to generate the corresponding classes.
+From there, the command should be introduced in a "Command Handler", either in
+a dedicated "CommandHandler" or embedded directly in the targeted aggregate. 
+
+One thing to keep in mind when implementing the handling method is, that in 
+contrast to a traditional Service method, the Command Handler method should 
+merely call the targeted aggregate and have it verify, that the intended action 
+can in fact take place, that is, validate that the state and state-change is 
+valid. It should NOT change any state in this scope. When all seems to be clear, 
+the aggregate command method should create and emit the corresponding event, 
+signaling that this action has now taken place. Next, the corresponding event 
+listener is added to the Aggregate. It's only during handling of the event, that 
+changes to the state is applied to the aggregate. This can be a mind-twister at 
+first, but try to keep in mind that the "true" state of the aggregate is 
+expressed by its sequence of events, and only when replaying the sequence from 
+the start to the end will you get to the current state. Hence, all state 
+changes must be initiated by events and events only. If you use the Axon 
+framework to write unit tests, it will assist you in getting some of these
+things right. 
+
+Now, presuming you got to a stage where you have introduced a command; has 
+defined a handler; has registered this command handler to the Command Gateway;
+has introduced at least one new event; and, if that event causes state changes,
+has introduced a listener for that event on the aggregate. Then you still have 
+some way to go. First, you probably want to be able to submit that command. And
+later on, you probably also wants to be able to see the effect of the command.
+
+In the Maritime Cloud Portal, the first part is handled in the RESTful resources. 
+You must decide how and where the new command fit in, and after identifying the 
+correct resource, you should add a POST or PUT handler to the suitable path.
+
+Finally, viewing the result of the command may be achieved either from an 
+existing view, or it may be necessary to introduce a new view. The view consists
+of an Event Listener, an "Entry" kind of a JPA entity that mainly consist of 
+the aggregate id and the exact values that fulfill the need of at least one 
+client use case, and a corresponding (generic) query repository. The listener 
+will, depending on the event, create a new entry or find and update an existing 
+entry. Finally, the SpringData-based generic JPA repository interface will 
+expose a new tailored query, or maybe the existing generic query will do.
 
 === Security
 - shiro
