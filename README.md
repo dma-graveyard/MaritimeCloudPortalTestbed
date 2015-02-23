@@ -336,9 +336,74 @@ Follow the startup process with
 
 Once up-n-running the result can be seen from the link below
 
+### Docker
+
+The Maritime Cloud Portal can be run from a Docker container. See 
+Docker [http://docs.docker.com/] for instructions on getting started with Docker. 
+A pre-build portal image can be found at https://registry.hub.docker.com/u/dmadk/mcp. 
+
+#### Build
+
+To build your own image, use this command (possibly from a Boot2Docker shell) 
+from the root of the project:
+
+    docker build -t mcp .
+
+#### Run
+
+To run the build docker image, create a new container and launch it (in one go):
+
+     docker run -p 8080:8080 -v `pwd`/target/events:/portal/target/events -v `pwd`/config:/portal/config --name=mcp mcp
+
+This will create a docker container for the image and mount the two local disk 
+volumes "./target/events" and "./config". The first one specifies the local 
+folder of where the aggregates are stored and the second allows you to override any 
+properties by adding an application.properties file.
+
+NOTE: If you run from a Boot2Docker-shell, you need to know the IP of this 
+virtual machine. From the Boot2Docker shell use:
+
+    boot2docker ip
+
+This will give you the ip address of the virtual machine. In this case the
+Maritime Cloud Portal will be accessible from the resulting ip on port 8080.
+
+Consider to map the ip to eg. "mcp" in your host-file.
+
+    sudo nano /private/etc/hosts
+
+And add something like:
+
+    # Maritime Cloud Portal via Boot2Docker IP
+    192.168.59.103  mcp
+
+#### Stop
+
+A foreground process can be stopped with CTRL-C. To stop a background process, use:
+
+    docker stop mcp
+
+#### Start
+
+The container can be restarted, in foreground with:
+
+    docker start -ai mcp
+
+Omit the "-ai" option to run it in background:
+
+    docker start mcp
+
+#### Advanced actions
+
+To connect to the running container you can use
+    
+    docker exec -it mcp /bin/bash
+
+This will start a shell within the container. Use "exit" to leave it again.
+
 ### Demo [Maritime Cloud Portal] (http://portal.maritimecloud.net/app/index.html)
 
-Login with with "Tintin", "Haddock" or "admin". Password is "test" in all cases. 
+Login with "Tintin", "Haddock" or "admin". Password is "test" in all cases. 
 Feel free to modify services and members. You may also sign up to get your own 
 user. Just be aware that this is a demo and that the database may be cleared now 
 and then, for instance due to updates.
