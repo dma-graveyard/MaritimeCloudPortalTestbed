@@ -399,7 +399,9 @@ To connect to the running container you can use
     
     docker exec -it mcp /bin/bash
 
-This will start a shell within the container. Use "exit" to leave it again.
+This will start a shell within the container. Use "exit" to leave it again. You
+can use this shell to for instance wget a new version of the portal from 
+Jenkins.
 
 ### Demo [Maritime Cloud Portal] (http://portal.maritimecloud.net/app/index.html)
 
