@@ -67,15 +67,101 @@ the services to the web-based client. This is where a login context (security)
 is setup and where (some of) the services are exposed as RESTful resources. 
 
 === Domain
+
+The implemented part of the Maritime Cloud Portal domain consists of the four 
+central concepts: the users, the organizations, the service specifications and 
+the services. In addition we have (organization) memberships and aliases.
+
+==== User, Organizations and Memberships
+
+image::user-member-org.png[]
+The User may sign up to the system and create organizations. Organizations may 
+invite users, and users may request membership of organizations. They both may
+choose to revoke a membership, and both must give their concent when the other 
+part initiates a membership. 
+
+==== Organizations and Services
+
+image::org-service.png[]
+Organizations may create Service Specifications and Service Instances.
+
+==== Services
+
+image::service.png[]
+A Service Instance is an actual service offered by an organization and that 
+adheres to a certain Service Specification. The Service Specification details 
+what a service does and how to interact with this kind of service. The service 
+specification may also (somehow) be categorized according to its operational 
+qualities (see next section).
+
+==== Operational Service
+There is another concept in the domain of the the Maritime Cloud, called 
+the "operational service". This is sort of a Categorization of services. 
+However, in the solution this has only been implemented as a static list, and 
+the mapping of Service Specifications to operational services is done scanning 
+the summary part of the specification for the occurrence of an operational 
+service ID, also, this mapping is only applied in the REST resource.
+
+////
+PNG sources from http://yuml.me/diagram/scruffy/class/draw
+
+// user-member-org.png
+[User]<-0..*[Membership]
+[Membership]0..*->[Organization]
+//http://yuml.me/edit/ff70a2b1
+
+// org-service.png
+[Organization]+-0..*>[ServiceInstance]
+[Organization]+-0..*>[ServiceSpecification]
+[Organization]+-0..*>[OperationalService]
+// http://yuml.me/edit/b1933dfa
+
+// service.png (right-to-left)
+[ServiceInstance]0..1->[ServiceSpecification]
+[ServiceSpecification]0..1->[OperationalService]
+// http://yuml.me/edit/83e28665
+
+
+// Not used yet:
+[User]-[note:Aggregate root{bg:wheat}]
+[Organization]-[note:Aggregate root{bg:wheat}]
+[ServiceSpecification]-[note:Aggregate root{bg:wheat}]
+[ServiceInstance]-[note:Aggregate root{bg:wheat}]
+
+[ServiceSpecification]-[OrganizationId]
+
+[OrganizationId]-[Organization]
+[OrganizationId]-[ServiceSpecification]
+[ServiceSpecification]-[ServiceSpecificationId]
+[ServiceInstance]-[OrganizationId]
+[ServiceInstance]-[ServiceInstanceId]
+[ServiceInstance]-[ServiceSpecificationId]
+
+[ServiceSpecification|+name;+summary;+serviceType]
+
+[ServiceInstance]++-0..*>[Coverage]
+////
+
 ==== Aggregates
 
 === CQRS and Event Sourcing
 The following sections will outline the CQRS solution and eventually introduce 
 the Contract generator tool.
 
-- Concept
+==== Concept
+The basic concepts of Command and Query Responsibility Segregation is to split
+the traditional single, "cover-all-scenarios" domain model into two separate 
+models, one for writing and one for reading. The writing model will focus on
+protecting transactional integrity, whereas the reading model will focus on
+fast delivery of information. The key to achieve this split is to accept a 
+certain level of eventual consistency. Combine this with event sourcing and
+you will in return get a system that may both be open for extension and scale 
+well. 
 
-- Axon
+=== Axon Framework
+The Axon Framework is a framework that provides some of all the building blocks 
+that you are likely to need when implementing an event sourced domain model.
+
 -- Commands
 -- Command gateway
 -- Events
@@ -125,7 +211,7 @@ supports it.
 
 Testing::
 Notice, that, at least on Netbeans, you can actually also use the Command or 
-event in a unit test in advance of it being defined, as this folder needs not 
+Event in a unit test in advance of it being defined, as this folder needs not 
 be compilable for the generator to build and run. Why is that important, you 
 ask? 
 Well, because this aligns very well with the modus operandi of writing behavior 
