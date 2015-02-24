@@ -94,13 +94,19 @@ what a service does and how to interact with this kind of service. The service
 specification may also (somehow) be categorized according to its operational 
 qualities (see next section).
 
-==== Operational Service
-There is another concept in the domain of the the Maritime Cloud, called 
-the "operational service". This is sort of a Categorization of services. 
+NOTE: There is another concept in the domain of the the Maritime Cloud, called 
+the "_Operational Service_". This is sort of a Categorization of services. 
 However, in the solution this has only been implemented as a static list, and 
 the mapping of Service Specifications to operational services is done scanning 
 the summary part of the specification for the occurrence of an operational 
-service ID, also, this mapping is only applied in the REST resource.
+service ID, also, this mapping is only applied in the REST resource. 
+There has been quite a lot of confusion about the meaning of this concept. 
+From a domain expert perspective, there is a strong feeling that this is a real 
+concept and should be modeled as such. However, they seem to regard it as a 
+one-to-many relationship. From a developer perspective this looks more like the 
+concept of a "Category" placing services within one or more categories of 
+"Operations", hence, a many-to-many relationship. The topic needs more analysis 
+to be fully understood. 
 
 ////
 PNG sources from http://yuml.me/diagram/scruffy/class/draw
@@ -142,36 +148,35 @@ PNG sources from http://yuml.me/diagram/scruffy/class/draw
 [ServiceInstance]++-0..*>[Coverage]
 ////
 
-==== Aggregates
-
 === CQRS and Event Sourcing
 The following sections will outline the CQRS solution and eventually introduce 
 the Contract generator tool.
 
 ==== Concept
 The basic concepts of Command and Query Responsibility Segregation is to split
-the traditional single, "cover-all-scenarios" domain model into two separate 
+the traditional single, "encompass-all" domain model into two separate 
 models, one for writing and one for reading. The writing model will focus on
-protecting transactional integrity, whereas the reading model will focus on
+protecting transactional consistency, whereas the reading model will focus on
 fast delivery of information. The key to achieve this split is to accept a 
 certain level of eventual consistency. Combine this with event sourcing and
-you will in return get a system that may both be open for extension and scale 
-well. 
+you will in return get a system that may both be scalable and open for 
+extension. 
 
-=== Axon Framework
-The Axon Framework is a framework that provides some of all the building blocks 
-that you are likely to need when implementing an event sourced domain model.
+===== Axon Framework
+The Axon Framework is a framework that provides a lot of the generic building 
+blocks that you are likely to need when implementing an event sourced domain 
+model. You can read more about Axon Framework at [http://www.axonframework.org/]
 
-=== The flow of commands and events
-This section will outline the flow of commands and events from a Command hits the 
-RESTful resource and until a response for a view request hits the client. Notice,
-however, that this includes two requests from the client: one for the command, 
-and one (or more) for the later querying of the result of applying the command. 
-
+==== The flow of commands and events
+This section will roughly outline the flow of commands and events from a 
+Command hits the RESTful resource and until a response for a view request hits 
+the client. Notice, however, that this includes two requests from the client: 
+one for the command, and one (or more) for the later querying of the result of 
+applying the command. 
 
 image::mcp-command-flow.png[]
 
-===== (1) RESTful facade
+====== (1) RESTful facade
 When a web client submits a command to the Maritime Cloud Portal it is done in 
 terms of a HTTP POST or UPDATE request containing a JSON formatted command. The
 command will be submitted against the resource that it addresses (using the 
@@ -188,8 +193,8 @@ may happen in between (although more is needed before prime time) checking that
 the user is allowed to perform the action and for instance resolving any 
 alias-references and adding resource references from the path to the command.
 
-===== (2) CommandGateway
-Once the command is instantiated it is dispatched to the _CommandGateway_. This
+====== (2) CommandGateway
+After the command has been instantiated it is sent to the _CommandGateway_. This
 is an Axon framework and constitutes the entrance to the CQRS engine. From here 
 on the flow is more or less controlled by Axon. The command may be delivered to 
 the gateway in two ways: blocking or non-blocking. In the first way, the method
@@ -204,35 +209,74 @@ Through Axon, it is possible to apply various validators on the incoming
 commands which will be evaluated before a command is dispatched to the Command
 Handler. This is not currently used in MCP, but might come in handy in the 
 future. Especially the possibility to verify arguments according to annotated
-JSRxxx specification could be useful in order to protect against misbehaving 
-clients.
+Bean Validation (see the JSR303 specification) could be useful in order to 
+protect against misbehaving clients.
 
-===== (3) CommandHandler
-The CommandGateway dispatches the command to the registered handler. There can 
-only be one handler per Command, and Axon will complaint if more is registered
-or if none is found.
+====== (3) CommandHandler
+The CommandGateway dispatches the command (through a bus) to the registered 
+handler. There can be only one handler per Command, and Axon will complain if 
+more are registered or if none is found.
 
-The CommandHandler is a method that is annotated with the an Axon annotation. 
-A special annotation exist that allows a method in the target aggregate to be act 
-as the command handler, hereby skipping the step where the handler look up the
-target aggregate and invoke a method on it. 
+The CommandHandler is a method that is annotated with the Axon annotation 
+`@CommandHandler`. The annotation may be used on a method in the target 
+aggregate, hereby skipping the step where the handler look up the target 
+aggregate and invoke a method on it. Both strategies are used in the maritime 
+cloud portal, and you may expect to find CommandHandler methods in both classes 
+named e.g. `UserCommandHandler` as well as directly in the aggregate `User`.
 
-==== (4)
-The target aggregate ...
+===== (4) Aggregate: Command Validation
+The target aggregate is where the domain logic lives. In the context of the
+command it will be guarding invariants dictated by business rules. Usually this
+implies that the aggregate will perform some validation logic that ensures that 
+the command does not violate any of its business rule in its current state. 
 
-==== (5)
-One or more events are recorded in the repository ... 
+===== (5) Aggregate: Event Sourcing Handler
+If all tests has passed, the aggregate method will create one or more events 
+and apply them to the aggregate. This will add the them to a queue of 
+uncommitted events and invoke the any relevant `EventSourcingHandlers`, methods
+that handles events of a specific kind, implemented by the aggregate. This is 
+where the state of the aggregate is actually changed, and it is the exact same 
+methods that are invoked during replay of an aggregates events, when rebuilding 
+an aggregate from its event stream.
 
-==== Commands
+===== (6) AggregateRepository
+When the Unit of Work (managed by axon) completes, the events are stored in the 
+`AggregateRepository` and emitted on an event bus that will notify any registered 
+listeners asynchronously.
 
-==== Command gateway
+==== The View models
+In order to keep the views models up to date they register on the EventBus to 
+listen for relevant events. In the Maritime Cloud Portal the listeners follow a 
+naming scheme of `<viewname>Listener`, like e.g. `OrganizationListener`. 
 
--- Events
---- Replayable filesystem Repository
--- Sagas (handling the long running processes)
--- Views
---- SpringData repositories and in memory database
-- Replays all events on startup to rebuild views (projections)
+The View-listeners maintains projections of the event stream by using 
+simpleminded JPA entities and extensions of generic JPA repositories.
+
+The entities are named `<viewname>Entry`, like e.g. OrganizationEntry and the 
+repositories are named `<viewname>QueryRepository`, like e.g. 
+`OrganizationQueryRepository.
+
+The views and supporting classes are kept in packages named `*.query`.
+
+===== Replay of events 
+In the current solution all the view models are kept in an "In Memory" 
+relational database. This implies that all models are lost at shut-down. In
+order to rebuild the model at startup, all events in the aggregate event store
+are replayed. In a production environment this should be changed to use a 
+persistent database, and the `replay-at-startup-feature` should be disabled.
+
+==== Sagas
+Some use cases cannot be completed by a single command, and may need to span
+several events. One scenario is the activation of a new user. This cannot 
+happen until the user has signed up and verified the email address. Axon 
+provides an implementation for the generic concept called a Saga, a.k.a. "a 
+long running process". In Maritime Cloud Portal it also comes in handy when
+handling e-mail communication and could also be used for compensating handling
+of rare, but complex business rule violations. 
+
+The sagas in Maritime Cloud Portal lives side by side with their 
+related aggregates in the command package. See for instance
+`net.maritimecloud.identityregistry.command.user.ConfirmEmailAddressSaga`.
 
 ==== The Contract tool
 Defining Command and Event classes can be a repetitive task, and the resulting 
@@ -247,30 +291,35 @@ The common generator utility and the corresponding annotations "Command" and
 "Event" can be found in the package "net.maritimecloud.common.cqrs.contract".
 
 Two examples of this contract and generator can be found in the Maritime Cloud 
-Portal: ...TODO: insert references here... 
-This is also marks an excellent starting point for investigating what behavior 
-is offered by the domains.
+Portal: `net.maritimecloud.identityregistry.command.IdentityRegistryContract` 
+and `net.maritimecloud.serviceregistry.command.ServiceRegistryContract`. These 
+contracts also marks an excellent starting point for investigating what 
+behavior is offered by the domain. Example of the contract: 
 
-When running the "Generator" it scans the contract and build the corresponding 
-Command and Event classes. The resulting classes are placed in a predefined 
-package, usually called "api". This package is placed in the source structure 
-which is under version control. The reason for that is a bit of a "Hen and the 
-Egg" problem which is solved using a poor mans tactic. The problem is that the 
-generator itself cannot be build and run if the source has compile errors. 
-Errors, that will obviously be there when initially building the project, 
-because the Commands and Events that are likely to be referenced elsewhere in 
-the source has not yet been build. Placing the generated classes under version 
-control ensures that they are present at compile time, allowing the generator 
-to be build and run. But then, what is the gain, if the classes are already 
-there, you ask? 
-The gain is, that when you want to introduce a new command or event, you can 
-specify it as a method in the contract, and then simply run the generator and
-be assured that the resulting Command or Event class is implemented according
-to the same pattern as all the rest. Another benefit is that you have a single
-file that lists all the commands that your model understands, and all the 
-events that it emits. Also, the generated classes all has a javadoc "@see" tag
-that points back to the source contract, allowing for navigation if your IDE 
-supports it.
+[source,java]
+----
+include::../java/net/maritimecloud/identityregistry/command/IdentityRegistryContract.java[]
+----
+
+When running the "Generator", like e.g. the `IdentityRegistryCqrsApiSourceGenerator` 
+it scans the contract and build the corresponding Command and Event classes. 
+The resulting classes are placed in a predefined package, usually called "api". 
+This package is placed in the source structure which is under version control. 
+The reason for that is a bit of a "Hen and the Egg" problem which is solved 
+using a poor mans tactic. The problem is that the generator itself cannot be 
+build and run if the source has compile errors. Errors, that will obviously be 
+there when initially building the project, because the Commands and Events that 
+are likely to be referenced elsewhere in the source has not yet been build. 
+Placing the generated classes under version control ensures that they are 
+present at compile time, allowing the generator to be build and run. But then, 
+what is the gain, if the classes are already there, you ask? The gain is, that 
+when you want to introduce a new command or event, you can specify it as a 
+method in the contract, and then simply run the generator and be assured that 
+the resulting Command or Event class is implemented according to the same 
+pattern as all the rest. Another benefit is that you have a single file that 
+lists all the commands that your model understands, and all the events that it 
+emits. Also, the generated classes all has a javadoc "@see" tag that points 
+back to the source contract, allowing for navigation if your IDE supports it.
 
 ===== Testing
 Notice, that, at least on Netbeans, you can actually also use the Command or 
@@ -343,12 +392,94 @@ entry. Finally, the SpringData-based generic JPA repository interface will
 expose a new tailored query, or maybe the existing generic query will do.
 
 === Security
-- shiro
+Access to the web interface of Maritime Cloud Portal is guarded by the Apache 
+Shiro security framework [http://shiro.apache.org/]. The configuration file can 
+be found at `src/main/webapp/WEB-INF/shiro.ini`.
 
-=== REST interface
-- jersey JAXB
+Shiro is configured to support basic username-password authentication with a 
+role-based authorization scheme. Users can be either _anonymous_, _user_ or 
+_admin_. In the current implementation, only the user with the username "admin"
+has the role "admin".
+
+Passwords are hashed before they are stored in Shiros cache, and as well as in 
+the application.
+
+The integration with the Shiro framework mainly happens in three classes:
+
+- MaritimeCloudIdentityRealm
+- McpAuthorizationFilter
+- ShiroAuthenticationUtil 
+
+MaritimeCloudIdentityRealm:: 
+This is an implementation of the abstract Shiro class `AuthorizingRealm`. It 
+provides Shiro with application specific user identity and user role 
+information. 
+
+McpAuthorizationFilter:: A filter that mainly adds proper handling of "access 
+denied". More specifically it sets the http error response to the status code 
+401, indicating that the request requires HTTP authentication throws. 
+
+ShiroAuthenticationUtil:: Utility to programmatically login and logout the 
+user, to get the current users id and to tell if the current user is logged in. 
+
+Example of shiro.ini: 
+
+[source,shell]
+----
+include::../webapp/WEB-INF/shiro.ini[]
+----
 
 === Spring boot and the micro service
+The application has been assembled as a Spring Boot standalone executable WAR.
+Please refer to the project POM and the Spring Boot documentation 
+[http://projects.spring.io/spring-boot/] for details about how to configure and 
+tweak this part.
+
+Please refer to the GITHUB project page for instructions on launching the 
+application [https://github.com/MaritimeCloud/MaritimeCloudPortalTestbed].
+
+Notice that spring allows a plethora of ways to manipulate application 
+properties, mainly through overriding versions of the 
+`application.properties`-file. 
+
+=== APPENDIX A: The REST interface
+The Maritime Cloud Portal REST interface uses Jersey JAX-RS 
+[https://jersey.java.net/]. 
+
+The API consists of two types of requests: Command requests and Query requests:
+
+Command requests::
+The command requests are either POSTs or UPDATEs and in both cases contains a
+payload of a JSON formatted command. 
+
+Query requests::
+The Query requests are always GET requests and may be accompanied by query 
+parameters.
+
+
+==== Commands
+
+[cols="5*", options="header"]
+|===
+
+| URL Path | Command name | Description | Access | JSON Payload 
+
+| Organization/
+| 
+|
+|
+|
+
+|===
+
+==== invoking a command form an Angular JS client
+...
+
+--- 
 
 == Client architecture
+Please refer to the GITHUB project page for further information about the 
+client architecture - mainly the technology stack: 
+[https://github.com/MaritimeCloud/MaritimeCloudPortalTestbed].
+
 
