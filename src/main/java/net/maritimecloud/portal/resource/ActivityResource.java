@@ -31,9 +31,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 /**
- * The AlmanacResource resembles the publicly available API part of the RegistryService.
+ * The ActivityResource gives access to the stream of events that has taken place in the system.
  * <p>
- * This resource should be accessible by all users.
+ * TODO: restrict some access on a per user/organization basis
  * <p>
  * @author Christoffer Børrild
  */
@@ -54,9 +54,11 @@ public class ActivityResource {
     ) {
         Pageable pageable = new PageRequest(page, size, new Sort(Sort.Direction.DESC, "dateTime"));
         if (username != null && !username.isEmpty()) {
+            // TODO: add check that user match current user or is ADMIN!!!
             return ApplicationServiceRegistry.activityEntryQueryRepository().findByUsername(username, pageable);
         }
         if (organizationIds != null && !organizationIds.isEmpty()) {
+            // TODO: add check that user is member of organization or is ADMIN!!!
             return ApplicationServiceRegistry.activityEntryQueryRepository().findByOrganizationIdIn(organizationIds, pageable);
         }
         return ApplicationServiceRegistry.activityEntryQueryRepository().findByIsPublicTrueAndDateTimeAfter(new Date(dateTime), pageable);

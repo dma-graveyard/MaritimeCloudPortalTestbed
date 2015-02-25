@@ -14,7 +14,6 @@
  */
 package net.maritimecloud.portal.resource;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -295,8 +294,7 @@ public class OrganizationResource extends AbstractCommandResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("org/{organizationIdOrAlias}/ss")
     public List<ServiceSpecificationEntry> queryServiceSpecificationsByAlias(
-            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
-            @QueryParam("namePattern") @DefaultValue("") String usernamePattern
+            @PathParam("organizationIdOrAlias") String organizationIdOrAlias
     ) {
         String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
         return ApplicationServiceRegistry.serviceSpecificationQueryRepository().findByOwnerId(organizationId);
@@ -320,8 +318,7 @@ public class OrganizationResource extends AbstractCommandResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("org/{organizationIdOrAlias}/si")
     public List<ServiceInstanceEntry> queryServiceInstancesByAlias(
-            @PathParam("organizationIdOrAlias") String organizationIdOrAlias,
-            @QueryParam("namePattern") @DefaultValue("") String usernamePattern
+            @PathParam("organizationIdOrAlias") String organizationIdOrAlias
     ) {
         String organizationId = resolveOrganizationIdOrFail(organizationIdOrAlias);
         return ApplicationServiceRegistry.serviceInstanceQueryRepository().findByProviderId(organizationId);

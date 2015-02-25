@@ -76,7 +76,6 @@ public class AlmanacResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("operational-service")
     public Iterable<OperationalServiceEntry> queryOperationalServices(
-            @QueryParam("anyTextPattern") @DefaultValue("") String anyTextPattern
     ) {
         addHardcodedOperationalServicesHACK();
         return ApplicationServiceRegistry.operationalServiceQueryRepository().findAll();
@@ -94,8 +93,6 @@ public class AlmanacResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("organization")
     public Iterable<OrganizationEntry> queryOrganizations(
-            @QueryParam("member") @DefaultValue("") String member,
-            @QueryParam("anyTextPattern") @DefaultValue("") String anyTextPattern
     ) {
         return ApplicationServiceRegistry.organizationQueryRepository().findAll();
     }
@@ -104,7 +101,6 @@ public class AlmanacResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("organization/{organizationId}")
     public OrganizationEntry getOrganization(@PathParam("organizationId") String organizationId) {
-        simulateLack(50);
         return ApplicationServiceRegistry.organizationQueryRepository().findOne(organizationId);
     }
 
@@ -124,8 +120,6 @@ public class AlmanacResource {
             @QueryParam("serviceType") @DefaultValue("") String serviceType,
             @QueryParam("anyTextPattern") @DefaultValue("") String anyTextPattern
     ) {
-        simulateLack(86);
-
         if (operationalServiceId.isEmpty()) {
             return ApplicationServiceRegistry.serviceSpecificationQueryRepository().findAll();
         } else {
@@ -140,7 +134,6 @@ public class AlmanacResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("service-specification/{serviceSpecificationId}")
     public ServiceSpecificationEntry getServiceSpecification(@PathParam("serviceSpecificationId") String serviceSpecificationId) {
-        simulateLack(120);
         return ApplicationServiceRegistry.serviceSpecificationQueryRepository().findOne(serviceSpecificationId);
     }
 
@@ -149,14 +142,8 @@ public class AlmanacResource {
     @Path("service-instance")
     public Iterable<ServiceInstanceEntry> queryInstances(
             @QueryParam("operationalServiceId") @DefaultValue("") String operationalServiceId,
-            @QueryParam("serviceSpecificationId") @DefaultValue("") String serviceSpecificationId,
-            @QueryParam("serviceSpecificationIds") List<String> serviceSpecificationIds,
-            @QueryParam("providerId") @DefaultValue("") String providerId,
-            @QueryParam("serviceType") @DefaultValue("") String serviceType,
-            @QueryParam("anyTextPattern") @DefaultValue("") String anyTextPattern
+            @QueryParam("serviceSpecificationIds") List<String> serviceSpecificationIds
     ) {
-        simulateLack(143);
-
         // Filter ServiceInstances that implements a SepcificationType that belongs to a specific OperationlaService category
         if (!operationalServiceId.isEmpty()) {
 
@@ -187,18 +174,9 @@ public class AlmanacResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("service-instance/{serviceInstanceId}")
     public ServiceInstanceEntry getInstance(
-            @PathParam("serviceInstanceId") String serviceInstanceId,
-            @QueryParam("namePattern") @DefaultValue("") String usernamePattern
+            @PathParam("serviceInstanceId") String serviceInstanceId
     ) {
         return ApplicationServiceRegistry.serviceInstanceQueryRepository().findOne(serviceInstanceId);
-    }
-
-    private void simulateLack(long millis) {
-        try {
-            System.out.println("Simulating " + millis + " milliseconds lack in class " + getClass());
-            Thread.sleep(millis);
-        } catch (InterruptedException ex) {
-        }
     }
 
 }

@@ -48,7 +48,7 @@ mcpApp.config(function ($provide) {
         
         // Remove the "Command"-postfix from the command-name (if any)
         // ( We could have removed this from the command function constructors 
-        // al toghether in the first place, but I like to keep it here on the 
+        // all together in the first place, but I like to keep it here on the 
         // client side in order to remind me that these are Commands as opposed 
         // to all the other functions that lives out here "in the wild" js world) 
         var commandName = config.data.constructor.name.replace(/Command\b/, "");
