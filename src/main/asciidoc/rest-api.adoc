@@ -2,19 +2,333 @@
 :toc:
 
 == Introduction
-
-== REST API interface
-This section explains how to interact with the portal from a third party by 
+This chapter explains how to interact with the portal from a third party by 
 using the REST interface.
 
-* Sign up
-[source,bash]
-puts "Hello, World!"
+The Maritime Cloud Portal REST interface uses Jersey JAX-RS 
+[https://jersey.java.net/]. 
 
-* Login
-* Forgot Password
-* Create Organization
-* Create Service
-* User management
-* Logout
+The REST solution is mainly inspired by this article: 
+[http://www.infoq.com/articles/rest-api-on-cqrs].
+
+=== Commands and Queries
+The API consists of two types of requests: Command requests and Query requests:
+
+Query requests::
+The Query requests are always GET requests and may be accompanied by query 
+parameters.
+
+Command requests::
+The command requests are either POSTs or UPDATEs and in both cases contains a
+payload of a JSON formatted command. Example:
+
+[source,ruby]
+----
+# (multiline backslashes omitted!)
+curl http://localhost:8080/rest/api/users                          
+  -H "Content-Type: application/json;domain-model=RegisterUser"           // <1>
+  -d '{                                                                   // <2>
+        "userId":{"identifier":"9acd9a23-ab23-44a7-8203-18e700ea0da1"},   // <3>
+        "prefferedUsername":"admin",
+        "emailAddress":"admin@auto.demo.dma.dk",
+        "password":"test"
+      }'
+----
+
+<1> when submitting a command, the command type must be specified as part of 
+the Contentn-type
+<2> the payload is a JSON formatted version of the corresponding java command. 
+See the section about the <<cqrs-contract,the cqrs contract tool>>.
+<3> IDs and ID based references all uses the form `{"identifier":"<some 
+uuid>"}´. See section about <<uuid,UUID resource>>.
+
+=== JSON format 
+In the following sections, the format of JSON objects in requests and responses 
+has been omitted in order to keep the listing short. Whenever a Command or 
+Payload column indicates a type, like for instance `VerifyEmailAddress` or 
+`CredentialsDTO`, the corresponding JSON object format can be deduced from 
+inspecting the similar JAVA class by translating any getter method to a 
+corresponding JSON property. Similarly, any query responses can be one of:
+
+- a single ´Entry´ object or ´DTO´ object 
+- a list of ´Entry´ objects
+- a "paged" object (see <<paged,paged results>>) with a content of a list of 
+´Entry´ objects
+
+The ´Entry´ classes are all POJO objects and can be found in the "query" 
+packages. 
+
+== Resources
+The following sections list the queries and commands that are currently 
+supported by the service. 
+
+=== User resource
+The user resource is mainly intended to provide details and behavior concerning 
+the current user. 
+
+[cols="4,15,10,.^5,16", options="header"]
+|===
+| Method | URL | Command | Access | Description 
+   | POST   | /rest/api/users                           | RegisterUser           .2+| Anonymous | Register a new user. An activation email will be send.
+   | GET    | /rest/api/users?usernamePattern&page&size |                                       | Gets a paged list of users matching a username pattern. 
+   | GET    | /rest/api/users/count                     |                           | User      | Gets the count of all users, usersCount.
+.3+| PUT .4+| /rest/api/users/{username}                | ChangeUserPassword     .2+| Anonymous | Provide a new password. Old password must be provided (or reset confirmation code from mail).
+                                                        | VerifyEmailAddress                    | Activates the newly provided email address using the code supplied by email (see RegisterUser and ChangeUserEmailAddress) 
+                                                        | ChangeUserEmailAddress .2+| User      | Provide a new email address. Will send an address verification email.
+   | GET                                                |                                       | Get the UserEntry of the selected user
+   | GET    | /rest/api/users/{username}/orgs           |                           | User      | List the users organization memberships (both active and pending)
+   | GET    | /rest/api/users/{username}/exist          |                           | Anonymous | Tell if username is already taken. E.g. {"usernameExist"=true}
+|===
+
+=== Authentication
+This is not really to be regarded as a "Resource" but more like a necessity to perform certain actions like login and out.
+
+[cols="4,15,10,.^5,16", options="header"]
+|===
+| Method | URL | Payload | Access | Description 
+   | POST    | /rest/authentication    | SendResetPasswordInstructions (Command) .5+| Anonymous | Initiates a process to reset the user password. A mail is sent to the user, if user is known. (TODO: should be changed to a PUT request!?)
+   | POST    | /rest/authentication/login            | CredentialsDTO                           | Attempt to login user using the supplied credentials. Returns a SubjectDTO if login is successful.
+   | POST    | /rest/authentication/logout           |                                          | User is marked as logged out and any session tokens are invalidated.
+   | POST .2+| /rest/authentication/sink.html     .2+|                                       .2+| Dummy 'sink' to consume "form submits" from browser password managers
+   | GET                                                                                                    
+   | GET     | /rest/authentication/currentsubject   |                              | User      | Returns a SubjectDTO with the current user info.
+|===
+
+=== Organization
+NOTE: Access to the "/rest/api/org" and sub-paths requires the "User" role.
+
+[cols="4,15,10,21", options="header"]
+|===
+| Method | URL | Command | Description 
+   | POST .2+| /rest/api/org                           | CreateOrganization                | Create a new organization and assign the user as owner
+   | GET                                               |                                   | List all organizations
+.4+| PUT  .5+| /rest/api/org/{idOrAlias}               | ChangeOrganization-NameAndSummary | Change name and summary
+                                                       | ChangeOrganizationWebsiteUrl      | Change website URL
+                                                       | AddOrganizationAlias              | Add an organization alias. If this is the first alias, it will receive status as primary alias
+                                                       | RemoveOrganizationAlias           | Removes the alias. A primary alias cannot be removed
+   | GET                                               |                                   | Get organization details
+   | GET     | /rest/api/org/{idOrAlias}/alias         |                                   | List all aliases of this organization
+   | GET     | /rest/api/org/{idOrAlias}/alias/{alias} |                                   | Alias details (or 204 if not found). Use this method (on arbitrary organization) to tell if this alias is already taken
+.2+| POST .5+| /rest/api/org/{idOrAlias}/member        | InviteUserToOrganization          | Invite a user to the organization
+                                                       | ApplyForMembershipToOrganization  | Apply for membership
+.3+| PUT                                               | AcceptUsersMembershipApplication  | Accept application. (Used by organization)
+                                                       | AcceptMembershipToOrganization    | Accept invitation. (Used by invited user)  
+                                                       | RemoveUserFromOrganization        | Revoke user membership. (May be used by both user and organization)
+|===
+
+=== Organization Service Specification (ss)
+
+[cols="4,15,10,21", options="header"]
+|===
+| Method | URL | Command | Description 
+   | POST .2+| /rest/api/org/{idOrAlias}/ss               | PrepareServiceSpecification               | Create a service specification. (In future, specs should be able to start in a "draft" mode and since change status to "published", hence the "prepare" verb) 
+   | GET                                                  |                                           | List all service specifications of organization
+   | PUT  .2+| /rest/api/org/{idOrAlias}/ss/{ssIdOrAlias} | ChangeServiceSpecification-NameAndSummary | Change name and summary
+   | GET                                                  |                                           | Get details of service specification
+|===
+
+=== Organization Service Instance (si)
+
+[cols="4,15,10,21", options="header"]
+|===
+| Method | URL | Command | Description 
+   | POST .2+| /rest/api/org/{idOrAlias}/si               | ProvideServiceInstance               | Publish a service instance that is provided be the organization 
+   | GET                                                  |                                      | List all service instances of organization
+.6+| PUT  .7+| /rest/api/org/{idOrAlias}/si/{siIdOrAlias} | ChangeServiceInstance-NameAndSummary | Change name and summary
+                                                          | ChangeServiceInstanceCoverage        | Change the geographic coverage of the service
+                                                          | AddServiceInstanceEndpoint           | Add endpoint
+                                                          | RemoveServiceInstanceEndpoint        | Remove endpoint
+                                                          | AddServiceInstanceAlias              | Add a service alias
+                                                          | RemoveServiceInstanceAlias           | Remove service alias
+   | GET                                                  |                                      | Get details of service instance
+   | GET     | /rest/api/org/{idOrAlias}/si/{siIdOrAlias}/alias         |                        | List all service instance aliases
+   | GET     | /rest/api/org/{idOrAlias}/si/{siIdOrAlias}/alias/{alias} |                        | Service instance alias details. 
+|===
+
+=== Almanac resources
+The almanac resource is a READ ONLY and PUBLIC resource. The naming is inspired 
+by the envisioned "Maritime Almanac", although the realization of the Maritime 
+Almanac is intended to be a complete offline cache of the service registry. 
+(This resource should probably be renamed.)
+
+[cols="4,55,41", options="header"]
+|===
+| Method | URL | Description 
+.8+| GET | /rest/api/almanac/operational-service                            | List of all available operational services
+         | /rest/api/almanac/operational-service/{operationalServiceId}     | Public details of operational service
+         | /rest/api/almanac/organization                                   | List all public organizations 
+         | /rest/api/almanac/organization/{organizationId}                  | Public details of organization
+         | /rest/api/almanac/organization/{organizationId}/member           | List all memberships of the selected organization
+         | /rest/api/almanac/service-specification?{operationalServiceId}   | List all published service specifications. Optionally filtered to the selected operational service ({operationalServiceId}).
+         | /rest/api/almanac/service-specification/{serviceSpecificationId} | Public details the selected service specification
+         | /rest/api/almanac/service-instance?{operationalServiceId[&serviceSpecificationIds]} | List all provided service instances. Optionally filtered to instances that implements any of the serviceSpecifications mentioned in list ({[operationalSpecificationIds]}), or any that belongs to the supplied oerational service ({operationalServiceId}).
+         | /rest/api/almanac/service-instance/{serviceInstanceId}           | Public details of the selected service instance.
+|===
+
+=== Activity resource
+List activity events as carried out by the current user, happened in any of the 
+users organizations or publicly available.
+
+The Activity Resource is READ ONLY and requires the "User" role.
+
+[cols="4,45,51", options="header"]
+|===
+| Method | URL | Description 
+| GET | /rest/api/activity?{username[&organizationIds]}  
+| Returns a paged object with a list of all events that has occurred. Default 
+is to show all recent and public events. Adding {username} of current user will 
+return all events (including private) of that user. Using a list of 
+{organizationIds} will return events that has happened in those organizations 
+if the current user is a member of the organization (or is ADMIN).
+|===
+
+== Details
+
+[#uuid]
+=== Generating unique IDs
+When creating new aggregates you often need to supply a new ID. The server provides
+a convenience service for generating unique IDs based on the java class UUID.java.
+
+[cols="4,25,71", options="header"]
+|===
+| Method | URL | Description 
+| GET | /rest/api/uuid?{name}  
+| Returns a JSON object with a single property named `uuid` and a unique value. 
+The property name can optionally be specified to something else by using the 
+query parameter {name}, eg. name=identifier. This way the returned object 
+is ready to use in place of a specific typed ID, without any reformatting. 
+|===
+
+=== Request Examples using 'curl':
+A list of examples of calling the API using `curl` can be found in the file 
+https://github.com/MaritimeCloud/MaritimeCloudPortalTestbed/blob/master/data.sh[`data.sh`]. 
+
+==== Login and subsequent calls
+Login is required to run methods that requires a User-role context. To perform 
+subsequent calls with the same user session, the session cookie is stored in a
+file during login and reused in any subsequent calls:
+
+[source,ruby]
+----
+# Login and store cookie info in 'cookies.txt'
+curl -c cookies.txt http://localhost:8080/rest/authentication/login -H "Content-Type: application/json" -d '{"username":"Tintin","password":"test"}'
+
+# Call some command using the stored cookie
+curl -b cookies.txt http://localhost:8080/rest/api/org -H "Content-Type: application/json;domain-model=SomeCommand" -d '{...json payload of some command...}'
+...
+----
+
+=== ID Property substitution in JSON Commands
+
+Substitution may happen when a command contain a value which is already 
+mentioned in the path, like e.g. {username}. In this case the username of the 
+path will override the value supplied in the command. In case the path 
+contains an aliases, like is often the case with organization, the 
+corresponding organizationId is resolved and injected into the command.
+
+NOTE: Currently the property needs to be present inside the JSON command even 
+though they will be overridden by the path value due to implementation details 
+and slobby configuration of the Jackson deserializer. This is subject to 
+improvement.
+
+[#paged]
+=== Paged results
+Some queries (like activity resource) returns "Paged" results. That is, queries 
+that use the Spring Data Paged Object. The resulting lists are wrapped as 
+content in a page object on a JSON form similar to this: 
+
+[source,js]
+----
+{
+    "totalPages":1,
+    "totalElements":6,
+    "first":true,
+    "sort":[
+        {
+            "direction":"DESC",
+            "property":"username",
+            "ignoreCase":false,
+            "nullHandling":"NATIVE",
+            "ascending":false
+        }
+            ],
+    "numberOfElements":6,
+    "last":true,
+    "size":20,
+    "content":[
+        // ... the result list <1>
+    ],
+    "number":0
+}
+----
+
+<1> The resulting list can be found here
+
+Queries that returns paged objects support the query parameters "page" and 
+"size" which may be used to select a specific page and the max size of the 
+returned page.
+
+See Spring Data [http://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/domain/Pageable.html]
+
+=== invoking a command from an Angular JS client
+The client file 
+https://github.com/MaritimeCloud/MaritimeCloudPortalTestbed/blob/master/src/main/webapp/app/services/dataservices.js[dataservices.js] 
+contains plenty of examples of how to interact with the service. In general,
+each command that should be sent to the services is represented by a function, 
+like e.g.:
+
+[source,js]
+----
+function RegisterUser(userId, prefferedUsername, emailAddress, password) {
+  this.userId = {identifier: userId};
+  this.prefferedUsername = prefferedUsername;
+  this.emailAddress = emailAddress;
+  this.password = password;
+}
+----
+
+A new instance of the function is passed to the Angular Resource as payload, 
+and finally, a HTTP request decorator (in `webapp/app/app.js`) will add the 
+command name to the mime-type:
+
+[source,js]
+----
+// CQRS REST "command-enabler"
+// wrap http-handler in order to intercept non-get methods and add command-name to content-type  
+// (shamelessly snatched from "https://github.com/aliostad/m-r/blob/master/SimpleCQRS.Api/Scripts/inventory-item.js")
+mcpApp.config(function ($provide) {
+  $provide.decorator('$http', function ($delegate) {
+
+    var customHttp = function (config) {
+
+      if (config && (config.method === "PUT" || config.method === "POST")
+          && config.data && typeof config.data === "object") {
+
+        config.headers = config.headers || {};
+        
+        // Remove the "Command"-postfix from the command-name (if any)
+        // ( We could have removed this from the command function constructors 
+        // all together in the first place, but I like to keep it here on the 
+        // client side in order to remind me that these are Commands as opposed 
+        // to all the other functions that lives out here "in the wild" js world) 
+        var commandName = config.data.constructor.name.replace(/Command\b/, "");
+        
+        config.headers["Content-Type"] = "application/json;domain-model=" + commandName;
+        if (config.method === "PUT" 
+            && config.$scope 
+            && config.$scope[constants.concurrencyVersionName]) {
+          config.headers["If-Match"] = config.$scope[constants.concurrencyVersionName];
+        }
+
+      }
+
+      return $delegate(config);
+    };
+
+    angular.extend(customHttp, $delegate);
+    return customHttp;
+  });
+});
+}
+----
 
