@@ -22,6 +22,12 @@ Pending:
 - management of Operational Services (or more likely a sort of Service Categories)
 See also [The state of the solution] (#the-state-of-the-solution)
 
+## Documentation
+
+A list of documentation like user guide, developer guide and API refeerences 
+can be found here:
+https://github.com/MaritimeCloud/MaritimeCloudPortalTestbed/blob/master/src/main/asciidoc/main.adoc
+
 ## Software Architecture
 
 The MaritimeCloudPortalTestbed client is a rich client HTML/JS-application with a server side JSON 
