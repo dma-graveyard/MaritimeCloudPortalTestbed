@@ -24,9 +24,12 @@ See also [The state of the solution] (#the-state-of-the-solution)
 
 ## Documentation
 
-A list of documentation like user guide, developer guide and API refeerences 
+The list of documentation, like user guide, developer guide and API refeerences 
 can be found here:
 https://github.com/MaritimeCloud/MaritimeCloudPortalTestbed/blob/master/src/main/asciidoc/main.adoc
+
+Jenkins has a latest fully rendered [version as HTML] (https://dma.ci.cloudbees.com/job/MaritimeCloudPortal/ws/target/generated-docs/main.html)
+and [version as PDF](https://dma.ci.cloudbees.com/job/MaritimeCloudPortal/ws/target/generated-docs/main.pdf).
 
 ## Software Architecture
 
