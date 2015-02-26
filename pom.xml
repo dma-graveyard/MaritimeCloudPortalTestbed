@@ -233,13 +233,6 @@
                 <version>1.5.2</version>
                 <executions>
                     <execution>
-                        <id>output-html</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>process-asciidoc</goal>
-                        </goals>
-                    </execution>
-                    <execution>
                         <id>asciidoc-to-html</id>
                         <phase>generate-resources</phase>
                         <goals>
@@ -261,6 +254,23 @@
                             </attributes>
                         </configuration>
                     </execution>                    
+                    <execution>
+                        <id>asciidoc-to-pdf</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <backend>pdf</backend>
+                            <sourceHighlighter>coderay</sourceHighlighter>
+                            <attributes>
+                                <pagenums/>
+                                <toc/>
+                                <idprefix/>
+                                <idseparator>-</idseparator>
+                            </attributes>
+                        </configuration>                      
+                    </execution>
                 </executions>
                 <dependencies>
                     <dependency>
@@ -269,17 +279,6 @@
                         <version>1.5.0-alpha.6</version>
                     </dependency>
                 </dependencies>                
-                <configuration>
-                    <backend>pdf</backend>
-                    <!-- WARNING callout bullets don't yet work with CodeRay -->
-                    <sourceHighlighter>coderay</sourceHighlighter>
-                    <attributes>
-                        <pagenums/>
-                        <toc/>
-                        <idprefix/>
-                        <idseparator>-</idseparator>
-                    </attributes>
-                </configuration>                      
             </plugin>            
         </plugins>
     </build>
