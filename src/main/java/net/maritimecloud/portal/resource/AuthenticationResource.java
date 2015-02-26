@@ -107,7 +107,7 @@ public class AuthenticationResource extends AbstractCommandResource {
         authenticationUtil().logout();
     }
 
-    @POST
+    @POST // TODO: should be a PUT !?!?
     @Consumes(APPLICATION_JSON_CQRS_COMMAND)
     @Path("")
     public void sendForgotPutCommand(
