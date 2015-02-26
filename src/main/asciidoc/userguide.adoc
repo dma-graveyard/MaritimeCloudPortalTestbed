@@ -66,7 +66,7 @@ In order to get access to the portal, you need to register with a unique
 username and an e-mail address. Click on the "Join" button and fill in the 
 registration page.
 
-image::join-button.png[]
+image::join-button.png[scaledwidth="10%"]
 image::join-form.png[]
 
 Once you are done you will receive an e-mail with an activation link. Following 
@@ -77,14 +77,14 @@ From the landing page, click on the "Log In" button and fill in your username
 and password. Notice that the username must be spelled exactly as created - the 
 casing of the letters matters.
 
-image::login-form.png[role="thumb"]
+image::login-form.png[role="thumb", scaledwidth="40%"]
 
 ==== Forgot Password
 If you can no longer remember your password, or if you forgot your username you
 may still have a change to gain access to the portal. Click the "Forgot password"
 link in the "Log In" form, and supply your e-mail address.
 
-image::forgot-password.png[role="thumb"]
+image::forgot-password.png[role="thumb", scaledwidth="40%"]
 
 If your e-mail address matches an account you will shortly receive an email with 
 a link. Follow the link in order to provide a new password. 
@@ -183,13 +183,13 @@ The user menu allows to manage the user profile. Also, when the user is no yet
 a member of any organizations, a new organization may be created from this 
 menu.
 
-image::menu-access.png[role="right"]
+image::menu-access.png[role="right", scaledwidth="10%"]
 Access buttons::
 Access buttons may be used to join, log in and out.
 
 - - -
 
-image::sidebar.png[role="thumb left"]
+image::sidebar.png[role="thumb left", scaledwidth="20%"]
 === Sidebar
 
 The sidebar contains actions that are possible from the currently selected 
