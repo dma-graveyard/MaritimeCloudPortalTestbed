@@ -6,7 +6,7 @@
 SCRIPTPATH=`dirname $0`
 cd $SCRIPTPATH
 
-PROCNAME="maritimecloud-portal-0.1.1-SNAPSHOT.war"
+PROCNAME="maritimecloud-portal-0.1.1.war"
 
 stop () {
 	# Find pid
