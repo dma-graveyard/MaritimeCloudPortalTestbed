@@ -231,6 +231,31 @@ When the Unit of Work (managed by axon) completes, the events are stored in the
 `AggregateRepository` and emitted on an event bus that will notify any registered 
 listeners asynchronously.
 
+===== Replayable File System Event Store
+The current solution is using the Axon file based event store (see Axon 
+`FileSystemEventStore`). This is a store that creates a folder per Aggregate 
+Root, currently under the "target/events"-folder, and keeps a file in this 
+folder, for each instance. The naming of the files matches the aggregates names 
+and IDs, e.g. 
+`target/events/Organization/OrganizationId+%5Bid%3D759d4a81%5D.events`.
+
+The original Axon file store do not support replaying of events out of the box. 
+To mitigate this problem, an extension has been made, that implements the 
+missing replay methods, `ReplayableFileSystemEventStore`. Since the file store 
+do not keep track of the overall sequence of events, it is necessary to apply 
+some sort of best effort strategy to estimate the sequence based on timestamps 
+and in rare cases sequences numbers or other. This implies that all aggregates 
+and events are scanned and indexed, and then replayed according to this 
+ordering. 
+
+WARNING: This is not production quality!!! But serves well when needing a 
+compromise between look-alike-persistence, flexibility and complexity.
+
+You can manually delete aggregate files. Some or all. Move them in and out, and 
+even store them in your source repository if you like. It is possible to inspect 
+the files in a plain text editor, although some characters may look weird.
+
+
 ==== The View models
 In order to keep the views models up to date they register on the EventBus to 
 listen for relevant events. In the Maritime Cloud Portal the listeners follow a 
@@ -433,8 +458,50 @@ properties, mainly through overriding versions of the
 --- 
 
 == Client architecture
+The client is a Single Page Application client based on AngularJS with twitter 
+bootstrap like styling and using Leaflet API for Geodata representations. 
+
+Server side communication is based on the REST with JSON by using the angular 
+Resource service.
+
+==== Imported libraries
+External libraries lives in the `/ext`-folder. Most are managed by Bower in 
+´/ext/bower´ and are ingored by GIT, but a few are manually imported and are 
+added to source-control.
+
+=== Modules and central files 
+All client application files lives in the `src/main/webapp/app`-folder. 
+
+==== App.js and ui-routing
+The app.js contains the entry setup of angular and defines the internal 
+routing structure in terms of the Angular-UI routing mechanism. The 
+structure is split into two major zones, an anonymous and authorized zone 
+called "public" and "restricted" respectively. Attempts to access a 
+restricted zone will trigger an authorization check, and if it fails, the 
+login dialog is displayed.
+
+==== Layout and partials
+This module contains elements that defines the general structure of the UI, 
+like footer, header, sidebar, menubar and layout of public and restricted 
+area. Also some general purpose elements like panels and the like are defined 
+here.
+
+The dashboard and the landingpage are kept in the module "partials", mainly 
+for historical reasons.
+
+==== Services
+This is a mainly various angular "Services".
+
+===== Dataservices
+"dataservices.js" contains "Services" for communicating with the server. All
+commands used by the client are defined here, as well as a service per 
+resource.
+
+==== Aggregates
+All the major concepts, like users, organizations and search services, has 
+their own modules.  
+
+=== More information
 Please refer to the GITHUB project page for further information about the 
 client architecture - mainly the technology stack: 
 [https://github.com/MaritimeCloud/MaritimeCloudPortalTestbed].
-
-
