@@ -152,8 +152,9 @@ public class UserResource extends AbstractCommandResource {
             @QueryParam("page") @DefaultValue("0") int page,
             @QueryParam("size") @DefaultValue("10") int size
     ) {
-        // shori.ini allows "anon"-access to open for POST - restrict GET programaticly to ADMIN role
-        requiresRoles("ADMIN");
+        // shori.ini allows "anon"-access to open for POST - restrict GET programaticly to USER role
+        // (needed by invite-user and admin list users)
+        requiresRoles("USER");
 
         // FIXME: we should hide the email address - it should only be visible from users profile!
         Pageable pageable = new PageRequest(page, size, new Sort(Sort.Direction.DESC, "username"));
