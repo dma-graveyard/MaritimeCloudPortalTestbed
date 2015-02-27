@@ -348,7 +348,8 @@ Once up-n-running the result can be seen from the link below
 
 The Maritime Cloud Portal can be run from a Docker container. See 
 Docker [http://docs.docker.com/] for instructions on getting started with Docker. 
-A pre-build portal image can be found at https://registry.hub.docker.com/u/dmadk/mcp 
+A pre-build portal image can be found at 
+https://registry.hub.docker.com/u/dmadk/maritimecloud-portal/ 
 and pulled with:
 
     docker pull dmadk/maritimecloud-portal
