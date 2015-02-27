@@ -348,20 +348,23 @@ Once up-n-running the result can be seen from the link below
 
 The Maritime Cloud Portal can be run from a Docker container. See 
 Docker [http://docs.docker.com/] for instructions on getting started with Docker. 
-A pre-build portal image can be found at https://registry.hub.docker.com/u/dmadk/mcp. 
+A pre-build portal image can be found at https://registry.hub.docker.com/u/dmadk/mcp 
+and pulled with:
+
+    docker pull dmadk/maritimecloud-portal
 
 #### Build
 
 To build your own image, use this command (possibly from a Boot2Docker shell) 
 from the root of the project:
 
-    docker build -t mcp .
+    docker build -t dmadk/maritimecloud-portal .
 
 #### Run
 
 To run the build docker image, create a new container and launch it (in one go):
 
-     docker run -p 8080:8080 -v `pwd`/target/events:/portal/target/events -v `pwd`/config:/portal/config --name=mcp mcp
+     docker run -p 8080:8080 -v `pwd`/target/events:/portal/target/events -v `pwd`/config:/portal/config --name=mcp dmadk/maritimecloud-portal
 
 This will create a docker container for the image and mount the two local disk 
 volumes "./target/events" and "./config". The first one specifies the local 
