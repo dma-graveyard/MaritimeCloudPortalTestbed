@@ -5,7 +5,7 @@
 
     <groupId>net.maritimecloud.portal</groupId>
     <artifactId>maritimecloud-portal</artifactId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.1.1</version>
     <packaging>war</packaging>
 
     <name>Maritime Cloud Portal</name>
